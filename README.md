@@ -1,2 +1,2 @@
 # robocrystallographer
-he describes so you don't have to
+they describe so you don't have to
