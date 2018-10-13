@@ -32,7 +32,7 @@ def _get_parser():
     Last updated: {}""".format(__author__, __version__, __date__))
 
     parser.add_argument('-f', '--filename', default="POSCAR", type=str,
-                        metavar='F', help="cif, POSCAR or other structure file")
+                        metavar='F', help="structure file or mpid")
     return parser
 
 
@@ -47,7 +47,16 @@ def main():
     warnings.filterwarnings("ignore", category=UserWarning,
                             module="pymatgen")
 
-    structure = Structure.from_file(args.filename)
+    try:
+        structure = Structure.from_file(args.filename)
+
+    except FileNotFoundError:
+        from pymatgen.ext.matproj import MPRester
+
+        mpr = MPRester()
+        structure = mpr.get_entry_by_material_id(
+            args.filename, inc_structure='final').structure
+
     robocrystallographer(structure)
 
 
