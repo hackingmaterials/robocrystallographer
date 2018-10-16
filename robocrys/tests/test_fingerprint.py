@@ -2,7 +2,9 @@ import unittest
 
 from pymatgen.core.structure import Structure
 
-from robocrys.fingerprint import get_fingerprint, get_fingerprint_distance
+from robocrys.fingerprint import (get_site_fingerprints,
+                                  get_structure_fingerprint,
+                                  get_fingerprint_distance)
 
 
 class TestFingerprint(unittest.TestCase):
@@ -14,17 +16,26 @@ class TestFingerprint(unittest.TestCase):
             [[0.0, 0.0, 0.0]]
         )
 
-    def test_get_fingerprint(self):
-        """Test to check fingerprinting."""
-        fingerprint = get_fingerprint(self.fe)
+    def test_get_site_fingerprints(self):
+        """Test to check site fingerprinting."""
+        finger = get_site_fingerprints(self.fe)[0]
+        self.assertAlmostEqual(finger['body-centered cubic CN_8'], 0.576950507)
+
+        # check as_dict option
+        finger = get_site_fingerprints(self.fe, as_dict=False)[0]
+        self.assertAlmostEqual(finger[30], 0.576950507)
+
+    def test_get_structure_fingerprint(self):
+        """Test to check structure fingerprinting."""
+        fingerprint = get_structure_fingerprint(self.fe)
         self.assertAlmostEqual(fingerprint[4], 1.98432036e-03)
 
         # test stats option
-        fingerprint = get_fingerprint(self.fe, stats=('mean',))
+        fingerprint = get_structure_fingerprint(self.fe, stats=('mean',))
         self.assertAlmostEqual(fingerprint[31], 2.51322893e-01)
 
         # test preset options
-        fingerprint = get_fingerprint(
+        fingerprint = get_structure_fingerprint(
             self.fe, fingerprint_preset='CrystalNNFingerprint_cn')
         self.assertAlmostEqual(fingerprint[2], 1.98432036e-03)
 
@@ -40,7 +51,7 @@ class TestFingerprint(unittest.TestCase):
         self.assertAlmostEqual(dist, 0.)
 
         # test one structure one fingerprint
-        finger_1 = get_fingerprint(self.fe)
+        finger_1 = get_structure_fingerprint(self.fe)
         dist = get_fingerprint_distance(self.fe, finger_1)
         self.assertAlmostEqual(dist, 0.)
 

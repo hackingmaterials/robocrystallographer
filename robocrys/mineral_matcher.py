@@ -8,7 +8,7 @@ from pkg_resources import resource_filename
 from pymatgen.analysis.aflow_prototypes import AflowPrototypeMatcher
 from matminer.utils.io import load_dataframe_from_json
 
-from robocrys.fingerprint import get_fingerprint, get_fingerprint_distance
+from robocrys.fingerprint import get_structure_fingerprint, get_fingerprint_distance
 
 
 class MineralMatcher(object):
@@ -184,7 +184,7 @@ class MineralMatcher(object):
             return
 
         data = self.mineral_db.copy()
-        fingerprint = get_fingerprint(structure)
+        fingerprint = get_structure_fingerprint(structure)
 
         data['distance'] = data['fingerprint'].apply(
             lambda x: get_fingerprint_distance(x, fingerprint))
