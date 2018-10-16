@@ -101,18 +101,21 @@ class SiteDescriber(object):
                          for el, data in nn_info.items()]
         desc += "{} atoms. ".format(en.join(bonding_atoms))
 
+        intro = None
         for i, (bond_element, bond_data) in enumerate(nn_info.items()):
 
-            desc += "Of these, the " if i == 0 else "The "
-
             if len(bond_data['sym_groups']) == 1 and bond_data['n_sites'] > 1:
-                desc += "{} atoms are symmetrically equivalent. ".format(
-                    bond_element)
+                intro = "Of these, the" if not intro else "The"
 
-            elif bond_data['n_site'] > 1:
-                desc += ("{} atoms are found in {} symmetry distinct "
+                desc += "{} {} atoms are symmetrically equivalent. ".format(
+                    intro, bond_element)
+
+            elif bond_data['n_sites'] > 1:
+                intro = "Of these, the" if not intro else "The"
+
+                desc += ("{} {} atoms are found in {} symmetry distinct "
                          "environments. ").format(
-                    bond_element,
+                    intro, bond_element,
                     en.number_to_words(len(bond_data['sym_groups'])))
 
             if describe_bond_lengths:
