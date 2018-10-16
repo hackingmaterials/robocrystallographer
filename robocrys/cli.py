@@ -6,6 +6,7 @@ import argparse
 from pymatgen.core.structure import Structure
 
 from robocrys.mineral_matcher import MineralMatcher
+from robocrys.site_describer import SiteDescriber
 
 __author__ = "Alex Ganose"
 __version__ = "0.0.1"
@@ -21,6 +22,10 @@ def robocrystallographer(structure):
 
     logging.info("{} is {} structured".format(
         structure.composition.reduced_formula, mineral))
+
+    site_describer = SiteDescriber(structure)
+    logging.info(site_describer.get_site_description(0))
+    logging.info(site_describer.get_site_description(4))
 
 
 def _get_parser():

@@ -1,1 +1,2 @@
-from .mineral_matcher import MineralMatcher
+from robocrys.mineral_matcher import MineralMatcher
+from robocrys.site_describer import SiteDescriber
