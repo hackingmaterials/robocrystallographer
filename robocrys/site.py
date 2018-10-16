@@ -4,6 +4,8 @@ This module provides functions for generating site geometry descriptions.
 TODO: make functions for
  - distortion of geometry e.g. elongated along an axis
  - connectivity e.g. edge-sharing
+ - maybe have custom descriptions for octahedrons, tetrahedron etc
+ - handle the case where no geometry type is given, just the CN
 """
 
 import inflect
@@ -70,7 +72,7 @@ class SiteDescriber(object):
         element = self.structure[site_index].specie.name
 
         desc = "{} is bonded in {} geometry to ".format(
-            element, en.a(geometry))
+                element, en.a(geometry))
 
         # First tackle the case that the bonding is only to a single element
         if len(nn_info) == 1:

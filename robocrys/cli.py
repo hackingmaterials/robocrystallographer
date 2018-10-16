@@ -6,8 +6,8 @@ import argparse
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from robocrys.mineral_matcher import MineralMatcher
-from robocrys.site_describer import SiteDescriber
+from robocrys import MineralMatcher
+from robocrys import SiteDescriber
 
 __author__ = "Alex Ganose"
 __version__ = "0.0.1"
@@ -28,8 +28,11 @@ def robocrystallographer(structure):
     structure = sga.get_symmetrized_structure()
 
     site_describer = SiteDescriber(structure)
-    for list_sites in structure.equivalent_indices:
-        logging.info(site_describer.get_site_description(list_sites[0]))
+    for i, list_sites in enumerate(structure.equivalent_indices):
+        # very rough way of not overloading with information about bond lengths
+        bond_lengths = i == len(structure.equivalent_indices) - 1
+        logging.info(site_describer.get_site_description(
+            list_sites[0], describe_bond_lengths=bond_lengths))
 
 
 def _get_parser():

@@ -8,7 +8,8 @@ from pkg_resources import resource_filename
 from pymatgen.analysis.aflow_prototypes import AflowPrototypeMatcher
 from matminer.utils.io import load_dataframe_from_json
 
-from robocrys.fingerprint import get_structure_fingerprint, get_fingerprint_distance
+from robocrys.fingerprint import (get_structure_fingerprint,
+                                  get_fingerprint_distance)
 
 
 class MineralMatcher(object):
