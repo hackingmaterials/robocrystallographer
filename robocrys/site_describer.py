@@ -1,15 +1,10 @@
 """
-This module provides functions for getting site geometry descriptions
+This module provides functions for generating site geometry descriptions.
 
-TODO:
-
-Make functions for
+TODO: make functions for
  - distortion of geometry e.g. elongated along an axis
- - neighbours e.g. bonded to six symmetrically equivalent oxygen atoms
  - connectivity e.g. edge-sharing
 """
-
-import numpy as np
 
 import inflect
 
@@ -24,6 +19,19 @@ en = inflect.engine()
 
 
 class SiteDescriber(object):
+    """Class to generate descriptions of site geometry and bonding.
+
+    Args:
+        structure (Structure): A pymatgen `Structure` object.
+        bonded_structure (NearNeighbors, optional): A structure object with
+            nearest neighbour data included. One should use a subclasses of
+            `NearNeighbors` such as `CrystalNN` or `VoronoiNN`. If no
+            bonded structure provided, the bonding will be calculated using
+            the `CrystalNN` class.
+        symprec (float): The tolerance used when determining the symmetry of
+            the structure. The symmetry is used to determine if multiple
+            sites are symmetrically equivalent.
+    """
 
     def __init__(self, structure, bonded_structure=None, symprec=0.01):
         self.structure = structure
@@ -39,54 +47,77 @@ class SiteDescriber(object):
         self.nearest_neighbour_data = []
         for site_index in range(len(structure)):
             con_sites = bonded_structure.get_connected_sites(site_index)
-            data = [{'element': x.site.specie.name,
-                     'sym_id': equivalent_sites[x.index],
-                     'dist': x.dist} for x in con_sites]
+            data = tuple({'element': x.site.specie.name,
+                          'sym_id': equivalent_sites[x.index],
+                          'dist': x.dist} for x in con_sites)
             self.nearest_neighbour_data.append(data)
 
         self._processed_neighbour_data = {}
 
-    def get_site_description(self, site_index, bond_lengths=True):
-        """
-        Sn is bonded in an octahedral geometry to six symmetrically equivalent
-        O atoms. All Sn-O bonds are the same length
-        or In this arragnemnt there are two longer and four shorter
-        Sn-O bonds.
+    def get_site_description(self, site_index, describe_bond_lengths=True):
+        """Gets a description of the geometry and bonding of a site.
 
-        Sn is bonded in an octahedral geometry to 3 Br, 2 Cl, and 1 I atoms.
-        Of these, the Br atoms are all symmetrically equivalent.
-        All Sn-Br bonds are the same length (4.93 A).
-        The Cl atoms are symmetrically equivalent.
-        Both Sn-Cl bonds are the same length (3.92 A).
-        The Sn-I bond length is 1.82 A.
+        Args:
+            site_index (int): The site index (zero based).
+            describe_bond_lengths (bool, optional): Whether to provide a
+                description of the bond lengths. Default to `True`.
+
+        Returns:
+            (str): A description of the geometry and bonding of a site.
         """
         geometry = self.get_site_geometry(site_index)
         nn_info = self._get_processed_nearest_neighbour_info(site_index)
         element = self.structure[site_index].specie.name
 
-        desc = "{} is bonded in {} geometry ".format(
+        desc = "{} is bonded in {} geometry to ".format(
             element, en.a(geometry))
 
+        # First tackle the case that the bonding is only to a single element
         if len(nn_info) == 1:
             bond_element, bond_data = list(nn_info.items())[0]
 
             if bond_data['n_sites'] == 1:
-                desc += "to one {} atom. ".format(bond_element)
+                desc += "one {} atom. ".format(bond_element)
 
             elif len(bond_data['sym_groups']) == 1:
-                desc += "to {} symmetrically equivalent {} atoms. ".format(
+                desc += "{} symmetrically equivalent {} atoms. ".format(
                     en.number_to_words(bond_data['sym_groups'][0]['n_sites']),
                     bond_element)
 
             else:
-                desc += "to {} {} atoms. ".format(
+                desc += "{} {} atoms. ".format(
                     en.number_to_words(bond_data['n_sites']), bond_element)
 
-            if bond_lengths:
+            if describe_bond_lengths:
                 desc += self.get_bond_length_description(
                     site_index, bond_element)
 
             return desc
+
+        # tackle the case where the bonding is to multiple elements
+        bonding_atoms = ["{} {}".format(en.number_to_words(data['n_sites']), el)
+                         for el, data in nn_info.items()]
+        desc += "{} atoms. ".format(en.join(bonding_atoms))
+
+        for i, (bond_element, bond_data) in enumerate(nn_info.items()):
+
+            desc += "Of these, the " if i == 0 else "The "
+
+            if len(bond_data['sym_groups']) == 1 and bond_data['n_sites'] > 1:
+                desc += "{} atoms are symmetrically equivalent. ".format(
+                    bond_element)
+
+            elif bond_data['n_site'] > 1:
+                desc += ("{} atoms are found in {} symmetry distinct "
+                         "environments. ").format(
+                    bond_element,
+                    en.number_to_words(len(bond_data['sym_groups'])))
+
+            if describe_bond_lengths:
+                desc += self.get_bond_length_description(
+                    site_index, bond_element)
+
+        return desc
 
     def get_site_geometry(self, site_index, distorted_tol=0.6):
         """Gets the bonding geometry of a site.
@@ -119,6 +150,20 @@ class SiteDescriber(object):
         return distorted + geometry
 
     def get_bond_length_description(self, site_index, bond_element):
+        """Gets a description of the bonding of a site to an element.
+
+        Bonding description based on the nearest neighbour data in
+        `self.nearest_neighbour_data`. If you ask for the bonding description
+        for site_index and element that are not bonded an error will be thrown.
+
+        Args:
+            site_index (int): The site index (zero based).
+            bond_element (str): The element too which bonding will be described.
+
+        Returns:
+            (str): A description of the bond lengths between `site_index` and
+            any `bond_element` atoms.
+        """
         bond_data = self._get_processed_nearest_neighbour_info(
             site_index)[bond_element]
         element = self.structure[site_index].specie.name
@@ -134,8 +179,9 @@ class SiteDescriber(object):
 
         # if multiple bond lengths but they are all the same
         if len(set(discrete_bond_lengths)) == 1:
-            return "All {}–{} bond lengths are {}. ".format(
-                element, bond_element, _distance_to_string(dists[0]))
+            intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
+            return "{} {}–{} bond lengths are {}. ".format(
+                intro, element, bond_element, _distance_to_string(dists[0]))
 
         # if two sets of bond lengths
         if len(set(discrete_bond_lengths)) == 2:
@@ -151,8 +197,8 @@ class SiteDescriber(object):
                 _distance_to_string(big), element, bond_element)
 
         # otherwise just detail the spread of bond lengths
-        return ("There is a spread of {}–{} bond distances, ranging from"
-                "{}–{}. ").format(
+        return ("There is a spread of {}–{} bond distances, ranging from "
+                "{}. ").format(
             element, bond_element,
             _distance_range_to_string(min(discrete_bond_lengths),
                                       max(discrete_bond_lengths)))
@@ -164,10 +210,10 @@ class SiteDescriber(object):
             site_index (int): The site index (zero based).
 
         Returns:
-            (list of dict): For each site bonded to `site_index`, returns a
+            (tuple of dict): For each site bonded to `site_index`, returns a
             dictionary of::
 
-                {'element': el, 'sym_id': i, 'dist': d}
+                ({'element': el, 'sym_id': i, 'dist': d}, ...)
 
             The `sym_id` property is the symmetry index for the site. E.g. if
             two sites are symmetrically  equivalent then they will have the
@@ -188,7 +234,7 @@ class SiteDescriber(object):
                 {
                     'Sn': {
                         'n_sites': 6
-                        'sym_groups': [
+                        'sym_groups': (
                             {
                                 'n_sites': 4
                                 'sym_id': 0
@@ -199,7 +245,7 @@ class SiteDescriber(object):
                                 'sym_id': 1
                                 'dists': [3, 3]
                             }
-                        ]
+                        )
                     }
                 }
         """
@@ -217,27 +263,27 @@ class SiteDescriber(object):
         data = {}
         for element, sym_data in grouped_nn.items():
             n_sites = sum([len(sites) for sites in sym_data.values()])
-            sym_groups = [{
+            sym_groups = tuple({
                 'n_sites': len(sites),
                 'sym_id': sym_id,
                 'dists': [x['dist'] for x in sites]
-            } for sym_id, sites in sym_data.items()]
+            } for sym_id, sites in sym_data.items())
             data[element] = {'n_sites': n_sites, 'sym_groups': sym_groups}
 
         return data
 
 
-
-
 def _rounded_bond_lengths(data, decimal_places=3):
-    rounded_data = [float("{:.{}f}".format(x, decimal_places)) for x in data]
-    return rounded_data
+    """Utility function to round bond lengths to a number of decimal places."""
+    return tuple(float("{:.{}f}".format(x, decimal_places)) for x in data)
 
 
 def _distance_to_string(distance, decimal_places=2):
+    """Utility function to round a distance and add an Angstrom symbol."""
     return "{:.{}f} Å".format(distance, decimal_places)
 
 
 def _distance_range_to_string(dist_a, dist_b, decimal_places=2):
+    """Utility function to format a range of distances."""
     return "{:.{}f}–{:.{}f} Å".format(dist_a, decimal_places, dist_b,
                                       decimal_places)

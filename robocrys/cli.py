@@ -4,6 +4,7 @@ import warnings
 import argparse
 
 from pymatgen.core.structure import Structure
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from robocrys.mineral_matcher import MineralMatcher
 from robocrys.site_describer import SiteDescriber
@@ -23,9 +24,12 @@ def robocrystallographer(structure):
     logging.info("{} is {} structured".format(
         structure.composition.reduced_formula, mineral))
 
+    sga = SpacegroupAnalyzer(structure)
+    structure = sga.get_symmetrized_structure()
+
     site_describer = SiteDescriber(structure)
-    logging.info(site_describer.get_site_description(0))
-    logging.info(site_describer.get_site_description(4))
+    for list_sites in structure.equivalent_indices:
+        logging.info(site_describer.get_site_description(list_sites[0]))
 
 
 def _get_parser():
@@ -36,8 +40,8 @@ def _get_parser():
     Version: {}
     Last updated: {}""".format(__author__, __version__, __date__))
 
-    parser.add_argument('-f', '--filename', default="POSCAR", type=str,
-                        metavar='F', help="structure file or mpid")
+    parser.add_argument('filename', type=str,
+                        help="structure file or mpid")
     return parser
 
 

@@ -37,13 +37,33 @@ class TestMineralMatcher(unittest.TestCase):
 
         self.assertEqual(len(info), 3)
         self.assertEqual(info[0]["element"], "Sn")
-        self.assertEqual(info[0]["sym_id"], 0)
+        self.assertEqual(info[0]["sym_id"], 4)
         self.assertAlmostEqual(info[0]["dist"], 2.0857160137)
+
+    def test_get_bond_length_description(self):
+        """Check getting bond length descriptions"""
+        # content liable to change so just check function runs without error
+        # and returns *something*.
+        desc = self.describer.get_bond_length_description(0, "Sn")
+        self.assertNotEqual(desc, None)
+
+        desc = self.describer.get_bond_length_description(4, "O")
+        self.assertNotEqual(desc, None)
 
     def test_get_site_description(self):
         """Check getting site description."""
-        info = self.describer.get_site_description(0)
-        print(info)
+        # content liable to change so just check function runs without error
+        # and returns *something*.
+        desc = self.describer.get_site_description(0)
+        self.assertNotEqual(desc, None)
+
+        desc = self.describer.get_site_description(4)
+        self.assertNotEqual(desc, None)
+
+        # check output changes when turning of bond length information
+        desc_bond_lengths = self.describer.get_site_description(
+            4, describe_bond_lengths=False)
+        self.assertNotEqual(desc, desc_bond_lengths)
 
 
 if __name__ == '__main__':
