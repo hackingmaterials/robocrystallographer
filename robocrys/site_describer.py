@@ -26,9 +26,6 @@ en = inflect.engine()
 class SiteDescriber(object):
 
     def __init__(self, structure, bonded_structure=None, symprec=0.01):
-        sga = SpacegroupAnalyzer(structure, symprec=symprec)
-        sga.get_symmetrized_structure()
-
         self.structure = structure
         self.site_fingerprints = get_site_fingerprints(structure)
 
@@ -36,6 +33,7 @@ class SiteDescriber(object):
             cnn = CrystalNN()
             bonded_structure = cnn.get_bonded_structure(structure)
 
+        sga = SpacegroupAnalyzer(structure, symprec=symprec)
         equivalent_sites = sga.get_symmetry_dataset()['equivalent_atoms']
 
         self.nearest_neighbour_data = []
@@ -46,7 +44,9 @@ class SiteDescriber(object):
                      'dist': x.dist} for x in con_sites]
             self.nearest_neighbour_data.append(data)
 
-    def get_site_description(self, site_index):
+        self._processed_neighbour_data = {}
+
+    def get_site_description(self, site_index, bond_lengths=True):
         """
         Sn is bonded in an octahedral geometry to six symmetrically equivalent
         O atoms. All Sn-O bonds are the same length
@@ -72,21 +72,19 @@ class SiteDescriber(object):
 
             if bond_data['n_sites'] == 1:
                 desc += "to one {} atom. ".format(bond_element)
-                dists = bond_data['sym_groups'][0]['dists']
 
             elif len(bond_data['sym_groups']) == 1:
                 desc += "to {} symmetrically equivalent {} atoms. ".format(
                     en.number_to_words(bond_data['sym_groups'][0]['n_sites']),
                     bond_element)
-                dists = bond_data['sym_groups'][0]['dists']
 
             else:
                 desc += "to {} {} atoms. ".format(
                     en.number_to_words(bond_data['n_sites']), bond_element)
-                dists = sum([x['dists'] for x in bond_data['sym_groups']], [])
 
-            desc += _get_bond_length_description(element, bond_element,
-                                                 dists)
+            if bond_lengths:
+                desc += self.get_bond_length_description(
+                    site_index, bond_element)
 
             return desc
 
@@ -119,6 +117,45 @@ class SiteDescriber(object):
 
         distorted = '' if parameter[1] > distorted_tol else 'distorted '
         return distorted + geometry
+
+    def get_bond_length_description(self, site_index, bond_element):
+        bond_data = self._get_processed_nearest_neighbour_info(
+            site_index)[bond_element]
+        element = self.structure[site_index].specie.name
+
+        dists = sum([x['dists'] for x in bond_data['sym_groups']], [])
+
+        # if only one bond length
+        if len(dists) == 1:
+            return "The {}–{} bond length is {}. ".format(
+                element, bond_element, _distance_to_string(dists[0]))
+
+        discrete_bond_lengths = _rounded_bond_lengths(dists)
+
+        # if multiple bond lengths but they are all the same
+        if len(set(discrete_bond_lengths)) == 1:
+            return "All {}–{} bond lengths are {}. ".format(
+                element, bond_element, _distance_to_string(dists[0]))
+
+        # if two sets of bond lengths
+        if len(set(discrete_bond_lengths)) == 2:
+            small = min(discrete_bond_lengths)
+            small_count = en.number_to_words(discrete_bond_lengths.count(small))
+            big = max(discrete_bond_lengths)
+            big_count = en.number_to_words(discrete_bond_lengths.count(big))
+
+            return ("In this arrangement, there {} {} shorter ({}) and {} "
+                    "longer ({}) {}–{} bond lengths. ").format(
+                en.plural_verb('is', small_count), small_count,
+                _distance_to_string(small), big_count,
+                _distance_to_string(big), element, bond_element)
+
+        # otherwise just detail the spread of bond lengths
+        return ("There is a spread of {}–{} bond distances, ranging from"
+                "{}–{}. ").format(
+            element, bond_element,
+            _distance_range_to_string(min(discrete_bond_lengths),
+                                      max(discrete_bond_lengths)))
 
     def get_nearest_neighbour_info(self, site_index):
         """Gets information about the bonded nearest neighbours.
@@ -166,6 +203,9 @@ class SiteDescriber(object):
                     }
                 }
         """
+        if site_index in self._processed_neighbour_data:
+            return self._processed_neighbour_data[site_index]
+
         nn_info = self.get_nearest_neighbour_info(site_index)
 
         # first group nearest neighbours by element and sym_id
@@ -187,39 +227,6 @@ class SiteDescriber(object):
         return data
 
 
-def _get_bond_length_description(element, bond_element,
-                                 dists):
-    # if only one bond length
-    if len(dists) == 1:
-        return "The {}–{} bond length is {}. ".format(
-            element, bond_element, _distance_to_string(dists[0]))
-
-    discrete_bond_lengths = _rounded_bond_lengths(dists)
-
-    # if multiple bond lengths but they are all the same
-    if len(set(discrete_bond_lengths)) == 1:
-        return "All {}–{} bond lengths are {}. ".format(
-            element, bond_element, _distance_to_string(dists[0]))
-
-    # if two sets of bond lengths
-    if len(set(discrete_bond_lengths)) == 2:
-        small = min(discrete_bond_lengths)
-        small_count = en.number_to_words(discrete_bond_lengths.count(small))
-        big = max(discrete_bond_lengths)
-        big_count = en.number_to_words(discrete_bond_lengths.count(big))
-
-        return ("In this arrangement, there {} {} shorter ({}) and {} "
-                "longer ({}) {}–{} bond lengths. ").format(
-            en.plural_verb('is', small_count), small_count,
-            _distance_to_string(small), big_count,
-            _distance_to_string(big), element, bond_element)
-
-    # otherwise just detail the spread of bond lengths
-    return ("There is a spread of {}–{} bond distances, ranging from"
-            "{}–{}. ").format(
-        element, bond_element,
-        _distance_range_to_string(min(discrete_bond_lengths),
-                                  max(discrete_bond_lengths)))
 
 
 def _rounded_bond_lengths(data, decimal_places=3):
