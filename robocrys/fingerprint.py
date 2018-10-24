@@ -1,34 +1,38 @@
+from typing import Union, List, Dict, Optional, Tuple, Iterable
+
 import numpy as np
 
 from pymatgen.core.structure import IStructure
 from matminer.featurizers.structure import SiteStatsFingerprint
 
 
-def get_site_fingerprints(structure, as_dict=True,
-                          fingerprint_preset='CrystalNNFingerprint_ops'):
+def get_site_fingerprints(structure: IStructure,
+                          as_dict: bool=True,
+                          preset: str='CrystalNNFingerprint_ops'
+                          ) -> Union[List[Dict[str, int]], np.ndarray]:
     """Gets the fingerprint for all sites in a structure.
 
     Args:
-        structure (Structure): A pymatgen Structure object.
-        as_dict (bool, optional): Whether to return the fingerprints as a
-            dictionary of `{'op': val}`. Defaults to `True`.
-        fingerprint_preset (str, optional): The preset to use when calculating
-            the fingerprint. See the `SiteStatsFingerprint` class in matminer
+        structure: A structure.
+        as_dict: Whether to return the fingerprints as a dictionary of
+            ``{'op': val}``. Defaults to ``True``.
+        preset: The preset to use when calculating the fingerprint. See
+            :class:`matminer.featurizers.structure.SiteStatsFingerprint``
             for more details.
 
     Returns:
-        (list of dict or `np.ndarray`): The fingerprint for all sites in the
-        structure. If `as_dict == True`, the data will be returned as a list
-        of dictionaries containing the order parameters as::
+        The fingerprint for all sites in the structure. If ``as_dict == True``,
+        the data will be returned as a :obj:`list` of :obj:`dict` containing the
+        order parameters as::
 
             [{'op': val}]
 
-        for each site. If `as_dict == False`, the data will be returned as a
-        numpy array, containing the fingerprint for each site as::
+        for each site. If ``as_dict == False``, the data will be returned as a
+        :class:`numoy.ndarray` containing the fingerprint for each site as::
 
             [site_id][op_id]
     """
-    ssf = SiteStatsFingerprint.from_preset(fingerprint_preset, stats=None)
+    ssf = SiteStatsFingerprint.from_preset(preset, stats=None)
 
     # transpose fingerprint from [op_type][site] to [site][op_type]
     site_fingerprints = np.array(ssf.featurize(structure)).T
@@ -40,46 +44,47 @@ def get_site_fingerprints(structure, as_dict=True,
     return site_fingerprints
 
 
-def get_structure_fingerprint(structure,
-                              fingerprint_preset='CrystalNNFingerprint_ops',
-                              stats=('mean', 'std_dev')):
+def get_structure_fingerprint(structure: IStructure,
+                              preset: str='CrystalNNFingerprint_ops',
+                              stats: Optional[Tuple[str]]=('mean', 'std_dev')
+                              ) -> np.ndarray:
     """Gets the fingerprint for a structure.
 
     Args:
-        structure (Structure): A pymatgen `Structure` object.
-        fingerprint_preset (str, optional): The preset to use when calculating
-            the fingerprint. See the `SiteStatsFingerprint` class in matminer
+        structure: A structure
+        preset: The preset to use when calculating the fingerprint. See
+            :class:`matminer.featurizers.structure.SiteStatsFingerprint``
             for more details.
-        stats (str or iterable, optional): The stats to include in fingerprint.
-            See the `SiteStatsFingerprint` class in matminer for more details.
+        stats: The stats to include in fingerprint. See
+            :class:`matminer.featurizers.structure.SiteStatsFingerprint``
+            for more details.
 
     Returns:
-        (numpy.ndarray): The structure fingerprint as a `numpy.ndarray`.
+        The structure fingerprint as a :class:`numpy.ndarray`.
     """
-    ssf = SiteStatsFingerprint.from_preset(fingerprint_preset, stats=stats)
+    ssf = SiteStatsFingerprint.from_preset(preset, stats=stats)
     return np.array(ssf.featurize(structure))
 
 
-def get_fingerprint_distance(structure_a, structure_b):
+def get_fingerprint_distance(structure_a: Union[IStructure, Iterable],
+                             structure_b: Union[IStructure, Iterable]
+                             ) -> np.ndarray:
     """Gets the euclidean distance between the fingerprints of two structures.
 
     Args:
-        structure_a (Structure or list-like): The first structure or
-            fingerprint. Can be provided as a pymatgen `Structure` object or a
-            fingerprint as a list, tuple or `numpy.ndarray`. If provided as a
-            `Structure`, the fingerprint will be calculated first, so generally
-            it is quicker to pre-calculate the fingerprint if comparing against
-            multiple structures in turn.
-        structure_b (Structure or list-like): The second structure or
-            fingerprint. Can be provided as a pymatgen `Structure` object or a
-            fingerprint as a list, tuple or `numpy.ndarray`. If provided as a
-            `Structure`, the fingerprint will be calculated first, so generally
-            it is quicker to pre-calculate the fingerprint if comparing against
-            many structures in turn.
+        structure_a: The first structure or fingerprint. Can be provided as a
+            structure or a fingerprint. If provided as a structure, the
+            fingerprint will be calculated first, so generally it is quicker
+            to pre-calculate the fingerprint if comparing against multiple
+            structures in turn.
+        structure_b: The second structure or fingerprint. Can be provided as a
+            structure or a fingerprint. If provided as a structure, the
+            fingerprint will be calculated first, so generally it is quicker
+            to pre-calculate the fingerprint if comparing against multiple
+            structures in turn.
 
     Returns:
-        (numpy.ndarray): The euclidean distance between fingerprints as a
-        `numpy.ndarray`.
+        The euclidean distance between fingerprints as a :class:`numpy.ndarray`.
     """
     if issubclass(type(structure_a), IStructure):
         fingerprint_a = get_structure_fingerprint(structure_a)

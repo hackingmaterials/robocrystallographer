@@ -36,7 +36,7 @@ class TestFingerprint(unittest.TestCase):
 
         # test preset options
         fingerprint = get_structure_fingerprint(
-            self.fe, fingerprint_preset='CrystalNNFingerprint_cn')
+            self.fe, preset='CrystalNNFingerprint_cn')
         self.assertAlmostEqual(fingerprint[2], 1.98432036e-03)
 
     def test_get_fingerprint_distance(self):

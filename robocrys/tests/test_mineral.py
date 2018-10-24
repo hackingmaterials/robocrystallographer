@@ -72,11 +72,15 @@ class TestMineralMatcher(unittest.TestCase):
 
     def test_get_best_mineral_name(self):
         """Test mineral name matching."""
-        mineral = self.matcher.get_best_mineral_name(self.tin_dioxide)
-        self.assertEqual(mineral, 'Rutile')
+        mineral_data = self.matcher.get_best_mineral_name(self.tin_dioxide)
+        self.assertEqual(mineral_data['mineral'], 'Rutile')
+        self.assertAlmostEqual(mineral_data['distance'], 1.)
+        self.assertEqual(mineral_data['n_species_type_match'], True)
 
-        mineral = self.matcher.get_best_mineral_name(self.double_perov)
-        self.assertEqual(mineral, '(Cubic) Perovskite-derived')
+        mineral_data = self.matcher.get_best_mineral_name(self.double_perov)
+        self.assertEqual(mineral_data['mineral'], '(Cubic) Perovskite')
+        self.assertAlmostEqual(mineral_data['distance'], 0.116971854532)
+        self.assertEqual(mineral_data['n_species_type_match'], False)
 
 
 if __name__ == '__main__':
