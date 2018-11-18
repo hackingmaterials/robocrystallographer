@@ -1,15 +1,15 @@
-import sys
-import logging
-import warnings
 import argparse
-import inflect
+import logging
+import sys
+import warnings
 
+import inflect
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from robocrys import MineralMatcher
-from robocrys import SiteDescriber
-from robocrys.fragment import get_structure_fragments
+from robocrys import SiteAnalyzer
+from robocrys.component import get_structure_fragments
 
 __author__ = "Alex Ganose"
 __version__ = "0.0.1"
@@ -31,7 +31,7 @@ def robocrystallographer(structure):
     fragments = get_structure_fragments(structure)
     dimensionality = max([f['dimensionality'] for f in fragments])
 
-    desc = "The structure is {} dimensional ".format(
+    desc = "The structure is {} dimensional".format(
         en.number_to_words(dimensionality))
 
     if dimensionality < 3:
@@ -44,7 +44,7 @@ def robocrystallographer(structure):
         else:
             shape = "cluster"
 
-        desc += "and consists of {} {} {} oriented in the {} direction. ".format(
+        desc += " and consists of {} {} {} oriented in the {} direction. ".format(
             en.number_to_words(len(comps)), comps[0],
             en.plural(shape, len(comps)),
             tuple(map(int, fragments[0]['orientation'])))
@@ -58,7 +58,7 @@ def robocrystallographer(structure):
     sga = SpacegroupAnalyzer(structure)
     structure = sga.get_symmetrized_structure()
 
-    site_describer = SiteDescriber(structure)
+    site_describer = SiteAnalyzer(structure)
     for i, list_sites in enumerate(structure.equivalent_indices):
         # very rough way of not overloading with information about bond lengths
         bond_lengths = i == len(structure.equivalent_indices) - 1
