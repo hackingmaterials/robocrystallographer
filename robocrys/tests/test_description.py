@@ -62,7 +62,3 @@ class TestDescriptionMethods(unittest.TestCase):
         describer = SiteDescriber(self.ba_n)
         desc = describer.get_site_description(0)
         self.assertNotEqual(desc, None)
-
-
-if __name__ == '__main__':
-    unittest.main()

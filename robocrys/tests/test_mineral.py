@@ -81,7 +81,3 @@ class TestMineralMatcher(unittest.TestCase):
         self.assertEqual(mineral_data['mineral'], '(Cubic) Perovskite')
         self.assertAlmostEqual(mineral_data['distance'], 0.116971854532)
         self.assertEqual(mineral_data['n_species_type_match'], False)
-
-
-if __name__ == '__main__':
-    unittest.main()

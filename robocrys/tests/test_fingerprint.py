@@ -54,7 +54,3 @@ class TestFingerprint(unittest.TestCase):
         finger_1 = get_structure_fingerprint(self.fe)
         dist = get_fingerprint_distance(self.fe, finger_1)
         self.assertAlmostEqual(dist, 0.)
-
-
-if __name__ == '__main__':
-    unittest.main()
