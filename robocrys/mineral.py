@@ -2,7 +2,7 @@
 This module provides tools for matching structures to known mineral class.
 """
 
-from typing import List, Optional
+from typing import List, Optional, Dict, Text, Any
 
 from itertools import islice
 
@@ -33,7 +33,7 @@ class MineralMatcher(object):
         db_file = resource_filename('robocrys', 'mineral_db.json.gz')
         self.mineral_db = load_dataframe_from_json(db_file)
 
-    def get_best_mineral_name(self, structure: IStructure) -> dict:
+    def get_best_mineral_name(self, structure: IStructure) -> Dict[Text, Any]:
         """Gets the "best" mineral name for a structure.
 
         Uses a combination of AFLOW prototype matching and fingerprinting to
@@ -52,7 +52,7 @@ class MineralMatcher(object):
            best one.
 
         Args:
-            structure (Structure): A pymatgen `Structure` object to match.
+            structure (Structure): A pymatgen ``Structure`` object to match.
 
         Return:
             (dict): The mineral name information. Stored as a dict with the keys
@@ -97,7 +97,8 @@ class MineralMatcher(object):
                           structure: IStructure,
                           initial_ltol: float=0.2,
                           initial_stol: float=0.3,
-                          initial_angle_tol: float=5.) -> Optional[List[dict]]:
+                          initial_angle_tol: float=5.
+                          ) -> Optional[List[Dict[Text, Any]]]:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
         Overrides
@@ -112,7 +113,7 @@ class MineralMatcher(object):
         The AFLOW structure prototypes are detailed in reference [aflow]_.
 
         Args:
-            structure: A structure to match.
+            structure: A pymatgen structure to match.
             initial_ltol: The fractional length tolerance.
             initial_stol : The site coordinate tolerance.
             initial_angle_tol: The angle tolerance.
@@ -151,7 +152,8 @@ class MineralMatcher(object):
                                 structure: IStructure,
                                 distance_cutoff: float=0.4,
                                 max_n_matches: Optional[int]=None,
-                                match_n_sp: bool=True) -> Optional[List[dict]]:
+                                match_n_sp: bool=True
+                                ) -> Optional[List[Dict[Text, Any]]]:
         """Gets minerals for a structure by matching to AFLOW fingerprints.
 
         Only AFLOW prototypes with mineral names are considered. The AFLOW
@@ -216,7 +218,7 @@ class MineralMatcher(object):
         self.structure_ = structure
 
 
-def _get_row_data(row: dict) -> dict:
+def _get_row_data(row: Dict) -> Dict[Text, Any]:
     """Utility function to extract mineral data from pandas `DataFrame` row."""
     return {'mineral': row['mineral'], 'distance': row['distance'],
             'structure': row['structure']}

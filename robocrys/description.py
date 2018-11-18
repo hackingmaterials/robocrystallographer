@@ -69,7 +69,7 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
             and order parameter, respectively.
         nn_data: The nearest neighbour data for the site. This should have the
             same format as returned by
-            :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbour_summary`.
+            :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_summary`.
         distorted_tol: The value under which the site geometry will be
             classified as distorted.
         describe_bond_lengths: Whether to provide a description of the
@@ -165,7 +165,7 @@ def get_bond_length_description(element: str, bond_element: str,
                 }
 
             This is the same as output by
-            :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbour_summary`.
+            :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_summary`.
 
     Returns:
         A description of the bond lengths.
