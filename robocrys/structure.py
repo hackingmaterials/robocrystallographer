@@ -1,5 +1,5 @@
 """
-This module defines a function to turn a structure into dict representation.
+This module defines a function to turn a structure into a dict representation.
 """
 
 from typing import Optional, Dict, Text, Any
@@ -69,20 +69,25 @@ class StructureCondenser(object):
 
         dimensionality = max(c['dimensionality'] for c in components)
 
+        structure_data = {
+            'formula': structure.composition.reduced_formula,
+            'spg': sga.get_space_group_symbol(),
+            'mineral': mineral,
+            'dimensionality': dimensionality,
+            'components': []
+        }
+
         sym_inequiv_components = get_sym_inequiv_components(
             sga.get_symmetry_dataset()['equivalent_atoms'], components)
 
         site_analyzer = SiteAnalyzer(bonded_structure, self.symprec)
-
-        structure_data = {'mineral': mineral,
-                          'dimensionality': dimensionality,
-                          'components': []}
 
         for component in sym_inequiv_components:
             component_data = {
                 'dimensionality': component['dimensionality'],
                 'orientation': component['orientation'],
                 'count': component['count'],
+                'formula': component['structure'].composition.reduced_formula,
                 'sites': []
             }
 
