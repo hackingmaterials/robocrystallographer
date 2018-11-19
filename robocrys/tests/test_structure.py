@@ -5,7 +5,7 @@ from robocrys import MineralMatcher
 from pymatgen.core.structure import Structure
 
 from pprint import pprint
-from robocrys.condenser import StructureCondenser
+from robocrys.structure import StructureCondenser
 
 
 class TestStructureCondenser(unittest.TestCase):

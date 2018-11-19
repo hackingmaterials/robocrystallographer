@@ -11,7 +11,7 @@ from pymatgen.core.structure import Structure
 from pprint import pprint
 
 from robocrys.component import get_sym_inequiv_components
-from robocrys.condenser import StructureCondenser
+from robocrys.structure import StructureCondenser
 
 
 class TestComponent(unittest.TestCase):

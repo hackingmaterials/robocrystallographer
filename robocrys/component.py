@@ -30,3 +30,10 @@ def get_sym_inequiv_components(equivalent_atoms: List[int],
         sym_inequiv_components[sym_ids] = component
 
     return list(sym_inequiv_components.values())
+
+
+def filter_molecular_components(components):
+    molecular_components = [c for c in components if c['dimensionality'] == 0]
+    other_components = [c for c in components if c['dimensionality'] != 0]
+
+    return molecular_components, other_components
