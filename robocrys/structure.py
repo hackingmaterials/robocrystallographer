@@ -4,7 +4,7 @@ This module defines a function to turn a structure into a dict representation.
 
 from typing import Optional, Dict, Text, Any
 
-from pymatgen.analysis.dimensionality import get_structure_component_info
+from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -64,7 +64,7 @@ class StructureCondenser(object):
 
         bonded_structure = self.near_neighbors.get_bonded_structure(structure)
 
-        components = get_structure_component_info(
+        components = get_structure_components(
             bonded_structure, inc_orientation=True, inc_site_ids=True,
             inc_molecule_graph=True)
 
@@ -87,7 +87,7 @@ class StructureCondenser(object):
         }
 
         sym_inequiv_components = get_sym_inequiv_components(
-            sga.get_symmetry_dataset()['equivalent_atoms'], components)
+            components, sga.get_symmetry_dataset()['equivalent_atoms'])
 
         site_analyzer = SiteAnalyzer(bonded_structure, self.symprec)
 
