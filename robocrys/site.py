@@ -129,6 +129,15 @@ class SiteAnalyzer(object):
         Returns:
             A summary of the next nearest neighbor information as a dict.
             Formatted as::
+
+                {
+                    'Sn': {
+                        'corner-sharing': {
+                            'n_sites': 8,
+                            'geometries': ('octahedral')
+                        }
+                    }
+                }
         """
         if site_index in self.next_nearest_neighbor_summary:
             return self.next_nearest_neighbor_summary[site_index]
@@ -181,21 +190,23 @@ class SiteAnalyzer(object):
                       'dist': site.dist} for site in nn_sites)
 
     def _get_next_nearest_neighbor_info(
-            self, site_index: int) -> List[Dict[Text, Union[Text, Any]]]:
-        """Gets information about the bonded nearest neighbors.
+            self, site_index: int) -> List[Dict[Text, Any]]:
+        """Gets information about the bonded next nearest neighbors.
 
         Args:
             site_index: The site index (zero based).
 
         Returns:
-            For each site bonded to ``site_index``, returns a :obj:`dict`
-            with the format::
+            A list of the next nearest neighbor information. For each next
+            nearest neighbor site, returns a :obj:`dict` with the format::
 
-                {'element': el, 'sym_id': i, 'dist': distance}
+                {'element': el, 'connectivity': con, 'geometry': geom}
 
-            The ``sym_id`` property is the symmetry index for the site. E.g. if
-            two sites are symmetrically  equivalent then they will have the
-            same ``sym_id``.
+            The ``connectivity`` property is the connectivity type to the
+            next nearest neighbor, e.g. "face-sharing", "corner-sharing", or
+            "edge-sharing". The ``geometry`` property gives the geometry of the
+            next nearest neighbor site. See the ``get_site_geometry`` method for
+            the format of this data.
         """
 
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
