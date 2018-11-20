@@ -10,7 +10,8 @@ from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from robocrys import MineralMatcher, SiteAnalyzer
-from robocrys.component import get_sym_inequiv_components
+from robocrys.component import (get_sym_inequiv_components,
+                                get_reconstructed_structure)
 
 
 class StructureCondenser(object):
@@ -33,7 +34,8 @@ class StructureCondenser(object):
     def __init__(self,
                  near_neighbors: Optional[NearNeighbors]=None,
                  mineral_matcher: Optional[MineralMatcher]=None,
-                 symprec: float=0.01):
+                 symprec: float=0.01,
+                 simplify_molecules: bool=True):
         if not near_neighbors:
             near_neighbors = CrystalNN()
 
@@ -43,6 +45,7 @@ class StructureCondenser(object):
         self.near_neighbors = near_neighbors
         self.mineral_matcher = mineral_matcher
         self.symprec = symprec
+        self.simplify_molecules = simplify_molecules
 
     def condense_structure(self, structure: Structure) -> Dict[Text, Any]:
         """Condenses the structure into a dict representation.
@@ -61,13 +64,19 @@ class StructureCondenser(object):
 
         bonded_structure = self.near_neighbors.get_bonded_structure(structure)
 
-        mineral = self.mineral_matcher.get_best_mineral_name(
-            bonded_structure.structure)
-
         components = get_structure_component_info(
-            bonded_structure, inc_orientation=True, inc_site_ids=True)
+            bonded_structure, inc_orientation=True, inc_site_ids=True,
+            inc_molecule_graph=True)
 
         dimensionality = max(c['dimensionality'] for c in components)
+
+        mineral_structure = get_reconstructed_structure(
+                components, simplify_molecules=self.simplify_molecules)
+
+        mineral_structure.to(filename='test.cif')
+
+        mineral = self.mineral_matcher.get_best_mineral_name(
+            mineral_structure)
 
         structure_data = {
             'formula': structure.composition.reduced_formula,
