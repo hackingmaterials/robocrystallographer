@@ -56,11 +56,11 @@ class MineralMatcher(object):
 
         Return:
             (dict): The mineral name information. Stored as a dict with the keys
-            "mineral", "distance", "n_species_types_match", corresponding to the
+            "type", "distance", "n_species_types_match", corresponding to the
             mineral name, the fingerprint distance between the prototype and
             known mineral, and whether the number of species types in the
             structure matches the number in the known prototype, respectively.
-            If no mineral match is determined, the mineral name will be
+            If no mineral match is determined, the mineral type will be
             ``None``.
         """
         self._set_distance_matrix(structure)  # pre-calculate distance matrix
@@ -76,21 +76,21 @@ class MineralMatcher(object):
         if aflow_matches:
             # mineral db sorted by fingerprint distance so first result always
             # has a smaller distance
-            mineral = aflow_matches[0]['mineral']
+            mineral = aflow_matches[0]['type']
 
         elif fingerprint_matches:
-            mineral = fingerprint_matches[0]['mineral']
+            mineral = fingerprint_matches[0]['type']
             distance = fingerprint_matches[0]['distance']
 
         elif fingerprint_derived:
-            mineral = fingerprint_derived[0]['mineral']
+            mineral = fingerprint_derived[0]['type']
             distance = fingerprint_derived[0]['distance']
             n_species_types_match = False
 
         else:
             mineral = None
 
-        return {'mineral': mineral, 'distance': distance,
+        return {'type': mineral, 'distance': distance,
                 'n_species_type_match': n_species_types_match}
 
     def get_aflow_matches(self,
@@ -120,7 +120,7 @@ class MineralMatcher(object):
 
         Returns:
             A :obj:`list` of :obj:`dict`, sorted by how close the match is, with
-            the keys 'mineral', 'distance', 'structure'. Distance is the
+            the keys 'type', 'distance', 'structure'. Distance is the
             euclidean distance between the structure and prototype fingerprints.
             If no match was found within the tolerances, ``None`` will be
             returned.
@@ -171,7 +171,7 @@ class MineralMatcher(object):
 
         Returns:
             A :obj:`list` of :obj:`dict`, sorted by how close the match is, with
-            the keys 'mineral', 'distance', 'structure'. Distance is the
+            the keys 'type', 'distance', 'structure'. Distance is the
             euclidean distance between the structure and prototype fingerprints.
             If no match was found within the tolerances, ``None`` will be
             returned.
@@ -220,5 +220,5 @@ class MineralMatcher(object):
 
 def _get_row_data(row: Dict) -> Dict[Text, Any]:
     """Utility function to extract mineral data from pandas `DataFrame` row."""
-    return {'mineral': row['mineral'], 'distance': row['distance'],
+    return {'type': row['mineral'], 'distance': row['distance'],
             'structure': row['structure']}
