@@ -73,8 +73,6 @@ class StructureCondenser(object):
         mineral_structure = get_reconstructed_structure(
                 components, simplify_molecules=self.simplify_molecules)
 
-        mineral_structure.to(filename='test.cif')
-
         mineral = self.mineral_matcher.get_best_mineral_name(
             mineral_structure)
 
