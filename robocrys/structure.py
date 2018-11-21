@@ -54,7 +54,7 @@ class StructureCondenser(object):
             structure: A pymatgen structure object.
 
         Returns:
-
+            WIP
         """
         # wrap all site coords into unit cell
         structure.translate_sites(range(structure.num_sites), [1, 1, 1])
@@ -86,8 +86,7 @@ class StructureCondenser(object):
             'components': []
         }
 
-        sym_inequiv_components = get_sym_inequiv_components(
-            components, sga.get_symmetry_dataset()['equivalent_atoms'])
+        sym_inequiv_components = get_sym_inequiv_components(components, sga)
 
         site_analyzer = SiteAnalyzer(bonded_structure, self.symprec)
 
