@@ -1,23 +1,12 @@
-import unittest
-
-from robocrys import MineralMatcher
-
-from pymatgen.core.structure import Structure
-
-from pprint import pprint
 from robocrys.structure import StructureCondenser
+from robocrys.util import RobocrysTest
 
 
-class TestStructureCondenser(unittest.TestCase):
+class TestStructureCondenser(RobocrysTest):
     """Class to test mineral matching functionality."""
 
     def setUp(self):
-        self.tin_dioxide = Structure(
-            [3.24, 0, 0, 0, 4.83, 0, 0, 0, 4.83],
-            ['O', 'O', 'O', 'O', 'Sn', 'Sn'],
-            [[0.5, 0.19, 0.80], [0.5, 0.80, 0.19], [0, 0.30, 0.30],
-             [0, 0.69, 0.69], [0.5, 0.50, 0.50], [0, 0, 0]]
-        )
+        self.tin_dioxide = self.get_structure("tin_dioxide")
         self.tin_dioxide.add_oxidation_state_by_guess()
 
     def test_init(self):

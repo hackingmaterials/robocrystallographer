@@ -1,30 +1,17 @@
 """Currently this is just a backup and should be ignored"""
 
-import unittest
-
 from robocrys import SiteDescriber
+from robocrys.util import RobocrysTest
 
-from pymatgen.core.structure import Structure
 
-
-class TestDescriptionMethods(unittest.TestCase):
+class TestDescriptionMethods(RobocrysTest):
     """Class to test mineral matching functionality."""
 
     def setUp(self):
 
-        self.tin_dioxide = Structure(
-            [3.24, 0, 0, 0, 4.83, 0, 0, 0, 4.84],
-            ['O', 'O', 'O', 'O', 'Sn', 'Sn'],
-            [[0.5, 0.19, 0.80], [0.5, 0.80, 0.19], [0, 0.30, 0.30],
-             [0, 0.69, 0.69], [0.5, 0.50, 0.50], [0, 0, 0]]
-        )
+        self.tin_dioxide = self.get_structure("tin_dioxide")
 
-        self.ba_n = Structure(
-            [4.16, -0.02, 0.94, 1.76, 3.77, 0.94, 0.01, 0.01, 7.34],
-            ['N', 'N', 'N', 'N', 'Ba', 'Ba'],
-            [[0.15, 0.45, 0.45], [0.55, 0.85, 0.05], [0.45, 0.15, 0.95],
-             [0.85, 0.55, 0.55], [0.79, 0.21, 0.25], [0.21, 0.79, 0.75]]
-        )
+        self.ba_n = self.get_structure("BaN2")
 
     def test_get_bond_length_description(self):
         """Check getting bond length descriptions"""

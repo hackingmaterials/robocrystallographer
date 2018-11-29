@@ -1,31 +1,14 @@
-import unittest
-
 from robocrys import MineralMatcher
+from robocrys.util import RobocrysTest
 
-from pymatgen.core.structure import Structure
 
-
-class TestMineralMatcher(unittest.TestCase):
+class TestMineralMatcher(RobocrysTest):
     """Class to test mineral matching functionality."""
 
     def setUp(self):
         self.matcher = MineralMatcher()
-
-        self.tin_dioxide = Structure(
-            [3.24, 0, 0, 0, 4.83, 0, 0, 0, 4.84],
-            ['O', 'O', 'O', 'O', 'Sn', 'Sn'],
-            [[0.5, 0.19, 0.80], [0.5, 0.80, 0.19], [0, 0.30, 0.30],
-             [0, 0.69, 0.69], [0.5, 0.50, 0.50], [0, 0, 0]]
-        )
-
-        self.double_perov = Structure(
-            [-5.75, -5.75, -0.0, -5.75, -0.0, -5.75, 0.0, -5.75, -5.75],
-            ['Cs', 'Cs', 'Ag', 'Bi', 'Br', 'Br', 'Br', 'Br', 'Br', 'Br'],
-            [[0.25, 0.25, 0.25], [0.75, 0.75, 0.75], [0.5, 0.5, 0.5],
-             [-0.0, 0.0, -0.0], [0.75, 0.25, 0.25], [0.75, 0.25, 0.75],
-             [0.75, 0.75, 0.25], [0.25, 0.75, 0.75], [0.25, 0.75, 0.25],
-             [0.25, 0.25, 0.75]]
-        )
+        self.tin_dioxide = self.get_structure("tin_dioxide")
+        self.double_perov = self.get_structure("double_perovskite")
 
     def test_get_aflow_matches(self):
         """Test AFLOW prototype matching."""

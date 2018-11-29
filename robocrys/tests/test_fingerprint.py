@@ -1,20 +1,14 @@
-import unittest
-
-from pymatgen.core.structure import Structure
-
 from robocrys.fingerprint import (get_site_fingerprints,
                                   get_structure_fingerprint,
                                   get_fingerprint_distance)
+from robocrys.util import RobocrysTest
 
 
-class TestFingerprint(unittest.TestCase):
+class TestFingerprint(RobocrysTest):
     """Class to test fingerprint functions."""
 
     def setUp(self):
-        self.fe = Structure(
-            [2.33, 0.0, -0.82, -1.16, 2.01, -0.82, 0.0, 0.0, 2.47], ['Fe'],
-            [[0.0, 0.0, 0.0]]
-        )
+        self.fe = self.get_structure("iron")
 
     def test_get_site_fingerprints(self):
         """Test to check site fingerprinting."""
