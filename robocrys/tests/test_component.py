@@ -5,23 +5,27 @@ from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pymatgen.util.testing import PymatgenTest
 
 from robocrys.component import (get_sym_inequiv_components,
                                 filter_molecular_components,
-                                get_reconstructed_structure)
+                                get_reconstructed_structure,
+                                get_formula_from_components)
 
 from monty.serialization import loadfn
 
+from robocrys.util import RobocrysTest
 
 test_dir = os.path.join(os.path.dirname(__file__))
 
 
-class TestComponent(unittest.TestCase):
+class TestComponent(RobocrysTest):
     """Class to test component related functions."""
 
     def setUp(self):
-        mapi = loadfn(os.path.join(test_dir, 'mapi.json.gz'))
-        self.mapi = CrystalNN().get_bonded_structure(mapi)
+        cnn = CrystalNN()
+
+        self.mapi = cnn.get_bonded_structure(self.get_structure("mapi"))
         self.mapi_components = get_structure_components(
             self.mapi, inc_molecule_graph=True, inc_site_ids=True)
 
@@ -72,3 +76,28 @@ class TestComponent(unittest.TestCase):
                               stol=1e-4, angle_tol=1e-4,
                               ignored_species=['C', 'H', 'N'])
         self.assertTrue(sm.fit(structure, self.mapi.structure))
+
+    def test_get_formula_from_components(self):
+        formula = get_formula_from_components(self.mapi_components)
+        self.assertTrue(formula, "CNH6PbI3")
+
+        # check non-iupac ordering works
+        formula = get_formula_from_components(self.mapi_components,
+                                              iupac_ordering=False)
+        self.assertEqual(formula, "H6CNPbI3")
+
+        # test multiple groups of different numbers of compositions
+        s = CrystalNN().get_bonded_structure(self.get_structure("CuH8CN5Cl3"))
+        comps = get_structure_components(s)
+        formula = get_formula_from_components(comps)
+        self.assertEqual(formula, "(CuCN4HCl)2(NH2)2(H2)3(HCl)4")
+
+        # test putting molecules first
+        s = CrystalNN().get_bonded_structure(self.get_structure("ZrCuH8C2NCl6"))
+        comps = get_structure_components(s)
+        formula = get_formula_from_components(comps, molecules_first=False)
+        self.assertEqual(formula, "ZrCuCl6C2NH8")
+
+        formula = get_formula_from_components(comps, molecules_first=True)
+        self.assertEqual(formula, "C2NH8ZrCuCl6")
+
