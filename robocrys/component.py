@@ -137,7 +137,8 @@ def get_formula_from_components(components: List[Component],
             Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
             Recommendations 2005)". This ordering effectively follows
             the groups and rows of the periodic table, except the
-            Lanthanides, Actanides and hydrogen.
+            Lanthanides, Actanides and hydrogen. If set to None, the elements
+            will be ordered according to the electronegativity values.
 
     Returns:
         The chemical formula.
