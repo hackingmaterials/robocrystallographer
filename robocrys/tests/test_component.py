@@ -10,7 +10,8 @@ from pymatgen.util.testing import PymatgenTest
 from robocrys.component import (get_sym_inequiv_components,
                                 filter_molecular_components,
                                 get_reconstructed_structure,
-                                get_formula_from_components)
+                                get_formula_from_components,
+                                get_formula_inequiv_components)
 
 from monty.serialization import loadfn
 
@@ -43,6 +44,27 @@ class TestComponent(RobocrysTest):
         self.assertEqual(inequiv_comp[1]['count'], 1)
         self.assertEqual(inequiv_comp[1]['inequivalent_ids'],
                          (32, 24, 36))
+
+    def test_get_comp_inequiv_components(self):
+        """Test getting compositionally inequivalent structure components."""
+
+        # print(self.mapi_components)
+        inequiv_comp = get_formula_inequiv_components(
+            self.mapi_components, use_iupac_formula=True)
+
+        # print(inequiv_comp)
+        self.assertEqual(len(inequiv_comp), 2)
+        self.assertEqual(inequiv_comp[0]['count'], 4)
+        self.assertEqual(inequiv_comp[0]['formula'], "CNH6")
+
+        self.assertEqual(inequiv_comp[1]['count'], 4)
+        self.assertEqual(inequiv_comp[1]['formula'], 'PbI3')
+
+        # test non-iupac formula
+        inequiv_comp = get_formula_inequiv_components(
+            self.mapi_components, use_iupac_formula=False)
+        self.assertEqual(inequiv_comp[0]['count'], 4)
+        self.assertEqual(inequiv_comp[0]['formula'], "H6CN")
 
     def test_filter_molecular_components(self):
         """Test filtering of molecular components."""
@@ -83,7 +105,7 @@ class TestComponent(RobocrysTest):
 
         # check non-iupac ordering works
         formula = get_formula_from_components(self.mapi_components,
-                                              iupac_ordering=False)
+                                              use_iupac_formula=False)
         self.assertEqual(formula, "H6CNPbI3")
 
         # test multiple groups of different numbers of compositions

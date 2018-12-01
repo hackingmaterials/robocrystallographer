@@ -28,7 +28,7 @@ def get_sym_inequiv_components(components: List[Component],
             the components.
 
     Returns:
-        A list of the symmetrically inequivalent spacegroups. Any duplicate
+        A list of the symmetrically inequivalent components. Any duplicate
         components will only be returned once. The component objects are in the
         same format is given by
         :obj:`pymatgen.analysis.dimensionality.get_structure_components` but
@@ -57,6 +57,60 @@ def get_sym_inequiv_components(components: List[Component],
         sym_inequiv_components[sym_ids] = component
 
     return list(sym_inequiv_components.values())
+
+
+def get_formula_inequiv_components(components: List[Component],
+                                   use_iupac_formula: bool=True,
+                                   ) -> List[Component]:
+    """Gets and counts the inequivalent components based on their formuula.
+
+    Note that the counting of compounds is different to in
+    ``get_sym_inequiv_equivalent``. I.e. the count is not the number of
+    components with the same formula. For example, the count of the formula
+    "GaAs" in a system with two Ga2As2 components would be 4.
+
+    Args:
+        components: A list of structure components, generated using
+            :obj:`pymatgen.analysis.dimensionality.get_structure_components`,
+            with ``inc_site_ids=True``.
+        use_iupac_formula (bool, optional): Whether to order the
+            formula by the iupac "electronegativity" series, defined in
+            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
+            Recommendations 2005)". This ordering effectively follows
+            the groups and rows of the periodic table, except the
+            Lanthanides, Actanides and hydrogen. If set to None, the elements
+            will be ordered according to the electronegativity values.
+
+    Returns:
+        A list of the compositionally inequivalent components. Any duplicate
+        components will only be returned once. The component objects are in the
+        same format is given by
+        :obj:`pymatgen.analysis.dimensionality.get_structure_components` but
+        have two additional fields:
+
+        - "count" (int): The number of formula units of this component. Note,
+            this is not the number of components with the same formula. For
+            example, the count of the formula "GaAs" in a system with two
+            Ga2As2 components would be 4.
+        - "formula" (list[int]): The reduced formula of the component.
+    """
+    inequiv_components = {}
+
+    for component in components:
+        formula, factor = component['structure'].composition. \
+            get_reduced_formula_and_factor(iupac_ordering=use_iupac_formula)
+
+        # if two components have the same composition we treat them as the same
+        if formula in inequiv_components:
+            inequiv_components[formula]['count'] += factor
+            continue
+
+        component['count'] = factor
+        component['formula'] = formula
+
+        inequiv_components[formula] = component
+
+    return list(inequiv_components.values())
 
 
 def filter_molecular_components(components: List[Component]
@@ -120,7 +174,7 @@ def get_reconstructed_structure(components: List[Component],
 
 def get_formula_from_components(components: List[Component],
                                 molecules_first: bool=False,
-                                iupac_ordering: bool=True) -> Text:
+                                use_iupac_formula: bool=True) -> Text:
     """Reconstructs a chemical formula from structure components.
 
     The chemical formulas for the individual components will be grouped
@@ -132,7 +186,7 @@ def get_formula_from_components(components: List[Component],
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
         molecules_first: Whether to put any molecules (zero-dimensional
             components) at the beginning of the formula.
-        iupac_ordering (bool, optional): Whether to order the
+        use_iupac_formula (bool, optional): Whether to order the
             formula by the iupac "electronegativity" series, defined in
             Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
             Recommendations 2005)". This ordering effectively follows
@@ -143,49 +197,37 @@ def get_formula_from_components(components: List[Component],
     Returns:
         The chemical formula.
     """
-    # first count the number and types of components
-    inequiv_components = {}
-    mol_formulas = []
-    formulas = []
-    for component in components:
-        formula, factor = component['structure'].composition.\
-            get_reduced_formula_and_factor(iupac_ordering=iupac_ordering)
-
-        # if two components have the same composition we treat them as the same
-        if formula in inequiv_components:
-            inequiv_components[formula]['count'] += factor
-            continue
-
-        component['count'] = factor
-        inequiv_components[formula] = component
-
-        if molecules_first and component['dimensionality'] == 0:
-            mol_formulas.append(formula)
-        else:
-            formulas.append(formula)
-
-    def ordering(comp_formula):
+    def order(comp_formula):
         composition = Composition(comp_formula)
-        if iupac_ordering:
+        if use_iupac_formula:
             return (sum([iupac_ordering_dict[get_el_sp(s)]
-                        for s in composition.elements]) /
+                         for s in composition.elements]) /
                     len(composition.elements))
         else:
             return composition.average_electroneg
 
-    formulas = (sorted(mol_formulas, key=ordering) +
-                sorted(formulas, key=ordering))
+    components = get_formula_inequiv_components(
+        components, use_iupac_formula=use_iupac_formula)
+
+    if molecules_first:
+        mol_comps, other_comps = filter_molecular_components(components)
+    else:
+        mol_comps = []
+        other_comps = components
+
+    formulas = (sorted([c['formula'] for c in mol_comps], key=order) +
+                sorted([c['formula'] for c in other_comps], key=order))
 
     # if components include special formulas, then the count can be 0.5
     # therefore if any non integer amounts we can just use a factor of 2
-    all_int = all(v['count'] % 1 == 0 for v in inequiv_components.values())
+    all_int = all(v['count'] % 1 == 0 for v in components)
     prefactor = 1 if all_int else 2
-    form_count_dict = {k: int(v['count'] * prefactor)
-                       for k, v in inequiv_components.items()}
+    form_count_dict = {c['formula']: int(c['count'] * prefactor)
+                       for c in components}
 
     # the following is based on ``pymatgen.core.composition.reduce_formula``
     num_comps = len(formulas)
-    factor = abs(gcd(*(i for i in form_count_dict.values())))
+    factor = abs(gcd(*(form_count_dict.values())))
 
     reduced_form = []
     for i in range(0, num_comps):
@@ -197,3 +239,51 @@ def get_formula_from_components(components: List[Component],
 
     reduced_form = "".join(reduced_form)
     return reduced_form
+
+
+def components_are_heterostructure(components: List[Component]
+                                   ) -> bool:
+    """Determines whether a list of components form a heterostructure.
+
+    Args:
+        components: A list of structure components, generated using
+            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
+
+    Returns:
+        Whether the list of components from a heterostructure.
+    """
+    components = get_formula_inequiv_components(components)
+
+    if len([c for c in components if c['dimensionality'] == 2]):
+        return True
+    else:
+        return False
+
+
+def get_heterostructure_information(components: List[Component]
+                                    ) -> Dict[Text, Any]:
+    """Gets information about the ordering of components in a heterostructure.
+
+    Args:
+        components: A list of structure components, generated using
+            :obj:`pymatgen.analysis.dimensionality.get_structure_components`
+            with ``inc_orientation=True``.
+
+    Returns:
+        WIP
+    """
+    if not components_are_heterostructure(components):
+        raise ValueError("Components do not form a heterostructure.")
+
+    layered_components = [c for c in components if c['dimensionality'] == 2]
+    millers = set(c['orientation'] for c in layered_components)
+
+    if len(millers) != 1:
+        raise ValueError("2D components don't all have the same orientation.")
+
+    start = (0, 0, 0)
+    end = millers.pop()
+
+    data = {}
+    return data
+
