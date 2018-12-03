@@ -35,7 +35,8 @@ setup(
     packages=find_packages(),
     install_requires=['spglib', 'numpy', 'scipy', 'pymatgen>=2017.12.30',
                       'inflect', 'networkx', 'matminer', 'pubchempy', 'monty'],
-    extras_require={'docs': ['sphinx', 'sphinx-argparse']},
+    extras_require={'docs': ['sphinx', 'sphinx-argparse'],
+                    'dev': ['tqdm', 'pybel']},
     package_data={'robocrys': ['mineral_db.json.gz']},
     data_files=['LICENSE', 'requirements_rtd.txt'],
     entry_points={'console_scripts': ['robocrys = robocrys.cli:main']}
