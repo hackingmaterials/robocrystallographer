@@ -1,9 +1,13 @@
 """
 This module implements functions for handling structure components.
 """
+
+import numpy as np
+
 from monty.fractions import gcd
 from typing import List, Dict, Text, Any, Tuple
 
+from pymatgen.analysis.chemenv.utils.coordination_geometry_utils import Plane
 from pymatgen.core.structure import Structure, PeriodicSite
 from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.core.composition import Composition, iupac_ordering_dict
@@ -34,10 +38,10 @@ def get_sym_inequiv_components(components: List[Component],
         :obj:`pymatgen.analysis.dimensionality.get_structure_components` but
         have two additional fields:
 
-        - "count" (int): The number of times this component appears in the
-          structure.
-        - "inequivalent_ids" (list[int]): The site indices of the symmetry
-          inequivalent atoms in the component.
+        - ``"count"`` (:obj:`int`): The number of times this component appears
+            in the structure.
+        - ``"inequivalent_ids"`` (``list[int]``): The site indices of the
+            symmetry inequivalent atoms in the component.
     """
     sym_inequiv_components = {}
     equivalent_atoms = spg_analyzer.get_symmetry_dataset()['equivalent_atoms']
@@ -88,11 +92,11 @@ def get_formula_inequiv_components(components: List[Component],
         :obj:`pymatgen.analysis.dimensionality.get_structure_components` but
         have two additional fields:
 
-        - "count" (int): The number of formula units of this component. Note,
-            this is not the number of components with the same formula. For
-            example, the count of the formula "GaAs" in a system with two
-            Ga2As2 components would be 4.
-        - "formula" (list[int]): The reduced formula of the component.
+        - ``"count"`` (:obj:`int`): The number of formula units of this
+            component. Note, this is not the number of components with the same
+            formula. For example, the count of the formula "GaAs" in a system
+            with two Ga2As2 components would be 4.
+        - ``"formula"`` (``list[int]``): The reduced formula of the component.
     """
     inequiv_components = {}
 
@@ -124,7 +128,6 @@ def filter_molecular_components(components: List[Component]
     Returns:
         The filtered components as a tuple of ``(molecular_components,
         other_components)``.
-
     """
     molecular_components = [c for c in components if c['dimensionality'] == 0]
     other_components = [c for c in components if c['dimensionality'] != 0]
@@ -245,6 +248,9 @@ def components_are_heterostructure(components: List[Component]
                                    ) -> bool:
     """Determines whether a list of components form a heterostructure.
 
+    A heterostructure is defined here as a structure with more than one
+    formula inequivalent 2D component.
+
     Args:
         components: A list of structure components, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
@@ -260,7 +266,8 @@ def components_are_heterostructure(components: List[Component]
         return False
 
 
-def get_heterostructure_information(components: List[Component]
+def get_heterostructure_information(components: List[Component],
+                                    use_iupac_formula: bool=True,
                                     ) -> Dict[Text, Any]:
     """Gets information about the ordering of components in a heterostructure.
 
@@ -268,22 +275,67 @@ def get_heterostructure_information(components: List[Component]
         components: A list of structure components, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`
             with ``inc_orientation=True``.
+        use_iupac_formula (bool, optional): Whether to order the
+            formula by the iupac "electronegativity" series, defined in
+            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
+            Recommendations 2005)". This ordering effectively follows
+            the groups and rows of the periodic table, except the
+            Lanthanides, Actanides and hydrogen. If set to None, the elements
+            will be ordered according to the electronegativity values.
 
     Returns:
-        WIP
+        Information on the heterostructure, as an :obj:`dict` with they keys:
+
+        - ``"ordered_components"`` (``list[component]``): A :obj:`List` of
+            components, ordered as they appear in the heteostructure stacking
+            direction.
+        - ``"repeating_unit"`` (``list[str]``: A :obj:`List` of formulas of the
+            smallest repeating series of components. For example. if the
+            structure consists of A and B components ordered as "A B A B A B",
+            the repeating unit is "A B".
+        - ``"num_repetitions"`` (:obj:`int`): The number of repetitions of the
+            repeating unit that forms the overall structure. For example. if
+            the structure consists of A and B components ordered as
+            "A B A B A B", the number of repetitions is 3.
+        - ``"intercalants"`` (``list[component]``: A :obj:`List` of intercalated
+            components.
     """
     if not components_are_heterostructure(components):
         raise ValueError("Components do not form a heterostructure.")
 
-    layered_components = [c for c in components if c['dimensionality'] == 2]
-    millers = set(c['orientation'] for c in layered_components)
-
+    millers = [c['orientation'] for c in components if c['dimensionality'] == 2]
     if len(millers) != 1:
         raise ValueError("2D components don't all have the same orientation.")
 
-    start = (0, 0, 0)
-    end = millers.pop()
+    cart_miller = components[0]['structure'].lattice.get_cartesian_coords(
+        millers.pop()).tolist()
 
-    data = {}
+    plane = Plane(cart_miller + [0])
+
+    min_distances = [min(plane.distances(c['structure'].cart_coords))
+                     for c in components]
+    ordering = np.argsort(min_distances)
+    ordered_components = [components[x] for x in ordering]
+    ordered_layers = [c for c in ordered_components if c['dimensionality'] == 2]
+    ordered_layers_formula = [
+        c['structure'].composition.get_reduced_formula_and_factor(
+            use_iupac_formula)[0] for c in ordered_layers]
+    num_layer_formulas = len(set(ordered_layers_formula))
+
+    repeating_formula = ordered_layers_formula.copy()
+    num_repetitions = 1
+    for n in range(int(np.floor(len(ordered_layers)/num_layer_formulas)),
+                   0, -1):
+        if (len(ordered_layers) % n == 0 and
+                all([len(set(ordered_layers[i::num_layer_formulas])) == 1
+                     for i in range(n)])):
+            repeating_formula = ordered_layers_formula[:len(ordered_layers)/n]
+            num_repetitions = n
+            break
+
+    intercalants = [c for c in components if c['dimensionality'] < 2]
+    data = {"ordered_components": ordered_components,
+            'intercalants': intercalants,
+            'repeating_unit': repeating_formula,
+            'num_repetitions': num_repetitions}
     return data
-
