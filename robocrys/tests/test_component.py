@@ -1,21 +1,18 @@
 import os
-import unittest
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from pymatgen.util.testing import PymatgenTest
 
+from robocrys.util import RobocrysTest
 from robocrys.component import (get_sym_inequiv_components,
                                 filter_molecular_components,
                                 get_reconstructed_structure,
                                 get_formula_from_components,
-                                get_formula_inequiv_components)
-
-from monty.serialization import loadfn
-
-from robocrys.util import RobocrysTest
+                                get_formula_inequiv_components,
+                                components_are_vdw_heterostructure,
+                                get_vdw_heterostructure_information)
 
 test_dir = os.path.join(os.path.dirname(__file__))
 
@@ -28,7 +25,13 @@ class TestComponent(RobocrysTest):
 
         self.mapi = cnn.get_bonded_structure(self.get_structure("mapi"))
         self.mapi_components = get_structure_components(
-            self.mapi, inc_molecule_graph=True, inc_site_ids=True)
+            self.mapi, inc_molecule_graph=True, inc_site_ids=True,
+            inc_orientation=True)
+
+        self.vdw_hetero = cnn.get_bonded_structure(self.get_structure("MoWS4"))
+        self.vdw_hetero_components = get_structure_components(
+            self.vdw_hetero, inc_molecule_graph=True, inc_site_ids=True,
+            inc_orientation=True)
 
     def test_get_sym_inequiv_components(self):
         """Test getting symmetrically inequivalent structure components."""
@@ -123,3 +126,28 @@ class TestComponent(RobocrysTest):
         formula = get_formula_from_components(comps, molecules_first=True)
         self.assertEqual(formula, "C2NH8ZrCuCl6")
 
+    def test_components_are_vdw_heterostructure(self):
+        result = components_are_vdw_heterostructure(self.vdw_hetero_components)
+        self.assertTrue(result)
+
+        result = components_are_vdw_heterostructure(self.mapi_components)
+        self.assertFalse(result)
+
+    def test_get_vdw_heterostructure_information(self):
+        data = get_vdw_heterostructure_information(self.vdw_hetero_components)
+        self.assertEqual(len(data['ordered_components']), 4)
+        self.assertAlmostEqual(
+            data['ordered_components'][0]['structure'].frac_coords[0][0],
+            0.33330876)
+        self.assertAlmostEqual(
+            data['ordered_components'][3]['structure'].frac_coords[0][0],
+            0.6666924)
+        self.assertEqual(data['repeating_unit'], ['MoS2', 'WS2'])
+        self.assertEqual(data['num_repetitions'], 2)
+        self.assertEqual(data['intercalants'], [])
+
+        # test error catching
+        self.assertRaises(ValueError, get_vdw_heterostructure_information,
+                          self.mapi_components)
+        self.assertRaises(KeyError, get_vdw_heterostructure_information,
+                          get_structure_components(self.vdw_hetero))
