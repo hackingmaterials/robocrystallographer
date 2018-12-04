@@ -8,7 +8,7 @@ TODO: make functions for
  - handle the case where no geometry type is given, just the CN
 """
 
-from typing import Tuple, Dict, Any, Text, Union, List
+from typing import Tuple, Dict, Any, Text, List
 from collections import defaultdict
 
 from pymatgen.analysis.graphs import StructureGraph
