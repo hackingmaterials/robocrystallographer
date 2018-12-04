@@ -14,6 +14,8 @@ from pymatgen.core.composition import Composition, iupac_ordering_dict
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
 
+from robocrys import formula_mapping
+
 Component = Dict[Text, Any]
 
 
@@ -105,6 +107,12 @@ def get_formula_inequiv_components(components: List[Component],
     for component in components:
         formula, factor = component['structure'].composition. \
             get_reduced_formula_and_factor(iupac_ordering=use_iupac_formula)
+
+        # if the formula is known from the list of 100,000 known formulae we
+        # preferentially use that
+        reduced_formula = component['structure'].composition.reduced_formula
+        if reduced_formula in formula_mapping:
+            formula = formula_mapping[reduced_formula]
 
         # if two components have the same composition we treat them as the same
         if formula in inequiv_components:

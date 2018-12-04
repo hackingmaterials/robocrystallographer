@@ -9,9 +9,10 @@ from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from robocrys import MineralMatcher, SiteAnalyzer
+from robocrys import MineralMatcher, SiteAnalyzer, formula_mapping
 from robocrys.component import (get_sym_inequiv_components,
-                                get_reconstructed_structure)
+                                get_reconstructed_structure,
+                                get_formula_from_components)
 
 
 class StructureCondenser(object):
@@ -76,8 +77,16 @@ class StructureCondenser(object):
         mineral = self.mineral_matcher.get_best_mineral_name(
             mineral_structure)
 
+        # if the formula is known from the list of 100,000 known formulae we
+        # preferentially use that, else we reconstruct it from the components.
+        reduced_formula = structure.composition.reduced_formula
+        if reduced_formula in formula_mapping:
+            formula = formula_mapping[reduced_formula]
+        else:
+            formula = get_formula_from_components(components)
+
         structure_data = {
-            'formula': structure.composition.reduced_formula,
+            'formula': formula,
             'spg': sga.get_space_group_symbol(),
             'mineral': mineral,
             'dimensionality': dimensionality,

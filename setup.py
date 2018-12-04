@@ -34,10 +34,11 @@ setup(
     test_suite='nose.collector',
     packages=find_packages(),
     install_requires=['spglib', 'numpy', 'scipy', 'pymatgen>=2017.12.30',
-                      'inflect', 'networkx', 'matminer', 'pubchempy', 'monty'],
+                      'inflect', 'networkx', 'matminer', 'monty', 'pubchempy'],
     extras_require={'docs': ['sphinx', 'sphinx-argparse'],
                     'dev': ['tqdm', 'pybel']},
-    package_data={'robocrys': ['mineral_db.json.gz']},
+    package_data={'robocrys': ['mineral_db.json.gz', 'molecule_db.json.gz',
+                               'formula.json.gz']},
     data_files=['LICENSE', 'requirements_rtd.txt'],
     entry_points={'console_scripts': ['robocrys = robocrys.cli:main']}
     )
