@@ -14,7 +14,7 @@ from pymatgen.core.composition import Composition, iupac_ordering_dict
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
 
-from robocrys import formula_mapping
+from robocrys import common_formulas
 
 Component = Dict[Text, Any]
 
@@ -68,6 +68,7 @@ def get_sym_inequiv_components(components: List[Component],
 
 def get_formula_inequiv_components(components: List[Component],
                                    use_iupac_formula: bool=True,
+                                   use_common_formulas: bool=True
                                    ) -> List[Component]:
     """Gets and counts the inequivalent components based on their formuula.
 
@@ -87,6 +88,9 @@ def get_formula_inequiv_components(components: List[Component],
             the groups and rows of the periodic table, except the
             Lanthanides, Actanides and hydrogen. If set to None, the elements
             will be ordered according to the electronegativity values.
+        use_common_formulas: Whether to use the database of common formulas.
+            The common formula will be used preferentially to the iupac or
+            reduced formula.
 
     Returns:
         A list of the compositionally inequivalent components. Any duplicate
@@ -105,14 +109,9 @@ def get_formula_inequiv_components(components: List[Component],
     inequiv_components = {}
 
     for component in components:
-        formula, factor = component['structure'].composition. \
-            get_reduced_formula_and_factor(iupac_ordering=use_iupac_formula)
-
-        # if the formula is known from the list of 100,000 known formulae we
-        # preferentially use that
-        reduced_formula = component['structure'].composition.reduced_formula
-        if reduced_formula in formula_mapping:
-            formula = formula_mapping[reduced_formula]
+        formula, factor = get_component_formula_and_factor(
+            component, use_iupac_formula=use_iupac_formula,
+            use_common_formulas=use_common_formulas)
 
         # if two components have the same composition we treat them as the same
         if formula in inequiv_components:
@@ -185,9 +184,70 @@ def get_reconstructed_structure(components: List[Component],
     return Structure.from_sites(other_sites + mol_sites)
 
 
+def get_component_formula_and_factor(component: Component,
+                                     use_iupac_formula: bool=True,
+                                     use_common_formulas: bool=True
+                                     ) -> Tuple[Text, int]:
+    """Gets the reduced formula and factor of a single component.
+
+    Args:
+        component: A structure component, generated using
+            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
+        use_iupac_formula (bool, optional): Whether to order the
+            formula by the iupac "electronegativity" series, defined in
+            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
+            Recommendations 2005)". This ordering effectively follows
+            the groups and rows of the periodic table, except the
+            Lanthanides, Actanides and hydrogen. If set to None, the elements
+            will be ordered according to the electronegativity values.
+        use_common_formulas: Whether to use the database of common formulas.
+            The common formula will be used preferentially to the iupac or
+            reduced formula.
+
+    Returns:
+        The formula and factor of the component.
+    """
+    formula, factor = component['structure'].composition. \
+        get_reduced_formula_and_factor(iupac_ordering=use_iupac_formula)
+
+    reduced_formula = component['structure'].composition.reduced_formula
+    if use_common_formulas and reduced_formula in common_formulas:
+        formula = common_formulas[reduced_formula]
+    return formula, factor
+
+
+def get_component_formula(component: Component,
+                          use_iupac_formula: bool=True,
+                          use_common_formulas: bool=True
+                          ) -> Text:
+    """Gets the reduced formula of a single component.
+
+    Args:
+        component: A structure component, generated using
+            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
+        use_iupac_formula (bool, optional): Whether to order the
+            formula by the iupac "electronegativity" series, defined in
+            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
+            Recommendations 2005)". This ordering effectively follows
+            the groups and rows of the periodic table, except the
+            Lanthanides, Actanides and hydrogen. If set to None, the elements
+            will be ordered according to the electronegativity values.
+        use_common_formulas: Whether to use the database of common formulas.
+            The common formula will be used preferentially to the iupac or
+            reduced formula.
+
+    Returns:
+        The formula and factor of the component.
+    """
+    return get_component_formula_and_factor(
+        component, use_iupac_formula=use_iupac_formula,
+        use_common_formulas=use_common_formulas)[0]
+
+
 def get_formula_from_components(components: List[Component],
                                 molecules_first: bool=False,
-                                use_iupac_formula: bool=True) -> Text:
+                                use_iupac_formula: bool=True,
+                                use_common_formulas: bool=True) -> Text:
     """Reconstructs a chemical formula from structure components.
 
     The chemical formulas for the individual components will be grouped
@@ -206,6 +266,9 @@ def get_formula_from_components(components: List[Component],
             the groups and rows of the periodic table, except the
             Lanthanides, Actanides and hydrogen. If set to None, the elements
             will be ordered according to the electronegativity values.
+        use_common_formulas: Whether to use the database of common formulas.
+            The common formula will be used preferentially to the iupac or
+            reduced formula.
 
     Returns:
         The chemical formula.
@@ -220,7 +283,8 @@ def get_formula_from_components(components: List[Component],
             return composition.average_electroneg
 
     components = get_formula_inequiv_components(
-        components, use_iupac_formula=use_iupac_formula)
+        components, use_iupac_formula=use_iupac_formula,
+        use_common_formulas=use_common_formulas)
 
     if molecules_first:
         mol_comps, other_comps = filter_molecular_components(components)
@@ -278,6 +342,7 @@ def components_are_vdw_heterostructure(components: List[Component]
 
 def get_vdw_heterostructure_information(components: List[Component],
                                         use_iupac_formula: bool=True,
+                                        use_common_formulas: bool=True
                                         ) -> Dict[Text, Any]:
     """Gets information about ordering of components in a vdw heterostructure.
 
@@ -292,6 +357,9 @@ def get_vdw_heterostructure_information(components: List[Component],
             the groups and rows of the periodic table, except the
             Lanthanides, Actanides and hydrogen. If set to None, the elements
             will be ordered according to the electronegativity values.
+        use_common_formulas: Whether to use the database of common formulas.
+            The common formula will be used preferentially to the iupac or
+            reduced formula.
 
     Returns:
         Information on the heterostructure, as an :obj:`dict` with they keys:
@@ -344,8 +412,9 @@ def get_vdw_heterostructure_information(components: List[Component],
     # only consider the layered components formulae
     ordered_layers = [c for c in ordered_components if c['dimensionality'] == 2]
     ordered_layers_formula = [
-        c['structure'].composition.get_reduced_formula_and_factor(
-            use_iupac_formula)[0] for c in ordered_layers]
+        get_component_formula(
+            c, use_iupac_formula=use_iupac_formula,
+            use_common_formulas=use_common_formulas) for c in ordered_layers]
     num_layer_formulas = len(set(ordered_layers_formula))
 
     repeating_formula = ordered_layers_formula

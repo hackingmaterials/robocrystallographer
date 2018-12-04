@@ -12,7 +12,9 @@ from robocrys.component import (get_sym_inequiv_components,
                                 get_formula_from_components,
                                 get_formula_inequiv_components,
                                 components_are_vdw_heterostructure,
-                                get_vdw_heterostructure_information)
+                                get_vdw_heterostructure_information,
+                                get_component_formula_and_factor,
+                                get_component_formula)
 
 test_dir = os.path.join(os.path.dirname(__file__))
 
@@ -33,6 +35,58 @@ class TestComponent(RobocrysTest):
             self.vdw_hetero, inc_molecule_graph=True, inc_site_ids=True,
             inc_orientation=True)
 
+    def test_get_component_formula_and_factor(self):
+        """Test getting the component formula and factor."""
+        formula, factor = get_component_formula_and_factor(
+            self.mapi_components[0], use_common_formulas=True,
+            use_iupac_formula=True)
+        self.assertEqual(formula, "CH3NH3")
+        self.assertEqual(factor, 1)
+
+        formula, factor = get_component_formula_and_factor(
+            self.mapi_components[4], use_common_formulas=True,
+            use_iupac_formula=True)
+        self.assertEqual(formula, "PbI3")
+        self.assertEqual(factor, 4)
+
+        # test without common formulas
+        formula, factor = get_component_formula_and_factor(
+            self.mapi_components[0], use_common_formulas=False,
+            use_iupac_formula=True)
+        self.assertEqual(formula, "CNH6")
+        self.assertEqual(factor, 1)
+
+        # test without common formulas and without iupac formula
+        formula, factor = get_component_formula_and_factor(
+            self.mapi_components[0], use_common_formulas=False,
+            use_iupac_formula=False)
+        self.assertEqual(formula, "H6CN")
+        self.assertEqual(factor, 1)
+
+    def test_get_component_formula(self):
+        """Test getting the component formula."""
+        formula = get_component_formula(
+            self.mapi_components[0], use_common_formulas=True,
+            use_iupac_formula=True)
+        self.assertEqual(formula, "CH3NH3")
+
+        formula = get_component_formula(
+            self.mapi_components[4], use_common_formulas=True,
+            use_iupac_formula=True)
+        self.assertEqual(formula, "PbI3")
+
+        # test without common formulas
+        formula = get_component_formula(
+            self.mapi_components[0], use_common_formulas=False,
+            use_iupac_formula=True)
+        self.assertEqual(formula, "CNH6")
+
+        # test without common formulas and without iupac formula
+        formula = get_component_formula(
+            self.mapi_components[0], use_common_formulas=False,
+            use_iupac_formula=False)
+        self.assertEqual(formula, "H6CN")
+
     def test_get_sym_inequiv_components(self):
         """Test getting symmetrically inequivalent structure components."""
         sga = SpacegroupAnalyzer(self.mapi.structure, symprec=0.01)
@@ -51,21 +105,25 @@ class TestComponent(RobocrysTest):
     def test_get_comp_inequiv_components(self):
         """Test getting compositionally inequivalent structure components."""
 
-        # print(self.mapi_components)
-        inequiv_comp = get_formula_inequiv_components(
-            self.mapi_components, use_iupac_formula=True)
+        inequiv_comp = get_formula_inequiv_components(self.mapi_components)
 
-        # print(inequiv_comp)
         self.assertEqual(len(inequiv_comp), 2)
         self.assertEqual(inequiv_comp[0]['count'], 4)
-        self.assertEqual(inequiv_comp[0]['formula'], "CNH6")
-
+        self.assertEqual(inequiv_comp[0]['formula'], "CH3NH3")
         self.assertEqual(inequiv_comp[1]['count'], 4)
         self.assertEqual(inequiv_comp[1]['formula'], 'PbI3')
 
+        # Test not using common_formulas but with iupac formula
+        inequiv_comp = get_formula_inequiv_components(
+            self.mapi_components, use_iupac_formula=True,
+            use_common_formulas=False)
+        self.assertEqual(inequiv_comp[0]['count'], 4)
+        self.assertEqual(inequiv_comp[0]['formula'], "CNH6")
+
         # test non-iupac formula
         inequiv_comp = get_formula_inequiv_components(
-            self.mapi_components, use_iupac_formula=False)
+            self.mapi_components, use_iupac_formula=False,
+            use_common_formulas=False)
         self.assertEqual(inequiv_comp[0]['count'], 4)
         self.assertEqual(inequiv_comp[0]['formula'], "H6CN")
 
@@ -103,28 +161,42 @@ class TestComponent(RobocrysTest):
         self.assertTrue(sm.fit(structure, self.mapi.structure))
 
     def test_get_formula_from_components(self):
-        formula = get_formula_from_components(self.mapi_components)
+        formula = get_formula_from_components(
+            self.mapi_components, use_common_formulas=True,
+            use_iupac_formula=True)
+        self.assertTrue(formula, "CH3NH3PbI3")
+
+        # check not using common formulas
+        formula = get_formula_from_components(
+            self.mapi_components, use_common_formulas=False,
+            use_iupac_formula=True)
         self.assertTrue(formula, "CNH6PbI3")
 
         # check non-iupac ordering works
-        formula = get_formula_from_components(self.mapi_components,
-                                              use_iupac_formula=False)
+        formula = get_formula_from_components(
+            self.mapi_components, use_iupac_formula=False,
+            use_common_formulas=False)
         self.assertEqual(formula, "H6CNPbI3")
 
         # test multiple groups of different numbers of compositions
         s = CrystalNN().get_bonded_structure(self.get_structure("CuH8CN5Cl3"))
         comps = get_structure_components(s)
-        formula = get_formula_from_components(comps)
+        formula = get_formula_from_components(comps, use_iupac_formula=True,
+                                              use_common_formulas=True)
         self.assertEqual(formula, "(CuCN4HCl)2(NH2)2(H2)3(HCl)4")
 
         # test putting molecules first
         s = CrystalNN().get_bonded_structure(self.get_structure("ZrCuH8C2NCl6"))
         comps = get_structure_components(s)
-        formula = get_formula_from_components(comps, molecules_first=False)
-        self.assertEqual(formula, "ZrCuCl6C2NH8")
+        formula = get_formula_from_components(
+            comps, molecules_first=False, use_iupac_formula=True,
+            use_common_formulas=True)
+        self.assertEqual(formula, "ZrCuCl6(CH3)2NH2")
 
-        formula = get_formula_from_components(comps, molecules_first=True)
-        self.assertEqual(formula, "C2NH8ZrCuCl6")
+        formula = get_formula_from_components(
+            comps, molecules_first=True, use_iupac_formula=True,
+            use_common_formulas=True)
+        self.assertEqual(formula, "(CH3)2NH2ZrCuCl6")
 
     def test_components_are_vdw_heterostructure(self):
         result = components_are_vdw_heterostructure(self.vdw_hetero_components)
