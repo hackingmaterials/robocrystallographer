@@ -1,9 +1,19 @@
+"""
+This module implements a script for extracting molecule names and smiles
+from the pubchem database.
+
+It uses multiprocessing to download many files simulatenously.
+
+WARNING: While in progress the disk usage maybe fairly large (several GB).
+"""
+
 import ftplib
 import multiprocessing
 import os
 
 import pybel
-import tqdm
+
+from tqdm import tqdm
 from monty.serialization import dumpfn
 
 key_name_map = {'PUBCHEM_IUPAC_OPENEYE_NAME': 'openeye',
@@ -48,15 +58,10 @@ def process_sdf_file(filename):
 def download_and_process(filename):
     ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
     ftp.login()
-
     ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
-
-    print("downloading {}".format(filename, total_files))
     ftp.retrbinary("RETR " + filename, open(filename, 'wb').write)
 
-    print("processing {}".format(filename))
-    data = process_sdf_file("test_data.sdf.gz")
-
+    data = process_sdf_file(filename)
     os.remove(filename)
 
     return data
@@ -67,12 +72,25 @@ list_ftp.login()
 
 list_ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
 files = [f for f in list_ftp.nlst() if '.sdf.gz' in f]
+files = files[:3]
 total_files = len(files)
 
-files = tqdm.tqdm(files)
+pbar = tqdm(total=total_files)
+results = []
 
-with multiprocessing.Pool(processes=n_proc) as pool:
-    results = pool.map(download_and_process, files)
+
+def update(val):
+    results.append(val)
+    pbar.update()
+
+
+pool = multiprocessing.Pool(n_proc)
+for file in files:
+    pool.apply_async(download_and_process, args=(file, ), callback=update)
+
+pool.close()
+pool.join()
+pbar.close()
 
 smiles_iso_to_can_full = {}
 smiles_can_to_name_full = {}
