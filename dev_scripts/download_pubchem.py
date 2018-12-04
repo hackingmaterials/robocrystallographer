@@ -12,9 +12,11 @@ import pebble
 import os
 
 import pybel
+from pebble import ProcessExpired
 
 from tqdm import tqdm
 from monty.serialization import dumpfn
+from concurrent.futures import TimeoutError
 
 keys = ['PUBCHEM_OPENEYE_CAN_SMILES', 'PUBCHEM_OPENEYE_ISO_SMILES',
         'PUBCHEM_IUPAC_CAS_NAME', 'PUBCHEM_IUPAC_NAME',
@@ -26,7 +28,6 @@ list_ftp.login()
 
 list_ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
 files = [f for f in list_ftp.nlst() if '.sdf.gz' in f]
-files = files[:3]
 total_files = len(files)
 
 pbar = tqdm(total=total_files)
@@ -64,14 +65,14 @@ def task_done(future):
     try:
         result = future.result()
         results.append(result)
-    except TimeoutError as e:
+    except (ProcessExpired, TimeoutError) as e:
         print("File {} timed-out".format(e.args[1]))
     except Exception as e:
         raise e
     pbar.update()
 
 
-with pebble.ProcessPool() as pool:
+with pebble.ProcessPool(max_workers=32) as pool:
     for remote_file_path in files:
         f = pool.schedule(process_sdf_file, args=(remote_file_path, ),
                           timeout=60)
