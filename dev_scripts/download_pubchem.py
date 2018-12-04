@@ -72,7 +72,6 @@ list_ftp.login()
 
 list_ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
 files = [f for f in list_ftp.nlst() if '.sdf.gz' in f]
-files = files[:3]
 total_files = len(files)
 
 pbar = tqdm(total=total_files)
