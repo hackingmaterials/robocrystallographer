@@ -105,3 +105,6 @@ venv.bak/
 
 # pycharm
 .idea
+
+# datafiles
+relevant_formulae.json
