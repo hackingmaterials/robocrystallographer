@@ -8,6 +8,9 @@ import os
 
 from monty.json import MontyDecoder
 from monty.serialization import loadfn
+from pkg_resources import resource_filename
+
+common_formulas = loadfn(resource_filename('robocrys', 'formula_db.json.gz'))
 
 
 class RobocrysTest(unittest.TestCase):

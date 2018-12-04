@@ -10,6 +10,7 @@ import os
 from monty.serialization import loadfn, dumpfn
 
 from pymatgen import Composition
+from pymatgen.core.composition import CompositionError
 
 cwd = os.path.join(os.path.dirname(__file__))
 formulas = loadfn(os.path.join(cwd, "relevant_formulae.json"))
@@ -21,12 +22,29 @@ for formula, mappings in formulas.items():
     try:
         comp = Composition(formula)
 
+        total_occurrences = sum(mappings.values())
         mappings = list(mappings.items())
         mappings = sorted(mappings, key=lambda x: x[1])
 
-        most_seen_repr = mappings[-1][0]
-        new_formula_mapping[comp.reduced_formula] = most_seen_repr
-    except ValueError:
+        most_seen = mappings[-1]
+        prominence = most_seen[1] / total_occurrences
+
+        if prominence < 0.50:
+            raise ValueError("Formula is not used > 50% of the time.")
+
+        # will throw error if not valid comp
+        new_comp = Composition(most_seen[0])
+
+        if new_comp.num_atoms != Composition(comp.reduced_formula).num_atoms:
+            # has the side effect of removing compositions with fractional
+            # occupancies.
+            # we need this as require the factor of both structure to be the
+            # same
+            raise ValueError("Formula and mapping have different num atoms")
+
+        new_formula_mapping[comp.reduced_formula] = most_seen[0]
+
+    except (ValueError, CompositionError):
         skipped += 1
         pass
 
