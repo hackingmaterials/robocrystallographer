@@ -1,18 +1,19 @@
 """
 This module provides functions for extracting information about site geometry.
 
-TODO: make functions for
- - distortion of geometry e.g. elongated along an axis
- - connectivity e.g. edge-sharing
- - maybe have custom descriptions for octahedrons, tetrahedron etc
- - handle the case where no geometry type is given, just the CN
+TODO: distortion of geometry e.g. elongated along an axis
+TODO: maybe have custom descriptions for octahedron, tetrahedron etc
+TODO: handle the case where no geometry type is given, just the CN
 """
+
+import numpy as np
 
 from typing import Tuple, Dict, Any, Text, List
 from collections import defaultdict
 
 from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pymatgen.util.coord import get_angle
 
 from robocrys.fingerprint import get_site_fingerprints
 
@@ -134,7 +135,8 @@ class SiteAnalyzer(object):
                     'Sn': {
                         'corner-sharing': {
                             'n_sites': 8,
-                            'geometries': ('octahedral')
+                            'geometries': ('octahedral', )
+                            'angles': (180.0, )
                         }
                     }
                 }
@@ -158,7 +160,8 @@ class SiteAnalyzer(object):
                 connectivity: {
                     'n_sites': len(sites),
                     'geometries': tuple(set([site['geometry']['type']
-                                             for site in sites]))
+                                             for site in sites])),
+                    'angles': tuple(sum([site['angles'] for site in sites], []))
                 } for connectivity, sites in con_data.items()}
             el_data.update(con_groups)
             data[element] = el_data
@@ -200,14 +203,24 @@ class SiteAnalyzer(object):
             A list of the next nearest neighbor information. For each next
             nearest neighbor site, returns a :obj:`dict` with the format::
 
-                {'element': el, 'connectivity': con, 'geometry': geom}
+                {'element': el, 'connectivity': con, 'geometry': geom,
+                 'angles': angles}
 
             The ``connectivity`` property is the connectivity type to the
             next nearest neighbor, e.g. "face-sharing", "corner-sharing", or
             "edge-sharing". The ``geometry`` property gives the geometry of the
             next nearest neighbor site. See the ``get_site_geometry`` method for
-            the format of this data.
+            the format of this data. The ``angles`` property gives the bond
+            angles between the site and the next nearest neighbour. Returned as
+            a :obj:`list` of :obj:`int`. Multiple bond angles are given when
+            the two sites share more than nearest neighbor (e.g. if they are
+            face-sharing or edge-sharing).
         """
+        def get_coords(a_site_index, a_site_image):
+            return np.asarray(
+                self.bonded_structure.structure.lattice.get_cartesian_coords(
+                    self.bonded_structure.structure.frac_coords[a_site_index] +
+                    a_site_image))
 
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
         next_nn_sites = [site for nn_site in nn_sites for site in
@@ -225,7 +238,8 @@ class SiteAnalyzer(object):
             sites = set((site.index, site.jimage) for site in
                         self.bonded_structure.get_connected_sites(
                             nnn_site.index, jimage=nnn_site.jimage))
-            n_shared_atoms = len(nn_sites_set.intersection(sites))
+            shared_sites = nn_sites_set.intersection(sites)
+            n_shared_atoms = len(shared_sites)
 
             if n_shared_atoms == 1:
                 connectivity = 'corner-sharing'
@@ -234,11 +248,22 @@ class SiteAnalyzer(object):
             else:
                 connectivity = 'face-sharing'
 
+            site_coords = get_coords(site_index, (0, 0, 0))
+            nnn_site_coords = get_coords(nnn_site.index, nnn_site.jimage)
+            nn_site_coords = [get_coords(nn_site_index, nn_site_image)
+                              for nn_site_index, nn_site_image in shared_sites]
+
+            # can't just use Structure.get_angles to calculate angles as it
+            # doesn't take into account the site image
+            angles = [get_angle(site_coords - x, nnn_site_coords - x)
+                      for x in nn_site_coords]
+
             geometry = self.get_site_geometry(nnn_site.index)
 
             next_nn_summary.append({
                 'element': nnn_site.site.specie.name,
                 'connectivity': connectivity,
-                'geometry': geometry})
+                'geometry': geometry,
+                'angles': angles})
 
         return next_nn_summary
