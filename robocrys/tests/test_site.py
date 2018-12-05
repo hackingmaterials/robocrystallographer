@@ -69,7 +69,14 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(len(info), 15)
         self.assertEqual(info[0]["element"], "O")
         self.assertEqual(info[0]["connectivity"], "corner-sharing")
-        self.assertAlmostEqual(info[0]["geometry"]["type"], "trigonal planar")
+        self.assertEqual(info[0]["geometry"]["type"], "trigonal planar")
+
+        info = sa._get_next_nearest_neighbor_info(5)
+        self.assertEqual(info[0]["element"], 'Sn')
+        self.assertEqual(info[0]["connectivity"], "corner-sharing")
+        self.assertEqual(info[0]["geometry"]["type"], "octahedral")
+        self.assertEqual(len(info[0]['angles']), 1)
+        self.assertAlmostEqual(info[0]['angles'][0], 130.16984393647132)
 
         # check different structure
         sa = SiteAnalyzer(self.ba_n)
@@ -78,6 +85,8 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(info[5]["element"], "N")
         self.assertEqual(info[5]["connectivity"], "edge-sharing")
         self.assertAlmostEqual(info[5]["geometry"]["type"], "octahedral")
+        self.assertEqual(len(info[5]['angles']), 2)
+        self.assertAlmostEqual(info[5]['angles'][0], 83.91397867959587)
 
     def test_get_next_nearest_neighbor_summary(self):
         """Check getting next nearest neighbor summary for all neighbors."""
@@ -88,6 +97,9 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(info["Sn"]['corner-sharing']['n_sites'], 8)
         self.assertEqual(info["Sn"]['corner-sharing']['geometries'][0],
                          'octahedral')
+        self.assertAlmostEqual(info["Sn"]["corner-sharing"]["angles"][0],
+                               130.16984393647132)
+        self.assertEqual(len(info["Sn"]["corner-sharing"]["angles"]), 8)
 
     def test_get_nearest_neighbor_summary(self):
         """Check getting nearest neighbor summary for all neighbors."""
