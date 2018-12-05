@@ -6,17 +6,8 @@ It uses multiprocessing to process many files simultaneously.
 
 WARNING: While in progress the disk usage maybe fairly large (100's GB).
 
-Expects a db.json file in the current directory detailing the connection details
-for a mongodb database where the data will be sorted. The json file should
-contain the keys:
-
-- host
-- port
-- username
-- password
-
-The data will be inserted into the "pubchem" collection in the "pubchem"
-database in the mongo database.
+Writes to MongograntStore. The data will be inserted into the "collection"
+collection in the "mp_pubchem" database in the mongo database.
 """
 
 import ftplib
@@ -25,11 +16,12 @@ import os
 
 import pybel
 from pebble import ProcessExpired
-from pymongo import MongoClient
 
 from tqdm import tqdm
-from monty.serialization import loadfn
 from concurrent.futures import TimeoutError
+from maggma.advanced_stores import MongograntStore
+
+tmp_dir = "tmp"
 
 keys = ['PUBCHEM_OPENEYE_CAN_SMILES', 'PUBCHEM_OPENEYE_ISO_SMILES',
         'PUBCHEM_IUPAC_CAS_NAME', 'PUBCHEM_IUPAC_NAME',
@@ -43,11 +35,6 @@ key_map = {'PUBCHEM_OPENEYE_CAN_SMILES': 'smiles_can',
            'PUBCHEM_IUPAC_TRADITIONAL_NAME': 'name_traditional',
            'PUBCHEM_IUPAC_SYSTEMATIC_NAME': 'name_systematic',
            'PUBCHEM_IUPAC_OPENEYE_NAME': 'name_openeye'}
-
-tmp_dir = "tmp"
-
-db_settings = loadfn("db.json")
-db = MongoClient(**db_settings, connect=True)
 
 
 def process_sdf_file(filename):
@@ -69,8 +56,24 @@ def process_sdf_file(filename):
         except KeyError:
             skipped += 1
 
+    coll.insert_many(pubchem_molecules)
+
     os.remove(filename)
-    return pubchem_molecules, skipped
+    return len(pubchem_molecules), skipped
+
+
+def task_done(future):
+    try:
+        result = future.result()
+        total_completed.append(result[0])
+        total_skipped.append(result[1])
+
+    except (ProcessExpired, TimeoutError) as e:
+        print("File {} timed-out".format(e.args[0]))
+    except Exception as e:
+        raise e
+
+    pbar.update()
 
 
 list_ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
@@ -95,24 +98,15 @@ for remote_file in tqdm_files:
         ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
         ftp.retrbinary("RETR " + remote_file, open(file_location, 'wb').write)
 
+mp_pubchem = MongograntStore("rw:knowhere.lbl.gov", "mp_pubchem",
+                             key="pubchem_id")
+mp_pubchem.connect()
+coll = mp_pubchem.collection
+
 # process the downloaded files
 pbar = tqdm(total=total_files)
-all_molecules = []
+total_completed = []
 total_skipped = []
-
-
-def task_done(future):
-    try:
-        result = future.result()
-        all_molecules.extend(result[0])
-        total_skipped.append(result[1])
-
-    except (ProcessExpired, TimeoutError) as e:
-        print("File {} timed-out".format(e.args[0]))
-    except Exception as e:
-        raise e
-    pbar.update()
-
 
 with pebble.ProcessPool(max_workers=32) as pool:
     for downloaded_file in files:
@@ -124,13 +118,7 @@ with pebble.ProcessPool(max_workers=32) as pool:
 pbar.close()
 
 total_skipped = sum(total_skipped)
+total_completed = sum(total_completed)
 
 print("total skipped: {}".format(total_skipped))
-print("total saved: {}".format(len(all_molecules)))
-
-print("writing to database")
-
-pubchem = db.pubchem
-pubchem.insert_many(all_molecules)
-
-print("done")
+print("total saved: {}".format(total_completed))
