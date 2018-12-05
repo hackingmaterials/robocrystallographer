@@ -13,7 +13,9 @@ from robocrys import MineralMatcher, SiteAnalyzer, common_formulas
 from robocrys.component import (get_sym_inequiv_components,
                                 get_reconstructed_structure,
                                 get_formula_from_components,
-                                get_component_formula)
+                                get_component_formula,
+                                components_are_vdw_heterostructure,
+                                get_vdw_heterostructure_information)
 
 
 class StructureCondenser(object):
@@ -106,13 +108,30 @@ class StructureCondenser(object):
             'spg': sga.get_space_group_symbol(),
             'mineral': mineral,
             'dimensionality': dimensionality,
-            'components': []
         }
 
-        sym_inequiv_components = get_sym_inequiv_components(components, sga)
+        hs_info = None
+        is_vdw_heterostructure = components_are_vdw_heterostructure(components)
+        if is_vdw_heterostructure:
+            hs_info = get_vdw_heterostructure_information(
+                components, use_iupac_formula=self.use_iupac_formula,
+                use_common_formulas=self.use_common_formulas)
 
+        structure_data['is_vdw_heterostructure'] = is_vdw_heterostructure
+        structure_data['vdw_heterostructure_info'] = hs_info
+
+        sym_inequiv_components = get_sym_inequiv_components(components, sga)
+        components_data = self.condense_components(sym_inequiv_components,
+                                                   bonded_structure)
+        structure['components'] = components_data
+
+        return structure_data
+
+    def condense_components(self, sym_inequiv_components,
+                            bonded_structure):
         site_analyzer = SiteAnalyzer(bonded_structure, self.symprec)
 
+        condensed_components = []
         for component in sym_inequiv_components:
             formula = get_component_formula(
                 component, use_iupac_formula=self.use_iupac_formula,
@@ -133,12 +152,12 @@ class StructureCondenser(object):
                 nnn_info = site_analyzer.get_next_nearest_neighbor_summary(
                     site_id)
                 component_data['sites'].append({
-                    'element': structure[site_id].specie.name,
+                    'element': bonded_structure.structure[site_id].specie.name,
                     'geometry': geometry,
                     'nn_info': nn_info,
                     'next_nn_info': nnn_info
                 })
 
-            structure_data['components'].append(component_data)
+            condensed_components.append(component_data)
+        return condensed_components
 
-        return structure_data

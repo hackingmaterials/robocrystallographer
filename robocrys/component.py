@@ -342,7 +342,9 @@ def components_are_vdw_heterostructure(components: List[Component]
 
 def get_vdw_heterostructure_information(components: List[Component],
                                         use_iupac_formula: bool=True,
-                                        use_common_formulas: bool=True
+                                        use_common_formulas: bool=True,
+                                        inc_ordered_components: bool=False,
+                                        inc_intercalants: bool=False
                                         ) -> Dict[Text, Any]:
     """Gets information about ordering of components in a vdw heterostructure.
 
@@ -360,13 +362,14 @@ def get_vdw_heterostructure_information(components: List[Component],
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.
+        inc_ordered_components: Whether to return a list of the ordered
+            components. If False, just the component formulas will be returned.
+        inc_intercalants: Whether to return a list of the intercalants. If
+            False, just the intercalant formulas will be returned.
 
     Returns:
         Information on the heterostructure, as an :obj:`dict` with they keys:
 
-        - ``"ordered_components"`` (``list[component]``): A :obj:`List` of
-            components, ordered as they appear in the heteostructure stacking
-            direction.
         - ``"repeating_unit"`` (``list[str]``: A :obj:`List` of formulas of the
             smallest repeating series of components. For example. if the
             structure consists of A and B components ordered as "A B A B A B",
@@ -375,8 +378,13 @@ def get_vdw_heterostructure_information(components: List[Component],
             repeating unit that forms the overall structure. For example. if
             the structure consists of A and B components ordered as
             "A B A B A B", the number of repetitions is 3.
-        - ``"intercalants"`` (``list[component]``: A :obj:`List` of intercalated
-            components.
+        - ``"intercalant_formulas"`` (:obj:`list[str]`): The formulas of the
+            intercalated compounds.
+        - ``"ordered_components"`` (``list[component]``): If
+            ``inc_ordered_components``, a :obj:`List` of components, ordered as
+            they appear in the heteostructure stacking direction.
+        - ``"intercalants"`` (``list[component]``: If ``inc_intercalants``, a
+            :obj:`List` of intercalated components.
     """
     if not components_are_vdw_heterostructure(components):
         raise ValueError("Components do not form a heterostructure.")
@@ -434,8 +442,16 @@ def get_vdw_heterostructure_information(components: List[Component],
             break
 
     intercalants = [c for c in components if c['dimensionality'] < 2]
-    data = {"ordered_components": ordered_components,
-            'intercalants': intercalants,
-            'repeating_unit': repeating_formula,
-            'num_repetitions': num_repetitions}
+    intercalant_formulas = [get_component_formula(c) for c in intercalants]
+
+    data = {'repeating_unit': repeating_formula,
+            'num_repetitions': num_repetitions,
+            'intercalant_formulas': intercalant_formulas}
+
+    if inc_intercalants:
+        data['intercalants'] = intercalants
+
+    if inc_ordered_components:
+        data['ordered_components'] = ordered_components
+
     return data
