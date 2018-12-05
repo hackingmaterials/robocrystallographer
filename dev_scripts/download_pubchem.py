@@ -4,7 +4,7 @@ files from the Pubchem database.
 
 It uses multiprocessing to process many files simultaneously.
 
-WARNING: While in progress the disk usage maybe fairly large (100's GB).
+WARNING: While in progress the disk usage maybe fairly large (~100 GB).
 
 Writes to MongograntStore. The data will be inserted into the "collection"
 collection in the "mp_pubchem" database in the mongo database.
@@ -12,6 +12,7 @@ collection in the "mp_pubchem" database in the mongo database.
 
 import ftplib
 import pebble
+import glob
 import os
 
 import pybel
@@ -38,6 +39,11 @@ key_map = {'PUBCHEM_OPENEYE_CAN_SMILES': 'smiles_can',
 
 
 def process_sdf_file(filename):
+    mp_pubchem = MongograntStore("rw:knowhere.lbl.gov/mp_pubchem", "mp_pubchem",
+                                 key="pubchem_id")
+    mp_pubchem.connect()
+    coll = mp_pubchem.collection
+
     skipped = 0
     pubchem_molecules = []
     for i, mol in enumerate(pybel.readfile('sdf', filename)):
@@ -51,14 +57,14 @@ def process_sdf_file(filename):
                 if key in mol.data:
                     data[key_map[key]] = mol.data[key]
 
-            pubchem_molecules[pubchem_id] = data
+            pubchem_molecules.append(data)
 
         except KeyError:
             skipped += 1
 
     coll.insert_many(pubchem_molecules)
 
-    os.remove(filename)
+    os.rename(filename, filename + ".processed")
     return len(pubchem_molecules), skipped
 
 
@@ -76,42 +82,60 @@ def task_done(future):
     pbar.update()
 
 
-list_ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
-list_ftp.login()
+def download_done(future):
+    result = future.result()
+    download_pbar.update()
 
-list_ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
-files = [f for f in list_ftp.nlst() if '.sdf.gz' in f]
+
+def download_file(remote_file):
+    """First downloads the file to filename.tmp then moves to filename after"""
+    ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
+    ftp.login()
+
+    ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
+    file_location = os.path.join(tmp_dir, remote_file)
+    ftp.retrbinary("RETR " + remote_file, open(file_location + ".tmp", 'wb').write)
+
+    os.rename(file_location + ".tmp", file_location)
+    return True
+
+
+ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
+ftp.login()
+
+ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
+files = [f for f in ftp.nlst() if '.sdf.gz' in f]
 total_files = len(files)
 
-tqdm_files = tqdm(files, desc="download")
+download_pbar = tqdm(total=total_files, desc="download")
 
 if not os.path.exists(tmp_dir):
     os.mkdir(tmp_dir)
 
 # download files if not already present
-for remote_file in tqdm_files:
-    file_location = os.path.join(tmp_dir, remote_file)
+with pebble.ProcessPool(max_workers=10) as pool:
+    for remote_file in files:
+        if (not os.path.exists(os.path.join(tmp_dir, remote_file)) and
+            not os.path.exists(os.path.join(tmp_dir, remote_file + ".processed"))):
+            f = pool.schedule(download_file, args=(remote_file, ))
+            f.add_done_callback(download_done)
+        else:
+            download_pbar.update()
 
-    if not os.path.exists(file_location):
-        ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
-        ftp.login()
-        ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
-        ftp.retrbinary("RETR " + remote_file, open(file_location, 'wb').write)
+download_pbar.close()
 
-mp_pubchem = MongograntStore("rw:knowhere.lbl.gov", "mp_pubchem",
-                             key="pubchem_id")
-mp_pubchem.connect()
-coll = mp_pubchem.collection
+# process downloaded files
+files = glob.glob(os.path.join(tmp_dir, "*.sdf.gz"))
+total_files = len(files)
 
 # process the downloaded files
-pbar = tqdm(total=total_files)
+pbar = tqdm(total=total_files, desc='processing')
 total_completed = []
 total_skipped = []
 
-with pebble.ProcessPool(max_workers=32) as pool:
+with pebble.ProcessPool() as pool:
     for downloaded_file in files:
-        file_location = os.path.join(tmp_dir, downloaded_file)
-        f = pool.schedule(process_sdf_file, args=(file_location, ),
+        f = pool.schedule(process_sdf_file, args=(downloaded_file, ),
                           timeout=480)
         f.add_done_callback(task_done)
 
