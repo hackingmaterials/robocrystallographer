@@ -5,11 +5,9 @@ import warnings
 
 import inflect
 from pymatgen.core.structure import Structure
-from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from robocrys import MineralMatcher
-from robocrys import SiteAnalyzer
-from robocrys.component import get_structure_fragments
+from robocrys import StructureCondenser
+from robocrys.description import Describer
 
 __author__ = "Alex Ganose"
 __version__ = "0.0.1"
@@ -21,49 +19,14 @@ en = inflect.engine()
 
 
 def robocrystallographer(structure):
+    sc = StructureCondenser()
+    describer = Describer()
 
-    mineral_matcher = MineralMatcher()
-    mineral = mineral_matcher.get_best_mineral_name(structure)
+    condensed_structure = sc.condense_structure(structure)
+    description = describer.describe(condensed_structure)
 
-    logging.info("{} is {} structured. ".format(
-        structure.composition.reduced_formula, mineral))
-
-    fragments = get_structure_fragments(structure)
-    dimensionality = max([f['dimensionality'] for f in fragments])
-
-    desc = "The structure is {} dimensional".format(
-        en.number_to_words(dimensionality))
-
-    if dimensionality < 3:
-        comps = [f['structure'].composition.reduced_formula for f in fragments]
-
-        if dimensionality == 2:
-            shape = "sheet"
-        elif dimensionality == 1:
-            shape = "ribbon"
-        else:
-            shape = "cluster"
-
-        desc += " and consists of {} {} {} oriented in the {} direction. ".format(
-            en.number_to_words(len(comps)), comps[0],
-            en.plural(shape, len(comps)),
-            tuple(map(int, fragments[0]['orientation'])))
-
-        desc += "In each {}, ".format(shape)
-    else:
-        desc += ". "
-
-    logging.info(desc)
-
-    sga = SpacegroupAnalyzer(structure)
-    structure = sga.get_symmetrized_structure()
-
-    site_describer = SiteAnalyzer(structure)
-    for i, list_sites in enumerate(structure.equivalent_indices):
-        # very rough way of not overloading with information about bond lengths
-        bond_lengths = i == len(structure.equivalent_indices) - 1
-        logging.info(site_describer.get_site_description(
-            list_sites[0], describe_bond_lengths=bond_lengths))
+    logging.info(description)
+    return description
 
 
 def _get_parser():
@@ -89,6 +52,8 @@ def main():
 
     warnings.filterwarnings("ignore", category=UserWarning,
                             module="pymatgen")
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
 
     try:
         structure = Structure.from_file(args.filename)

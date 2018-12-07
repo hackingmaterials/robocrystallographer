@@ -27,16 +27,36 @@ class MineralMatcher(object):
                G., & Curtarolo, S. (2017), The AFLOW library of crystallographic
                prototypes: part 1. Computational Materials Science, 136,
                S1-S828. doi: 10.1016/j.commatsci.2017.01.017
+    Args:
+        aflow_initial_ltol: The fractional length tolerance used in the AFLOW
+            structure matching.
+        aflow_initial_stol : The site coordinate tolerance used in the AFLOW
+            structure matching.
+        aflow_initial_angle_tol: The angle tolerance used in the AFLOW structure
+            matching.
+        fingerprint_distance_cutoff: Cutoff to determine how similar a match
+            must be to be returned. The distance is measured between the
+            structural fingerprints in euclidean space.
+
     """
 
-    def __init__(self):
+    def __init__(self,
+                 aflow_initial_ltol: float=0.2,
+                 aflow_initial_stol: float=0.3,
+                 aflow_initial_angle_tol: float=5.,
+                 fingerprint_distance_cutoff: float=0.4):
         db_file = resource_filename('robocrys', 'mineral_db.json.gz')
         self.mineral_db = load_dataframe_from_json(db_file)
+        self.aflow_initial_ltol = aflow_initial_ltol
+        self.aflow_initial_stol = aflow_initial_stol
+        self.aflow_initial_angle_tol = aflow_initial_angle_tol
+        self.fingerprint_distance_cutoff = fingerprint_distance_cutoff
 
     def get_best_mineral_name(self, structure: IStructure) -> Dict[Text, Any]:
         """Gets the "best" mineral name for a structure.
 
         Uses a combination of AFLOW prototype matching and fingerprinting to
+        get the best mineral name.
 
         The AFLOW structure prototypes are detailed in reference [aflow]_.
 
@@ -71,11 +91,11 @@ class MineralMatcher(object):
             structure, match_n_sp=False)
 
         n_species_types_match = True
-        distance = 1.
 
         if aflow_matches:
             # mineral db sorted by fingerprint distance so first result always
             # has a smaller distance
+            distance = 0.
             mineral = aflow_matches[0]['type']
 
         elif fingerprint_matches:
@@ -89,15 +109,12 @@ class MineralMatcher(object):
 
         else:
             mineral = None
+            distance = 0.
 
         return {'type': mineral, 'distance': distance,
                 'n_species_type_match': n_species_types_match}
 
-    def get_aflow_matches(self,
-                          structure: IStructure,
-                          initial_ltol: float=0.2,
-                          initial_stol: float=0.3,
-                          initial_angle_tol: float=5.
+    def get_aflow_matches(self, structure: IStructure,
                           ) -> Optional[List[Dict[Text, Any]]]:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
@@ -105,18 +122,15 @@ class MineralMatcher(object):
         :class:`pymatgen.analysis.aflow_prototypes.AflowPrototypeMatcher` to
         only return matches to prototypes with known mineral names.
 
-        Tolerance parameters are passed to a
-        :class:`pymatgen.analysis.structure_matcher.StructureMatcher` object.
-        The tolerances are gradually decreased until only a single match is
-        found (if possible).
+        The AFLOW tolerance parameters (defined in the init method) are passed
+        to a :class:`pymatgen.analysis.structure_matcher.StructureMatcher`
+        object. The tolerances are gradually decreased until only a single match
+        is found (if possible).
 
         The AFLOW structure prototypes are detailed in reference [aflow]_.
 
         Args:
             structure: A pymatgen structure to match.
-            initial_ltol: The fractional length tolerance.
-            initial_stol : The site coordinate tolerance.
-            initial_angle_tol: The angle tolerance.
 
         Returns:
             A :obj:`list` of :obj:`dict`, sorted by how close the match is, with
@@ -141,16 +155,16 @@ class MineralMatcher(object):
                     tags.append(_get_row_data(row))
             return tags
 
-        matcher = AflowPrototypeMatcher(initial_ltol=initial_ltol,
-                                        initial_stol=initial_stol,
-                                        initial_angle_tol=initial_angle_tol)
+        matcher = AflowPrototypeMatcher(
+            initial_ltol=self.aflow_initial_ltol,
+            initial_stol=self.aflow_initial_stol,
+            initial_angle_tol=self.aflow_initial_angle_tol)
         matcher._match_prototype = _match_prototype
 
         return matcher.get_prototypes(structure)
 
     def get_fingerprint_matches(self,
                                 structure: IStructure,
-                                distance_cutoff: float=0.4,
                                 max_n_matches: Optional[int]=None,
                                 match_n_sp: bool=True
                                 ) -> Optional[List[Dict[Text, Any]]]:
@@ -161,9 +175,6 @@ class MineralMatcher(object):
 
         Args:
             structure: A structure to match.
-            distance_cutoff: Cutoff to determine how similar a match must be to
-                be returned. The distance is measured between the structural
-                fingerprints in euclidean space.
             max_n_matches: Maximum number of matches to return. Set to ``None``
                 to return all matches within the cutoff.
             match_n_sp: Whether the structure and mineral must have the same
@@ -190,7 +201,7 @@ class MineralMatcher(object):
 
         minerals = [_get_row_data(row)
                     for i, row in islice(mineral_db.iterrows(), max_n_matches)
-                    if row['distance'] < distance_cutoff]
+                    if row['distance'] < self.fingerprint_distance_cutoff]
 
         return minerals if minerals else None
 

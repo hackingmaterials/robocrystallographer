@@ -2,19 +2,78 @@ import inflect
 
 en = inflect.engine()
 
+dimensionality_to_shape = {2: 'sheet', 1: 'ribbon', 0: 'cluster'}
 
 class Describer(object):
 
-    def __init__(self, data: dict):
+    def __init__(self, distorted_tol: float=0.6):
         """
 
         Args:
-            data:
+            distorted_tol: The value under which the site geometry will be
+                classified as distorted.
         """
-        self.data = data
+        self.distored_tol = distorted_tol
+
+    def describe(self, condensed_structure):
+        description = list()
+
+        try:
+            description.append(get_mineral_description(
+                condensed_structure['mineral'], condensed_structure['formula']))
+        except ValueError as e:
+            raise e
+
+        dimen_desc = " The structure is {} dimensional".format(
+            en.number_to_words(condensed_structure['dimensionality']))
+
+        if len(condensed_structure['components']) == 1:
+            dimen_desc += "."
+
+        else:
+            dimen_desc += " and consists of"
+
+            dimen_component_descriptions = []
+            for comp in condensed_structure['components']:
+                count = en.number_to_words(comp['count'])
+                shape = en.plural(
+                    dimensionality_to_shape[comp['dimensionality']], count)
+                formula = comp['formula']
+
+                desc = " {} {} {}".format(
+                    count, formula, shape)
+
+                if comp['dimensionality'] in [1, 2]:
+                    desc += " oriented in the {} direction".format(
+                        comp['orientation'])
+
+                dimen_component_descriptions.append(desc)
+
+            dimen_desc += en.join(dimen_component_descriptions)
+            dimen_desc += "."
+
+        description.append(dimen_desc)
+
+        #     desc += "In each {}, ".format(shape)
+        # else:
+        #     desc += ". "
+        #
+        # logging.info(desc)
+        #
+        # sga = SpacegroupAnalyzer(structure)
+        # structure = sga.get_symmetrized_structure()
+        #
+        # site_describer = SiteAnalyzer(structure)
+        # for i, list_sites in enumerate(structure.equivalent_indices):
+        #     # very rough way of not overloading with information about bond lengths
+        #     bond_lengths = i == len(structure.equivalent_indices) - 1
+        #     logging.info(site_describer.get_site_description(
+        #         list_sites[0], describe_bond_lengths=bond_lengths))
+
+        return "".join(description)
 
 
-def get_mineral_description(mineral_data: dict, composition: str) -> str:
+def get_mineral_description(mineral_data: dict, formula: str) -> str:
     """Gets the mineral name description.
 
     If the structure is a perfect match for a known prototype (e.g.
@@ -31,26 +90,26 @@ def get_mineral_description(mineral_data: dict, composition: str) -> str:
             known mineral, and whether the number of species types in the
             structure matches the number in the known prototype, respectively.
             If no mineral match, mineral_data will be ``None``.
-        composition: The composition of the structure.
+        formula: The formula of the structure.
 
     Returns:
         (str): The description of the mineral name.
     """
 
-    if not mineral_data['mineral']:
+    if not mineral_data['type']:
         raise ValueError("No mineral name in mineral_data, cannot provide "
                          "description.")
 
-    if not mineral_data['n_species_types_match']:
+    if not mineral_data['n_species_type_match']:
         suffix = "-derived"
     elif mineral_data['distance'] < 1:
         suffix = "-like"
     else:
         suffix = ""
 
-    mineral_name = "{}{}".format(mineral_data['mineral'], suffix)
+    mineral_name = "{}{}".format(mineral_data['type'], suffix)
 
-    desc = "{} is {} structured.".format(composition, mineral_name)
+    desc = "{} is {} structured.".format(formula, mineral_name)
     return desc
 
 

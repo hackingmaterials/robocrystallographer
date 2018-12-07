@@ -88,20 +88,8 @@ class StructureCondenser(object):
 
         dimensionality = max(c['dimensionality'] for c in components)
 
-        mineral_structure = get_reconstructed_structure(
-                components, simplify_molecules=self.simplify_molecules)
-
-        mineral = self.mineral_matcher.get_best_mineral_name(
-            mineral_structure)
-
-        # if the formula is known from the list of 100,000 known formulae we
-        # preferentially use that, else we reconstruct it from the components.
-        reduced_formula = structure.composition.reduced_formula
-        if reduced_formula in common_formulas:
-            formula = common_formulas[reduced_formula]
-        else:
-            formula = get_formula_from_components(
-                components, use_common_formulas=self.use_common_formulas)
+        mineral = self.condense_mineral(structure, components)
+        formula = self.condense_formula(structure, components)
 
         structure_data = {
             'formula': formula,
@@ -123,9 +111,34 @@ class StructureCondenser(object):
         sym_inequiv_components = get_sym_inequiv_components(components, sga)
         components_data = self.condense_components(sym_inequiv_components,
                                                    bonded_structure)
-        structure['components'] = components_data
+        structure_data['components'] = components_data
 
         return structure_data
+
+    def condense_mineral(self, structure, components):
+        mineral = self.mineral_matcher.get_best_mineral_name(structure)
+
+        if not mineral['type']:
+            mineral_structure = get_reconstructed_structure(
+                components, simplify_molecules=self.simplify_molecules)
+            mineral = self.mineral_matcher.get_best_mineral_name(
+                mineral_structure)
+            mineral['simplified'] = True
+        else:
+            mineral['simplified'] = False
+
+        return mineral
+
+    def condense_formula(self, structure, components):
+        # if the formula is known from the list of 100,000 known formulae we
+        # preferentially use that, else we reconstruct it from the components.
+        reduced_formula = structure.composition.reduced_formula
+        if reduced_formula in common_formulas:
+            formula = common_formulas[reduced_formula]
+        else:
+            formula = get_formula_from_components(
+                components, use_common_formulas=self.use_common_formulas)
+        return formula
 
     def condense_components(self, sym_inequiv_components,
                             bonded_structure):
@@ -160,4 +173,3 @@ class StructureCondenser(object):
 
             condensed_components.append(component_data)
         return condensed_components
-

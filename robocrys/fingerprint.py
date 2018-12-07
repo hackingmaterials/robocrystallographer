@@ -51,7 +51,7 @@ def get_structure_fingerprint(structure: IStructure,
     """Gets the fingerprint for a structure.
 
     Args:
-        structure: A structure
+        structure: A structure.
         preset: The preset to use when calculating the fingerprint. See
             :class:`matminer.featurizers.structure.SiteStatsFingerprint``
             for more details.

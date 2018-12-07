@@ -10,7 +10,7 @@ from typing import List, Dict, Text, Any, Tuple
 
 from pymatgen.core.structure import Structure, PeriodicSite
 from pymatgen.core.periodic_table import get_el_sp
-from pymatgen.core.composition import Composition, iupac_ordering_dict
+from pymatgen.core.composition import Composition
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
 
@@ -276,7 +276,7 @@ def get_formula_from_components(components: List[Component],
     def order(comp_formula):
         composition = Composition(comp_formula)
         if use_iupac_formula:
-            return (sum([iupac_ordering_dict[get_el_sp(s)]
+            return (sum([get_el_sp(s).iupac_ordering
                          for s in composition.elements]) /
                     len(composition.elements))
         else:
