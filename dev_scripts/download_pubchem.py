@@ -48,7 +48,7 @@ def process_sdf_file(filename):
     pubchem_molecules = []
     for i, mol in enumerate(pybel.readfile('sdf', filename)):
         try:
-            pubchem_id = mol.data['PUBCHEM_COMPOUND_CID']
+            pubchem_id = int(mol.data['PUBCHEM_COMPOUND_CID'])
             xyz = mol.write(format="xyz")
 
             data = {'pubchem_id': pubchem_id,
