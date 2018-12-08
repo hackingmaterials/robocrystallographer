@@ -2,7 +2,11 @@ import inflect
 
 en = inflect.engine()
 
-dimensionality_to_shape = {2: 'sheet', 1: 'ribbon', 0: 'cluster'}
+dimensionality_to_shape = {3: 'framework',
+                           2: 'sheet',
+                           1: 'ribbon',
+                           0: 'cluster'}
+
 
 class Describer(object):
 
@@ -22,35 +26,12 @@ class Describer(object):
             description.append(get_mineral_description(
                 condensed_structure['mineral'], condensed_structure['formula']))
         except ValueError as e:
-            raise e
+            pass
 
-        dimen_desc = " The structure is {} dimensional".format(
-            en.number_to_words(condensed_structure['dimensionality']))
-
-        if len(condensed_structure['components']) == 1:
-            dimen_desc += "."
-
-        else:
-            dimen_desc += " and consists of"
-
-            dimen_component_descriptions = []
-            for comp in condensed_structure['components']:
-                count = en.number_to_words(comp['count'])
-                shape = en.plural(
-                    dimensionality_to_shape[comp['dimensionality']], count)
-                formula = comp['formula']
-
-                desc = " {} {} {}".format(
-                    count, formula, shape)
-
-                if comp['dimensionality'] in [1, 2]:
-                    desc += " oriented in the {} direction".format(
-                        comp['orientation'])
-
-                dimen_component_descriptions.append(desc)
-
-            dimen_desc += en.join(dimen_component_descriptions)
-            dimen_desc += "."
+        dimen_desc = get_component_dimensionality_description(
+            condensed_structure['dimensionality'],
+            condensed_structure['components'],
+            condensed_structure['n_components'])
 
         description.append(dimen_desc)
 
@@ -65,19 +46,20 @@ class Describer(object):
         #
         # site_describer = SiteAnalyzer(structure)
         # for i, list_sites in enumerate(structure.equivalent_indices):
-        #     # very rough way of not overloading with information about bond lengths
+        #     # very rough way of not overloading with information about bond
+        #     # lengths
         #     bond_lengths = i == len(structure.equivalent_indices) - 1
         #     logging.info(site_describer.get_site_description(
         #         list_sites[0], describe_bond_lengths=bond_lengths))
 
-        return "".join(description)
+        return " ".join(description)
 
 
 def get_mineral_description(mineral_data: dict, formula: str) -> str:
     """Gets the mineral name description.
 
     If the structure is a perfect match for a known prototype (e.g.
-    the distance parameter is 1, the mineral name is the prototype name.
+    the distance parameter is -1, the mineral name is the prototype name.
     If a structure is not a perfect match but similar to a known mineral,
     "-like" will be added to the mineral name. If the structure is a good
     match to a mineral but contains a different number of element types than
@@ -95,14 +77,13 @@ def get_mineral_description(mineral_data: dict, formula: str) -> str:
     Returns:
         (str): The description of the mineral name.
     """
-
+    # TODO: indicated when molecules have been simplified
     if not mineral_data['type']:
-        raise ValueError("No mineral name in mineral_data, cannot provide "
-                         "description.")
+        raise ValueError("No mineral match found, cannot provide description.")
 
     if not mineral_data['n_species_type_match']:
         suffix = "-derived"
-    elif mineral_data['distance'] < 1:
+    elif mineral_data['distance'] >= 0:
         suffix = "-like"
     else:
         suffix = ""
@@ -110,6 +91,39 @@ def get_mineral_description(mineral_data: dict, formula: str) -> str:
     mineral_name = "{}{}".format(mineral_data['type'], suffix)
 
     desc = "{} is {} structured.".format(formula, mineral_name)
+    return desc
+
+
+def get_component_dimensionality_description(dimensionality, component_data,
+                                             n_components):
+    desc = "The structure is {} dimensional".format(
+        en.number_to_words(dimensionality))
+
+    if n_components == 1:
+        desc += "."
+
+    else:
+        desc += " and consists of "
+
+        dimen_component_descriptions = []
+        for comp_dimen, formula_data in component_data.items():
+            for formula, comp in formula_data.items():
+
+                count = en.number_to_words(comp['count'])
+                shape = en.plural(dimensionality_to_shape[comp_dimen], count)
+                comp_desc = "{} {} {}".format(count, formula, shape)
+
+                if comp_dimen in [1, 2]:
+                    orientations = set([c['orientation'] for c in
+                                        comp['sym_inequiv_components']])
+                    dirs = en.plural("direction", len(orientations))
+                    orientations = en.join([o for o in orientations])
+                    comp_desc += " oriented in the {} {}".format(
+                        orientations, dirs)
+
+                dimen_component_descriptions.append(comp_desc)
+
+        desc += en.join(dimen_component_descriptions) + "."
     return desc
 
 

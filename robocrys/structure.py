@@ -1,7 +1,7 @@
 """
 This module defines a function to turn a structure into a dict representation.
 """
-
+from collections import defaultdict
 from typing import Optional, Dict, Text, Any
 
 from pymatgen.analysis.dimensionality import get_structure_components
@@ -9,7 +9,9 @@ from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from robocrys import MineralMatcher, SiteAnalyzer, common_formulas
+from robocrys import common_formulas
+from robocrys.mineral import MineralMatcher
+from robocrys.site import SiteAnalyzer
 from robocrys.component import (get_sym_inequiv_components,
                                 get_reconstructed_structure,
                                 get_formula_from_components,
@@ -88,8 +90,8 @@ class StructureCondenser(object):
 
         dimensionality = max(c['dimensionality'] for c in components)
 
-        mineral = self.condense_mineral(structure, components)
-        formula = self.condense_formula(structure, components)
+        mineral = self._condense_mineral(structure, components)
+        formula = self._condense_formula(structure, components)
 
         structure_data = {
             'formula': formula,
@@ -108,14 +110,14 @@ class StructureCondenser(object):
         structure_data['is_vdw_heterostructure'] = is_vdw_heterostructure
         structure_data['vdw_heterostructure_info'] = hs_info
 
-        sym_inequiv_components = get_sym_inequiv_components(components, sga)
-        components_data = self.condense_components(sym_inequiv_components,
-                                                   bonded_structure)
+        components_data, n_components = self._condense_components(
+            components, bonded_structure, sga)
         structure_data['components'] = components_data
+        structure_data['n_components'] = n_components
 
         return structure_data
 
-    def condense_mineral(self, structure, components):
+    def _condense_mineral(self, structure, components):
         mineral = self.mineral_matcher.get_best_mineral_name(structure)
 
         if not mineral['type']:
@@ -129,7 +131,7 @@ class StructureCondenser(object):
 
         return mineral
 
-    def condense_formula(self, structure, components):
+    def _condense_formula(self, structure, components):
         # if the formula is known from the list of 100,000 known formulae we
         # preferentially use that, else we reconstruct it from the components.
         reduced_formula = structure.composition.reduced_formula
@@ -140,21 +142,23 @@ class StructureCondenser(object):
                 components, use_common_formulas=self.use_common_formulas)
         return formula
 
-    def condense_components(self, sym_inequiv_components,
-                            bonded_structure):
+    def _condense_components(self, components, bonded_structure, sga):
+        sym_inequiv_components = get_sym_inequiv_components(components, sga)
         site_analyzer = SiteAnalyzer(bonded_structure, self.symprec)
 
-        condensed_components = []
+        # defaultdict of defaultdicts
+        cc = defaultdict(lambda: defaultdict(dict))
+        total_components = 0
         for component in sym_inequiv_components:
             formula = get_component_formula(
                 component, use_iupac_formula=self.use_iupac_formula,
                 use_common_formulas=self.use_common_formulas)
+            dimen = component['dimensionality']
+            count = component['count']
 
             component_data = {
-                'dimensionality': component['dimensionality'],
                 'orientation': component['orientation'],
-                'count': component['count'],
-                'formula': formula,
+                'count': count,
                 'sites': []
             }
 
@@ -171,5 +175,16 @@ class StructureCondenser(object):
                     'next_nn_info': nnn_info
                 })
 
-            condensed_components.append(component_data)
-        return condensed_components
+            if dimen in cc and formula in cc[dimen]:
+                cc[dimen][formula]['sym_inequiv_components'].append(
+                    component_data)
+            else:
+                cc[dimen][formula]['sym_inequiv_components'] = [component_data]
+
+            if 'count' in cc[dimen][formula]:
+                cc[dimen][formula]['count'] += count
+            else:
+                cc[dimen][formula]['count'] = count
+
+            total_components += count
+        return cc, total_components

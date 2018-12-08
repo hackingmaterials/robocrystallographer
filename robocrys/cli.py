@@ -1,13 +1,11 @@
 import argparse
-import logging
 import sys
 import warnings
+import logging
 
-import inflect
 from pymatgen.core.structure import Structure
 
-from robocrys import StructureCondenser
-from robocrys.description import Describer
+from robocrys import StructureCondenser, Describer
 
 __author__ = "Alex Ganose"
 __version__ = "0.0.1"
@@ -15,12 +13,16 @@ __maintainer__ = "Alex Ganose"
 __email__ = "aganose@lbl.gov"
 __date__ = "October 12, 2018"
 
-en = inflect.engine()
-
 
 def robocrystallographer(structure):
     sc = StructureCondenser()
     describer = Describer()
+
+    try:
+        print("adding oxidation state")
+        structure.add_oxidation_state_by_guess(max_sites=-80)
+    except ValueError:
+        pass
 
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
@@ -39,11 +41,15 @@ def _get_parser():
 
     parser.add_argument('filename', type=str,
                         help="structure file or mpid")
+
+    # TODO: Options e.g. NN algo, Use fingerprint matching, other mineral
+    # properties
     return parser
 
 
 def main():
     args = _get_parser().parse_args()
+
     logging.basicConfig(filename='robocrys.log', level=logging.INFO,
                         filemode='w', format='%(message)s')
     console = logging.StreamHandler()
@@ -52,7 +58,6 @@ def main():
 
     warnings.filterwarnings("ignore", category=UserWarning,
                             module="pymatgen")
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
     try:

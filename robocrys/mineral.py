@@ -2,14 +2,15 @@
 This module provides tools for matching structures to known mineral class.
 """
 
+import numpy as np
+
 from typing import List, Optional, Dict, Text, Any
-
 from itertools import islice
-
 from pkg_resources import resource_filename
 
 from pymatgen.core.structure import IStructure
 from pymatgen.analysis.aflow_prototypes import AflowPrototypeMatcher
+
 from matminer.utils.io import load_dataframe_from_json
 
 from robocrys.fingerprint import (get_structure_fingerprint,
@@ -34,16 +35,18 @@ class MineralMatcher(object):
             structure matching.
         aflow_initial_angle_tol: The angle tolerance used in the AFLOW structure
             matching.
+        use_fingerprint_matching: Whether to use the fingerprint distance to
+            match minerals.
         fingerprint_distance_cutoff: Cutoff to determine how similar a match
             must be to be returned. The distance is measured between the
             structural fingerprints in euclidean space.
-
     """
 
     def __init__(self,
                  aflow_initial_ltol: float=0.2,
                  aflow_initial_stol: float=0.3,
                  aflow_initial_angle_tol: float=5.,
+                 use_fingerprint_matching: bool=True,
                  fingerprint_distance_cutoff: float=0.4):
         db_file = resource_filename('robocrys', 'mineral_db.json.gz')
         self.mineral_db = load_dataframe_from_json(db_file)
@@ -51,6 +54,7 @@ class MineralMatcher(object):
         self.aflow_initial_stol = aflow_initial_stol
         self.aflow_initial_angle_tol = aflow_initial_angle_tol
         self.fingerprint_distance_cutoff = fingerprint_distance_cutoff
+        self.use_fingerprint_matching = use_fingerprint_matching
 
     def get_best_mineral_name(self, structure: IStructure) -> Dict[Text, Any]:
         """Gets the "best" mineral name for a structure.
@@ -81,35 +85,35 @@ class MineralMatcher(object):
             known mineral, and whether the number of species types in the
             structure matches the number in the known prototype, respectively.
             If no mineral match is determined, the mineral type will be
-            ``None``.
+            ``None``. If an AFLOW match is found, the distance will be set to
+            -1.
         """
         self._set_distance_matrix(structure)  # pre-calculate distance matrix
 
         aflow_matches = self.get_aflow_matches(structure)
+
         fingerprint_matches = self.get_fingerprint_matches(structure)
         fingerprint_derived = self.get_fingerprint_matches(
             structure, match_n_sp=False)
 
+        distance = -1
         n_species_types_match = True
-
         if aflow_matches:
             # mineral db sorted by fingerprint distance so first result always
             # has a smaller distance
-            distance = 0.
             mineral = aflow_matches[0]['type']
 
-        elif fingerprint_matches:
+        elif fingerprint_matches and self.use_fingerprint_matching:
             mineral = fingerprint_matches[0]['type']
             distance = fingerprint_matches[0]['distance']
 
-        elif fingerprint_derived:
+        elif fingerprint_derived and self.use_fingerprint_matching:
             mineral = fingerprint_derived[0]['type']
             distance = fingerprint_derived[0]['distance']
             n_species_types_match = False
 
         else:
             mineral = None
-            distance = 0.
 
         return {'type': mineral, 'distance': distance,
                 'n_species_type_match': n_species_types_match}
@@ -221,6 +225,13 @@ class MineralMatcher(object):
 
         data = self.mineral_db.copy()
         fingerprint = get_structure_fingerprint(structure)
+
+        if np.linalg.norm(fingerprint) < 0.4:
+            # fingerprint is too small for a reasonable match, indicates very
+            # little bonding or small order parameter matches
+            print("hello")
+            fingerprint = get_structure_fingerprint(
+                structure, use_distance_cutoffs=False)
 
         data['distance'] = data['fingerprint'].apply(
             lambda x: get_fingerprint_distance(x, fingerprint))

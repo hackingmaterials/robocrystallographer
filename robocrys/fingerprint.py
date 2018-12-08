@@ -2,6 +2,7 @@ from typing import Union, List, Dict, Optional, Tuple, Iterable
 
 import numpy as np
 
+from matminer.featurizers.site import CrystalNNFingerprint
 from pymatgen.core.structure import IStructure
 from matminer.featurizers.structure import SiteStatsFingerprint
 
@@ -46,7 +47,8 @@ def get_site_fingerprints(structure: IStructure,
 
 def get_structure_fingerprint(structure: IStructure,
                               preset: str='CrystalNNFingerprint_ops',
-                              stats: Optional[Tuple[str]]=('mean', 'std_dev')
+                              stats: Optional[Tuple[str]]=('mean', 'std_dev'),
+                              use_distance_cutoffs: bool=True
                               ) -> np.ndarray:
     """Gets the fingerprint for a structure.
 
@@ -58,11 +60,21 @@ def get_structure_fingerprint(structure: IStructure,
         stats: The stats to include in fingerprint. See
             :class:`matminer.featurizers.structure.SiteStatsFingerprint``
             for more details.
+        use_distance_cutoffs: Whether to use distance cutoffs when calculating
+            the structure fingerprint.
 
     Returns:
         The structure fingerprint as a :class:`numpy.ndarray`.
     """
-    ssf = SiteStatsFingerprint.from_preset(preset, stats=stats)
+    # don't use SiteStatsFingerprint as we need to pass in distance_cutoffs
+    # param
+    if use_distance_cutoffs:
+        ssf = SiteStatsFingerprint(
+            CrystalNNFingerprint.from_preset("ops", cation_anion=False))
+    else:
+        ssf = SiteStatsFingerprint(
+            CrystalNNFingerprint.from_preset("ops", cation_anion=False,
+                                             distance_cutoffs=None))
     return np.array(ssf.featurize(structure))
 
 

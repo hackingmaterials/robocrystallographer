@@ -3,6 +3,7 @@ Common test support for robocrystallographer test scripts.
 """
 
 from __future__ import unicode_literals
+
 import unittest
 import os
 
