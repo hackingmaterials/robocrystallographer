@@ -6,15 +6,14 @@ TODO: maybe have custom descriptions for octahedron, tetrahedron etc
 TODO: handle the case where no geometry type is given, just the CN
 """
 
-import numpy as np
-
-from typing import Tuple, Dict, Any, Text, List
 from collections import defaultdict
+from typing import Tuple, Dict, Any, Text, List
+
+import numpy as np
 
 from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.coord import get_angle
-
 from robocrys.fingerprint import get_site_fingerprints
 
 
@@ -31,7 +30,7 @@ class SiteAnalyzer(object):
             sites are symmetrically equivalent.
     """
 
-    def __init__(self, bonded_structure: StructureGraph, symprec: float=0.01):
+    def __init__(self, bonded_structure: StructureGraph, symprec: float = 0.01):
         self.bonded_structure = bonded_structure
         self.site_fingerprints = get_site_fingerprints(
             bonded_structure.structure)
@@ -111,11 +110,11 @@ class SiteAnalyzer(object):
         data = {}
         for element, sym_data in grouped_nn.items():
             n_sites = sum([len(sites) for sites in sym_data.values()])
-            sym_groups = tuple({
-                'n_sites': len(sites),
-                'sym_id': sym_id,
-                'dists': [x['dist'] for x in sites]
-            } for sym_id, sites in sym_data.items())
+            sym_groups = tuple(
+                {'n_sites': len(sites),
+                 'sym_id': sym_id,
+                 'dists': [x['dist'] for x in sites]
+                 } for sym_id, sites in sym_data.items())
             data[element] = {'n_sites': n_sites, 'sym_groups': sym_groups}
 
         return data
@@ -216,6 +215,7 @@ class SiteAnalyzer(object):
             the two sites share more than nearest neighbor (e.g. if they are
             face-sharing or edge-sharing).
         """
+
         def get_coords(a_site_index, a_site_image):
             return np.asarray(
                 self.bonded_structure.structure.lattice.get_cartesian_coords(

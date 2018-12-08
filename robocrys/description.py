@@ -1,16 +1,16 @@
+from typing import Dict, Text, Any
+
 import inflect
 
 en = inflect.engine()
 
-dimensionality_to_shape = {3: 'framework',
-                           2: 'sheet',
-                           1: 'ribbon',
-                           0: 'cluster'}
+dimensionality_to_shape = {
+    3: 'framework', 2: 'sheet', 1: 'ribbon', 0: 'cluster'}
 
 
 class Describer(object):
 
-    def __init__(self, distorted_tol: float=0.6):
+    def __init__(self, distorted_tol: float = 0.6):
         """
 
         Args:
@@ -19,20 +19,19 @@ class Describer(object):
         """
         self.distored_tol = distorted_tol
 
-    def describe(self, condensed_structure):
+    def describe(self, condensed_structure) -> str:
         description = list()
 
-        try:
-            description.append(get_mineral_description(
-                condensed_structure['mineral'], condensed_structure['formula']))
-        except ValueError as e:
-            pass
+        mineral_desc = get_mineral_description(
+            condensed_structure['mineral'], condensed_structure['formula'],
+            condensed_structure['spg_symbol'],
+            condensed_structure['crystal_system'])
+        description.append(mineral_desc)
 
         dimen_desc = get_component_dimensionality_description(
             condensed_structure['dimensionality'],
             condensed_structure['components'],
             condensed_structure['n_components'])
-
         description.append(dimen_desc)
 
         #     desc += "In each {}, ".format(shape)
@@ -55,8 +54,9 @@ class Describer(object):
         return " ".join(description)
 
 
-def get_mineral_description(mineral_data: dict, formula: str) -> str:
-    """Gets the mineral name description.
+def get_mineral_description(mineral_data: dict, formula: str,
+                            spg_symbol: str, crystal_system: str) -> str:
+    """Gets the mineral name and space group description.
 
     If the structure is a perfect match for a known prototype (e.g.
     the distance parameter is -1, the mineral name is the prototype name.
@@ -73,30 +73,37 @@ def get_mineral_description(mineral_data: dict, formula: str) -> str:
             structure matches the number in the known prototype, respectively.
             If no mineral match, mineral_data will be ``None``.
         formula: The formula of the structure.
+        spg_symbol: The space group symbol.
+        crystal_system: The crystal system.
 
     Returns:
-        (str): The description of the mineral name.
+        The description of the mineral name.
     """
     # TODO: indicated when molecules have been simplified
-    if not mineral_data['type']:
-        raise ValueError("No mineral match found, cannot provide description.")
+    if mineral_data['type']:
+        if not mineral_data['n_species_type_match']:
+            suffix = "-derived"
+        elif mineral_data['distance'] >= 0:
+            suffix = "-like"
+        else:
+            suffix = ""
 
-    if not mineral_data['n_species_type_match']:
-        suffix = "-derived"
-    elif mineral_data['distance'] >= 0:
-        suffix = "-like"
+        mineral_name = "{}{}".format(mineral_data['type'], suffix)
+
+        desc = "{} is {} structured and".format(formula, mineral_name)
+
     else:
-        suffix = ""
+        desc = "{}".format(formula)
 
-    mineral_name = "{}{}".format(mineral_data['type'], suffix)
-
-    desc = "{} is {} structured.".format(formula, mineral_name)
+    desc += " crystallizes in the {} {} space group.".format(
+        crystal_system, spg_symbol)
     return desc
 
 
-def get_component_dimensionality_description(dimensionality, component_data,
-                                             n_components):
-    desc = "The structure is {} dimensional".format(
+def get_component_dimensionality_description(dimensionality: int,
+                                             component_data: Dict[int, Any],
+                                             n_components: int):
+    desc = "The structure is {}-dimensional".format(
         en.number_to_words(dimensionality))
 
     if n_components == 1:
@@ -128,8 +135,8 @@ def get_component_dimensionality_description(dimensionality, component_data,
 
 
 def get_site_description(element: str, geometry: dict, nn_data: dict,
-                         distorted_tol: float=0.6,
-                         describe_bond_lengths: bool=True) -> str:
+                         distorted_tol: float = 0.6,
+                         describe_bond_lengths: bool = True) -> Text:
     """Gets a description of the geometry of a site.
 
     If the site likeness (order parameter) is less than ``distorted_tol``,
@@ -149,7 +156,7 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
             bond lengths. Defaults to ``True``.
 
     Returns:
-        (str): A description of the geometry and bonding of a site.
+        A description of the geometry and bonding of a site.
     """
     geometry = geometry['geometry']
     geometry += '' if geometry['likeness'] > distorted_tol else 'distorted'

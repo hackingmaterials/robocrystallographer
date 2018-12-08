@@ -4,22 +4,21 @@ This module implments a class to match molecule graphs to molecule names.
 Some functionality relies on having a working internet connection.
 """
 
-from pkg_resources import resource_filename
 from typing import Optional, Text, Tuple
 
-from pymatgen import loadfn
-from pymatgen.io.babel import BabelMolAdaptor
-from pymatgen.analysis.graphs import MoleculeGraph
-
+from pkg_resources import resource_filename
 from pubchempy import get_compounds
+
+from pymatgen import loadfn
+from pymatgen.analysis.graphs import MoleculeGraph
+from pymatgen.io.babel import BabelMolAdaptor
 
 
 class MoleculeNamer(object):
-
     name_sources = ('traditional', 'cas', 'iupac')
 
-    def __init__(self, use_online_pubchem: bool=False,
-                 name_preference: Tuple[Text]=name_sources):
+    def __init__(self, use_online_pubchem: bool = False,
+                 name_preference: Tuple[Text] = name_sources):
         """Class to match molecule graphs to known molecule names.
 
         Args:

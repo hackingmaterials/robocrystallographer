@@ -2,17 +2,15 @@
 This module provides tools for matching structures to known mineral class.
 """
 
-import numpy as np
-
-from typing import List, Optional, Dict, Text, Any
 from itertools import islice
+from typing import List, Optional, Dict, Text, Any
+
+import numpy as np
+from matminer.utils.io import load_dataframe_from_json
 from pkg_resources import resource_filename
 
-from pymatgen.core.structure import IStructure
 from pymatgen.analysis.aflow_prototypes import AflowPrototypeMatcher
-
-from matminer.utils.io import load_dataframe_from_json
-
+from pymatgen.core.structure import IStructure
 from robocrys.fingerprint import (get_structure_fingerprint,
                                   get_fingerprint_distance)
 
@@ -43,11 +41,11 @@ class MineralMatcher(object):
     """
 
     def __init__(self,
-                 aflow_initial_ltol: float=0.2,
-                 aflow_initial_stol: float=0.3,
-                 aflow_initial_angle_tol: float=5.,
-                 use_fingerprint_matching: bool=True,
-                 fingerprint_distance_cutoff: float=0.4):
+                 aflow_initial_ltol: float = 0.2,
+                 aflow_initial_stol: float = 0.3,
+                 aflow_initial_angle_tol: float = 5.,
+                 use_fingerprint_matching: bool = True,
+                 fingerprint_distance_cutoff: float = 0.4):
         db_file = resource_filename('robocrys', 'mineral_db.json.gz')
         self.mineral_db = load_dataframe_from_json(db_file)
         self.aflow_initial_ltol = aflow_initial_ltol
@@ -169,8 +167,8 @@ class MineralMatcher(object):
 
     def get_fingerprint_matches(self,
                                 structure: IStructure,
-                                max_n_matches: Optional[int]=None,
-                                match_n_sp: bool=True
+                                max_n_matches: Optional[int] = None,
+                                match_n_sp: bool = True
                                 ) -> Optional[List[Dict[Text, Any]]]:
         """Gets minerals for a structure by matching to AFLOW fingerprints.
 
@@ -210,7 +208,7 @@ class MineralMatcher(object):
         return minerals if minerals else None
 
     def _set_distance_matrix(self, structure: IStructure):
-        """Utility function to calculate distance between structure and minerals.
+        """Utility func to calculate distance between structure and minerals.
 
         First checks to see if the distances have already been calculated for
         the structure. If not, the distances are stored in a class variable

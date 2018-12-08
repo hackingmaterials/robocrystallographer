@@ -1,15 +1,15 @@
 from typing import Union, List, Dict, Optional, Tuple, Iterable
 
 import numpy as np
-
 from matminer.featurizers.site import CrystalNNFingerprint
-from pymatgen.core.structure import IStructure
 from matminer.featurizers.structure import SiteStatsFingerprint
+
+from pymatgen.core.structure import IStructure
 
 
 def get_site_fingerprints(structure: IStructure,
-                          as_dict: bool=True,
-                          preset: str='CrystalNNFingerprint_ops'
+                          as_dict: bool = True,
+                          preset: str = 'CrystalNNFingerprint_ops'
                           ) -> Union[List[Dict[str, int]], np.ndarray]:
     """Gets the fingerprint for all sites in a structure.
 
@@ -46,9 +46,9 @@ def get_site_fingerprints(structure: IStructure,
 
 
 def get_structure_fingerprint(structure: IStructure,
-                              preset: str='CrystalNNFingerprint_ops',
-                              stats: Optional[Tuple[str]]=('mean', 'std_dev'),
-                              use_distance_cutoffs: bool=True
+                              preset: str = 'CrystalNNFingerprint_ops',
+                              stats: Optional[Tuple[str]] = ('mean', 'std_dev'),
+                              use_distance_cutoffs: bool = True
                               ) -> np.ndarray:
     """Gets the fingerprint for a structure.
 

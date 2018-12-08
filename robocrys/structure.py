@@ -8,16 +8,15 @@ from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-
 from robocrys import common_formulas
-from robocrys.mineral import MineralMatcher
-from robocrys.site import SiteAnalyzer
 from robocrys.component import (get_sym_inequiv_components,
                                 get_reconstructed_structure,
                                 get_formula_from_components,
                                 get_component_formula,
                                 components_are_vdw_heterostructure,
                                 get_vdw_heterostructure_information)
+from robocrys.mineral import MineralMatcher
+from robocrys.site import SiteAnalyzer
 
 
 class StructureCondenser(object):
@@ -48,12 +47,12 @@ class StructureCondenser(object):
     """
 
     def __init__(self,
-                 near_neighbors: Optional[NearNeighbors]=None,
-                 mineral_matcher: Optional[MineralMatcher]=None,
-                 symprec: float=0.01,
-                 simplify_molecules: bool=True,
-                 use_iupac_formula: bool=True,
-                 use_common_formulas: bool=True):
+                 near_neighbors: Optional[NearNeighbors] = None,
+                 mineral_matcher: Optional[MineralMatcher] = None,
+                 symprec: float = 0.01,
+                 simplify_molecules: bool = True,
+                 use_iupac_formula: bool = True,
+                 use_common_formulas: bool = True):
         if not near_neighbors:
             near_neighbors = CrystalNN()
 
@@ -95,7 +94,8 @@ class StructureCondenser(object):
 
         structure_data = {
             'formula': formula,
-            'spg': sga.get_space_group_symbol(),
+            'spg_symbol': sga.get_space_group_symbol(),
+            'crystal_system': sga.get_crystal_system(),
             'mineral': mineral,
             'dimensionality': dimensionality,
         }

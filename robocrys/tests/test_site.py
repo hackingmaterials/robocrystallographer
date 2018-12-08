@@ -1,7 +1,6 @@
-
 from pymatgen.analysis.local_env import CrystalNN
 
-from robocrys import SiteAnalyzer
+from robocrys.site import SiteAnalyzer
 from robocrys.util import RobocrysTest
 
 

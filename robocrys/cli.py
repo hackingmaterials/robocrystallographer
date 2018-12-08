@@ -67,8 +67,13 @@ def main():
         from pymatgen.ext.matproj import MPRester
 
         mpr = MPRester()
-        structure = mpr.get_entry_by_material_id(
-            args.filename, inc_structure='final').structure
+
+        try:
+            structure = mpr.get_entry_by_material_id(
+                args.filename, inc_structure='final').structure
+        except IndexError:
+            logging.error("filename or mp-id not found.")
+            sys.exit()
 
     robocrystallographer(structure)
 

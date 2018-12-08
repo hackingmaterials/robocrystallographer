@@ -2,10 +2,9 @@ import os
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
-from robocrys.molecule import MoleculeNamer
-
-from robocrys.util import RobocrysTest
 from robocrys.component import filter_molecular_components
+from robocrys.molecule import MoleculeNamer
+from robocrys.util import RobocrysTest
 
 test_dir = os.path.join(os.path.dirname(__file__))
 
@@ -47,6 +46,6 @@ class TestMoleculeMatcher(RobocrysTest):
         self.assertEqual(name, "methylammonium")
 
         # test iupac naming source
-        mn = MoleculeNamer(name_preference=("iupac", ))
+        mn = MoleculeNamer(name_preference=("iupac",))
         name = mn.get_name_from_molecule_graph(self.methylammonium)
         self.assertEqual(name, "methylazanium")

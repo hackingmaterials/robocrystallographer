@@ -2,18 +2,16 @@
 This module implements functions for handling structure components.
 """
 from copy import deepcopy
-
-import numpy as np
-
-from monty.fractions import gcd
 from typing import List, Dict, Text, Any, Tuple
 
-from pymatgen.core.structure import Structure, PeriodicSite
-from pymatgen.core.periodic_table import get_el_sp
+import numpy as np
+from monty.fractions import gcd
+
 from pymatgen.core.composition import Composition
+from pymatgen.core.periodic_table import get_el_sp
+from pymatgen.core.structure import Structure, PeriodicSite
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
-
 from robocrys import common_formulas
 
 Component = Dict[Text, Any]
@@ -67,8 +65,8 @@ def get_sym_inequiv_components(components: List[Component],
 
 
 def get_formula_inequiv_components(components: List[Component],
-                                   use_iupac_formula: bool=True,
-                                   use_common_formulas: bool=True
+                                   use_iupac_formula: bool = True,
+                                   use_common_formulas: bool = True
                                    ) -> List[Component]:
     """Gets and counts the inequivalent components based on their formuula.
 
@@ -128,7 +126,7 @@ def get_formula_inequiv_components(components: List[Component],
 
 def filter_molecular_components(components: List[Component]
                                 ) -> Tuple[List[Component], List[Component]]:
-    """Separate a list of components into molecular and non-molecular components.
+    """Separate list of components into molecular and non-molecular components.
 
     Args:
         components: A list of structure components, generated using
@@ -145,7 +143,7 @@ def filter_molecular_components(components: List[Component]
 
 
 def get_reconstructed_structure(components: List[Component],
-                                simplify_molecules: bool=True
+                                simplify_molecules: bool = True
                                 ) -> Structure:
     """Reconstructs a structure from a list of components.
 
@@ -185,8 +183,8 @@ def get_reconstructed_structure(components: List[Component],
 
 
 def get_component_formula_and_factor(component: Component,
-                                     use_iupac_formula: bool=True,
-                                     use_common_formulas: bool=True
+                                     use_iupac_formula: bool = True,
+                                     use_common_formulas: bool = True
                                      ) -> Tuple[Text, int]:
     """Gets the reduced formula and factor of a single component.
 
@@ -217,8 +215,8 @@ def get_component_formula_and_factor(component: Component,
 
 
 def get_component_formula(component: Component,
-                          use_iupac_formula: bool=True,
-                          use_common_formulas: bool=True
+                          use_iupac_formula: bool = True,
+                          use_common_formulas: bool = True
                           ) -> Text:
     """Gets the reduced formula of a single component.
 
@@ -245,9 +243,9 @@ def get_component_formula(component: Component,
 
 
 def get_formula_from_components(components: List[Component],
-                                molecules_first: bool=False,
-                                use_iupac_formula: bool=True,
-                                use_common_formulas: bool=True) -> Text:
+                                molecules_first: bool = False,
+                                use_iupac_formula: bool = True,
+                                use_common_formulas: bool = True) -> Text:
     """Reconstructs a chemical formula from structure components.
 
     The chemical formulas for the individual components will be grouped
@@ -273,6 +271,7 @@ def get_formula_from_components(components: List[Component],
     Returns:
         The chemical formula.
     """
+
     def order(comp_formula):
         composition = Composition(comp_formula)
         if use_iupac_formula:
@@ -341,10 +340,10 @@ def components_are_vdw_heterostructure(components: List[Component]
 
 
 def get_vdw_heterostructure_information(components: List[Component],
-                                        use_iupac_formula: bool=True,
-                                        use_common_formulas: bool=True,
-                                        inc_ordered_components: bool=False,
-                                        inc_intercalants: bool=False
+                                        use_iupac_formula: bool = True,
+                                        use_common_formulas: bool = True,
+                                        inc_ordered_components: bool = False,
+                                        inc_intercalants: bool = False
                                         ) -> Dict[Text, Any]:
     """Gets information about ordering of components in a vdw heterostructure.
 
@@ -432,12 +431,12 @@ def get_vdw_heterostructure_information(components: List[Component],
     # number of repetitions that can occur. To avoid unnecessary work we start
     # from this number of repetitions and move to 1 repetition (e.g. no
     # repetition)
-    max_repetitions = int(np.floor(len(ordered_layers)/num_layer_formulas))
+    max_repetitions = int(np.floor(len(ordered_layers) / num_layer_formulas))
     for n in range(max_repetitions, 0, -1):
         if (all([len(set(ordered_layers_formula[i::num_layer_formulas])) == 1
                  for i in range(n)]) and len(ordered_layers) % n == 0):
             repeating_formula = ordered_layers_formula[
-                                :int(len(ordered_layers)/n)]
+                                :int(len(ordered_layers) / n)]
             num_repetitions = n
             break
 

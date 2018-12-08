@@ -1,6 +1,6 @@
 """Currently this is just a backup and should be ignored"""
 
-from robocrys import SiteDescriber
+from robocrys.site import SiteDescriber
 from robocrys.util import RobocrysTest
 
 
@@ -8,7 +8,6 @@ class TestDescriptionMethods(RobocrysTest):
     """Class to test mineral matching functionality."""
 
     def setUp(self):
-
         self.tin_dioxide = self.get_structure("tin_dioxide")
 
         self.ba_n = self.get_structure("BaN2")
