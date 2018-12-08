@@ -66,8 +66,9 @@ def get_structure_fingerprint(structure: IStructure,
     Returns:
         The structure fingerprint as a :class:`numpy.ndarray`.
     """
-    # don't use SiteStatsFingerprint as we need to pass in distance_cutoffs
-    # param
+    # TODO: Add distance_cutoff option to matminer so we can user preset arg
+    # currently don't use SiteStatsFingerprint as we need to pass in
+    # distance_cutoffs param
     if use_distance_cutoffs:
         ssf = SiteStatsFingerprint(
             CrystalNNFingerprint.from_preset("ops", cation_anion=False))
