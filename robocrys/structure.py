@@ -23,6 +23,8 @@ class StructureCondenser(object):
     """Class to transform a structure into an intermediate dict representation.
 
     Args:
+        force_conventional_cell: Whether to always use the convention cell
+            representation of the structure.
         near_neighbors: A ``NearNeighbors`` instance used to calculate the
             bonding in the structure. For example, one of
             :class:`pymatgen.analysis.local_env.CrystalNN`,
@@ -47,6 +49,7 @@ class StructureCondenser(object):
     """
 
     def __init__(self,
+                 force_conventional_cell: bool = False,
                  near_neighbors: Optional[NearNeighbors] = None,
                  mineral_matcher: Optional[MineralMatcher] = None,
                  symprec: float = 0.01,
@@ -59,6 +62,7 @@ class StructureCondenser(object):
         if not mineral_matcher:
             mineral_matcher = MineralMatcher()
 
+        self.force_conventional_cell = force_conventional_cell
         self.near_neighbors = near_neighbors
         self.mineral_matcher = mineral_matcher
         self.symprec = symprec
@@ -79,7 +83,10 @@ class StructureCondenser(object):
         structure.translate_sites(range(structure.num_sites), [1, 1, 1])
 
         sga = SpacegroupAnalyzer(structure, symprec=self.symprec)
-        structure = sga.get_symmetrized_structure()
+        if self.force_conventional_cell:
+            structure = sga.get_conventional_standard_structure()
+        else:
+            structure = sga.get_symmetrized_structure()
 
         bonded_structure = self.near_neighbors.get_bonded_structure(structure)
 

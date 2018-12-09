@@ -15,7 +15,7 @@ __date__ = "October 12, 2018"
 
 
 def robocrystallographer(structure):
-    sc = StructureCondenser()
+    sc = StructureCondenser(force_conventional_cell=True)
     describer = Describer()
 
     try:
@@ -43,7 +43,7 @@ def _get_parser():
                         help="structure file or mpid")
 
     # TODO: Options e.g. NN algo, Use fingerprint matching, other mineral
-    # properties
+    # properties, force conv_cell
     return parser
 
 
