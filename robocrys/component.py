@@ -4,17 +4,135 @@ This module implements functions for handling structure components.
 from copy import deepcopy
 from typing import List, Dict, Text, Any, Tuple
 
+import networkx as nx
 import numpy as np
 from monty.fractions import gcd
 
+from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.core.composition import Composition
 from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.core.structure import Structure, PeriodicSite
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
 from robocrys import common_formulas
+from robocrys.fingerprint import get_structure_fingerprint
 
 Component = Dict[Text, Any]
+
+
+def get_structure_inequiv_components(components: List[Component],
+                                     use_structure_graph: bool = False,
+                                     fingerprint_tol: int = 0.01
+                                     ) -> List[Component]:
+    """Gets and counts the structurally inequivalent components.
+
+    Supports matching through StructureMatcher or by a combined structure graph/
+    site fingerprint approach. For the latter method, the component data has to
+    have been generated with ``inc_graph=True``.
+
+    Args:
+        components: A list of structure components, generated using
+            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
+            If ``use_structure_graph=True``, the components should be generated
+            with ``inc_graph=True``.
+        use_structure_graph: Whether to use the bonding graph and site
+            fingerprints to determine if components are structurally equivalent.
+            If ``False``,
+            :obj:`pymatgen.analysis.structure_matcher.StructureMatcher` will be
+            used to compare the components.
+        fingerprint_tol: The fingerprint tolerance to determine whether two
+            components have a matching fingerprint. This option is ignored if
+            ``use_structure_graph=False``.
+
+    Returns:
+        A list of the structurally inequivalent components. Any duplicate
+        components will only be returned once. The component objects are in the
+        same format is given by
+        :obj:`pymatgen.analysis.dimensionality.get_structure_components` but
+        have an additional field:
+
+        - ``"count"`` (:obj:`int`): The number of times this component appears
+            in the structure.
+    """
+    components = deepcopy(components)
+
+    for component in components:
+        component['count'] = 1
+
+    if use_structure_graph:
+        # check fingerprints match and components are isomorphic.
+        fingerprints = [get_structure_fingerprint(c['structure'])
+                        for c in components]
+
+        seen_components = [components[0]]
+        seen_fingers = [fingerprints[0]]
+        for component, fingerprint in zip(components[1:], fingerprints[1:]):
+            graph_match = [components_are_isomorphic(component, c)
+                           for c in seen_components]
+            finger_match = [np.linalg.norm(fingerprint - c) < fingerprint_tol
+                            for c in seen_fingers]
+            structure_match = [i and f for i, f in
+                               zip(graph_match, finger_match)]
+
+            if any(structure_match):
+                # there should only ever be a single match so we take index of
+                # the first match and increment the component count
+                loc = np.where(structure_match)[0][0]
+                seen_components[loc]['count'] += 1
+            else:
+                seen_components.append(component)
+                seen_fingers.append(fingerprint)
+
+    else:
+        sm = StructureMatcher()
+        seen_components = [components[0]]
+
+        for component in components[1:]:
+            structure_match = [sm.fit(component['structure'], c['structure'])
+                               for c in seen_components]
+            if any(structure_match):
+                # there should only ever be a single match so we take index of
+                # the first match and increment the component count
+                loc = np.where(structure_match)[0][0]
+                seen_components[loc]['count'] += 1
+            else:
+                seen_components.append(component)
+
+    return seen_components
+
+
+def components_are_isomorphic(component_a: Component,
+                              component_b: Component,
+                              use_weights: bool = False):
+    """Determines whether the graphs of two components are isomorphic.
+
+    Only takes into account graph connectivity and not local geometry (e.g. bond
+    angles and distances).
+
+    Component data has to have been generated with ``inc_graph=True``.
+
+    Args:
+        component_a: The first component.
+        component_b: The second component.
+        use_weights: Whether to use the graph edge weights in comparing graphs.
+
+    Returns:
+        Whether the components are isomorphic.
+    """
+
+    # copied from StructureGraph.subgraphs_as_molecules
+    def node_match(n1, n2):
+        return n1['specie'] == n2['specie']
+
+    def edge_match(e1, e2):
+        if use_weights:
+            return e1['weight'] == e2['weight']
+        else:
+            return True
+
+    return nx.is_isomorphic(
+        component_a['graph'], component_b['graph'],
+        node_match=node_match, edge_match=edge_match)
 
 
 def get_sym_inequiv_components(components: List[Component],
