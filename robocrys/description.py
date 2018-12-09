@@ -2,6 +2,8 @@ from typing import Dict, Text, Any
 
 import inflect
 
+from robocrys.component import Component
+
 en = inflect.engine()
 
 dimensionality_to_shape = {
@@ -10,7 +12,10 @@ dimensionality_to_shape = {
 
 class Describer(object):
 
-    def __init__(self, distorted_tol: float = 0.6):
+    def __init__(self, distorted_tol: float = 0.6,
+                 describe_mineral: bool = True,
+                 describe_component_dimensionaly: bool = True,
+                 describe_components: bool = True):
         """
 
         Args:
@@ -18,38 +23,32 @@ class Describer(object):
                 classified as distorted.
         """
         self.distored_tol = distorted_tol
+        self.describe_mineral = describe_mineral
+        self.describe_component_dimensionality = describe_component_dimensionaly
+        self.describe_components = describe_components
 
     def describe(self, condensed_structure) -> str:
         description = list()
 
-        mineral_desc = get_mineral_description(
-            condensed_structure['mineral'], condensed_structure['formula'],
-            condensed_structure['spg_symbol'],
-            condensed_structure['crystal_system'])
-        description.append(mineral_desc)
+        if self.describe_mineral:
+            mineral_desc = get_mineral_description(
+                condensed_structure['mineral'], condensed_structure['formula'],
+                condensed_structure['spg_symbol'],
+                condensed_structure['crystal_system'])
+            description.append(mineral_desc)
 
-        dimen_desc = get_component_dimensionality_description(
-            condensed_structure['dimensionality'],
-            condensed_structure['components'],
-            condensed_structure['n_components'])
-        description.append(dimen_desc)
+        if self.describe_component_dimensionality:
+            dimen_desc = get_component_dimensionality_description(
+                condensed_structure['dimensionality'],
+                condensed_structure['components'],
+                condensed_structure['n_components'])
+            description.append(dimen_desc)
 
-        #     desc += "In each {}, ".format(shape)
-        # else:
-        #     desc += ". "
-        #
-        # logging.info(desc)
-        #
-        # sga = SpacegroupAnalyzer(structure)
-        # structure = sga.get_symmetrized_structure()
-        #
-        # site_describer = SiteAnalyzer(structure)
-        # for i, list_sites in enumerate(structure.equivalent_indices):
-        #     # very rough way of not overloading with information about bond
-        #     # lengths
-        #     bond_lengths = i == len(structure.equivalent_indices) - 1
-        #     logging.info(site_describer.get_site_description(
-        #         list_sites[0], describe_bond_lengths=bond_lengths))
+        if self.describe_components:
+            comp_descs = get_component_descriptions(
+                condensed_structure['components'],
+                condensed_structure['n_components'])
+            description.append(comp_descs)
 
         return " ".join(description)
 
@@ -79,7 +78,7 @@ def get_mineral_description(mineral_data: dict, formula: str,
     Returns:
         The description of the mineral name.
     """
-    # TODO: indicated when molecules have been simplified
+    # TODO: indicate when molecules have been simplified
     if mineral_data['type']:
         if not mineral_data['n_species_type_match']:
             suffix = "-derived"
@@ -132,6 +131,61 @@ def get_component_dimensionality_description(dimensionality: int,
 
         desc += en.join(dimen_component_descriptions) + "."
     return desc
+
+
+def get_component_descriptions(component_data: Dict[int, Any],
+                               n_components: int):
+    desc = []
+    if n_components == 1:
+        # very messy way of getting the only component out of a nested
+        # dict series where we don't know any of the keys in advance.
+        comp = list(list(component_data.values())[0].values())[0][
+            'sym_inequiv_components'][0]
+        desc.append(get_component_description(comp))
+
+    else:
+        dimen_component_descriptions = []
+        for comp_dimen, formula_data in component_data.items():
+            for formula, comp in formula_data.items():
+                count = en.number_to_words(comp['count'])
+                prefix = "the" if count == 1 else "each"
+                shape = dimensionality_to_shape[comp_dimen]
+                comp_desc = "In {} {} {}".format(prefix, formula, shape)
+
+                if comp_dimen in [1, 2]:
+                    orientations = set([c['orientation'] for c in
+                                        comp['sym_inequiv_components']])
+                    dirs = en.plural("direction", len(orientations))
+                    orientations = en.join([o for o in orientations])
+                    comp_desc += " oriented in the {} {}".format(
+                        orientations, dirs)
+
+                dimen_component_descriptions.append(comp_desc)
+
+        desc += en.join(dimen_component_descriptions) + "."
+    return desc
+
+
+def get_component_description(component: Component):
+    pass
+
+
+# desc += "In each {}, ".format(shape)
+# else:
+#     desc += ". "
+#
+# logging.info(desc)
+#
+# sga = SpacegroupAnalyzer(structure)
+# structure = sga.get_symmetrized_structure()
+#
+# site_describer = SiteAnalyzer(structure)
+# for i, list_sites in enumerate(structure.equivalent_indices):
+#     # very rough way of not overloading with information about bond
+#     # lengths
+#     bond_lengths = i == len(structure.equivalent_indices) - 1
+#     logging.info(site_describer.get_site_description(
+#         list_sites[0], describe_bond_lengths=bond_lengths))
 
 
 def get_site_description(element: str, geometry: dict, nn_data: dict,
