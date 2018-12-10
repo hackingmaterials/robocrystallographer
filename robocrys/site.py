@@ -7,7 +7,7 @@ TODO: handle the case where no geometry type is given, just the CN
 """
 import copy
 from collections import defaultdict
-from typing import Tuple, Dict, Any, Text, List
+from typing import Tuple, Dict, Any, List
 
 import numpy as np
 
@@ -50,7 +50,7 @@ class SiteAnalyzer(object):
         else:
             self.equivalent_sites = self._calculate_equivalent_sites()
 
-    def get_site_geometry(self, site_index: int) -> Dict[Text, Any]:
+    def get_site_geometry(self, site_index: int) -> Dict[str, Any]:
         """Gets the bonding geometry of a site.
 
         For example, "octahedral" or "square-planar".
@@ -79,7 +79,7 @@ class SiteAnalyzer(object):
 
     def get_nearest_neighbor_summary(self, site_index: int,
                                      split_into_groups: bool = True
-                                     ) -> Dict[Text, Any]:
+                                     ) -> Dict[str, Any]:
         """Gets a summary of all the nearest neighbors to a site.
 
         Args:
@@ -154,7 +154,7 @@ class SiteAnalyzer(object):
         return data
 
     def get_next_nearest_neighbor_summary(self, site_index: int
-                                          ) -> Dict[Text, Any]:
+                                          ) -> Dict[str, Any]:
         """Gets a summary of the next nearest neighbor connectivity.
 
         Args:
@@ -220,7 +220,7 @@ class SiteAnalyzer(object):
 
     def _get_nearest_neighbor_info(self, site_index: int,
                                    inc_inequiv_id: bool = True
-                                   ) -> Tuple[Dict[Text, Any]]:
+                                   ) -> Tuple[Dict[str, Any]]:
         """Gets information about the bonded nearest neighbors.
 
         Args:
@@ -252,7 +252,7 @@ class SiteAnalyzer(object):
                           'dist': site.dist} for site in nn_sites)
 
     def _get_next_nearest_neighbor_info(
-            self, site_index: int) -> List[Dict[Text, Any]]:
+            self, site_index: int) -> List[Dict[str, Any]]:
         """Gets information about the bonded next nearest neighbors.
 
         Args:
