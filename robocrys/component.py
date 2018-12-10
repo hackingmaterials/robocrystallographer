@@ -2,7 +2,7 @@
 This module implements functions for handling structure components.
 """
 from copy import deepcopy
-from typing import List, Dict, Text, Any, Tuple
+from typing import List, Dict, Any, Tuple
 
 import networkx as nx
 import numpy as np
@@ -17,7 +17,7 @@ from pymatgen.util.string import formula_double_format
 from robocrys import common_formulas
 from robocrys.fingerprint import get_structure_fingerprint
 
-Component = Dict[Text, Any]
+Component = Dict[str, Any]
 
 
 def get_structure_inequiv_components(components: List[Component],
@@ -61,8 +61,9 @@ def get_structure_inequiv_components(components: List[Component],
 
     if use_structure_graph:
         # check fingerprints match and components are isomorphic.
-        fingerprints = [get_structure_fingerprint(c['structure'])
-                        for c in components]
+        fingerprints = [
+            get_structure_fingerprint(c['structure_graph'].structure)
+            for c in components]
 
         seen_components = [components[0]]
         seen_fingers = [fingerprints[0]]
@@ -88,7 +89,8 @@ def get_structure_inequiv_components(components: List[Component],
         seen_components = [components[0]]
 
         for component in components[1:]:
-            structure_match = [sm.fit(component['structure'], c['structure'])
+            structure_match = [sm.fit(component['structure_graph'].structure,
+                                      c['structure_graph'].structure)
                                for c in seen_components]
             if any(structure_match):
                 # there should only ever be a single match so we take index of
@@ -109,8 +111,6 @@ def components_are_isomorphic(component_a: Component,
     Only takes into account graph connectivity and not local geometry (e.g. bond
     angles and distances).
 
-    Component data has to have been generated with ``inc_graph=True``.
-
     Args:
         component_a: The first component.
         component_b: The second component.
@@ -120,7 +120,6 @@ def components_are_isomorphic(component_a: Component,
         Whether the components are isomorphic.
     """
 
-    # copied from StructureGraph.subgraphs_as_molecules
     def node_match(n1, n2):
         return n1['specie'] == n2['specie']
 
@@ -130,9 +129,21 @@ def components_are_isomorphic(component_a: Component,
         else:
             return True
 
-    return nx.is_isomorphic(
-        component_a['graph'], component_b['graph'],
-        node_match=node_match, edge_match=edge_match)
+    graph_a = component_a['structure_graph'].graph
+    graph_b = component_b['structure_graph'].graph
+
+    species_a = {
+        n: {'specie': str(component_a['structure_graph'].structure[n].specie)}
+        for n in graph_a}
+    species_b = {
+        n: {'specie': str(component_b['structure_graph'].structure[n].specie)}
+        for n in graph_b}
+
+    nx.set_node_attributes(graph_a, species_a)
+    nx.set_node_attributes(graph_b, species_b)
+
+    return nx.is_isomorphic(graph_a, graph_b, node_match=node_match,
+                            edge_match=edge_match)
 
 
 def get_sym_inequiv_components(components: List[Component],
@@ -284,16 +295,17 @@ def get_reconstructed_structure(components: List[Component],
         mol_components, components = filter_molecular_components(components)
 
         if mol_components:
-            lattice = mol_components[0]['structure'].lattice
+            lattice = mol_components[0]['structure_graph'].structure.lattice
 
             mol_sites = [
-                PeriodicSite(c['structure'][0].specie,
+                PeriodicSite(c['structure_graph'].structure[0].specie,
                              c['molecule_graph'].molecule.center_of_mass,
                              lattice, coords_are_cartesian=True)
                 for c in mol_components]
 
     if components:
-        other_sites = [site for c in components for site in c['structure']]
+        other_sites = [site for c in components
+                       for site in c['structure_graph'].structure]
 
     return Structure.from_sites(other_sites + mol_sites)
 
@@ -301,7 +313,7 @@ def get_reconstructed_structure(components: List[Component],
 def get_component_formula_and_factor(component: Component,
                                      use_iupac_formula: bool = True,
                                      use_common_formulas: bool = True
-                                     ) -> Tuple[Text, int]:
+                                     ) -> Tuple[str, int]:
     """Gets the reduced formula and factor of a single component.
 
     Args:
@@ -321,10 +333,11 @@ def get_component_formula_and_factor(component: Component,
     Returns:
         The formula and factor of the component.
     """
-    formula, factor = component['structure'].composition. \
+    formula, factor = component['structure_graph'].structure.composition. \
         get_reduced_formula_and_factor(iupac_ordering=use_iupac_formula)
 
-    reduced_formula = component['structure'].composition.reduced_formula
+    reduced_formula = component['structure_graph'].structure.composition. \
+        reduced_formula
     if use_common_formulas and reduced_formula in common_formulas:
         formula = common_formulas[reduced_formula]
     return formula, factor
@@ -333,7 +346,7 @@ def get_component_formula_and_factor(component: Component,
 def get_component_formula(component: Component,
                           use_iupac_formula: bool = True,
                           use_common_formulas: bool = True
-                          ) -> Text:
+                          ) -> str:
     """Gets the reduced formula of a single component.
 
     Args:
@@ -361,7 +374,7 @@ def get_component_formula(component: Component,
 def get_formula_from_components(components: List[Component],
                                 molecules_first: bool = False,
                                 use_iupac_formula: bool = True,
-                                use_common_formulas: bool = True) -> Text:
+                                use_common_formulas: bool = True) -> str:
     """Reconstructs a chemical formula from structure components.
 
     The chemical formulas for the individual components will be grouped
@@ -460,7 +473,7 @@ def get_vdw_heterostructure_information(components: List[Component],
                                         use_common_formulas: bool = True,
                                         inc_ordered_components: bool = False,
                                         inc_intercalants: bool = False
-                                        ) -> Dict[Text, Any]:
+                                        ) -> Dict[str, Any]:
     """Gets information about ordering of components in a vdw heterostructure.
 
     Args:
@@ -516,8 +529,8 @@ def get_vdw_heterostructure_information(components: List[Component],
     if len(millers) != 1:
         raise ValueError("2D components don't all have the same orientation.")
 
-    cart_miller = components[0]['structure'].lattice.get_cartesian_coords(
-        millers.pop()).tolist()
+    cart_miller = components[0]['structure_graph'].structure.lattice.\
+        get_cartesian_coords(millers.pop()).tolist()
 
     # plane is used to find the distances of all components along a certain axis
     # should use normal vector of plane to get exact distances but we just care
@@ -525,8 +538,9 @@ def get_vdw_heterostructure_information(components: List[Component],
     def distances_to_plane(points):
         return [np.dot(cart_miller, pp) for pp in points]
 
-    min_distances = [min(distances_to_plane(c['structure'].cart_coords))
-                     for c in components]
+    min_distances = [
+        min(distances_to_plane(c['structure_graph'].structure.cart_coords))
+        for c in components]
 
     # sort the components by distance to plane
     ordering = np.argsort(min_distances)

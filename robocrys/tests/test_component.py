@@ -25,7 +25,7 @@ class TestComponent(RobocrysTest):
         self.mapi = cnn.get_bonded_structure(self.get_structure("mapi"))
         self.mapi_components = get_structure_components(
             self.mapi, inc_molecule_graph=True, inc_site_ids=True,
-            inc_orientation=True, inc_graph=True)
+            inc_orientation=True)
 
         self.vdw_hetero = cnn.get_bonded_structure(self.get_structure("MoWS4"))
         self.vdw_hetero_components = get_structure_components(
@@ -92,12 +92,7 @@ class TestComponent(RobocrysTest):
 
         self.assertEqual(len(inequiv_comp), 2)
         self.assertEqual(inequiv_comp[0]['count'], 4)
-        self.assertEqual(inequiv_comp[0]['inequivalent_ids'],
-                         (0, 8, 12, 44, 20, 28))
-
         self.assertEqual(inequiv_comp[1]['count'], 1)
-        self.assertEqual(inequiv_comp[1]['inequivalent_ids'],
-                         (32, 24, 36))
 
     def test_get_comp_inequiv_components(self):
         """Test getting compositionally inequivalent structure components."""
@@ -203,14 +198,16 @@ class TestComponent(RobocrysTest):
         self.assertFalse(result)
 
     def test_get_vdw_heterostructure_information(self):
-        data = get_vdw_heterostructure_information(self.vdw_hetero_components)
+        data = get_vdw_heterostructure_information(self.vdw_hetero_components,
+                                                   inc_ordered_components=True,
+                                                   inc_intercalants=True)
         self.assertEqual(len(data['ordered_components']), 4)
         self.assertAlmostEqual(
-            data['ordered_components'][0]['structure'].frac_coords[0][0],
-            0.33330876)
+            data['ordered_components'][0][
+                'structure_graph'].structure.frac_coords[0][0], 0.33330876)
         self.assertAlmostEqual(
-            data['ordered_components'][3]['structure'].frac_coords[0][0],
-            0.6666924)
+            data['ordered_components'][3][
+                'structure_graph'].structure.frac_coords[0][0], 0.6666924)
         self.assertEqual(data['repeating_unit'], ['MoS2', 'WS2'])
         self.assertEqual(data['num_repetitions'], 2)
         self.assertEqual(data['intercalants'], [])
