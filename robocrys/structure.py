@@ -169,8 +169,11 @@ class StructureCondenser(object):
                 'sites': []
             }
 
+            inequivalent_ids = site_analyzer.get_inequivalent_ids(
+                component['site_ids'])
+
             # for each inequivalent site in the component get a site description
-            for site_id in component['inequivalent_ids']:
+            for site_id in inequivalent_ids:
                 geometry = site_analyzer.get_site_geometry(site_id)
                 nn_info = site_analyzer.get_nearest_neighbor_summary(site_id)
                 nnn_info = site_analyzer.get_next_nearest_neighbor_summary(

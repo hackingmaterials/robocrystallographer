@@ -154,14 +154,13 @@ def get_sym_inequiv_components(components: List[Component],
         components will only be returned once. The component objects are in the
         same format is given by
         :obj:`pymatgen.analysis.dimensionality.get_structure_components` but
-        have two additional fields:
+        the additional property:
 
         - ``"count"`` (:obj:`int`): The number of times this component appears
             in the structure.
-        - ``"inequivalent_ids"`` (``list[int]``): The site indices of the
-            symmetry inequivalent atoms in the component.
     """
     components = deepcopy(components)
+
     sym_inequiv_components = {}
     equivalent_atoms = spg_analyzer.get_symmetry_dataset()['equivalent_atoms']
 
@@ -176,7 +175,6 @@ def get_sym_inequiv_components(components: List[Component],
             continue
 
         component['count'] = 1
-        component['inequivalent_ids'] = tuple(sym_ids)
         sym_inequiv_components[sym_ids] = component
 
     return list(sym_inequiv_components.values())
