@@ -19,7 +19,7 @@ def robocrystallographer(structure):
     describer = Describer()
 
     try:
-        print("adding oxidation state")
+        print("adding oxidation states")
         structure.add_oxidation_state_by_guess(max_sites=-80)
     except ValueError:
         pass
@@ -27,7 +27,7 @@ def robocrystallographer(structure):
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
 
-    logging.info(description)
+    print(description)
     return description
 
 
@@ -50,11 +50,11 @@ def _get_parser():
 def main():
     args = _get_parser().parse_args()
 
-    logging.basicConfig(filename='robocrys.log', level=logging.INFO,
-                        filemode='w', format='%(message)s')
-    console = logging.StreamHandler()
-    logging.info(" ".join(sys.argv[:]))
-    logging.getLogger('').addHandler(console)
+    # logging.basicConfig(filename='robocrys.log', level=logging.INFO,
+    #                     filemode='w', format='%(message)s')
+    # console = logging.StreamHandler()
+    # logging.info(" ".join(sys.argv[:]))
+    # logging.getLogger('').addHandler(console)
 
     warnings.filterwarnings("ignore", category=UserWarning,
                             module="pymatgen")
