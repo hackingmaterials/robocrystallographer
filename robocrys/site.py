@@ -7,7 +7,7 @@ TODO: handle the case where no geometry type is given, just the CN
 """
 import copy
 from collections import defaultdict
-from typing import Tuple, Dict, Any, List
+from typing import Dict, Any, List
 
 import numpy as np
 
@@ -220,7 +220,7 @@ class SiteAnalyzer(object):
 
     def _get_nearest_neighbor_info(self, site_index: int,
                                    inc_inequiv_id: bool = True
-                                   ) -> Tuple[Dict[str, Any]]:
+                                   ) -> List[Dict[str, Any]]:
         """Gets information about the bonded nearest neighbors.
 
         Args:
@@ -244,12 +244,12 @@ class SiteAnalyzer(object):
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
 
         if inc_inequiv_id:
-            return tuple({'element': site.site.specie.name,
-                          'inequiv_id': self.equivalent_sites[site.index],
-                          'dist': site.dist} for site in nn_sites)
+            return [{'element': site.site.specie.name,
+                     'inequiv_id': self.equivalent_sites[site.index],
+                     'dist': site.dist} for site in nn_sites]
         else:
-            return tuple({'element': site.site.specie.name,
-                          'dist': site.dist} for site in nn_sites)
+            return [{'element': site.site.specie.name,
+                     'dist': site.dist} for site in nn_sites]
 
     def _get_next_nearest_neighbor_info(
             self, site_index: int) -> List[Dict[str, Any]]:
