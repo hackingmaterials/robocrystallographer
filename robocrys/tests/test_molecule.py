@@ -36,7 +36,8 @@ class TestMoleculeMatcher(RobocrysTest):
 
     def test_get_name_from_pubchem(self):
         """Test downloading the molecule name from Pubchem."""
-        name = MoleculeNamer.get_name_from_pubchem("C[NH3]")
+        mn = MoleculeNamer()
+        name = mn.get_name_from_pubchem("C[NH3]")
         self.assertEqual(name, "methylammonium")
 
     def test_get_name_from_molecule_graph(self):

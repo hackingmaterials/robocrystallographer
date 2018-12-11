@@ -17,6 +17,7 @@ from robocrys.component import (get_sym_inequiv_components,
                                 get_vdw_heterostructure_information,
                                 get_structure_inequiv_components)
 from robocrys.mineral import MineralMatcher
+from robocrys.molecule import MoleculeNamer
 from robocrys.site import SiteAnalyzer
 
 
@@ -170,6 +171,8 @@ class StructureCondenser(object):
             bonded_structure, use_symmetry=self.use_symmetry,
             symprec=self.symprec)
 
+        molecule_namer = MoleculeNamer()
+
         # defaultdict of defaultdicts
         cc = defaultdict(lambda: defaultdict(dict))
         total_components = 0
@@ -218,6 +221,13 @@ class StructureCondenser(object):
                 cc[dimen][formula]['count'] += count
             else:
                 cc[dimen][formula]['count'] = count
+
+            if dimen == 0:
+                molecule_name = molecule_namer.get_name_from_molecule_graph(
+                    component['molecule_graph'])
+
+                if molecule_name:
+                    cc[dimen][formula]['molecule_name'] = molecule_name
 
             total_components += count
         return cc, total_components

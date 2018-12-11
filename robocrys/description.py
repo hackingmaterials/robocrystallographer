@@ -116,8 +116,16 @@ def get_component_dimensionality_description(dimensionality: int,
             for formula, comp in formula_data.items():
 
                 count = en.number_to_words(comp['count'])
-                shape = en.plural(dimensionality_to_shape[comp_dimen], count)
-                comp_desc = "{} {} {}".format(count, formula, shape)
+
+                if 'molecule_name' in comp:
+                    molecules = en.plural("molecule", comp['count'])
+                    comp_desc = "{} {} {}".format(
+                        count, comp['molecule_name'], molecules)
+
+                else:
+                    shape = en.plural(dimensionality_to_shape[comp_dimen],
+                                      count)
+                    comp_desc = "{} {} {}".format(count, formula, shape)
 
                 if comp_dimen in [1, 2]:
                     orientations = set([c['orientation'] for c in
@@ -146,23 +154,30 @@ def get_component_descriptions(component_data: Dict[int, Any],
         dimen_component_descriptions = []
         for comp_dimen, formula_data in component_data.items():
             for formula, comp in formula_data.items():
-                count = en.number_to_words(comp['count'])
-                prefix = "the" if count == 1 else "each"
-                shape = dimensionality_to_shape[comp_dimen]
 
-                comp_desc = "In {} {} {}, ".format(prefix, formula, shape)
-                comp_desc += get_component_description(
-                    comp['inequiv_components'][0])
+                # don't describe known molecules
+                if "molecule_name" in comp:
+                    continue
 
-                # if comp_dimen in [1, 2]:
-                #     orientations = set([c['orientation'] for c in
-                #                         comp['inequiv_components']])
-                #     dirs = en.plural("direction", len(orientations))
-                #     orientations = en.join([o for o in orientations])
-                #     comp_desc += " oriented in the {} {}".format(
-                #         orientations, dirs)
+                if len(comp['inequiv_components']) == 1:
+                    count = en.number_to_words(comp['count'])
+                    prefix = "the" if count == 1 else "each"
+                    shape = dimensionality_to_shape[comp_dimen]
 
-                comp_desc += "."
+                    comp_desc = "In {} {} {}, ".format(prefix, formula, shape)
+                    comp_desc += get_component_description(
+                        comp['inequiv_components'][0])
+
+                else:
+                    comp_desc = ""
+                    for inequiv_comp in comp['inequiv_components']:
+                        count = en.number_to_words(inequiv_comp['count'])
+                        shape = en.plural(dimensionality_to_shape[comp_dimen],
+                                          2)
+                        comp_desc += "In {} of the {} {}, ".format(
+                            count, formula, shape)
+                        comp_desc += get_component_description(inequiv_comp)
+
                 dimen_component_descriptions.append(comp_desc)
 
         desc = " ".join(dimen_component_descriptions)
@@ -174,7 +189,8 @@ def get_component_description(component: Component):
 
     for site in component['sites']:
         desc.append(get_site_description(
-            site['element'], site['geometry'], nn_data=site['nn_data']))
+            site['element'], site['geometry'], nn_data=site['nn_data'],
+            describe_bond_lengths=False))
 
     desc = " ".join(desc)
     return desc
@@ -218,12 +234,12 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
             desc += "one {} atom. ".format(bond_element)
 
         elif len(bond_data['inequiv_groups']) == 1:
-            desc += "{} equivalent {} atoms. ".format(
+            desc += "{} equivalent {} atoms.".format(
                 en.number_to_words(bond_data['inequiv_groups'][0]['n_sites']),
                 bond_element)
 
         else:
-            desc += "{} {} atoms. ".format(
+            desc += "{} {} atoms.".format(
                 en.number_to_words(bond_data['n_sites']), bond_element)
 
         if describe_bond_lengths:
@@ -234,26 +250,27 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
     # tackle the case where the bonding is to multiple elements
     bonding_atoms = ["{} {}".format(en.number_to_words(data['n_sites']), el)
                      for el, data in nn_data.items()]
-    desc += "{} atoms. ".format(en.join(bonding_atoms))
+    desc += "{} atoms.".format(en.join(bonding_atoms))
 
     intro = None
     for i, (bond_element, bond_data) in enumerate(nn_data.items()):
 
         if len(bond_data['inequiv_groups']) == 1 and bond_data['n_sites'] > 1:
-            intro = "Of these, the" if not intro else "The"
+            intro = " Of these, the" if not intro else " The"
 
-            desc += "{} {} atoms are equivalent. ".format(
+            desc += "{} {} atoms are equivalent.".format(
                 intro, bond_element)
 
         elif bond_data['n_sites'] > 1:
             intro = "Of these, the" if not intro else "The"
 
             desc += ("{} {} atoms are found in {} distinct "
-                     "environments. ").format(
+                     "environments.").format(
                 intro, bond_element,
                 en.number_to_words(len(bond_data['inequiv_groups'])))
 
         if describe_bond_lengths:
+            desc += " "
             desc += get_bond_length_description(element, bond_element,
                                                 bond_data)
 
