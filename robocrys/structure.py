@@ -14,7 +14,8 @@ from robocrys.component import (get_sym_inequiv_components,
                                 get_formula_from_components,
                                 get_component_formula,
                                 components_are_vdw_heterostructure,
-                                get_vdw_heterostructure_information)
+                                get_vdw_heterostructure_information,
+                                get_structure_inequiv_components)
 from robocrys.mineral import MineralMatcher
 from robocrys.site import SiteAnalyzer
 
@@ -33,9 +34,13 @@ class StructureCondenser(object):
             :class:`pymatgen.analysis.local_env.CrystalNN` will be used.
         mineral_matcher: A ``MineralMatcher`` instance. Defaults to ``None``
             in which case the default ``MineralMatcher`` settings will be used.
+        use_symmetry: Whether to use symmetry to determine if structure
+            compoents and sites are equivalent. If ``False``, the site geometry
+            and bonding graph information will be used.
         symprec: The tolerance used when determining the symmetry of
             the structure. The symmetry is used to determine if multiple
-            sites are symmetrically equivalent.
+            sites are symmetrically equivalent. If ``use_symmetry=False`` this
+            option will be ignored.
         use_iupac_formula (bool, optional): Whether to order the
             formula by the iupac "electronegativity" series, defined in
             Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
@@ -52,6 +57,7 @@ class StructureCondenser(object):
                  force_conventional_cell: bool = False,
                  near_neighbors: Optional[NearNeighbors] = None,
                  mineral_matcher: Optional[MineralMatcher] = None,
+                 use_symmetry: bool = False,
                  symprec: float = 0.01,
                  simplify_molecules: bool = True,
                  use_iupac_formula: bool = True,
@@ -65,6 +71,7 @@ class StructureCondenser(object):
         self.force_conventional_cell = force_conventional_cell
         self.near_neighbors = near_neighbors
         self.mineral_matcher = mineral_matcher
+        self.use_symmetry = use_symmetry
         self.symprec = symprec
         self.simplify_molecules = simplify_molecules
         self.use_common_formulas = use_common_formulas
@@ -125,6 +132,8 @@ class StructureCondenser(object):
         return structure_data
 
     def _condense_mineral(self, structure, components):
+        """Utility function to condense the mineral data."""
+
         mineral = self.mineral_matcher.get_best_mineral_name(structure)
 
         if not mineral['type']:
@@ -139,6 +148,7 @@ class StructureCondenser(object):
         return mineral
 
     def _condense_formula(self, structure, components):
+        """Utility function to condense the formula data."""
         # if the formula is known from the list of 100,000 known formulae we
         # preferentially use that, else we reconstruct it from the components.
         reduced_formula = structure.composition.reduced_formula
@@ -150,13 +160,20 @@ class StructureCondenser(object):
         return formula
 
     def _condense_components(self, components, bonded_structure, sga):
-        sym_inequiv_components = get_sym_inequiv_components(components, sga)
-        site_analyzer = SiteAnalyzer(bonded_structure, self.symprec)
+        """Utility function to condense the component data."""
+        if self.use_symmetry:
+            inequiv_components = get_sym_inequiv_components(components, sga)
+        else:
+            inequiv_components = get_structure_inequiv_components(components)
+
+        site_analyzer = SiteAnalyzer(
+            bonded_structure, use_symmetry=self.use_symmetry,
+            symprec=self.symprec)
 
         # defaultdict of defaultdicts
         cc = defaultdict(lambda: defaultdict(dict))
         total_components = 0
-        for component in sym_inequiv_components:
+        for component in inequiv_components:
             formula = get_component_formula(
                 component, use_iupac_formula=self.use_iupac_formula,
                 use_common_formulas=self.use_common_formulas)
@@ -169,27 +186,33 @@ class StructureCondenser(object):
                 'sites': []
             }
 
-            inequivalent_ids = site_analyzer.get_inequivalent_ids(
+            inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
                 component['site_ids'])
+
+            def site_order(index):
+                el = bonded_structure.structure[index].specie.element
+                return el.iupac_ordering if self.use_iupac_formula else el.X
+
+            inequivalent_ids = sorted(inequivalent_ids, key=site_order)
 
             # for each inequivalent site in the component get a site description
             for site_id in inequivalent_ids:
                 geometry = site_analyzer.get_site_geometry(site_id)
-                nn_info = site_analyzer.get_nearest_neighbor_summary(site_id)
-                nnn_info = site_analyzer.get_next_nearest_neighbor_summary(
+                nn_data = site_analyzer.get_nearest_neighbor_summary(site_id)
+                nnn_data = site_analyzer.get_next_nearest_neighbor_summary(
                     site_id)
                 component_data['sites'].append({
                     'element': bonded_structure.structure[site_id].specie.name,
                     'geometry': geometry,
-                    'nn_info': nn_info,
-                    'next_nn_info': nnn_info
+                    'nn_data': nn_data,
+                    'next_nn_info': nnn_data
                 })
 
             if dimen in cc and formula in cc[dimen]:
-                cc[dimen][formula]['sym_inequiv_components'].append(
+                cc[dimen][formula]['inequiv_components'].append(
                     component_data)
             else:
-                cc[dimen][formula]['sym_inequiv_components'] = [component_data]
+                cc[dimen][formula]['inequiv_components'] = [component_data]
 
             if 'count' in cc[dimen][formula]:
                 cc[dimen][formula]['count'] += count

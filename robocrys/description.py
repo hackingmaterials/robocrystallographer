@@ -121,7 +121,7 @@ def get_component_dimensionality_description(dimensionality: int,
 
                 if comp_dimen in [1, 2]:
                     orientations = set([c['orientation'] for c in
-                                        comp['sym_inequiv_components']])
+                                        comp['inequiv_components']])
                     dirs = en.plural("direction", len(orientations))
                     orientations = en.join([o for o in orientations])
                     comp_desc += " oriented in the {} {}".format(
@@ -135,13 +135,12 @@ def get_component_dimensionality_description(dimensionality: int,
 
 def get_component_descriptions(component_data: Dict[int, Any],
                                n_components: int):
-    desc = []
     if n_components == 1:
         # very messy way of getting the only component out of a nested
         # dict series where we don't know any of the keys in advance.
         comp = list(list(component_data.values())[0].values())[0][
-            'sym_inequiv_components'][0]
-        desc.append(get_component_description(comp))
+            'inequiv_components'][0]
+        desc = get_component_description(comp)
 
     else:
         dimen_component_descriptions = []
@@ -150,42 +149,35 @@ def get_component_descriptions(component_data: Dict[int, Any],
                 count = en.number_to_words(comp['count'])
                 prefix = "the" if count == 1 else "each"
                 shape = dimensionality_to_shape[comp_dimen]
-                comp_desc = "In {} {} {}".format(prefix, formula, shape)
 
-                if comp_dimen in [1, 2]:
-                    orientations = set([c['orientation'] for c in
-                                        comp['sym_inequiv_components']])
-                    dirs = en.plural("direction", len(orientations))
-                    orientations = en.join([o for o in orientations])
-                    comp_desc += " oriented in the {} {}".format(
-                        orientations, dirs)
+                comp_desc = "In {} {} {}, ".format(prefix, formula, shape)
+                comp_desc += get_component_description(
+                    comp['inequiv_components'][0])
 
+                # if comp_dimen in [1, 2]:
+                #     orientations = set([c['orientation'] for c in
+                #                         comp['inequiv_components']])
+                #     dirs = en.plural("direction", len(orientations))
+                #     orientations = en.join([o for o in orientations])
+                #     comp_desc += " oriented in the {} {}".format(
+                #         orientations, dirs)
+
+                comp_desc += "."
                 dimen_component_descriptions.append(comp_desc)
 
-        desc += en.join(dimen_component_descriptions) + "."
+        desc = " ".join(dimen_component_descriptions)
     return desc
 
 
 def get_component_description(component: Component):
-    pass
+    desc = []
 
+    for site in component['sites']:
+        desc.append(get_site_description(
+            site['element'], site['geometry'], nn_data=site['nn_data']))
 
-# desc += "In each {}, ".format(shape)
-# else:
-#     desc += ". "
-#
-# logging.info(desc)
-#
-# sga = SpacegroupAnalyzer(structure)
-# structure = sga.get_symmetrized_structure()
-#
-# site_describer = SiteAnalyzer(structure)
-# for i, list_sites in enumerate(structure.equivalent_indices):
-#     # very rough way of not overloading with information about bond
-#     # lengths
-#     bond_lengths = i == len(structure.equivalent_indices) - 1
-#     logging.info(site_describer.get_site_description(
-#         list_sites[0], describe_bond_lengths=bond_lengths))
+    desc = " ".join(desc)
+    return desc
 
 
 def get_site_description(element: str, geometry: dict, nn_data: dict,
@@ -212,11 +204,11 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
     Returns:
         A description of the geometry and bonding of a site.
     """
-    geometry = geometry['geometry']
-    geometry += '' if geometry['likeness'] > distorted_tol else 'distorted'
+    geometry_desc = '' if geometry['likeness'] > distorted_tol else 'distorted '
+    geometry_desc += geometry['type']
 
     desc = "{} is bonded in {} geometry to ".format(
-        element, en.a(geometry))
+        element, en.a(geometry_desc))
 
     # First tackle the case that the bonding is only to a single element
     if len(nn_data) == 1:
@@ -225,9 +217,9 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
         if bond_data['n_sites'] == 1:
             desc += "one {} atom. ".format(bond_element)
 
-        elif len(bond_data['sym_groups']) == 1:
-            desc += "{} symmetrically equivalent {} atoms. ".format(
-                en.number_to_words(bond_data['sym_groups'][0]['n_sites']),
+        elif len(bond_data['inequiv_groups']) == 1:
+            desc += "{} equivalent {} atoms. ".format(
+                en.number_to_words(bond_data['inequiv_groups'][0]['n_sites']),
                 bond_element)
 
         else:
@@ -247,19 +239,19 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
     intro = None
     for i, (bond_element, bond_data) in enumerate(nn_data.items()):
 
-        if len(bond_data['sym_groups']) == 1 and bond_data['n_sites'] > 1:
+        if len(bond_data['inequiv_groups']) == 1 and bond_data['n_sites'] > 1:
             intro = "Of these, the" if not intro else "The"
 
-            desc += "{} {} atoms are symmetrically equivalent. ".format(
+            desc += "{} {} atoms are equivalent. ".format(
                 intro, bond_element)
 
         elif bond_data['n_sites'] > 1:
             intro = "Of these, the" if not intro else "The"
 
-            desc += ("{} {} atoms are found in {} symmetry distinct "
+            desc += ("{} {} atoms are found in {} distinct "
                      "environments. ").format(
                 intro, bond_element,
-                en.number_to_words(len(bond_data['sym_groups'])))
+                en.number_to_words(len(bond_data['inequiv_groups'])))
 
         if describe_bond_lengths:
             desc += get_bond_length_description(element, bond_element,
@@ -284,15 +276,15 @@ def get_bond_length_description(element: str, bond_element: str,
 
                 {
                     'n_sites': 6
-                    'sym_groups': (
+                    'inequiv_groups': (
                         {
                             'n_sites': 4
-                            'sym_id': 0
+                            'inequiv_id': 0
                             'dists': [1, 1, 1, 2, 2, 2]
                         },
                         {
                             'n_sites': 2
-                            'sym_id': 1
+                            'inequiv_id': 1
                             'dists': [3, 3]
                         }
                     )
@@ -305,7 +297,7 @@ def get_bond_length_description(element: str, bond_element: str,
         A description of the bond lengths.
     """
 
-    dists = sum([x['dists'] for x in bond_data['sym_groups']], [])
+    dists = sum([x['dists'] for x in bond_data['inequiv_groups']], [])
 
     # if only one bond length
     if len(dists) == 1:
