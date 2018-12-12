@@ -1,8 +1,9 @@
 """
 This module defines a function to turn a structure into a dict representation.
 """
+import copy
 from collections import defaultdict
-from typing import Optional, Dict, Text, Any
+from typing import Optional, Dict, Text, Any, List
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
@@ -18,7 +19,8 @@ from robocrys.component import (get_sym_inequiv_components,
                                 get_structure_inequiv_components)
 from robocrys.mineral import MineralMatcher
 from robocrys.molecule import MoleculeNamer
-from robocrys.site import SiteAnalyzer
+from robocrys.site import SiteAnalyzer, geometries_match, nn_summaries_match, \
+    nnn_summaries_match
 
 
 class StructureCondenser(object):
@@ -52,6 +54,10 @@ class StructureCondenser(object):
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.
+        group_bond_lengths: Whether to group together sites with different
+            nearest neighbor bond lengths but otherwise comparable geometries
+            and (next) nearest neighbor information. In some cases this will
+            significantly simplify the condensed represenation.
     """
 
     def __init__(self,
@@ -62,7 +68,8 @@ class StructureCondenser(object):
                  symprec: float = 0.01,
                  simplify_molecules: bool = True,
                  use_iupac_formula: bool = True,
-                 use_common_formulas: bool = True):
+                 use_common_formulas: bool = True,
+                 group_bond_lengths: bool =True):
         if not near_neighbors:
             near_neighbors = CrystalNN()
 
@@ -77,6 +84,7 @@ class StructureCondenser(object):
         self.simplify_molecules = simplify_molecules
         self.use_common_formulas = use_common_formulas
         self.use_iupac_formula = use_iupac_formula
+        self.group_bond_lengths = group_bond_lengths
 
     def condense_structure(self, structure: Structure) -> Dict[Text, Any]:
         """Condenses the structure into a dict representation.
@@ -186,30 +194,36 @@ class StructureCondenser(object):
             component_data = {
                 'orientation': component['orientation'],
                 'count': count,
-                'sites': []
             }
-
-            inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
-                component['site_ids'])
 
             def site_order(index):
                 el = bonded_structure.structure[index].specie.element
                 return el.iupac_ordering if self.use_iupac_formula else el.X
 
+            inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
+                component['site_ids'])
             inequivalent_ids = sorted(inequivalent_ids, key=site_order)
 
+            sites = []
             # for each inequivalent site in the component get a site description
             for site_id in inequivalent_ids:
                 geometry = site_analyzer.get_site_geometry(site_id)
                 nn_data = site_analyzer.get_nearest_neighbor_summary(site_id)
                 nnn_data = site_analyzer.get_next_nearest_neighbor_summary(
                     site_id)
-                component_data['sites'].append({
+                sites.append({
                     'element': bonded_structure.structure[site_id].specie.name,
                     'geometry': geometry,
                     'nn_data': nn_data,
-                    'next_nn_info': nnn_data
+                    'nnn_data': nnn_data
                 })
+
+            if self.group_bond_lengths:
+                # merge sites with same geometry, NN info and NNN info but with
+                # different NN bond lengths.
+                sites = _merge_similar_sites(sites)
+
+            component_data['sites'] = sites
 
             if dimen in cc and formula in cc[dimen]:
                 cc[dimen][formula]['inequiv_components'].append(
@@ -231,3 +245,47 @@ class StructureCondenser(object):
 
             total_components += count
         return cc, total_components
+
+
+def _merge_similar_sites(sites: List[Dict[Text, Any]]):
+    sites = copy.deepcopy(sites)
+    new_sites = []
+
+    for site in sites:
+
+        matched = False
+        for new_site in new_sites:
+            elem_match = site['element'] == new_site['element']
+            geom_match = geometries_match(
+                site['geometry'], new_site['geometry'], likeness_tol=1)
+            nn_match = nn_summaries_match(
+                site['nn_data'], new_site['nn_data'],
+                match_bond_dists=False)
+            nnn_match = nnn_summaries_match(
+                site['nnn_data'], new_site['nnn_data'], match_bond_angles=False)
+
+            if elem_match and geom_match and nn_match and nnn_match:
+                for el in site['nn_data']:
+
+                    site_dists = [dist for group in
+                                  site['nn_data'][el]['inequiv_groups']
+                                  for dist in group['dists']]
+
+                    if 'inequiv_groups' in new_site['nn_data'][el]:
+                        # remove inequiv_groups key and group all distances
+                        # together
+                        groups = new_site['nn_data'][el].pop('inequiv_groups')
+                        dists = [dist for dist_set in groups
+                                 for dist in dist_set['dists']]
+                        new_site['nn_data'][el]['dists'] = dists + site_dists
+                    else:
+                        new_site['nn_data'][el]['dists'] += site_dists
+
+                    matched = True
+                    break
+
+        if not matched:
+            # no matches therefore store original site id
+            new_sites.append(site)
+
+    return new_sites

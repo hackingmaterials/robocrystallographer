@@ -1,3 +1,10 @@
+"""
+This module provides a class for generating descriptions of condensed structure
+data.
+
+TODO: Add option to ignore equivalent groups.
+"""
+
 from typing import Dict, Text, Any
 
 import inflect
@@ -160,7 +167,7 @@ def get_component_descriptions(component_data: Dict[int, Any],
                     continue
 
                 if len(comp['inequiv_components']) == 1:
-                    count = en.number_to_words(comp['count'])
+                    count = comp['inequiv_components'][0]['count']
                     prefix = "the" if count == 1 else "each"
                     shape = dimensionality_to_shape[comp_dimen]
 
@@ -190,7 +197,7 @@ def get_component_description(component: Component):
     for site in component['sites']:
         desc.append(get_site_description(
             site['element'], site['geometry'], nn_data=site['nn_data'],
-            describe_bond_lengths=False))
+            describe_bond_lengths=True))
 
     desc = " ".join(desc)
     return desc
@@ -226,55 +233,15 @@ def get_site_description(element: str, geometry: dict, nn_data: dict,
     desc = "{} is bonded in {} geometry to ".format(
         element, en.a(geometry_desc))
 
-    # First tackle the case that the bonding is only to a single element
+    # handle tetrahedral and octahedral geometries separately
+
+    # tackle the case that the bonding is only to a single element
     if len(nn_data) == 1:
-        bond_element, bond_data = list(nn_data.items())[0]
-
-        if bond_data['n_sites'] == 1:
-            desc += "one {} atom. ".format(bond_element)
-
-        elif len(bond_data['inequiv_groups']) == 1:
-            desc += "{} equivalent {} atoms.".format(
-                en.number_to_words(bond_data['inequiv_groups'][0]['n_sites']),
-                bond_element)
-
-        else:
-            desc += "{} {} atoms.".format(
-                en.number_to_words(bond_data['n_sites']), bond_element)
-
-        if describe_bond_lengths:
-            desc += get_bond_length_description(element, bond_element,
-                                                bond_data)
-        return desc
-
-    # tackle the case where the bonding is to multiple elements
-    bonding_atoms = ["{} {}".format(en.number_to_words(data['n_sites']), el)
-                     for el, data in nn_data.items()]
-    desc += "{} atoms.".format(en.join(bonding_atoms))
-
-    intro = None
-    for i, (bond_element, bond_data) in enumerate(nn_data.items()):
-
-        if len(bond_data['inequiv_groups']) == 1 and bond_data['n_sites'] > 1:
-            intro = " Of these, the" if not intro else " The"
-
-            desc += "{} {} atoms are equivalent.".format(
-                intro, bond_element)
-
-        elif bond_data['n_sites'] > 1:
-            intro = "Of these, the" if not intro else "The"
-
-            desc += ("{} {} atoms are found in {} distinct "
-                     "environments.").format(
-                intro, bond_element,
-                en.number_to_words(len(bond_data['inequiv_groups'])))
-
-        if describe_bond_lengths:
-            desc += " "
-            desc += get_bond_length_description(element, bond_element,
-                                                bond_data)
-
-    return desc
+        return desc + _get_single_element_bonding_description(
+            element, nn_data, describe_bond_lengths)
+    else:
+        return desc + _get_multi_element_bonding_description(
+            element, nn_data, describe_bond_lengths)
 
 
 def get_bond_length_description(element: str, bond_element: str,
@@ -297,7 +264,7 @@ def get_bond_length_description(element: str, bond_element: str,
                         {
                             'n_sites': 4
                             'inequiv_id': 0
-                            'dists': [1, 1, 1, 2, 2, 2]
+                            'dists': [1, 1, 2, 2]
                         },
                         {
                             'n_sites': 2
@@ -309,16 +276,32 @@ def get_bond_length_description(element: str, bond_element: str,
 
             This is the same as output by
             :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_summary`.
+            Alternatively, if the information for several sites has been
+            merged together, the data can be formatted as::
+
+                {
+                    'n_sites': 6
+                    'dists': [1, 1, 1, 2, 2, 2, 2, 3, 3]
+                    )
+                }
+
+            Note that there are now more distances than there are number of
+            sites. This is because n_sites gives the number of bonds to a
+            specific site, whereas the distances are the complete set of
+            distances for all similar (merged) sites.
 
     Returns:
         A description of the bond lengths.
     """
-
-    dists = sum([x['dists'] for x in bond_data['inequiv_groups']], [])
+    if 'dists' in bond_data:
+        dists = bond_data['dists']
+    else:
+        # combine all the inequivalent distances
+        dists = sum([x['dists'] for x in bond_data['inequiv_groups']], [])
 
     # if only one bond length
     if len(dists) == 1:
-        return "The {}–{} bond length is {}. ".format(
+        return "The {}–{} bond length is {}.".format(
             element, bond_element, _distance_to_string(dists[0]))
 
     discrete_bond_lengths = _rounded_bond_lengths(dists)
@@ -326,7 +309,7 @@ def get_bond_length_description(element: str, bond_element: str,
     # if multiple bond lengths but they are all the same
     if len(set(discrete_bond_lengths)) == 1:
         intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
-        return "{} {}–{} bond lengths are {}. ".format(
+        return "{} {}–{} bond lengths are {}.".format(
             intro, element, bond_element, _distance_to_string(dists[0]))
 
     # if two sets of bond lengths
@@ -336,18 +319,95 @@ def get_bond_length_description(element: str, bond_element: str,
         big = max(discrete_bond_lengths)
         big_count = en.number_to_words(discrete_bond_lengths.count(big))
 
+        # length will only be singular when there is 1 small and 1 big length
+        length = en.plural('length', int((small + big)/2))
+
         return ("In this arrangement, there {} {} shorter ({}) and {} "
-                "longer ({}) {}–{} bond lengths. ").format(
+                "longer ({}) {}–{} bond {}.").format(
             en.plural_verb('is', small_count), small_count,
             _distance_to_string(small), big_count,
-            _distance_to_string(big), element, bond_element)
+            _distance_to_string(big), element, bond_element, length)
 
     # otherwise just detail the spread of bond lengths
-    return ("There is a spread of {}–{} bond distances, ranging from "
-            "{}. ").format(
+    return ("There are a spread of {}–{} bond distances ranging from "
+            "{}.").format(
         element, bond_element,
         _distance_range_to_string(min(discrete_bond_lengths),
                                   max(discrete_bond_lengths)))
+
+
+def _get_single_element_bonding_description(element, nn_data,
+                                            describe_bond_lengths):
+    """Utility func to get description of a site bonded to a single element."""
+    desc = ""
+    bond_element, bond_data = list(nn_data.items())[0]
+
+    if bond_data['n_sites'] == 1:
+        desc += "one {} atom. ".format(bond_element)
+
+    else:
+        if ('inequiv_groups' in bond_data and
+                len(bond_data['inequiv_groups']) == 1):
+            equivalent = " equivalent "
+        else:
+            equivalent = " "
+
+        desc += "{}{}{} atoms.".format(
+            en.number_to_words(bond_data['n_sites']), equivalent,
+            bond_element)
+
+    if describe_bond_lengths:
+        desc += " "
+        desc += get_bond_length_description(element, bond_element,
+                                            bond_data)
+    return desc
+
+
+def _get_multi_element_bonding_description(element, nn_data,
+                                           describe_bond_lengths):
+    """Utility func to get description of a site bonded to multiple elements."""
+    desc = ""
+
+    bonding_atoms = []
+    for el, data in nn_data.items():
+        count = en.number_to_words(data['n_sites'])
+
+        if ('inequiv_groups' in data and len(data['inequiv_groups']) == 1
+                and data['n_sites'] > 1):
+            equiv = " equivalent "
+        else:
+            equiv = " "
+
+        bonding_atoms.append("{}{}{}".format(count, equiv, el))
+
+    desc += "{} atoms.".format(en.join(bonding_atoms))
+
+    intro = None
+    # only describe the equivalent groups if inequiv_groups key is in the data.
+    # if it is not in the data this means the information for several
+    # similar sites has been merged. See the _merge_similar_sites method in
+    # structure.py for more information.
+    for i, (bond_element, bond_data) in enumerate(nn_data.items()):
+
+        if ('inequiv_groups' in bond_data and
+                len(bond_data['inequiv_groups']) == 1 and
+                bond_data['n_sites'] > 1):
+            # already described these previously
+            continue
+
+        elif 'inequiv_groups' in bond_data and bond_data['n_sites'] > 1:
+            intro = "Of these, the" if not intro else "The"
+
+            desc += ("{} {} atoms are found in {} distinct "
+                     "environments.").format(
+                intro, bond_element,
+                en.number_to_words(len(bond_data['inequiv_groups'])))
+
+        if describe_bond_lengths:
+            desc += " "
+            desc += get_bond_length_description(element, bond_element,
+                                                bond_data)
+    return desc
 
 
 def _rounded_bond_lengths(data, decimal_places=3):
