@@ -393,7 +393,7 @@ def _get_multi_element_bonding_description(element, nn_data,
                 len(bond_data['inequiv_groups']) == 1 and
                 bond_data['n_sites'] > 1):
             # already described these previously
-            continue
+            pass
 
         elif 'inequiv_groups' in bond_data and bond_data['n_sites'] > 1:
             intro = "Of these, the" if not intro else "The"

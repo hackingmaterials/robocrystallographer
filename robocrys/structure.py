@@ -225,6 +225,10 @@ class StructureCondenser(object):
 
             component_data['sites'] = sites
 
+            from pprint import pprint
+            for site in sites:
+                pprint(site['nnn_data'])
+
             if dimen in cc and formula in cc[dimen]:
                 cc[dimen][formula]['inequiv_components'].append(
                     component_data)

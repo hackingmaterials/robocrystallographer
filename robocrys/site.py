@@ -168,12 +168,10 @@ class SiteAnalyzer(object):
 
                 {
                     'Sn': {
-                        'n_sites': 8
-                        'connectivities': {
-                            'corner-sharing': {
+                        'corner-sharing': {
+                            'octahedral': {
                                 'n_sites': 8,
-                                'geometries': ['octahedral', 'octahedral', ...]
-                                'angles': [180.0, 180.0, ...]
+                                'angles': [180, 180, 180, ...]
                             }
                         }
                     }
@@ -182,27 +180,28 @@ class SiteAnalyzer(object):
         """
         nnn_info = self._get_next_nearest_neighbor_info(site_index)
 
-        # first group next nearest neighbors by element and connectivity
-        # e.g. grouped_nnn looks like {'el': {'connectivity': [sites]}}
-        grouped_nnn = defaultdict(lambda: defaultdict(list))
+        # group next nearest neighbors by element, connectivity and geometry
+        # e.g. grouped_nnn looks like {el: {connectivity: {geometry: [sites]}}}
+        grouped_nnn = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(list)))
+
         for site in nnn_info:
-            grouped_nnn[site['element']][site['connectivity']].append(site)
+            grouped_nnn[site['element']][
+                site['connectivity']][site['geometry']['type']].append(site)
 
-        data = {}
+        nnn_data = {}
         for element, con_data in grouped_nnn.items():
-            el_data = {'n_sites': sum([len(sites) for sites in
-                                       con_data.values()])}
-            con_groups = {
-                connectivity: {
-                    'n_sites': len(sites),
-                    'geometries': tuple(set([site['geometry']['type']
-                                             for site in sites])),
-                    'angles': tuple(sum([site['angles'] for site in sites], []))
-                } for connectivity, sites in con_data.items()}
-            el_data['connectivities'] = con_groups
-            data[element] = el_data
-
-        return data
+            nnn_el_data = {}
+            for connectivity, geom_data in con_data.items():
+                nnn_con_data = {}
+                for geometry, sites in geom_data.items():
+                    nnn_con_data[geometry] = {
+                        'n_sites': len(sites),
+                        'angles': [angle for site in sites
+                                   for angle in site['angles']]}
+                nnn_el_data[connectivity] = nnn_con_data
+            nnn_data[element] = nnn_el_data
+        return nnn_data
 
     def get_inequivalent_site_ids(self, site_ids: List[int]) -> List[int]:
         """Gets the inequivalent sites from a list of site indices.
@@ -491,26 +490,33 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
         if elem_a not in nnn_summary_b:
             return False
 
-        con_data_a = con_data_a['connectivities']
-        con_data_b = nnn_summary_b[elem_a]['connectivities']
-
-        for con_type_a, data_a in con_data_a.items():
+        con_data_b = nnn_summary_b[elem_a]
+        for con_type_a, geom_data_a in con_data_a.items():
             if con_type_a not in con_data_b:
                 return False
 
-            data_b = con_data_b[con_type_a]
-            if data_a['n_sites'] != data_b['n_sites']:
-                return False
-
-            if (sorted(data_a['geometries']) !=
-                    sorted(data_b['geometries'])):
-                return False
-
-            if match_bond_angles:
-                diff_angles = (np.array(sorted(data_a['angles'])) -
-                               np.array(sorted(data_b['angles'])))
-                if not all(np.abs(diff_angles) < bond_angle_tol):
+            geom_data_b = con_data_b[con_type_a]
+            for geom_a, data_a in geom_data_a.items():
+                if geom_a not in geom_data_b:
                     return False
+
+                data_b = geom_data_b[geom_a]
+
+                if data_a['n_sites'] != data_b['n_sites']:
+                    return False
+
+                if match_bond_angles:
+                    diff_angles = (np.array(sorted(data_a['angles'])) -
+                                   np.array(sorted(data_b['angles'])))
+                    if not all(np.abs(diff_angles) < bond_angle_tol):
+                        return False
+
+                geom_data_b.pop(geom_a)
+
+            if geom_data_b:
+                # if geom_data_b still contains data then it has additional
+                # data relative to geom_data_a
+                return False
 
             con_data_b.pop(con_type_a)
 
