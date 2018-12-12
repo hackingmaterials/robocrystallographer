@@ -498,7 +498,7 @@ def get_vdw_heterostructure_information(components: List[Component],
     Returns:
         Information on the heterostructure, as an :obj:`dict` with they keys:
 
-        - ``"repeating_unit"`` (``list[str]``: A :obj:`List` of formulas of the
+        - ``"repeating_unit"`` (``list[str]``): A :obj:`List` of formulas of the
             smallest repeating series of components. For example. if the
             structure consists of A and B components ordered as "A B A B A B",
             the repeating unit is "A B".

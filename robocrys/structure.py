@@ -6,6 +6,7 @@ from collections import defaultdict
 from typing import Optional, Dict, Text, Any, List
 
 from pymatgen.analysis.dimensionality import get_structure_components
+from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -16,7 +17,7 @@ from robocrys.component import (get_sym_inequiv_components,
                                 get_component_formula,
                                 components_are_vdw_heterostructure,
                                 get_vdw_heterostructure_information,
-                                get_structure_inequiv_components)
+                                get_structure_inequiv_components, Component)
 from robocrys.mineral import MineralMatcher
 from robocrys.molecule import MoleculeNamer
 from robocrys.site import SiteAnalyzer, geometries_match, nn_summaries_match, \
@@ -185,6 +186,7 @@ class StructureCondenser(object):
         cc = defaultdict(lambda: defaultdict(dict))
         total_components = 0
         for component in inequiv_components:
+
             formula = get_component_formula(
                 component, use_iupac_formula=self.use_iupac_formula,
                 use_common_formulas=self.use_common_formulas)
@@ -196,33 +198,8 @@ class StructureCondenser(object):
                 'count': count,
             }
 
-            def site_order(index):
-                el = bonded_structure.structure[index].specie.element
-                return el.iupac_ordering if self.use_iupac_formula else el.X
-
-            inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
-                component['site_ids'])
-            inequivalent_ids = sorted(inequivalent_ids, key=site_order)
-
-            sites = []
-            # for each inequivalent site in the component get a site description
-            for site_id in inequivalent_ids:
-                geometry = site_analyzer.get_site_geometry(site_id)
-                nn_data = site_analyzer.get_nearest_neighbor_summary(site_id)
-                nnn_data = site_analyzer.get_next_nearest_neighbor_summary(
-                    site_id)
-                sites.append({
-                    'element': bonded_structure.structure[site_id].specie.name,
-                    'geometry': geometry,
-                    'nn_data': nn_data,
-                    'nnn_data': nnn_data
-                })
-
-            if self.group_bond_lengths:
-                # merge sites with same geometry, NN info and NNN info but with
-                # different NN bond lengths.
-                sites = _merge_similar_sites(sites)
-
+            sites = self._condense_component_site_data(
+                bonded_structure, site_analyzer, component)
             component_data['sites'] = sites
 
             if dimen in cc and formula in cc[dimen]:
@@ -246,8 +223,97 @@ class StructureCondenser(object):
             total_components += count
         return cc, total_components
 
+    def _condense_component_site_data(self,
+                                      bonded_structure: StructureGraph,
+                                      site_analyzer: SiteAnalyzer,
+                                      component: Component
+                                      ) -> List[Dict[str, Any]]:
+        """Utility function to condense component site data."""
 
-def _merge_similar_sites(sites: List[Dict[Text, Any]]):
+        def site_order(index):
+            el = bonded_structure.structure[index].specie.element
+            return el.iupac_ordering if self.use_iupac_formula else el.X
+
+        inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
+            component['site_ids'])
+        inequivalent_ids = sorted(inequivalent_ids, key=site_order)
+
+        sites = []
+        # for each inequivalent site in the component get a site description
+        for site_id in inequivalent_ids:
+            geometry = site_analyzer.get_site_geometry(site_id)
+            nn_data = site_analyzer.get_nearest_neighbor_summary(site_id)
+            nnn_data = site_analyzer.get_next_nearest_neighbor_summary(
+                site_id)
+            sites.append({
+                'element': bonded_structure.structure[site_id].specie.name,
+                'geometry': geometry,
+                'nn_data': nn_data,
+                'nnn_data': nnn_data
+            })
+
+        if self.group_bond_lengths:
+            # merge sites with same geometry, NN info and NNN info but with
+            # different NN bond lengths and NNN angles.
+            sites = merge_similar_sites(sites)
+
+        return sites
+
+
+def merge_similar_sites(sites: List[Dict[Text, Any]]):
+    """Merges sites with the same properties except bond angles and distances.
+
+    Args:
+        sites: A list of sites. Each site is formatted as a :ob:`dict` with the
+            keys:
+
+            - ``'element'`` (``str``): The element of the site.
+            - ``'geometry'`` (``dict``): The geometry, as output by
+                :meth:`SiteAnalyzer.get_site_geometry`.
+            - ``'nn_data'`` (``dict``): The nearest neighbor data, as output by
+                :meth:`SiteAnalyzer.get_nearest_neighbor_summary`.
+            - ``'nnn_data'`` (``dict``): The next nearest neighbor data, as
+                given by :meth:`SiteAnalyzer.get_next_nearest_neighbor_summary`.
+
+    Returns:
+        A list of merged sites with the same format as above. Merged sites
+        have a different ``nn_data`` format than unmerged sites. For example,
+        ``nn_data`` in unmerged sites is formatted as::
+
+            {
+                'Sn': {
+                    'n_sites': 6,
+                    'inequiv_groups': [
+                        {
+                            'n_sites': 4,
+                            'inequiv_id': 0,
+                            'dists': [1, 1, 2, 2]
+                        },
+                        {
+                            'n_sites': 2,
+                            'inequiv_id': 1,
+                            'dists': [3, 3]
+                        }
+                    ]
+                }
+            }
+
+        Merged sites do not contain an ``inequiv_groups`` key and are instead
+        formatted as::
+
+            {
+                'n_sites': 6
+                'dists': [1, 1, 1, 2, 2, 2, 2, 3, 3]
+                )
+            }
+
+        Note that there are now more distances than there are number of sites.
+        This is because n_sites gives the number of bonds to a specific site,
+        whereas the distances are for the complete set of distances for all
+        similar (merged) sites. Similarly, merged next nearest neighbor
+        data can contain more angles than number of sites, however, the
+        general format of the ``nnn_data`` dict is unaltered.
+    """
     sites = copy.deepcopy(sites)
     new_sites = []
 
@@ -265,27 +331,61 @@ def _merge_similar_sites(sites: List[Dict[Text, Any]]):
                 site['nnn_data'], new_site['nnn_data'], match_bond_angles=False)
 
             if elem_match and geom_match and nn_match and nnn_match:
-                for el in site['nn_data']:
-
-                    site_dists = [dist for group in
-                                  site['nn_data'][el]['inequiv_groups']
-                                  for dist in group['dists']]
-
-                    if 'inequiv_groups' in new_site['nn_data'][el]:
-                        # remove inequiv_groups key and group all distances
-                        # together
-                        groups = new_site['nn_data'][el].pop('inequiv_groups')
-                        dists = [dist for dist_set in groups
-                                 for dist in dist_set['dists']]
-                        new_site['nn_data'][el]['dists'] = dists + site_dists
-                    else:
-                        new_site['nn_data'][el]['dists'] += site_dists
-
-                    matched = True
-                    break
+                new_site['nn_data'] = _merge_nn_data(site['nn_data'],
+                                                     new_site['nn_data'])
+                new_site['nnn_data'] = _merge_nnn_data(site['nnn_data'],
+                                                       new_site['nnn_data'])
+                matched = True
+                break
 
         if not matched:
             # no matches therefore store original site id
             new_sites.append(site)
 
     return new_sites
+
+
+def _merge_nn_data(site_nn_data, new_site_nn_data):
+    """Utility function to merge nearest neighbor data.
+
+    See the ``merge_similar_sites`` docstring for information on the format of
+    the merged data.
+
+    Note an error will be thrown if this function is called on two sites that do
+    not have matching nearest neighbor summaries (ignoring bond distances).
+    """
+
+    for el in site_nn_data:
+        site_dists = [dist for group in
+                      site_nn_data[el]['inequiv_groups']
+                      for dist in group['dists']]
+
+        if 'inequiv_groups' in new_site_nn_data[el]:
+            # remove inequiv_groups key and group all distances
+            # together
+            groups = new_site_nn_data[el].pop('inequiv_groups')
+            dists = [dist for dist_set in groups
+                     for dist in dist_set['dists']]
+            new_site_nn_data[el]['dists'] = dists + site_dists
+        else:
+            new_site_nn_data[el]['dists'] += site_dists
+
+    return new_site_nn_data
+
+
+def _merge_nnn_data(site_nnn_data, new_site_nnn_data):
+    """Utility function to merge next nearest neighbor data.
+
+    See the ``merge_similar_sites`` docstring for information on the format of
+    the merged data.
+
+    Note an error will be thrown if this function is called on two sites that do
+    not have matching next nearest neighbor summaries (ignoring bond angles).
+    """
+    for el in site_nnn_data:
+        for geometry in site_nnn_data[el]:
+            for connectivity in site_nnn_data[el][geometry]:
+                new_site_nnn_data[el][geometry][connectivity]['angles'].extend(
+                    site_nnn_data[el][geometry][connectivity]['angles'])
+
+    return new_site_nnn_data

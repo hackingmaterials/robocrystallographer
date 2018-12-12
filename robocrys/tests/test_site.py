@@ -92,15 +92,15 @@ class TestSiteAnalyzer(RobocrysTest):
         """Check getting next nearest neighbor summary for all neighbors."""
         sa = SiteAnalyzer(self.tin_dioxide)
         info = sa.get_next_nearest_neighbor_summary(5)
-        self.assertTrue("corner-sharing" in info["Sn"])
-        self.assertTrue('octahedral' in info["Sn"]['corner-sharing'])
-        self.assertEqual(info["Sn"]['corner-sharing']['octahedral']['n_sites'],
+        self.assertTrue("octahedral" in info["Sn"])
+        self.assertTrue('corner-sharing' in info["Sn"]['octahedral'])
+        self.assertEqual(info["Sn"]['octahedral']['corner-sharing']['n_sites'],
                          8)
         self.assertAlmostEqual(
-            info["Sn"]["corner-sharing"]['octahedral']["angles"][0],
+            info["Sn"]["octahedral"]['corner-sharing']["angles"][0],
             130.16984393647132)
         self.assertEqual(
-            len(info["Sn"]["corner-sharing"]['octahedral']["angles"]),
+            len(info["Sn"]["octahedral"]['corner-sharing']["angles"]),
             8)
 
     def test_get_nearest_neighbor_summary(self):

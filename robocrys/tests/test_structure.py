@@ -29,3 +29,5 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(data['components'][0]['formula'], 'SnO2')
         self.assertTrue("sites" in data['components'][0])
         self.assertEqual(len(data['components'][0]['sites']), 2)
+
+        # TODO: add a test for merging of similar sites

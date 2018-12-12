@@ -168,8 +168,8 @@ class SiteAnalyzer(object):
 
                 {
                     'Sn': {
-                        'corner-sharing': {
-                            'octahedral': {
+                        'octahedral': {
+                            'corner-sharing': {
                                 'n_sites': 8,
                                 'angles': [180, 180, 180, ...]
                             }
@@ -187,19 +187,19 @@ class SiteAnalyzer(object):
 
         for site in nnn_info:
             grouped_nnn[site['element']][
-                site['connectivity']][site['geometry']['type']].append(site)
+                site['geometry']['type']][site['connectivity']].append(site)
 
         nnn_data = {}
-        for element, con_data in grouped_nnn.items():
+        for element, geom_data in grouped_nnn.items():
             nnn_el_data = {}
-            for connectivity, geom_data in con_data.items():
-                nnn_con_data = {}
-                for geometry, sites in geom_data.items():
-                    nnn_con_data[geometry] = {
+            for geometry, con_data in geom_data.items():
+                nnn_geom_data = {}
+                for connectivity, sites in con_data.items():
+                    nnn_geom_data[connectivity] = {
                         'n_sites': len(sites),
                         'angles': [angle for site in sites
                                    for angle in site['angles']]}
-                nnn_el_data[connectivity] = nnn_con_data
+                nnn_el_data[geometry] = nnn_geom_data
             nnn_data[element] = nnn_el_data
         return nnn_data
 
@@ -486,21 +486,21 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
     nnn_summary_a = copy.deepcopy(nnn_summary_a)
     nnn_summary_b = copy.deepcopy(nnn_summary_b)
 
-    for elem_a, con_data_a in nnn_summary_a.items():
+    for elem_a, geom_data_a in nnn_summary_a.items():
         if elem_a not in nnn_summary_b:
             return False
 
-        con_data_b = nnn_summary_b[elem_a]
-        for con_type_a, geom_data_a in con_data_a.items():
-            if con_type_a not in con_data_b:
+        geom_data_b = nnn_summary_b[elem_a]
+        for geometry_a, con_data_a in geom_data_a.items():
+            if geometry_a not in geom_data_b:
                 return False
 
-            geom_data_b = con_data_b[con_type_a]
-            for geom_a, data_a in geom_data_a.items():
-                if geom_a not in geom_data_b:
+            con_data_b = geom_data_b[geometry_a]
+            for con_type_a, data_a in con_data_a.items():
+                if con_type_a not in con_data_b:
                     return False
 
-                data_b = geom_data_b[geom_a]
+                data_b = con_data_b[con_type_a]
 
                 if data_a['n_sites'] != data_b['n_sites']:
                     return False
@@ -511,16 +511,16 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
                     if not all(np.abs(diff_angles) < bond_angle_tol):
                         return False
 
-                geom_data_b.pop(geom_a)
+                con_data_b.pop(con_type_a)
 
-            if geom_data_b:
+            if con_data_b:
                 # if geom_data_b still contains data then it has additional
                 # data relative to geom_data_a
                 return False
 
-            con_data_b.pop(con_type_a)
+            geom_data_b.pop(geometry_a)
 
-        if con_data_b:
+        if geom_data_b:
             # if con_data_b still contains data then it has additional
             # data relative to con_data_a
             return False

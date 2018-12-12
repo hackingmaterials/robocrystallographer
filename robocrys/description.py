@@ -385,7 +385,7 @@ def _get_multi_element_bonding_description(element, nn_data,
     intro = None
     # only describe the equivalent groups if inequiv_groups key is in the data.
     # if it is not in the data this means the information for several
-    # similar sites has been merged. See the _merge_similar_sites method in
+    # similar sites has been merged. See the merge_similar_sites method in
     # structure.py for more information.
     for i, (bond_element, bond_data) in enumerate(nn_data.items()):
 
