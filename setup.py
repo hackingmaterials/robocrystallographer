@@ -38,7 +38,7 @@ setup(
     extras_require={'docs': ['sphinx', 'sphinx-argparse'],
                     'dev': ['tqdm', 'pybel', 'pebble', 'maggma']},
     package_data={'robocrys': ['mineral_db.json.gz', 'molecule_db.json.gz',
-                               'formula.json.gz']},
+                               'formula_db.json.gz']},
     data_files=['LICENSE', 'requirements_rtd.txt'],
     entry_points={'console_scripts': ['robocrys = robocrys.cli:main']}
     )
