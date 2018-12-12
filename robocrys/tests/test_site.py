@@ -170,6 +170,10 @@ class TestSiteAnalyzer(RobocrysTest):
         # test bond dist tol works
         self.assertFalse(nn_summaries_match(nn_a, nn_b, bond_dist_tol=1e-10))
 
+        # test not matching bond dists
+        self.assertTrue(nn_summaries_match(nn_a, nn_b, bond_dist_tol=1e-10,
+                                           match_bond_dists=False))
+
     def test_nnn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
         sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
@@ -183,3 +187,7 @@ class TestSiteAnalyzer(RobocrysTest):
         # test bond angle tol works
         self.assertFalse(nnn_summaries_match(
             nnn_a, nnn_b, bond_angle_tol=1e-10))
+
+        # test not matching bond angles
+        self.assertTrue(nnn_summaries_match(
+            nnn_a, nnn_b, bond_angle_tol=1e-10, match_bond_angles=False))

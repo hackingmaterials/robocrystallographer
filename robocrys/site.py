@@ -35,8 +35,10 @@ class SiteAnalyzer(object):
             option will be ignored.
     """
 
-    def __init__(self, bonded_structure: StructureGraph,
-                 use_symmetry: bool = False, symprec: float = 0.01):
+    def __init__(self,
+                 bonded_structure: StructureGraph,
+                 use_symmetry: bool = False,
+                 symprec: float = 0.01):
         self.bonded_structure = bonded_structure
         self.site_fingerprints = get_site_fingerprints(
             bonded_structure.structure)
@@ -94,7 +96,7 @@ class SiteAnalyzer(object):
                 {
                     'Sn': {
                         'n_sites': 6,
-                        'inequiv_groups': (
+                        'inequiv_groups': [
                             {
                                 'n_sites': 4,
                                 'inequiv_id': 0,
@@ -105,7 +107,7 @@ class SiteAnalyzer(object):
                                 'inequiv_id': 1,
                                 'dists': [3, 3]
                             }
-                        )
+                        ]
                     }
                 }
 
@@ -132,11 +134,11 @@ class SiteAnalyzer(object):
             data = {}
             for element, sym_data in grouped_nn.items():
                 n_sites = sum([len(sites) for sites in sym_data.values()])
-                sym_groups = tuple(
+                sym_groups = [
                     {'n_sites': len(sites),
                      'inequiv_id': sym_id,
                      'dists': [x['dist'] for x in sites]
-                     } for sym_id, sites in sym_data.items())
+                     } for sym_id, sites in sym_data.items()]
                 data[element] = {'n_sites': n_sites,
                                  'inequiv_groups': sym_groups}
 
@@ -417,7 +419,8 @@ def geometries_match(geometry_a: Dict[str, Any], geometry_b: Dict[str, Any],
 
 def nn_summaries_match(nn_summary_a: Dict[str, Any],
                        nn_summary_b: Dict[str, Any],
-                       bond_dist_tol: float = 0.1) -> bool:
+                       bond_dist_tol: float = 0.1,
+                       match_bond_dists: bool = True) -> bool:
     """Determine whether two nearest neighbors summaries match.
 
     Nearest neighbor data should be formatted the same as produced by
@@ -429,6 +432,7 @@ def nn_summaries_match(nn_summary_a: Dict[str, Any],
         nn_summary_b: The second set of nearest neighbor data.
         bond_dist_tol: The tolerance used to determine if two bond lengths
             are the same.
+        match_bond_dists: Whether to consider bond distances when matching.
 
     Returns:
         Whether the two nearest neighbor summaries match.
@@ -445,7 +449,7 @@ def nn_summaries_match(nn_summary_a: Dict[str, Any],
         if data_a['n_sites'] != data_b['n_sites']:
             return False
 
-        if data_a['n_sites'] > 0:
+        if data_a['n_sites'] > 0 and match_bond_dists:
             diff_dists = (np.array(sorted(data_a['dists'])) -
                           np.array(sorted(data_b['dists'])))
             if not all(np.abs(diff_dists) < bond_dist_tol):
@@ -463,7 +467,8 @@ def nn_summaries_match(nn_summary_a: Dict[str, Any],
 
 def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
                         nnn_summary_b: Dict[str, Any],
-                        bond_angle_tol: float = 0.1):
+                        bond_angle_tol: float = 0.1,
+                        match_bond_angles: bool = True):
     """Determine whether two next nearest neighbors summaries match.
 
     Next nearest neighbor data should be formatted the same as produced by
@@ -474,6 +479,7 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
         nnn_summary_b: The second set of next nearest neighbor data.
         bond_angle_tol: The tolerance used to determine if two bond angles
             are the same.
+        match_bond_angles: Whether to consider bond angles when matching.
 
     Returns:
         Whether the two next nearest neighbor summaries match.
@@ -500,10 +506,11 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
                     sorted(data_b['geometries'])):
                 return False
 
-            diff_angles = (np.array(sorted(data_a['angles'])) -
-                           np.array(sorted(data_b['angles'])))
-            if not all(np.abs(diff_angles) < bond_angle_tol):
-                return False
+            if match_bond_angles:
+                diff_angles = (np.array(sorted(data_a['angles'])) -
+                               np.array(sorted(data_b['angles'])))
+                if not all(np.abs(diff_angles) < bond_angle_tol):
+                    return False
 
             con_data_b.pop(con_type_a)
 
