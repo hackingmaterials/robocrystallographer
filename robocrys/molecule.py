@@ -63,17 +63,15 @@ class MoleculeNamer(object):
 
             # we should use the first preference for which there is a match
             for source in self.name_preference:
-                match = self.molecule_db[smiles][source]
-                break
+                if (source in self.molecule_db[smiles] and
+                        self.molecule_db[source][smiles]):
+                    match = self.molecule_db[smiles][source]
+                    break
 
-        elif self.use_online_pubchem:
+        if not match and self.use_online_pubchem:
             match = self.get_name_from_pubchem(smiles)
 
-        if isinstance(match, str):
-            match = match.lower()
-
-        self.matched_molecules[smiles] = match
-        return self.matched_molecules[smiles]
+        return self._process_match(smiles, match)
 
     def get_name_from_pubchem(self, smiles: str) -> Optional[str]:
         """Tries to get the name of a molecule from the Pubchem website.
@@ -90,10 +88,20 @@ class MoleculeNamer(object):
         except (BadRequestError, IndexError):
             return None
 
-        if self.name_preference[0] == "traditional":
-            return comp.synonyms[0].lower()
-        else:
-            return comp.iupac_name.lower()
+        traditional = comp.synonyms[0] if comp.synonyms else None
+        names = {'traditional': traditional,
+                 'iupac': comp.iupac_name}
+
+        match = None
+        for source in self.name_preference:
+            if source in names and names[source]:
+                match = names[source]
+                break
+
+        if isinstance(match, str):
+            match = match.lower()
+
+        return self._process_match(smiles, match)
 
     @staticmethod
     def molecule_graph_to_smiles(molecule_graph: MoleculeGraph
@@ -109,3 +117,13 @@ class MoleculeNamer(object):
         bma = BabelMolAdaptor.from_molecule_graph(molecule_graph)
         pbmol = bma.pybel_mol
         return pbmol.write(str("smi")).split()[0]
+
+    def _process_match(self, smiles: str, match: Optional[str]
+                       ) -> Optional[str]:
+        """Utility function to store and process match."""
+        if isinstance(match, str):
+            match = match.lower()
+            self.matched_molecules[smiles] = match
+            return self.matched_molecules[smiles]
+        else:
+            return match
