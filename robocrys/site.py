@@ -11,11 +11,13 @@ from typing import Dict, Any, List
 
 import numpy as np
 
+from pymatgen import Composition
 from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.coord import get_angle
 from robocrys.fingerprint import get_site_fingerprints
+from robocrys.util import connected_geometries
 
 
 class SiteAnalyzer(object):
@@ -33,12 +35,20 @@ class SiteAnalyzer(object):
             the structure. The symmetry is used to determine if multiple
             sites are symmetrically equivalent. If ``use_symmetry=False`` this
             option will be ignored.
+        use_iupac_formula (bool, optional): Whether to order formulas
+            by the iupac "electronegativity" series, defined in
+            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
+            Recommendations 2005)". This ordering effectively follows
+            the groups and rows of the periodic table, except the
+            Lanthanides, Actanides and hydrogen. If set to ``False``, the
+            elements will be ordered according to the electronegativity values.
     """
 
     def __init__(self,
                  bonded_structure: StructureGraph,
                  use_symmetry: bool = False,
-                 symprec: float = 0.01):
+                 symprec: float = 0.01,
+                 use_iupac_formula: bool = True):
         self.bonded_structure = bonded_structure
         self.site_fingerprints = get_site_fingerprints(
             bonded_structure.structure)
@@ -51,6 +61,27 @@ class SiteAnalyzer(object):
 
         else:
             self.equivalent_sites = self._calculate_equivalent_sites()
+
+        self.use_iupac_formula = use_iupac_formula
+
+    def get_site_summary(self, site_index: int) -> Dict[str, Any]:
+        element = str(self.bonded_structure.structure[site_index].specie)
+        geometry = self.get_site_geometry(site_index)
+        nn_data = self.get_nearest_neighbor_data(site_index)
+        nnn_data = self.get_next_nearest_neighbor_data(site_index)
+
+        site = {'element': element, 'geometry': geometry, 'nn_data': nn_data,
+                'nnn_data': nnn_data}
+
+        if site_is_connected_polyhedra(site):
+            nn_els = "".join(["{}{}".format(el, el_data['n_sites'])
+                              for el, el_data in nn_data.items()])
+            comp = Composition(element + nn_els)
+
+            site['polyhedra_formula'] = comp.get_reduced_formula_and_factor(
+                iupac_ordering=self.use_iupac_formula)
+
+        return site
 
     def get_site_geometry(self, site_index: int) -> Dict[str, Any]:
         """Gets the bonding geometry of a site.
@@ -79,9 +110,9 @@ class SiteAnalyzer(object):
 
         return {'type': geometry, 'likeness': parameter[1]}
 
-    def get_nearest_neighbor_summary(self, site_index: int,
-                                     split_into_groups: bool = True
-                                     ) -> Dict[str, Any]:
+    def get_nearest_neighbor_data(self, site_index: int,
+                                  split_into_groups: bool = True
+                                  ) -> Dict[str, Any]:
         """Gets a summary of all the nearest neighbors to a site.
 
         Args:
@@ -155,8 +186,8 @@ class SiteAnalyzer(object):
 
         return data
 
-    def get_next_nearest_neighbor_summary(self, site_index: int
-                                          ) -> Dict[str, Any]:
+    def get_next_nearest_neighbor_data(self, site_index: int
+                                       ) -> Dict[str, Any]:
         """Gets a summary of the next nearest neighbor connectivity.
 
         Args:
@@ -245,11 +276,11 @@ class SiteAnalyzer(object):
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
 
         if inc_inequiv_id:
-            return [{'element': site.site.specie.name,
+            return [{'element': str(site.site.specie),
                      'inequiv_id': self.equivalent_sites[site.index],
                      'dist': site.dist} for site in nn_sites]
         else:
-            return [{'element': site.site.specie.name,
+            return [{'element': str(site.site.specie),
                      'dist': site.dist} for site in nn_sites]
 
     def _get_next_nearest_neighbor_info(
@@ -322,7 +353,7 @@ class SiteAnalyzer(object):
             geometry = self.get_site_geometry(nnn_site.index)
 
             next_nn_summary.append({
-                'element': nnn_site.site.specie.name,
+                'element': str(nnn_site.site.specie),
                 'connectivity': connectivity,
                 'geometry': geometry,
                 'angles': angles})
@@ -363,9 +394,9 @@ class SiteAnalyzer(object):
         for site_id, site in enumerate(self.bonded_structure.structure):
             element = get_el_sp(site.specie)
             geometry = self.get_site_geometry(site_id)
-            nn_summary = self.get_nearest_neighbor_summary(
+            nn_data = self.get_nearest_neighbor_data(
                 site_id, split_into_groups=False)
-            nnn_summary = self.get_next_nearest_neighbor_summary(site_id)
+            nnn_data = self.get_next_nearest_neighbor_data(site_id)
 
             matched = False
             for inequiv_id, inequiv_site in inequiv_sites.items():
@@ -374,10 +405,10 @@ class SiteAnalyzer(object):
                     geometry, inequiv_site['geometry'],
                     likeness_tol=geometry_likeness_tol)
                 nn_match = nn_summaries_match(
-                    nn_summary, inequiv_site['nn_summary'],
+                    nn_data, inequiv_site['nn_data'],
                     bond_dist_tol=bond_dist_tol)
                 nnn_match = nnn_summaries_match(
-                    nnn_summary, inequiv_site['nnn_summary'],
+                    nnn_data, inequiv_site['nnn_data'],
                     bond_angle_tol=bond_angle_tol)
 
                 if elem_match and geom_match and nn_match and nnn_match:
@@ -388,9 +419,10 @@ class SiteAnalyzer(object):
             if not matched:
                 # no matches therefore store original site id
                 equivalent_sites.append(site_id)
-                site_data = {'element': element, 'geometry': geometry,
-                             'nn_summary': nn_summary,
-                             'nnn_summary': nnn_summary}
+                site_data = {'element': element,
+                             'geometry': geometry,
+                             'nn_data': nn_data,
+                             'nnn_data': nnn_data}
                 inequiv_sites[site_id] = site_data
 
         return equivalent_sites
@@ -412,6 +444,7 @@ def geometries_match(geometry_a: Dict[str, Any], geometry_b: Dict[str, Any],
     Returns:
         Whether the two geometries are the same.
     """
+    # TODO: Handle case when geometry types are both None
     return (geometry_a['type'] == geometry_b['type'] and
             abs(geometry_a['likeness'] - geometry_b['likeness']) < likeness_tol)
 
@@ -423,7 +456,7 @@ def nn_summaries_match(nn_summary_a: Dict[str, Any],
     """Determine whether two nearest neighbors summaries match.
 
     Nearest neighbor data should be formatted the same as produced by
-    :meth:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_summary` with
+    :meth:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_data` with
     ``split_into_groups=False``.
 
     Args:
@@ -471,7 +504,7 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
     """Determine whether two next nearest neighbors summaries match.
 
     Next nearest neighbor data should be formatted the same as produced by
-    :meth:`robocrys.site.SiteAnalyzer.get_next_nearest_neighbor_summary`.
+    :meth:`robocrys.site.SiteAnalyzer.get_next_nearest_neighbor_data`.
 
     Args:
         nnn_summary_a: The first set of next nearest neighbor data.
@@ -533,3 +566,166 @@ def nnn_summaries_match(nnn_summary_a: Dict[str, Any],
         return False
     else:
         return True
+
+
+def site_is_connected_polyhedra(site: Dict[str, Any]) -> bool:
+    """Determines whether a site is corner, edge, or face sharing polyhedra.
+
+    Essentially, if two octahedra are bonded, two tetrahedra are bonded or
+    a mixture of tetrahedra and octahedra are bonded, then you have some sort
+    of edge, corner or face-sharing connectivity. This description does not
+    indicate how persistent the connectivity is throughout the whole cell.
+
+    Args:
+        site: A site, formatted as a :ob:`dict` with the keys:
+
+            - ``'element'`` (``str``): The element of the site.
+            - ``'geometry'`` (``dict``): The geometry, as output by
+                :meth:`SiteAnalyzer.get_site_geometry`.
+            - ``'nn_data'`` (``dict``): The nearest neighbor data, as output by
+                :meth:`SiteAnalyzer.get_nearest_neighbor_data`.
+            - ``'nnn_data'`` (``dict``): The next nearest neighbor data, as
+                given by :meth:`SiteAnalyzer.get_next_nearest_neighbor_data`.
+
+    Returns:
+        Whether the site is a edge, corner, or face sharing octahedral or
+        tetrahedral site.
+    """
+    if (site['geometry'] in connected_geometries and
+            any([nnn_site_geometry in connected_geometries
+                 for nnn_geometry_data in site['nnn_data']
+                 for nnn_site_geometry in nnn_geometry_data.keys()])):
+        return True
+    else:
+        return False
+
+
+def merge_similar_sites(sites: List[Dict[str, Any]]):
+    """Merges sites with the same properties except bond angles and distances.
+
+    Args:
+        sites: A list of sites. Each site is formatted as a :ob:`dict` with the
+            keys:
+
+            - ``'element'`` (``str``): The element of the site.
+            - ``'geometry'`` (``dict``): The geometry, as output by
+                :meth:`SiteAnalyzer.get_site_geometry`.
+            - ``'nn_data'`` (``dict``): The nearest neighbor data, as output by
+                :meth:`SiteAnalyzer.get_nearest_neighbor_data`.
+            - ``'nnn_data'`` (``dict``): The next nearest neighbor data, as
+                given by :meth:`SiteAnalyzer.get_next_nearest_neighbor_data`.
+
+    Returns:
+        A list of merged sites with the same format as above. Merged sites
+        have a different ``nn_data`` format than unmerged sites. For example,
+        ``nn_data`` in unmerged sites is formatted as::
+
+            {
+                'Sn': {
+                    'n_sites': 6,
+                    'inequiv_groups': [
+                        {
+                            'n_sites': 4,
+                            'inequiv_id': 0,
+                            'dists': [1, 1, 2, 2]
+                        },
+                        {
+                            'n_sites': 2,
+                            'inequiv_id': 1,
+                            'dists': [3, 3]
+                        }
+                    ]
+                }
+            }
+
+        Merged sites do not contain an ``inequiv_groups`` key and are instead
+        formatted as::
+
+            {
+                'n_sites': 6
+                'dists': [1, 1, 1, 2, 2, 2, 2, 3, 3]
+                )
+            }
+
+        Note that there are now more distances than there are number of sites.
+        This is because n_sites gives the number of bonds to a specific site,
+        whereas the distances are for the complete set of distances for all
+        similar (merged) sites. Similarly, merged next nearest neighbor
+        data can contain more angles than number of sites, however, the
+        general format of the ``nnn_data`` dict is unaltered.
+    """
+    sites = copy.deepcopy(sites)
+    new_sites = []
+
+    for site in sites:
+
+        matched = False
+        for new_site in new_sites:
+            elem_match = site['element'] == new_site['element']
+            geom_match = geometries_match(
+                site['geometry'], new_site['geometry'], likeness_tol=1)
+            nn_match = nn_summaries_match(
+                site['nn_data'], new_site['nn_data'],
+                match_bond_dists=False)
+            nnn_match = nnn_summaries_match(
+                site['nnn_data'], new_site['nnn_data'], match_bond_angles=False)
+
+            if elem_match and geom_match and nn_match and nnn_match:
+                new_site['nn_data'] = _merge_nn_data(site['nn_data'],
+                                                     new_site['nn_data'])
+                new_site['nnn_data'] = _merge_nnn_data(site['nnn_data'],
+                                                       new_site['nnn_data'])
+                matched = True
+                break
+
+        if not matched:
+            # no matches therefore store original site id
+            new_sites.append(site)
+
+    return new_sites
+
+
+def _merge_nn_data(site_nn_data, new_site_nn_data):
+    """Utility function to merge nearest neighbor data.
+
+    See the ``merge_similar_sites`` docstring for information on the format of
+    the merged data.
+
+    Note an error will be thrown if this function is called on two sites that do
+    not have matching nearest neighbor summaries (ignoring bond distances).
+    """
+
+    for el in site_nn_data:
+        site_dists = [dist for group in
+                      site_nn_data[el]['inequiv_groups']
+                      for dist in group['dists']]
+
+        if 'inequiv_groups' in new_site_nn_data[el]:
+            # remove inequiv_groups key and group all distances
+            # together
+            groups = new_site_nn_data[el].pop('inequiv_groups')
+            dists = [dist for dist_set in groups
+                     for dist in dist_set['dists']]
+            new_site_nn_data[el]['dists'] = dists + site_dists
+        else:
+            new_site_nn_data[el]['dists'] += site_dists
+
+    return new_site_nn_data
+
+
+def _merge_nnn_data(site_nnn_data, new_site_nnn_data):
+    """Utility function to merge next nearest neighbor data.
+
+    See the ``merge_similar_sites`` docstring for information on the format of
+    the merged data.
+
+    Note an error will be thrown if this function is called on two sites that do
+    not have matching next nearest neighbor summaries (ignoring bond angles).
+    """
+    for el in site_nnn_data:
+        for geometry in site_nnn_data[el]:
+            for connectivity in site_nnn_data[el][geometry]:
+                new_site_nnn_data[el][geometry][connectivity]['angles'].extend(
+                    site_nnn_data[el][geometry][connectivity]['angles'])
+
+    return new_site_nnn_data
