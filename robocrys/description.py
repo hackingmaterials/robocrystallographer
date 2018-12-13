@@ -156,7 +156,8 @@ class Describer(object):
         if n_components == 1:
             # very messy way of getting the only component out of a nested
             # dict series where we don't know any of the keys in advance.
-            comp = list(list(component_data.values())[0].values())[0]
+            comp = list(list(component_data.values())[0].values())[0][
+                'inequiv_components'][0]
 
             if _component_contains_connected_polyhedra(
                     comp, self.cation_polyhedra_only):
@@ -546,7 +547,6 @@ class Describer(object):
 def _component_contains_connected_polyhedra(component: Dict[str, Any],
                                             cation_polyhedra_only: bool = False
                                             ) -> bool:
-    print(component)
     """Check if a component contains connected polyhedra."""
     return any(['polyhedra_formula' in s for s in component['sites']
                 if not cation_polyhedra_only or '+' in s['element']])
