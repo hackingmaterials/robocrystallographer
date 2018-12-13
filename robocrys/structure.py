@@ -101,6 +101,9 @@ class StructureCondenser(object):
         Returns:
             WIP
         """
+        # sort so we can give proper symmetry labels
+        structure = structure.get_sorted_structure()
+
         # wrap all site coords into unit cell
         structure.translate_sites(range(structure.num_sites), [1, 1, 1])
 
@@ -182,7 +185,7 @@ class StructureCondenser(object):
             inequiv_components = get_structure_inequiv_components(components)
 
         site_analyzer = SiteAnalyzer(
-            bonded_structure, use_symmetry=self.use_symmetry,
+            bonded_structure, use_symmetry_equivalent_sites=self.use_symmetry,
             symprec=self.symprec)
 
         molecule_namer = MoleculeNamer()

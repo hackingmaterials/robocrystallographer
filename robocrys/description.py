@@ -22,7 +22,7 @@ class Describer(object):
                  describe_component_dimensionaly: bool = True,
                  describe_components: bool = True,
                  describe_oxidation_states: bool = True,
-                 only_describe_cation_polyhedra_connectivity: bool = False):
+                 only_describe_cation_polyhedra_connectivity: bool = True):
         """
 
         Args:
@@ -251,6 +251,7 @@ class Describer(object):
         connected_data = {}
         ordered_sites = []
         octahedral_tilts = []
+
         for geometry in connected_geometries:
             geometry_data = defaultdict(list)
 
@@ -273,8 +274,10 @@ class Describer(object):
                                             'angles'])
 
                     if connectivities:
+                        connectivities = list(set(connectivities))
                         connectivities = [c.replace("sharing", "")
                                           for c in connectivities]
+
                         if len(connectivities) > 1:
                             connectivities_str = "a mixture of "
                         else:
@@ -282,9 +285,11 @@ class Describer(object):
                         connectivities_str += en.join(
                             connectivities) + "sharing"
 
-                        geometry_data[connectivities_str].append(
-                            site['polyhedra_formula'])
-                        ordered_sites.append(site)
+                        if (site['polyhedra_formula'] not in
+                                geometry_data[connectivities_str]):
+                            geometry_data[connectivities_str].append(
+                                site['polyhedra_formula'])
+                            ordered_sites.append(site)
 
             if geometry_data:
                 connected_data[geometry] = geometry_data
@@ -559,8 +564,8 @@ def _filter_connected_polyhedra(component: Dict[str, Any],
     conn = [s for s in component['sites'] if 'polyhedra_formula' in s and
             (not cation_polyhedra_only or '+' in s['element'])]
     other = [s for s in component['sites'] if
-             'polyhedra_formula' not in s or not
-             (cation_polyhedra_only or '+' in s['element'])]
+             'polyhedra_formula' not in s or
+             (cation_polyhedra_only and '+' not in s['element'])]
     return conn, other
 
 

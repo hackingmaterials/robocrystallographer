@@ -116,35 +116,35 @@ class TestSiteAnalyzer(RobocrysTest):
 
     def test_equivalent_sites(self):
         """Check equivalent sites instance variable set correctly."""
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=False)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
         self.assertEqual(sa.equivalent_sites, [0, 0, 0, 0, 4, 4])
 
         # test using symmetry to determine equivalent sites
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         self.assertEqual(sa.equivalent_sites.tolist(), [0, 0, 0, 0, 4, 4])
 
         # test symprec option works
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True, symprec=0.0001)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True, symprec=0.0001)
         self.assertEqual(sa.equivalent_sites.tolist(), [0, 1, 1, 0, 4, 4])
 
     def test_get_inequivalent_site_ids(self):
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=False)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
         inequiv_ids = sa.get_inequivalent_site_ids(list(range(6)))
         self.assertEqual(inequiv_ids, [0, 4])
 
         # test using symmetry to determine inequivalent sites.
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         inequiv_ids = sa.get_inequivalent_site_ids(list(range(6)))
         self.assertEqual(inequiv_ids, [0, 4])
 
         # test symprec option
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True, symprec=0.0001)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True, symprec=0.0001)
         inequiv_ids = sa.get_inequivalent_site_ids(list(range(6)))
         self.assertEqual(inequiv_ids, [0, 1, 4])
 
     def test_geometries_match(self):
         """Test geometry matching function."""
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         geom_a = sa.get_site_geometry(0)
         geom_b = sa.get_site_geometry(1)
         geom_c = sa.get_site_geometry(4)
@@ -157,7 +157,7 @@ class TestSiteAnalyzer(RobocrysTest):
 
     def test_nn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         nn_a = sa.get_nearest_neighbor_data(0, split_into_groups=False)
         nn_b = sa.get_nearest_neighbor_data(1, split_into_groups=False)
         nn_c = sa.get_nearest_neighbor_data(4, split_into_groups=False)
@@ -174,7 +174,7 @@ class TestSiteAnalyzer(RobocrysTest):
 
     def test_nnn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
-        sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
+        sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         nnn_a = sa.get_next_nearest_neighbor_data(0)
         nnn_b = sa.get_next_nearest_neighbor_data(1)
         nnn_c = sa.get_next_nearest_neighbor_data(4)

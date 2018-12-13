@@ -28,13 +28,13 @@ class SiteAnalyzer(object):
             included. For example generated using
             :class:`pymatgen.analysis.local_env.CrystalNN` or
             :class:`pymatgen.analysis.local_env.VoronoiNN`.
-        use_symmetry: Whether to use symmetry to determine if sites are
-            inequivalent. If ``False``, the site geometry and (next) nearest
-            neighbor information will be used.
+        use_symmetry_equivalent_sites: Whether to use symmetry to determine if
+            sites are inequivalent. If ``False``, the site geometry and (next)
+            nearest neighbor information will be used.
         symprec: The tolerance used when determining the symmetry of
-            the structure. The symmetry is used to determine if multiple
-            sites are symmetrically equivalent. If ``use_symmetry=False`` this
-            option will be ignored.
+            the structure. The symmetry can used both to determine if multiple
+            sites are symmetrically equivalent and to obtain the symmetry labels
+            for each site.
         use_iupac_formula (bool, optional): Whether to order formulas
             by the iupac "electronegativity" series, defined in
             Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
@@ -46,21 +46,24 @@ class SiteAnalyzer(object):
 
     def __init__(self,
                  bonded_structure: StructureGraph,
-                 use_symmetry: bool = False,
+                 use_symmetry_equivalent_sites: bool = False,
                  symprec: float = 0.01,
                  use_iupac_formula: bool = True):
         self.bonded_structure = bonded_structure
         self.site_fingerprints = get_site_fingerprints(
             bonded_structure.structure)
 
-        if use_symmetry:
-            sga = SpacegroupAnalyzer(bonded_structure.structure,
-                                     symprec=symprec)
-            sym_data = sga.get_symmetry_dataset()
+        sga = SpacegroupAnalyzer(bonded_structure.structure,
+                                 symprec=symprec)
+        sym_data = sga.get_symmetry_dataset()
+        if use_symmetry_equivalent_sites:
             self.equivalent_sites = sym_data['equivalent_atoms']
 
         else:
             self.equivalent_sites = self._calculate_equivalent_sites()
+
+        self.symmetry_labels = self._calculate_symmetry_labels(
+            sym_data['equivalent_atoms'])
 
         self.use_iupac_formula = use_iupac_formula
 
@@ -157,7 +160,7 @@ class SiteAnalyzer(object):
 
         if split_into_groups:
             # first group nearest neighbors by element and inequiv_id
-            # e.g. grouped_nn looks like {'el': {'sym_id': [sites]}}
+            # e.g. grouped_nn looks like {'el': {'inequiv_id': [sites]}}
             grouped_nn = defaultdict(lambda: defaultdict(list))
             for site in nn_info:
                 grouped_nn[site['element']][site['inequiv_id']].append(site)
@@ -426,6 +429,41 @@ class SiteAnalyzer(object):
                 inequiv_sites[site_id] = site_data
 
         return equivalent_sites
+
+    def _calculate_symmetry_labels(self, sym_equivalent_atoms: List[int]
+                                   ) -> Dict[int, int]:
+        """Calculates the symmetry labels for all sites in the structure.
+
+        The symmetry labels number the sites in the structure. If two sites
+        are symmetrically equivalent they share the same symmetry label. The
+        numbering begins at 1 for each element in the structure.
+
+        Args:
+            sym_equivalent_atoms: A :obj:`list` of indices mapping each site in
+                the structure to a symmetrically equivalent site. The data
+                should be formatted as given by the ``equivalent_atoms`` key in
+                :meth`SpacegroupAnalyzer.get_symmetry_dataset()`.
+
+        Returns:
+            A mapping between the site index and symmetry label for that site.
+        """
+        symmetry_labels = defaultdict(dict)
+        for specie in self.bonded_structure.structure.species:
+            el_indices = self.bonded_structure.structure.indices_from_symbol(
+                get_el(specie))
+            equiv_indices = [sym_equivalent_atoms[x] for x in el_indices]
+
+            count = 1
+            equiv_id_to_sym_label = {}
+            for el_id, equiv_id in zip(el_indices, equiv_indices):
+                if equiv_id in equiv_id_to_sym_label:
+                    symmetry_labels[el_id] = equiv_id_to_sym_label[equiv_id]
+                else:
+                    equiv_id_to_sym_label[equiv_id] = count
+                    symmetry_labels[el_id] = count
+                    count += 1
+
+        return dict(symmetry_labels)
 
 
 def geometries_match(geometry_a: Dict[str, Any], geometry_b: Dict[str, Any],
