@@ -1,7 +1,10 @@
 """
 This module provides a class for generating descriptions of condensed structure
 data.
+
+TODO: Handle distortion in connected polyhedra description.
 """
+
 from collections import defaultdict
 from typing import Dict, Any, Tuple, List
 
@@ -31,7 +34,7 @@ class Describer(object):
         self.describe_component_dimensionality = describe_component_dimensionaly
         self.describe_components = describe_components
         self.describe_oxidation_state = describe_oxidation_states
-        self.only_describe_cation_polyhedra_connectivity = \
+        self.cation_polyhedra_only = \
             only_describe_cation_polyhedra_connectivity
 
     def describe(self, condensed_structure) -> str:
@@ -155,7 +158,8 @@ class Describer(object):
             # dict series where we don't know any of the keys in advance.
             comp = list(list(component_data.values())[0].values())[0]
 
-            if self._component_contains_connected_polyhedra(comp):
+            if _component_contains_connected_polyhedra(
+                    comp, self.cation_polyhedra_only):
                 desc = "The structure contains "
             else:
                 desc = ""
@@ -177,8 +181,8 @@ class Describer(object):
                         prefix = "the" if count == 1 else "each"
                         shape = dimensionality_to_shape[comp_dimen]
 
-                        if self._component_contains_connected_polyhedra(
-                                inequiv_comp):
+                        if _component_contains_connected_polyhedra(
+                                inequiv_comp, self.cation_polyhedra_only):
                             comp_desc = "{} {} {} contains ".format(
                                 prefix.capitalize(), formula, shape)
 
@@ -197,8 +201,8 @@ class Describer(object):
                                 dimensionality_to_shape[comp_dimen],
                                 2)
 
-                            if self._component_contains_connected_polyhedra(
-                                    inequiv_comp):
+                            if _component_contains_connected_polyhedra(
+                                    inequiv_comp, self.cation_polyhedra_only):
                                 comp_desc += "{} of the {} {}".format(
                                     count.capitalize(), formula, shape)
 
@@ -215,8 +219,8 @@ class Describer(object):
         return desc
 
     def _get_component_description(self, component: Dict[str, Any]) -> str:
-        conn_sites, other_sites = self._filter_connected_polyhedra(
-            component)
+        conn_sites, other_sites = _filter_connected_polyhedra(
+            component, cation_polyhedra_only=self.cation_polyhedra_only)
 
         desc = []
         if conn_sites:
@@ -231,8 +235,8 @@ class Describer(object):
         desc = " ".join(desc)
         return desc
 
-    @staticmethod
-    def _get_connected_polyhedral_sites_description(connected_sites: List[dict]
+    def _get_connected_polyhedral_sites_description(self,
+                                                    connected_sites: List[dict]
                                                     ) -> str:
         """Gets a summary of the connected polyhedra sites."""
 
@@ -240,7 +244,12 @@ class Describer(object):
         # we only want to extract the connectivities for bonding to other
         # tet or oct sites. Also we want to separate the oct and tet sites so
         # that we can describe them separately.
+        # futhermore, the tilt angles are only nicely defined for
+        # corner sharing octahedra so we only report those here.
+
         connected_data = {}
+        ordered_sites = []
+        octahedral_tilts = []
         for geometry in connected_geometries:
             geometry_data = defaultdict(list)
 
@@ -250,7 +259,17 @@ class Describer(object):
                     for el_data in site['nnn_data'].values():
                         for to_geometry in connected_geometries:
                             if to_geometry in el_data:
-                                connectivities.extend(el_data.keys())
+                                # store the different types of connectivity
+                                connectivities.extend(
+                                    el_data[to_geometry].keys())
+
+                                # if corner sharing octahedra store the angles
+                                if (geometry == 'octahedral' and
+                                        'corner-sharing' in el_data[
+                                            to_geometry]):
+                                    octahedral_tilts.extend(
+                                        el_data[to_geometry]['corner-sharing'][
+                                            'angles'])
 
                     if connectivities:
                         connectivities = [c.replace("sharing", "")
@@ -264,6 +283,7 @@ class Describer(object):
 
                         geometry_data[connectivities_str].append(
                             site['polyhedra_formula'])
+                        ordered_sites.append(site)
 
             if geometry_data:
                 connected_data[geometry] = geometry_data
@@ -272,13 +292,35 @@ class Describer(object):
 
         for geometry in connected_geometries:
             if geometry in connected_data:
-                for connectivities_str, formulas in connected_data[geometry]:
+                for con_str, formulas in connected_data[geometry].items():
                     formulas_str = en.join(formulas)
                     polyhedra = geometry_to_polyhedra[geometry]
-                    desc.append("{} {} {}".format(
-                        connectivities_str, formulas_str, polyhedra))
+                    desc.append("{} {} {}".format(con_str, formulas_str,
+                                                  polyhedra))
 
-        return en.join(desc)
+        desc[-1] = desc[-1] + "."
+        all_sites_desc = [en.join(desc)]
+
+        if octahedral_tilts:
+            octahedral_tilts = [180 - t for t in octahedral_tilts]
+
+            tilts = list(set(_rounded_bond_lengths(
+                octahedral_tilts, decimal_places=1)))
+            tilt_desc = "The corner-sharing octahedra have tilt angles "
+
+            if len(tilts) == 1:
+                tilt_desc += "of {}°."
+            else:
+                tilt_desc += "between {}–{}°.".format(min(tilts), max(tilts))
+
+            all_sites_desc.append(tilt_desc)
+
+        for site in ordered_sites:
+            for bond_element, bond_data in site['nn_data'].items():
+                all_sites_desc.append(self._get_bond_length_description(
+                    site['element'], bond_element, bond_data))
+
+        return " ".join(all_sites_desc)
 
     def _get_site_description(self, element: str, geometry: dict, nn_data: dict,
                               distorted_tol: float = 0.6,
@@ -500,24 +542,26 @@ class Describer(object):
                                                           bond_data)
         return desc
 
-    def _component_contains_connected_polyhedra(self, component: Dict[str, Any]
-                                                ) -> bool:
-        """Check if a component contains connected polyhedra."""
-        return any(['polyhedra_formula' in s for s in component['sites']
-                    if not self.only_describe_cation_polyhedra_connectivity
-                    or '+' in s['element']])
 
-    def _filter_connected_polyhedra(self, component: Dict[str, Any]
-                                    ) -> Tuple[List, List]:
-        """Function to separate out connected and non-connected sites."""
-        conn = [s for s in component['sites'] if 'polyhedra_formula' in s and
-                (not self.only_describe_cation_polyhedra_connectivity
-                 or '+' in s['element'])]
-        other = [s for s in component['sites'] if
-                 'polyhedra_formula' not in s or not
-                 (self.only_describe_cation_polyhedra_connectivity
-                  and '+' in s['element'])]
-        return conn, other
+def _component_contains_connected_polyhedra(component: Dict[str, Any],
+                                            cation_polyhedra_only: bool = False
+                                            ) -> bool:
+    print(component)
+    """Check if a component contains connected polyhedra."""
+    return any(['polyhedra_formula' in s for s in component['sites']
+                if not cation_polyhedra_only or '+' in s['element']])
+
+
+def _filter_connected_polyhedra(component: Dict[str, Any],
+                                cation_polyhedra_only: bool = False
+                                ) -> Tuple[List, List]:
+    """Function to separate out connected and non-connected sites."""
+    conn = [s for s in component['sites'] if 'polyhedra_formula' in s and
+            (not cation_polyhedra_only or '+' in s['element'])]
+    other = [s for s in component['sites'] if
+             'polyhedra_formula' not in s or not
+             (cation_polyhedra_only or '+' in s['element'])]
+    return conn, other
 
 
 def _rounded_bond_lengths(data, decimal_places=3) -> Tuple[float]:

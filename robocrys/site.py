@@ -17,7 +17,7 @@ from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.coord import get_angle
 from robocrys.fingerprint import get_site_fingerprints
-from robocrys.util import connected_geometries
+from robocrys.util import connected_geometries, get_el
 
 
 class SiteAnalyzer(object):
@@ -74,12 +74,12 @@ class SiteAnalyzer(object):
                 'nnn_data': nnn_data}
 
         if site_is_connected_polyhedra(site):
-            nn_els = "".join(["{}{}".format(el, el_data['n_sites'])
+            nn_els = "".join(["{}{}".format(get_el(el), el_data['n_sites'])
                               for el, el_data in nn_data.items()])
-            comp = Composition(element + nn_els)
+            comp = Composition(get_el(element) + nn_els)
 
             site['polyhedra_formula'] = comp.get_reduced_formula_and_factor(
-                iupac_ordering=self.use_iupac_formula)
+                iupac_ordering=self.use_iupac_formula)[0]
 
         return site
 
@@ -591,9 +591,9 @@ def site_is_connected_polyhedra(site: Dict[str, Any]) -> bool:
         Whether the site is a edge, corner, or face sharing octahedral or
         tetrahedral site.
     """
-    if (site['geometry'] in connected_geometries and
+    if (site['geometry']['type'] in connected_geometries and
             any([nnn_site_geometry in connected_geometries
-                 for nnn_geometry_data in site['nnn_data']
+                 for nnn_geometry_data in site['nnn_data'].values()
                  for nnn_site_geometry in nnn_geometry_data.keys()])):
         return True
     else:
