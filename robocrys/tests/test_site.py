@@ -91,7 +91,7 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_get_next_nearest_neighbor_summary(self):
         """Check getting next nearest neighbor summary for all neighbors."""
         sa = SiteAnalyzer(self.tin_dioxide)
-        info = sa.get_next_nearest_neighbor_summary(5)
+        info = sa.get_next_nearest_neighbor_data(5)
         self.assertTrue("octahedral" in info["Sn"])
         self.assertTrue('corner-sharing' in info["Sn"]['octahedral'])
         self.assertEqual(info["Sn"]['octahedral']['corner-sharing']['n_sites'],
@@ -106,7 +106,7 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_get_nearest_neighbor_summary(self):
         """Check getting nearest neighbor summary for all neighbors."""
         sa = SiteAnalyzer(self.tin_dioxide)
-        info = sa.get_nearest_neighbor_summary(5)
+        info = sa.get_nearest_neighbor_data(5)
         self.assertTrue("O" in info)
         self.assertEqual(info["O"]["n_sites"], 6)
         self.assertEqual(info["O"]['inequiv_groups'][0]['n_sites'], 1)
@@ -158,9 +158,9 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_nn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
         sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
-        nn_a = sa.get_nearest_neighbor_summary(0, split_into_groups=False)
-        nn_b = sa.get_nearest_neighbor_summary(1, split_into_groups=False)
-        nn_c = sa.get_nearest_neighbor_summary(4, split_into_groups=False)
+        nn_a = sa.get_nearest_neighbor_data(0, split_into_groups=False)
+        nn_b = sa.get_nearest_neighbor_data(1, split_into_groups=False)
+        nn_c = sa.get_nearest_neighbor_data(4, split_into_groups=False)
 
         self.assertTrue(nn_summaries_match(nn_a, nn_b))
         self.assertFalse(nn_summaries_match(nn_a, nn_c))
@@ -175,9 +175,9 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_nnn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
         sa = SiteAnalyzer(self.ba_n, use_symmetry=True)
-        nnn_a = sa.get_next_nearest_neighbor_summary(0)
-        nnn_b = sa.get_next_nearest_neighbor_summary(1)
-        nnn_c = sa.get_next_nearest_neighbor_summary(4)
+        nnn_a = sa.get_next_nearest_neighbor_data(0)
+        nnn_b = sa.get_next_nearest_neighbor_data(1)
+        nnn_c = sa.get_next_nearest_neighbor_data(4)
 
         self.assertTrue(nnn_summaries_match(nnn_a, nnn_b))
         self.assertFalse(nnn_summaries_match(nnn_a, nnn_c))

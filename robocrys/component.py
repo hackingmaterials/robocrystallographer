@@ -206,13 +206,13 @@ def get_formula_inequiv_components(components: List[Component],
         components: A list of structure components, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`,
             with ``inc_site_ids=True``.
-        use_iupac_formula (bool, optional): Whether to order the
-            formula by the iupac "electronegativity" series, defined in
-            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
-            Recommendations 2005)". This ordering effectively follows
-            the groups and rows of the periodic table, except the
-            Lanthanides, Actanides and hydrogen. If set to None, the elements
-            will be ordered according to the electronegativity values.
+        use_iupac_formula (bool, optional): Whether to order formulas by the
+            iupac "electronegativity" series, defined in Table VI of
+            "Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)".
+            This ordering effectively follows the groups and rows of the
+            periodic table, except the Lanthanides, Actanides and hydrogen. If
+            set to ``False``, the elements will be ordered according to the
+            electronegativity values.
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.
@@ -319,13 +319,13 @@ def get_component_formula_and_factor(component: Component,
     Args:
         component: A structure component, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
-        use_iupac_formula (bool, optional): Whether to order the
-            formula by the iupac "electronegativity" series, defined in
-            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
-            Recommendations 2005)". This ordering effectively follows
-            the groups and rows of the periodic table, except the
-            Lanthanides, Actanides and hydrogen. If set to None, the elements
-            will be ordered according to the electronegativity values.
+        use_iupac_formula (bool, optional): Whether to order formulas by the
+            iupac "electronegativity" series, defined in Table VI of
+            "Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)".
+            This ordering effectively follows the groups and rows of the
+            periodic table, except the Lanthanides, Actanides and hydrogen. If
+            set to ``False``, the elements will be ordered according to the
+            electronegativity values.
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.
@@ -352,13 +352,13 @@ def get_component_formula(component: Component,
     Args:
         component: A structure component, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
-        use_iupac_formula (bool, optional): Whether to order the
-            formula by the iupac "electronegativity" series, defined in
-            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
-            Recommendations 2005)". This ordering effectively follows
-            the groups and rows of the periodic table, except the
-            Lanthanides, Actanides and hydrogen. If set to None, the elements
-            will be ordered according to the electronegativity values.
+        use_iupac_formula (bool, optional): Whether to order formulas by the
+            iupac "electronegativity" series, defined in Table VI of
+            "Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)".
+            This ordering effectively follows the groups and rows of the
+            periodic table, except the Lanthanides, Actanides and hydrogen. If
+            set to ``False``, the elements will be ordered according to the
+            electronegativity values.
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.
@@ -386,13 +386,13 @@ def get_formula_from_components(components: List[Component],
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`.
         molecules_first: Whether to put any molecules (zero-dimensional
             components) at the beginning of the formula.
-        use_iupac_formula (bool, optional): Whether to order the
-            formula by the iupac "electronegativity" series, defined in
-            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
-            Recommendations 2005)". This ordering effectively follows
-            the groups and rows of the periodic table, except the
-            Lanthanides, Actanides and hydrogen. If set to None, the elements
-            will be ordered according to the electronegativity values.
+        use_iupac_formula (bool, optional): Whether to order formulas by the
+            iupac "electronegativity" series, defined in Table VI of
+            "Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)".
+            This ordering effectively follows the groups and rows of the
+            periodic table, except the Lanthanides, Actanides and hydrogen. If
+            set to ``False``, the elements will be ordered according to the
+            electronegativity values.
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.
@@ -480,13 +480,13 @@ def get_vdw_heterostructure_information(components: List[Component],
         components: A list of structure components, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`
             with ``inc_orientation=True``.
-        use_iupac_formula (bool, optional): Whether to order the
-            formula by the iupac "electronegativity" series, defined in
-            Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
-            Recommendations 2005)". This ordering effectively follows
-            the groups and rows of the periodic table, except the
-            Lanthanides, Actanides and hydrogen. If set to None, the elements
-            will be ordered according to the electronegativity values.
+        use_iupac_formula (bool, optional): Whether to order formulas by the
+            iupac "electronegativity" series, defined in Table VI of
+            "Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)".
+            This ordering effectively follows the groups and rows of the
+            periodic table, except the Lanthanides, Actanides and hydrogen. If
+            set to ``False``, the elements will be ordered according to the
+            electronegativity values.
         use_common_formulas: Whether to use the database of common formulas.
             The common formula will be used preferentially to the iupac or
             reduced formula.

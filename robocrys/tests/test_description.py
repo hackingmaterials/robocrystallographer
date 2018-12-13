@@ -33,18 +33,18 @@ class TestDescriptionMethods(RobocrysTest):
         # content liable to change so just check function runs without error
         # and returns *something*.
         describer = SiteDescriber(self.tin_dioxide)
-        desc = describer.get_site_description(0)
+        desc = describer._get_site_description(0)
         self.assertNotEqual(desc, None)
 
-        desc = describer.get_site_description(4)
+        desc = describer._get_site_description(4)
         self.assertNotEqual(desc, None)
 
         # check output changes when turning of bond length information
-        desc_bond_lengths = describer.get_site_description(
+        desc_bond_lengths = describer._get_site_description(
             4, describe_bond_lengths=False)
         self.assertNotEqual(desc, desc_bond_lengths)
 
         # check different structure
         describer = SiteDescriber(self.ba_n)
-        desc = describer.get_site_description(0)
+        desc = describer._get_site_description(0)
         self.assertNotEqual(desc, None)
