@@ -157,8 +157,8 @@ def get_sym_inequiv_components(components: List[Component],
         components: A list of structure components, generated using
             :obj:`pymatgen.analysis.dimensionality.get_structure_components`,
             with ``inc_site_ids=True``.
-        spg_analyzer: A spacegroup analyzer object for the structure containing
-            the components.
+        spg_analyzer: A `pymatgen.symmetry.analyzer.SpacegroupAnalyzer` analyzer
+            object for the structure containing the components.
 
     Returns:
         A list of the symmetrically inequivalent components. Any duplicate
