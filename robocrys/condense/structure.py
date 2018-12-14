@@ -325,7 +325,7 @@ class StructureCondenser(object):
                 component, use_iupac_formula=self.use_iupac_formula,
                 use_common_formulas=self.use_common_formulas)
 
-            sites = site_analyzer.get_inequivalent_site_ids(
+            sites = site_analyzer.get_inequivalent_site_indices(
                 component['site_ids'])
 
             if component['dimensionality'] == 0:

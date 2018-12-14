@@ -31,7 +31,7 @@ def get_site_fingerprints(structure: IStructure,
         for each site. If ``as_dict == False``, the data will be returned as a
         :class:`numoy.ndarray` containing the fingerprint for each site as::
 
-            [site_id][op_id]
+            [site_index][op_index]
     """
     ssf = SiteStatsFingerprint.from_preset(preset, stats=None)
 

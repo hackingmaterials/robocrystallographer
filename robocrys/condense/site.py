@@ -1,11 +1,12 @@
 """
 This module provides a class to extract geometry and neighbor information.
 
-TODO: distortion of geometry e.g. elongated along an axis
+TODO:
+    * distortion of geometry e.g. elongated along an axis
 """
 
 from collections import defaultdict
-from typing import Dict, Any, List, Union, DefaultDict, Tuple
+from typing import Dict, Any, List, Union, DefaultDict, Tuple, Optional
 
 import numpy as np
 
@@ -22,6 +23,15 @@ from robocrys.util import connected_geometries, get_el, defaultdict_to_dict
 
 class SiteAnalyzer(object):
     """Class to extract information on site geometry and bonding.
+
+    Attributes:
+        symmetry_labels: A :obj:`dict` mapping the site indices to the symmetry
+            label for that site. If two sites are symmetrically equivalent they
+            share the same symmetry label. The numbering begins at 1 for each
+            element in the structure.
+        equivalent_sites: A :obj:`list` of indices mapping each site in
+            the structure to a symmetrically or structurally equivalent site,
+            depending on the value of ``use_symmetry_equivalent_sites``.
 
     Args:
         bonded_structure: A bonded structure with nearest neighbor data
@@ -124,14 +134,15 @@ class SiteAnalyzer(object):
         return {'type': geometry, 'distorted': distorted}
 
     def get_nearest_neighbors(self, site_index: int,
-                              inc_inequiv_id: bool = True
+                              inc_inequivalent_site_index: bool = True
                               ) -> List[Dict[str, Any]]:
         """Gets information about the bonded nearest neighbors.
 
         Args:
 
             site_index: The site index (zero based).
-            inc_inequiv_id: Whether to include the inequivalent site ids.
+            inc_inequivalent_site_index: Whether to include the inequivalent
+                site indices in the nearest neighbor information.
 
         Returns:
             For each site bonded to ``site_index``, returns a :obj:`dict`
@@ -139,16 +150,16 @@ class SiteAnalyzer(object):
 
                 {'element': el, 'dist': distance}
 
-            If ``inc_inequiv_id=True``, the data will have an additional key
-            ``'inequiv_id'`` corresponding to the inequivalent site index. E.g.
-            if two sites are structurally/symmetrically equivalent (depending
-            on the value of ``self.use_symmetry`` then they will have the same
-            ``inequiv_id``.
+            If ``inc_inequivalent_site_index=True``, the data will have an
+            additional key ``'inequiv_id'`` corresponding to the inequivalent
+            site index. E.g. if two sites are structurally/symmetrically
+            equivalent (depending on the value of ``self.use_symmetry`` then
+            they will have the same ``inequiv_id``.
         """
 
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
 
-        if inc_inequiv_id:
+        if inc_inequivalent_site_index:
             return [{'element': str(site.site.specie),
                      'inequiv_id': self.equivalent_sites[site.index],
                      'dist': site.dist} for site in nn_sites]
@@ -157,13 +168,14 @@ class SiteAnalyzer(object):
                      'dist': site.dist} for site in nn_sites]
 
     def get_next_nearest_neighbors(self, site_index: int,
-                                   inc_inequiv_id: bool = False
+                                   inc_inequivalent_site_index: bool = False
                                    ) -> List[Dict[str, Any]]:
         """Gets information about the bonded next nearest neighbors.
 
         Args:
             site_index: The site index (zero based).
-            inc_inequiv_id: Whether to include the inequivalent site ids.
+            inc_inequivalent_site_index: Whether to include the inequivalent
+                site indices.
 
         Returns:
             A list of the next nearest neighbor information. For each next
@@ -181,6 +193,11 @@ class SiteAnalyzer(object):
             a :obj:`list` of :obj:`int`. Multiple bond angles are given when
             the two sites share more than nearest neighbor (e.g. if they are
             face-sharing or edge-sharing).
+            If ``inc_inequivalent_site_index=True``, the data will have an
+            additional key ``'inequiv_id'`` corresponding to the inequivalent
+            site index. E.g. if two sites are structurally/symmetrically
+            equivalent (depending on the value of ``self.use_symmetry`` then
+            they will have the same ``inequiv_id``.
         """
 
         def get_coords(a_site_index, a_site_image):
@@ -236,7 +253,7 @@ class SiteAnalyzer(object):
                        'geometry': geometry,
                        'angles': angles}
 
-            if inc_inequiv_id:
+            if inc_inequivalent_site_index:
                 summary['inequiv_id'] = self.equivalent_sites[nnn_site.index]
 
             next_nn_summary.append(summary)
@@ -244,15 +261,54 @@ class SiteAnalyzer(object):
         return next_nn_summary
 
     def get_site_summary(self, site_index: int) -> Dict[str, Any]:
+        """Gets a summary of the site information.
+
+        Args:
+            site_index: The site index (zero based).
+
+        Returns:
+            A summary of the site information, formatted as::
+
+                {
+                    'element': 'Mo4+',
+                    'geometry': {
+                        'distorted': True,
+                        'type': 'pentagonal pyramidal'
+                    },
+                    'nn': [2, 2, 2, 2, 2, 2],
+                    'nnn': {'edge': [0, 0, 0, 0, 0, 0]},
+                    'poly_formula': 'S6',
+                    'sym_labels': (1,)
+                }
+
+            Where ``element`` is the species string (if the species has
+            oxidation states, these will be included in the string). The
+            ``geometry`` key is the geometry information as produced by
+            :meth:`SiteAnalyzer.get_site_geometry`. The `nn` key lists
+            the site indices of the nearest neighbor bonding sites. Note the
+            inequivalent site index is given for each site. The `nnn` key gives
+            the next nearest neighbor information, broken up by the connectivity
+            to that neighbor. The ``poly_formula`` key gives the formula of the
+            bonded nearest neighbors. ``poly_formula`` will be ``None`` if the
+            site geometry is not in :data:`robocrys.util.connected_geometries`.
+            The ``sym_labels`` key gives the symmetry labels of the site. If
+            two sites are symmetrically equivalent they share the same symmetry
+            label. The numbering begins at 1 for each element in the structure.
+            If :attr:`SiteAnalyzer.use_symmetry_inequivalnt_sites` is ``False``,
+            each site may have more than one symmetry label, as structural
+            features have instead been used to determine the site equivalences,
+            i.e. two sites are symmetrically distinct but share the same
+            geometry, nearest neighbor and next nearest neighbor properties.
+        """
         element = str(self.bonded_structure.structure[site_index].specie)
         geometry = self.get_site_geometry(site_index)
 
         nn_sites = self.get_nearest_neighbors(
-            site_index, inc_inequiv_id=True)
+            site_index, inc_inequivalent_site_index=True)
         nn_ids = [nn_site['inequiv_id'] for nn_site in nn_sites]
 
         nnn_sites = self.get_next_nearest_neighbors(
-            site_index, inc_inequiv_id=True)
+            site_index, inc_inequivalent_site_index=True)
         nnn = defaultdict(list)
         for nnn_site in nnn_sites:
             nnn[nnn_site['connectivity']].append(nnn_site['inequiv_id'])
@@ -271,6 +327,19 @@ class SiteAnalyzer(object):
 
     def get_bond_distance_summary(self, site_index: int
                                   ) -> Dict[int, Dict[int, List[float]]]:
+        """Gets the bond distance summary for a site.
+
+        Args:
+            site_index: The site index (zero based).
+
+        Returns:
+            The bonding data for the site, formatted as::
+
+                {to_site: [dist_1, dist_2, dist_3, ...]}
+
+            Where ``to_site`` is the index of a nearest neighbor site
+            and ``dist_1`` etc are the bond distances as :obj:`float`s.
+        """
         bonds = defaultdict(lambda: defaultdict(list))
         for nn_site in self.get_nearest_neighbors(site_index):
             to_site = nn_site['inequiv_id']
@@ -279,11 +348,35 @@ class SiteAnalyzer(object):
         return defaultdict_to_dict(bonds)
 
     def get_connectivity_angle_summary(self, site_index):
+        """Gets the connectivity angle summary for a site.
+
+        The connectivity angles are the angles between a site and its
+        next nearest neighbors.
+
+        Args:
+            site_index: The site index (zero based).
+
+        Returns:
+            The connectivity angle data for the site, formatted as::
+
+                {
+                    to_site: {
+                        connectivity_a: [angle_1, angle_2, ...]
+                        connectivity_b: [angle_1, angle_2, ...]
+                    }
+                }
+
+            Where ``to_site`` is the index of a next nearest neighbor site,
+            ``connectivity_a`` etc are the bonding connectivity type, e.g.
+            ``'edge'`` or ``'corner'`` (for edge-sharing and corner-sharing
+            connectivity), and ``angle_1`` etc are the bond angles as
+            :obj:`float`s.
+        """
         connectivities = defaultdict(
             lambda: defaultdict(lambda: defaultdict(list)))
 
         for nnn_site in self.get_next_nearest_neighbors(
-                site_index, inc_inequiv_id=True):
+                site_index, inc_inequivalent_site_index=True):
             to_site = nnn_site['inequiv_id']
             connectivity = nnn_site['connectivity']
 
@@ -293,10 +386,36 @@ class SiteAnalyzer(object):
         return defaultdict_to_dict(connectivities)
 
     def get_all_site_summaries(self):
+        """Gets the site summaries for all sites.
+
+        Returns:
+            The site summaries for all sites, formatted as:
+
+                {
+                    site_id: site_summary
+                }
+
+            Where ``site_summary`` has the same format as produced by
+            :meth:`SiteAnalyzer.get_site_summary`.
+        """
         return {site: self.get_site_summary(site)
                 for site in self.equivalent_sites}
 
     def get_all_bond_distance_summaries(self):
+        """Gets the bond distance summaries for all sites.
+
+        Returns:
+            The bond distance summaries for all sites, formatted as:
+
+                {
+                    from_site: {
+                        to_site: distances
+                    }
+                }
+
+            Where ``from_site`` and ``to_site`` are site indices and
+            ``distances`` is a :obj:`list` of :obj:`float` of bond distances.
+        """
         distances: DefaultDict[int, Dict[int, List[float]]] = defaultdict(dict)
 
         for site in set(self.equivalent_sites):
@@ -310,6 +429,27 @@ class SiteAnalyzer(object):
         return defaultdict_to_dict(distances)
 
     def get_all_connectivity_angle_summaries(self):
+        """Gets the connectivity angle summaries for all sites.
+
+        The connectivity angles are the angles between a site and its
+        next nearest neighbors.
+
+        Returns:
+            The connectivity angle summaries for all sites, formatted as:
+
+                {
+                    from_site: {
+                        to_site: {
+                            connectivity: angles
+                        }
+                    }
+                }
+
+            Where ``from_site`` and ``to_site`` are the site indices of
+            two sites, ``connectivity`` is the connectivity type (e.g.
+            ``'edge'`` or ``'face'``) and ``angles`` is a :obj:`list` of
+            :obj:`float` of connectivity angles.
+        """
         angles = defaultdict(lambda: defaultdict(dict))
 
         for site in set(self.equivalent_sites):
@@ -323,25 +463,26 @@ class SiteAnalyzer(object):
 
         return defaultdict_to_dict(angles)
 
-    def get_inequivalent_site_ids(self, site_ids: List[int]) -> List[int]:
-        """Gets the inequivalent sites from a list of site indices.
+    def get_inequivalent_site_indices(self, site_indices: List[int]
+                                      ) -> List[int]:
+        """Gets the inequivalent site indices from a list of site indices.
 
         Args:
-            site_ids: The site indices.
+            site_indices: The site indices.
 
         Returns:
             The inequivalent site indices. For example, if a structure has 4
             sites where the first two are equivalent and the last two are
-            inequivalent. If  ``site_ids=[0, 1, 2, 3]`` the output will be::
+            inequivalent. If  ``site_indices=[0, 1, 2, 3]`` the output will be::
 
                 [0, 2, 3]
 
         """
-        return list(set(self.equivalent_sites[i] for i in site_ids))
+        return list(set(self.equivalent_sites[i] for i in site_indices))
 
     def _calculate_equivalent_sites(self,
-                                    bond_dist_tol: float = 0.1,
-                                    bond_angle_tol: float = 0.1
+                                    bond_dist_tol: float = 0.01,
+                                    bond_angle_tol: float = 0.01
                                     ) -> List[int]:
         """Determines the indices of the structurally inequivalent sites.
 
@@ -351,8 +492,8 @@ class SiteAnalyzer(object):
             bond_angle_tol: The tolerance used to determine if two bond angles
                 are the same.
 
-        Two sites are considered equivalent if they are the same element,
-        geometry, and (next) nearest neighbor summaries.
+        Two sites are considered equivalent if they are the same element, and
+        have the same geometry and (next) nearest neighbors.
 
         Returns:
             A :obj:`list` of indices mapping each site in the structure to a
@@ -371,9 +512,9 @@ class SiteAnalyzer(object):
             element = get_el_sp(site.specie)
             geometry = self.get_site_geometry(site_id)
             nn_sites = self.get_nearest_neighbors(
-                site_id, inc_inequiv_id=False)
+                site_id, inc_inequivalent_site_index=False)
             nnn_sites = self.get_next_nearest_neighbors(
-                site_id, inc_inequiv_id=False)
+                site_id, inc_inequivalent_site_index=False)
 
             matched = False
             for inequiv_id, inequiv_site in inequiv_sites.items():
@@ -438,7 +579,31 @@ class SiteAnalyzer(object):
 
         return dict(symmetry_labels)
 
-    def _get_poly_formula(self, geometry, nn_sites, nnn_sites):
+    def _get_poly_formula(self,
+                          geometry: Dict[str, Any],
+                          nn_sites: List[Dict[str, Any]],
+                          nnn_sites: List[Dict[str, Any]]
+                          ) -> Optional[str]:
+        """Gets the polyhedra formula of the nearest neighbor atoms.
+
+        The polyhedral formula is effectively the sorted nearest neighbor
+        atoms in a reduced format. For example, if the nearest neighbors are
+        3 I atoms, 2 Br atoms and 1 Cl atom, the polyhedral formula will be
+        "I3Br2Cl". The polyhedral formula will be ``None`` if the site geometry
+        is not in :data:`robocrys.util.connected_geometries`.
+
+        Args:
+            geometry: The site geometry as produced by
+                :meth:`SiteAnalyzer.get_site_geometry`.
+            nn_sites: The nearest neighbor sites as produced by
+                :meth:`SiteAnalyzer.get_nearest_neighbors`.
+            nnn_sites: The next nearest neighbor sites as produced by
+                :meth:`SiteAnalyzer.get_next_nearest_neighbors`.
+
+        Returns:
+            The polyhedral formula if the site geometry is in
+            :data:`robocrys.util.connected_geometries` else ``None``.
+        """
         def order_elements(el):
             if self.use_iupac_formula:
                 return [get_el_sp(el).X, el]

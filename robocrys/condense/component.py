@@ -176,17 +176,17 @@ def get_sym_inequiv_components(components: List[Component],
     equivalent_atoms = spg_analyzer.get_symmetry_dataset()['equivalent_atoms']
 
     for component in components:
-        sym_ids = frozenset(
+        sym_indices = frozenset(
             equivalent_atoms[x] for x in component['site_ids'])
 
         # if two components are composed of atoms that are symmetrically
         # equivalent they are the same.
-        if sym_ids in sym_inequiv_components:
-            sym_inequiv_components[sym_ids]['count'] += 1
+        if sym_indices in sym_inequiv_components:
+            sym_inequiv_components[sym_indices]['count'] += 1
             continue
 
         component['count'] = 1
-        sym_inequiv_components[sym_ids] = component
+        sym_inequiv_components[sym_indices] = component
 
     return list(sym_inequiv_components.values())
 
