@@ -251,23 +251,20 @@ def _get_all_site_summaries(site_analyzer: SiteAnalyzer):
 
 
 def _get_all_bond_summaries(site_analyzer: SiteAnalyzer):
-    bonds = defaultdict(lambda: defaultdict(list))
+    bonds = defaultdict(lambda: dict)
 
     for site in set(site_analyzer.equivalent_sites):
         site_bonds = site_analyzer.get_bond_summary(site)
 
         for from_atom in site_bonds:
             for to_atom in site_bonds[from_atom]:
-                if to_atom not in bonds[from_atom]:
-                    bonds[from_atom][to_atom].extend(
-                        site_bonds[from_atom][to_atom])
+                bonds[from_atom][to_atom] = site_bonds[from_atom][to_atom]
 
     return defaultdict_to_dict(bonds)
 
 
 def _get_all_connectivity_summaries(site_analyzer: SiteAnalyzer):
-    connectivities = defaultdict(
-        lambda: defaultdict(lambda: defaultdict(list)))
+    connectivities = defaultdict(lambda: defaultdict(dict))
 
     for site in set(site_analyzer.equivalent_sites):
         site_bonds = site_analyzer.get_connectivity_summary(site)
@@ -275,8 +272,7 @@ def _get_all_connectivity_summaries(site_analyzer: SiteAnalyzer):
         for from_atom in site_bonds:
             for to_atom in site_bonds[from_atom]:
                 for connectivity in site_bonds[from_atom][to_atom]:
-                    if connectivity not in connectivities[to_atom][from_atom]:
-                        connectivities[from_atom][to_atom][connectivity].extend(
-                            site_bonds[from_atom][to_atom][connectivity])
+                    connectivities[from_atom][to_atom][connectivity] = (
+                        site_bonds[from_atom][to_atom][connectivity])
 
     return defaultdict_to_dict(connectivities)

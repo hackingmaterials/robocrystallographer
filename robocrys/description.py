@@ -329,7 +329,6 @@ class Describer(object):
         return " ".join(all_sites_desc)
 
     def _get_site_description(self, element: str, geometry: dict, nn_data: dict,
-                              distorted_tol: float = 0.6,
                               describe_bond_lengths: bool = True) -> str:
         """Gets a description of the geometry of a site.
 

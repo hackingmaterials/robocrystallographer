@@ -7,7 +7,7 @@ TODO: handle the case where no geometry type is given, just the CN
 """
 import copy
 from collections import defaultdict
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Optional
 
 import numpy as np
 
@@ -36,6 +36,10 @@ class SiteAnalyzer(object):
             the structure. The symmetry can used both to determine if multiple
             sites are symmetrically equivalent and to obtain the symmetry labels
             for each site.
+        geometry_distorted_tol: The value under which site geometries will be
+            classified as distorted.
+        minimum_geometry_op: The minimum geometrical order parameter for a
+            geometry match to be returned.
         use_iupac_formula (bool, optional): Whether to order formulas
             by the iupac "electronegativity" series, defined in
             Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
@@ -49,8 +53,14 @@ class SiteAnalyzer(object):
                  bonded_structure: StructureGraph,
                  use_symmetry_equivalent_sites: bool = False,
                  symprec: float = 0.01,
+                 geometry_distorted_tol: float = 0.6,
+                 minimum_geometry_op: float = 0.4,
                  use_iupac_formula: bool = True):
         self.bonded_structure = bonded_structure
+        self.use_iupac_formula = use_iupac_formula
+        self.geometry_distorted_tol = geometry_distorted_tol
+        self.minimum_geometry_op = minimum_geometry_op
+
         self.site_fingerprints = get_site_fingerprints(
             bonded_structure.structure)
 
@@ -66,8 +76,6 @@ class SiteAnalyzer(object):
         self.symmetry_labels = self._calculate_symmetry_labels(
             sym_data['equivalent_atoms'])
 
-        self.use_iupac_formula = use_iupac_formula
-
     def get_site_summary(self, site_index: int) -> Dict[str, Any]:
         element = str(self.bonded_structure.structure[site_index].specie)
         geometry = self.get_site_geometry(site_index)
@@ -78,7 +86,11 @@ class SiteAnalyzer(object):
             site_index, inc_inequiv_id=True)
 
         nn_ids = [nn_site['inequiv_id'] for nn_site in nn_sites]
-        nnn_ids = [nnn_site['inequiv_id'] for nnn_site in nnn_sites]
+
+        nnn = defaultdict(list)
+        for nnn_site in nnn_sites:
+            nnn[nnn_site['connectivity']].append(nnn_site['inequiv_id'])
+        nnn = dict(nnn)
 
         nnn_geometries = [nnn_site['geometry'] for nnn_site in nnn_sites]
 
@@ -108,7 +120,7 @@ class SiteAnalyzer(object):
                 poly_formula += formula_double_format(el_amt_dict[e])
 
         return {'element': element, 'geometry': geometry, 'nn': nn_ids,
-                'nnn': nnn_ids, 'poly_formula': poly_formula,
+                'nnn': nnn, 'poly_formula': poly_formula,
                 'sym_labels': sym_labels}
 
     def get_bond_summary(self, site_index: int
@@ -134,7 +146,7 @@ class SiteAnalyzer(object):
 
         return defaultdict_to_dict(connectivities)
 
-    def get_site_geometry(self, site_index: int) -> Dict[str, Any]:
+    def get_site_geometry(self, site_index: int) -> Dict[str, str]:
         """Gets the bonding geometry of a site.
 
         For example, "octahedral" or "square-planar".
@@ -143,9 +155,18 @@ class SiteAnalyzer(object):
             site_index: The site index (zero based).
 
         Returns:
-            The site geometry information as a :obj:`dict` with keys "type"
-            and "likeness", corresponding to the geometry type (e.g. octahedral)
-            and order parameter, respectively.
+            The site geometry information formatted at as::
+
+                {'type': geometry_type, 'distorted': distorted}
+
+            Where ``geometry_type`` is a :obj:`str` corresponding to the
+            geometry type (e.g. octahedral) and ``distorted`` is a :obj:`bool`
+            indicating whether the order parameter falls beneath
+            :attr:`robocrys.site.SiteAnalyzer.geometry_distorted_tol`. If
+            the largest geometrical order parameter falls beneath
+            :attr:`robocrys.site.SiteAnalyzer.minimum_geometry_op`, the
+            geometry type will be returned as "CN_X", where X is the
+            coordination number.
         """
         # get fingerprint as a list of tuples, e.g. [("op name", val), ...]
         site_fingerprint = list(self.site_fingerprints[site_index].items())
@@ -155,11 +176,21 @@ class SiteAnalyzer(object):
         parameter = max(site_fingerprint,
                         key=lambda x: x[1] if "wt" not in x[0] else 0)
 
-        # return the geometry type without the CN at the end, e.g.
-        # "square co-planar CN_4" -> "square co-planar"
-        geometry = " ".join(parameter[0].split()[:-1])
+        if parameter[1] < self.minimum_geometry_op:
+            geometry = " ".join(parameter[0].split()[-1])
+            distorted = False
 
-        return {'type': geometry, 'likeness': parameter[1]}
+        else:
+            # return the geometry type without the CN at the end, e.g.
+            # "square co-planar CN_4" -> "square co-planar"
+            geometry = " ".join(parameter[0].split()[:-1])
+
+            if parameter[1] < self.geometry_distorted_tol:
+                distorted = True
+            else:
+                distorted = False
+
+        return {'type': geometry, 'distorted': distorted}
 
     def get_nearest_neighbor_data(self, site_index: int,
                                   split_into_groups: bool = True
@@ -351,8 +382,8 @@ class SiteAnalyzer(object):
                  'angles': angles}
 
             The ``connectivity`` property is the connectivity type to the
-            next nearest neighbor, e.g. "face-sharing", "corner-sharing", or
-            "edge-sharing". The ``geometry`` property gives the geometry of the
+            next nearest neighbor, e.g. "face", "corner", or
+            "edge". The ``geometry`` property gives the geometry of the
             next nearest neighbor site. See the ``get_site_geometry`` method for
             the format of this data. The ``angles`` property gives the bond
             angles between the site and the next nearest neighbour. Returned as
@@ -391,11 +422,11 @@ class SiteAnalyzer(object):
             n_shared_atoms = len(shared_sites)
 
             if n_shared_atoms == 1:
-                connectivity = 'corner-sharing'
+                connectivity = 'corner'
             elif n_shared_atoms == 2:
-                connectivity = 'edge-sharing'
+                connectivity = 'edge'
             else:
-                connectivity = 'face-sharing'
+                connectivity = 'face'
 
             site_coords = get_coords(site_index, (0, 0, 0))
             nnn_site_coords = get_coords(nnn_site.index, nnn_site.jimage)
@@ -422,15 +453,12 @@ class SiteAnalyzer(object):
         return next_nn_summary
 
     def _calculate_equivalent_sites(self,
-                                    geometry_likeness_tol: float = 0.1,
                                     bond_dist_tol: float = 0.1,
                                     bond_angle_tol: float = 0.1
                                     ) -> List[int]:
         """Determines the indices of the structurally inequivalent sites.
 
         Args:
-            geometry_likeness_tol: The tolerance to use when determining whether
-                two geometry likeness parameters are the same.
             bond_dist_tol: The tolerance used to determine if two bond lengths
                 are the same.
             bond_angle_tol: The tolerance used to determine if two bond angles
@@ -464,8 +492,7 @@ class SiteAnalyzer(object):
             for inequiv_id, inequiv_site in inequiv_sites.items():
                 elem_match = element == inequiv_site['element']
                 geom_match = geometries_match(
-                    geometry, inequiv_site['geometry'],
-                    likeness_tol=geometry_likeness_tol)
+                    geometry, inequiv_site['geometry'])
                 nn_match = nn_summaries_match(
                     nn_sites, inequiv_site['nn_sites'],
                     bond_dist_tol=bond_dist_tol)
@@ -525,8 +552,9 @@ class SiteAnalyzer(object):
         return dict(symmetry_labels)
 
 
-def geometries_match(geometry_a: Dict[str, Any], geometry_b: Dict[str, Any],
-                     likeness_tol: float = 0.01) -> bool:
+def geometries_match(geometry_a: Dict[str, Any],
+                     geometry_b: Dict[str, Any],
+                     ) -> bool:
     """Determine whether two site geometries match.
 
     Geometry data should be formatted the same as produced by
@@ -541,9 +569,8 @@ def geometries_match(geometry_a: Dict[str, Any], geometry_b: Dict[str, Any],
     Returns:
         Whether the two geometries are the same.
     """
-    # TODO: Handle case when geometry types are both None
     return (geometry_a['type'] == geometry_b['type'] and
-            abs(geometry_a['likeness'] - geometry_b['likeness']) < likeness_tol)
+            geometry_a['distorted'] == geometry_b['distorted'])
 
 
 def nn_summaries_match(nn_sites_a: List[Dict[str, Union[int, str]]],
@@ -606,7 +633,8 @@ def nnn_summaries_match(nnn_sites_a: List[Dict[str, Any]],
 
     def nnn_sites_order(nnn_site):
         return [nnn_site['element'], nnn_site['geometry']['type'],
-                nnn_site['connectivity'], sorted(nnn_site['angles'])]
+                nnn_site['geometry']['distorted'], nnn_site['connectivity'],
+                sorted(nnn_site['angles'])]
 
     if len(nnn_sites_a) != len(nnn_sites_b):
         return False
@@ -618,7 +646,7 @@ def nnn_summaries_match(nnn_sites_a: List[Dict[str, Any]],
                       for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
     cons_match = [site_a['connectivity'] == site_b['connectivity']
                   for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
-    geoms_match = [site_a['geometry']['type'] == site_b['geometry']['type']
+    geoms_match = [geometries_match(site_a['geometry'], site_b['geometry'])
                    for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
     angles_match = [all([abs(a_a - a_b) < bond_angle_tol for a_a, a_b in
                          zip(sorted(site_a['angles']),
