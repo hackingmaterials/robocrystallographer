@@ -2,12 +2,10 @@
 This module provides functions for extracting information about site geometry.
 
 TODO: distortion of geometry e.g. elongated along an axis
-TODO: maybe have custom descriptions for octahedron, tetrahedron etc
-TODO: handle the case where no geometry type is given, just the CN
 """
-import copy
+
 from collections import defaultdict
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, DefaultDict, Tuple
 
 import numpy as np
 
@@ -76,76 +74,6 @@ class SiteAnalyzer(object):
         self.symmetry_labels = self._calculate_symmetry_labels(
             sym_data['equivalent_atoms'])
 
-    def get_site_summary(self, site_index: int) -> Dict[str, Any]:
-        element = str(self.bonded_structure.structure[site_index].specie)
-        geometry = self.get_site_geometry(site_index)
-
-        nn_sites = self.get_nearest_neighbors(
-            site_index, inc_inequiv_id=True)
-        nnn_sites = self.get_next_nearest_neighbors(
-            site_index, inc_inequiv_id=True)
-
-        nn_ids = [nn_site['inequiv_id'] for nn_site in nn_sites]
-
-        nnn = defaultdict(list)
-        for nnn_site in nnn_sites:
-            nnn[nnn_site['connectivity']].append(nnn_site['inequiv_id'])
-        nnn = dict(nnn)
-
-        nnn_geometries = [nnn_site['geometry'] for nnn_site in nnn_sites]
-
-        equiv_sites = [i for i in range(len(self.equivalent_sites))
-                       if self.equivalent_sites[i] == self.equivalent_sites[
-                           site_index]]
-        sym_labels = tuple(set([self.symmetry_labels[x] for x in equiv_sites]))
-
-        def order_elements(el):
-            if self.use_iupac_formula:
-                return [get_el_sp(el).X, el]
-            else:
-                return [get_el_sp(el).iupac_ordering, el]
-
-        # check if site is connected polyhedra
-        poly_formula = None
-        if (geometry['type'] in connected_geometries and
-                any([nnn_geometry['type'] in connected_geometries
-                     for nnn_geometry in nnn_geometries])):
-            nn_els = [get_el(nn_site['element']) for nn_site in nn_sites]
-            comp = Composition("".join(nn_els))
-            el_amt_dict = comp.get_el_amt_dict()
-
-            poly_formula = ""
-            for e in sorted(el_amt_dict.keys(), key=order_elements):
-                poly_formula += e
-                poly_formula += formula_double_format(el_amt_dict[e])
-
-        return {'element': element, 'geometry': geometry, 'nn': nn_ids,
-                'nnn': nnn, 'poly_formula': poly_formula,
-                'sym_labels': sym_labels}
-
-    def get_bond_summary(self, site_index: int
-                         ) -> Dict[int, Dict[int, List[float]]]:
-        bonds = defaultdict(lambda: defaultdict(list))
-        for nn_site in self.get_nearest_neighbors(site_index):
-            to_site = nn_site['inequiv_id']
-            bonds[site_index][to_site].append(nn_site['dist'])
-
-        return defaultdict_to_dict(bonds)
-
-    def get_connectivity_summary(self, site_index):
-        connectivities = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(list)))
-
-        for nnn_site in self.get_next_nearest_neighbors(
-                site_index, inc_inequiv_id=True):
-            to_site = nnn_site['inequiv_id']
-            connectivity = nnn_site['connectivity']
-
-            connectivities[site_index][to_site][connectivity].extend(
-                nnn_site['angles'])
-
-        return defaultdict_to_dict(connectivities)
-
     def get_site_geometry(self, site_index: int) -> Dict[str, str]:
         """Gets the bonding geometry of a site.
 
@@ -165,11 +93,12 @@ class SiteAnalyzer(object):
             :attr:`robocrys.site.SiteAnalyzer.geometry_distorted_tol`. If
             the largest geometrical order parameter falls beneath
             :attr:`robocrys.site.SiteAnalyzer.minimum_geometry_op`, the
-            geometry type will be returned as "CN_X", where X is the
+            geometry type will be returned as "X-coordinate", where X is the
             coordination number.
         """
         # get fingerprint as a list of tuples, e.g. [("op name", val), ...]
-        site_fingerprint = list(self.site_fingerprints[site_index].items())
+        site_fingerprint: List[Tuple[str, int]] = list(
+            self.site_fingerprints[site_index].items())
 
         # get coordination number with largest weight, ignore op names with
         # just the coordination number weight (e.g. containing "wt")
@@ -177,7 +106,8 @@ class SiteAnalyzer(object):
                         key=lambda x: x[1] if "wt" not in x[0] else 0)
 
         if parameter[1] < self.minimum_geometry_op:
-            geometry = " ".join(parameter[0].split()[-1])
+            cn = parameter[0].split()[-1].split('_')[-1]
+            geometry = "{}-coordinate".format(cn)
             distorted = False
 
         else:
@@ -191,22 +121,6 @@ class SiteAnalyzer(object):
                 distorted = False
 
         return {'type': geometry, 'distorted': distorted}
-
-    def get_inequivalent_site_ids(self, site_ids: List[int]) -> List[int]:
-        """Gets the inequivalent sites from a list of site indices.
-
-        Args:
-            site_ids: The site indices.
-
-        Returns:
-            The inequivalent site indices. For example, if a structure has 4
-            sites where the first two are equivalent and the last two are
-            inequivalent. If  ``site_ids=[0, 1, 2, 3]`` the output will be::
-
-                [0, 2, 3]
-
-        """
-        return list(set(self.equivalent_sites[i] for i in site_ids))
 
     def get_nearest_neighbors(self, site_index: int,
                               inc_inequiv_id: bool = True
@@ -328,6 +242,102 @@ class SiteAnalyzer(object):
 
         return next_nn_summary
 
+    def get_site_summary(self, site_index: int) -> Dict[str, Any]:
+        element = str(self.bonded_structure.structure[site_index].specie)
+        geometry = self.get_site_geometry(site_index)
+
+        nn_sites = self.get_nearest_neighbors(
+            site_index, inc_inequiv_id=True)
+        nn_ids = [nn_site['inequiv_id'] for nn_site in nn_sites]
+
+        nnn_sites = self.get_next_nearest_neighbors(
+            site_index, inc_inequiv_id=True)
+        nnn = defaultdict(list)
+        for nnn_site in nnn_sites:
+            nnn[nnn_site['connectivity']].append(nnn_site['inequiv_id'])
+        nnn = dict(nnn)
+
+        equiv_sites = [i for i in range(len(self.equivalent_sites))
+                       if self.equivalent_sites[i] == self.equivalent_sites[
+                           site_index]]
+        sym_labels = tuple(set([self.symmetry_labels[x] for x in equiv_sites]))
+
+        poly_formula = self._get_poly_formula(geometry, nn_sites, nnn_sites)
+
+        return {'element': element, 'geometry': geometry, 'nn': nn_ids,
+                'nnn': nnn, 'poly_formula': poly_formula,
+                'sym_labels': sym_labels}
+
+    def get_bond_distance_summary(self, site_index: int
+                                  ) -> Dict[int, Dict[int, List[float]]]:
+        bonds = defaultdict(lambda: defaultdict(list))
+        for nn_site in self.get_nearest_neighbors(site_index):
+            to_site = nn_site['inequiv_id']
+            bonds[site_index][to_site].append(nn_site['dist'])
+
+        return defaultdict_to_dict(bonds)
+
+    def get_connectivity_angle_summary(self, site_index):
+        connectivities = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(list)))
+
+        for nnn_site in self.get_next_nearest_neighbors(
+                site_index, inc_inequiv_id=True):
+            to_site = nnn_site['inequiv_id']
+            connectivity = nnn_site['connectivity']
+
+            connectivities[site_index][to_site][connectivity].extend(
+                nnn_site['angles'])
+
+        return defaultdict_to_dict(connectivities)
+
+    def get_all_site_summaries(self):
+        return {site: self.get_site_summary(site)
+                for site in self.equivalent_sites}
+
+    def get_all_bond_distance_summaries(self):
+        distances: DefaultDict[int, Dict[int, List[float]]] = defaultdict(dict)
+
+        for site in set(self.equivalent_sites):
+            site_dists = self.get_bond_distance_summary(site)
+
+            for from_atom in site_dists:
+                for to_atom in site_dists[from_atom]:
+                    distances[from_atom][to_atom] = (
+                        site_dists[from_atom][to_atom])
+
+        return defaultdict_to_dict(distances)
+
+    def get_all_connectivity_angle_summaries(self):
+        angles = defaultdict(lambda: defaultdict(dict))
+
+        for site in set(self.equivalent_sites):
+            site_angles = self.get_connectivity_angle_summary(site)
+
+            for from_atom in site_angles:
+                for to_atom in site_angles[from_atom]:
+                    for connectivity in site_angles[from_atom][to_atom]:
+                        angles[from_atom][to_atom][connectivity] = (
+                            site_angles[from_atom][to_atom][connectivity])
+
+        return defaultdict_to_dict(angles)
+
+    def get_inequivalent_site_ids(self, site_ids: List[int]) -> List[int]:
+        """Gets the inequivalent sites from a list of site indices.
+
+        Args:
+            site_ids: The site indices.
+
+        Returns:
+            The inequivalent site indices. For example, if a structure has 4
+            sites where the first two are equivalent and the last two are
+            inequivalent. If  ``site_ids=[0, 1, 2, 3]`` the output will be::
+
+                [0, 2, 3]
+
+        """
+        return list(set(self.equivalent_sites[i] for i in site_ids))
+
     def _calculate_equivalent_sites(self,
                                     bond_dist_tol: float = 0.1,
                                     bond_angle_tol: float = 0.1
@@ -427,6 +437,30 @@ class SiteAnalyzer(object):
 
         return dict(symmetry_labels)
 
+    def _get_poly_formula(self, geometry, nn_sites, nnn_sites):
+        def order_elements(el):
+            if self.use_iupac_formula:
+                return [get_el_sp(el).X, el]
+            else:
+                return [get_el_sp(el).iupac_ordering, el]
+
+        nnn_geometries = [nnn_site['geometry'] for nnn_site in nnn_sites]
+
+        poly_formula = None
+        if (geometry['type'] in connected_geometries and
+                any([nnn_geometry['type'] in connected_geometries
+                     for nnn_geometry in nnn_geometries])):
+            nn_els = [get_el(nn_site['element']) for nn_site in nn_sites]
+            comp = Composition("".join(nn_els))
+            el_amt_dict = comp.get_el_amt_dict()
+
+            poly_formula = ""
+            for e in sorted(el_amt_dict.keys(), key=order_elements):
+                poly_formula += e
+                poly_formula += formula_double_format(el_amt_dict[e])
+
+        return poly_formula
+
 
 def geometries_match(geometry_a: Dict[str, Any],
                      geometry_b: Dict[str, Any],
@@ -439,8 +473,6 @@ def geometries_match(geometry_a: Dict[str, Any],
     Args:
         geometry_a: The first set of geometry data.
         geometry_b: The second set of geometry data.
-        likeness_tol: The tolerance to use when determining whether two
-            geometry likeness parameters are the same.
 
     Returns:
         Whether the two geometries are the same.
