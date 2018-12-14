@@ -5,7 +5,9 @@ Miscellaneous utility functions and common data.
 from __future__ import unicode_literals
 
 import os
+import pprint
 import unittest
+from collections import defaultdict
 from typing import Union
 
 from monty.json import MontyDecoder
@@ -62,6 +64,12 @@ def get_el(obj: Union[Element, Specie, str, int]) -> str:
         raise ValueError("Unsupported element type: {}.".format(type(obj)))
 
 
+def defaultdict_to_dict(d):
+    if isinstance(d, defaultdict):
+        d = {k: defaultdict_to_dict(v) for k, v in d.items()}
+    return d
+
+
 class RobocrysTest(unittest.TestCase):
     """Robocrystallographer base test class providing common functions.
 
@@ -80,3 +88,15 @@ class RobocrysTest(unittest.TestCase):
     @classmethod
     def get_structure(cls, name):
         return cls.test_structures[name].copy()
+
+
+class RoboPrinter(pprint.PrettyPrinter):
+
+    def __init__(self, formats, **kwargs):
+        super(RoboPrinter, self).__init__(**kwargs)
+        self.formats = formats
+
+    def format(self, obj, ctx, maxlvl, lvl):
+        if type(obj) in self.formats:
+            return self.formats[type(obj)] % obj, 1, 0
+        return pprint.PrettyPrinter.format(self, obj, ctx, maxlvl, lvl)

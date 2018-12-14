@@ -46,7 +46,7 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_get_nearest_neighbor_info(self):
         """Check getting nearest neighbor information."""
         sa = SiteAnalyzer(self.tin_dioxide)
-        info = sa._get_nearest_neighbor_info(0)
+        info = sa.get_nearest_neighbors(0)
 
         self.assertEqual(len(info), 3)
         self.assertEqual(info[0]["element"], "Sn")
@@ -55,7 +55,7 @@ class TestSiteAnalyzer(RobocrysTest):
 
         # check different structure
         sa = SiteAnalyzer(self.ba_n)
-        info = sa._get_nearest_neighbor_info(0)
+        info = sa.get_nearest_neighbors(0)
         self.assertEqual(len(info), 6)
         self.assertEqual(info[0]["element"], "N")
         self.assertEqual(info[0]["inequiv_id"], 0)
@@ -64,14 +64,14 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_get_next_nearest_neighbor_info(self):
         """Check getting next nearest neighbor information."""
         sa = SiteAnalyzer(self.tin_dioxide)
-        info = sa._get_next_nearest_neighbor_info(0)
+        info = sa.get_next_nearest_neighbors(0)
 
         self.assertEqual(len(info), 15)
         self.assertEqual(info[0]["element"], "O")
         self.assertEqual(info[0]["connectivity"], "corner-sharing")
         self.assertEqual(info[0]["geometry"]["type"], "trigonal planar")
 
-        info = sa._get_next_nearest_neighbor_info(5)
+        info = sa.get_next_nearest_neighbors(5)
         self.assertEqual(info[0]["element"], 'Sn')
         self.assertEqual(info[0]["connectivity"], "corner-sharing")
         self.assertEqual(info[0]["geometry"]["type"], "octahedral")
@@ -80,7 +80,7 @@ class TestSiteAnalyzer(RobocrysTest):
 
         # check different structure
         sa = SiteAnalyzer(self.ba_n)
-        info = sa._get_next_nearest_neighbor_info(0)
+        info = sa.get_next_nearest_neighbors(0)
         self.assertEqual(len(info), 50)
         self.assertEqual(info[5]["element"], "N")
         self.assertEqual(info[5]["connectivity"], "edge-sharing")

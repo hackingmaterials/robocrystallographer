@@ -5,7 +5,8 @@ import logging
 
 from pymatgen.core.structure import Structure
 
-from robocrys import StructureCondenser, Describer
+from robocrys import StructureCondenser #, Describer
+from robocrys.util import RoboPrinter
 
 __author__ = "Alex Ganose"
 __version__ = "0.0.1"
@@ -16,7 +17,7 @@ __date__ = "October 12, 2018"
 
 def robocrystallographer(structure):
     sc = StructureCondenser(force_conventional_cell=True)
-    describer = Describer()
+    #describer = Describer()
 
     try:
         print("adding oxidation states")
@@ -26,10 +27,13 @@ def robocrystallographer(structure):
         pass
 
     condensed_structure = sc.condense_structure(structure)
-    description = describer.describe(condensed_structure)
+    from pprint import pprint
+    rp = RoboPrinter({float: "%.2f"}, width=250)
+    rp.pprint(condensed_structure)
+    # description = describer.describe(condensed_structure)
 
-    print(description)
-    return description
+    # print(description)
+    # return description
 
 
 def _get_parser():

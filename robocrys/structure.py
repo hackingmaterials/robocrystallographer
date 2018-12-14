@@ -21,8 +21,8 @@ from robocrys.component import (get_sym_inequiv_components,
                                 get_structure_inequiv_components, Component)
 from robocrys.mineral import MineralMatcher
 from robocrys.molecule import MoleculeNamer
-from robocrys.site import (SiteAnalyzer, merge_similar_sites,
-                           site_is_connected_polyhedra)
+from robocrys.site import SiteAnalyzer
+from robocrys.util import defaultdict_to_dict
 
 
 class StructureCondenser(object):
@@ -132,6 +132,15 @@ class StructureCondenser(object):
             'dimensionality': dimensionality,
         }
 
+        site_analyzer = SiteAnalyzer(
+            bonded_structure, use_symmetry_equivalent_sites=self.use_symmetry,
+            symprec=self.symprec)
+
+        structure_data['sites'] = _get_all_site_summaries(site_analyzer)
+        structure_data['bonds'] = _get_all_bond_summaries(site_analyzer)
+        structure_data['connectivity'] = _get_all_connectivity_summaries(
+            site_analyzer)
+
         hs_info = None
         is_vdw_heterostructure = components_are_vdw_heterostructure(components)
         if is_vdw_heterostructure:
@@ -143,7 +152,7 @@ class StructureCondenser(object):
         structure_data['vdw_heterostructure_info'] = hs_info
 
         components_data, n_components = self._condense_components(
-            components, bonded_structure, sga)
+            components, bonded_structure, sga, site_analyzer)
         structure_data['components'] = components_data
         structure_data['n_components'] = n_components
 
@@ -177,38 +186,42 @@ class StructureCondenser(object):
                 components, use_common_formulas=self.use_common_formulas)
         return formula
 
-    def _condense_components(self, components, bonded_structure, sga):
+    def _condense_components(self, components, bonded_structure, sga,
+                             site_analyzer):
         """Utility function to condense the component data."""
+
+        def site_order(site_id):
+            el = get_el_sp(bonded_structure.structure[site_id].specie.element)
+            order = el.iupac_ordering if self.use_iupac_formula else el.X
+            return order
+
         if self.use_symmetry:
             inequiv_components = get_sym_inequiv_components(components, sga)
         else:
             inequiv_components = get_structure_inequiv_components(components)
 
-        site_analyzer = SiteAnalyzer(
-            bonded_structure, use_symmetry_equivalent_sites=self.use_symmetry,
-            symprec=self.symprec)
-
         molecule_namer = MoleculeNamer()
 
-        # defaultdict of defaultdicts
         cc = defaultdict(lambda: defaultdict(dict))
         total_components = 0
         for component in inequiv_components:
-
             formula = get_component_formula(
                 component, use_iupac_formula=self.use_iupac_formula,
                 use_common_formulas=self.use_common_formulas)
+
             dimen = component['dimensionality']
             count = component['count']
+
+            inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
+                component['site_ids'])
+
+            sites = sorted(inequivalent_ids, key=site_order)
 
             component_data = {
                 'orientation': component['orientation'],
                 'count': count,
+                'sites': sites
             }
-
-            sites = self._condense_component_site_data(
-                bonded_structure, site_analyzer, component)
-            component_data['sites'] = sites
 
             if dimen in cc and formula in cc[dimen]:
                 cc[dimen][formula]['inequiv_components'].append(
@@ -221,41 +234,49 @@ class StructureCondenser(object):
             else:
                 cc[dimen][formula]['count'] = count
 
+            molecule_name = None
             if dimen == 0:
                 molecule_name = molecule_namer.get_name_from_molecule_graph(
                     component['molecule_graph'])
 
-                if molecule_name:
-                    cc[dimen][formula]['molecule_name'] = molecule_name
+            cc[dimen][formula]['molecule_name'] = molecule_name
 
             total_components += count
-        return cc, total_components
+        return defaultdict_to_dict(cc), total_components
 
-    def _condense_component_site_data(self,
-                                      bonded_structure: StructureGraph,
-                                      site_analyzer: SiteAnalyzer,
-                                      component: Component
-                                      ) -> List[Dict[str, Any]]:
-        """Utility function to condense component site data."""
 
-        def site_order(site):
-            el = get_el_sp(site['element'])
-            order = el.iupac_ordering if self.use_iupac_formula else el.X
-            return [site_is_connected_polyhedra(site), order]
+def _get_all_site_summaries(site_analyzer: SiteAnalyzer):
+    return {site: site_analyzer.get_site_summary(site)
+            for site in site_analyzer.equivalent_sites}
 
-        inequivalent_ids = site_analyzer.get_inequivalent_site_ids(
-            component['site_ids'])
 
-        sites = []
-        # for each inequivalent site in the component get a site description
-        for site_id in inequivalent_ids:
-            sites.append(site_analyzer.get_site_summary(site_id))
+def _get_all_bond_summaries(site_analyzer: SiteAnalyzer):
+    bonds = defaultdict(lambda: defaultdict(list))
 
-        sites = sorted(sites, key=site_order)
+    for site in set(site_analyzer.equivalent_sites):
+        site_bonds = site_analyzer.get_bond_summary(site)
 
-        if self.group_bond_lengths:
-            # merge sites with same geometry, NN info and NNN info but with
-            # different NN bond lengths and NNN angles.
-            sites = merge_similar_sites(sites)
+        for from_atom in site_bonds:
+            for to_atom in site_bonds[from_atom]:
+                if to_atom not in bonds[from_atom]:
+                    bonds[from_atom][to_atom].extend(
+                        site_bonds[from_atom][to_atom])
 
-        return sites
+    return defaultdict_to_dict(bonds)
+
+
+def _get_all_connectivity_summaries(site_analyzer: SiteAnalyzer):
+    connectivities = defaultdict(
+        lambda: defaultdict(lambda: defaultdict(list)))
+
+    for site in set(site_analyzer.equivalent_sites):
+        site_bonds = site_analyzer.get_connectivity_summary(site)
+
+        for from_atom in site_bonds:
+            for to_atom in site_bonds[from_atom]:
+                for connectivity in site_bonds[from_atom][to_atom]:
+                    if connectivity not in connectivities[to_atom][from_atom]:
+                        connectivities[from_atom][to_atom][connectivity].extend(
+                            site_bonds[from_atom][to_atom][connectivity])
+
+    return defaultdict_to_dict(connectivities)
