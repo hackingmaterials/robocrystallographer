@@ -3,6 +3,7 @@ robocrystallographer: Automated structure descriptions.
 """
 
 from setuptools import setup, find_packages
+from os.path import join as path_join
 
 
 with open('README.rst', 'r') as file:
@@ -37,8 +38,9 @@ setup(
                       'inflect', 'networkx', 'matminer', 'monty', 'pubchempy'],
     extras_require={'docs': ['sphinx', 'sphinx-argparse'],
                     'dev': ['tqdm', 'pybel', 'pebble', 'maggma']},
-    package_data={'robocrys': ['mineral_db.json.gz', 'molecule_db.json.gz',
-                               'formula_db.json.gz']},
-    data_files=['LICENSE', 'requirements_rtd.txt'],
+    package_data={'robocrys': [path_join('condense', 'mineral_db.json.gz'),
+                               path_join('condense', 'molecule_db.json.gz'),
+                               path_join('condense', 'formula_db.json.gz')]},
+    data_files=['LICENSE', 'CONTRIBUTING.rst'],
     entry_points={'console_scripts': ['robocrys = robocrys.cli:main']}
     )

@@ -1,3 +1,3 @@
 from robocrys.util import common_formulas
-from robocrys.structure import StructureCondenser
-from robocrys.description import Describer
+from robocrys.condense.structure import StructureCondenser
+from robocrys.describe.description import Describer

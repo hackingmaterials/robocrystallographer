@@ -17,7 +17,8 @@ from pkg_resources import resource_filename
 from pymatgen import Element, Specie
 from pymatgen.core.periodic_table import get_el_sp
 
-common_formulas = loadfn(resource_filename('robocrys', 'formula_db.json.gz'))
+common_formulas = loadfn(
+    resource_filename('robocrys.condense', 'formula_db.json.gz'))
 
 connected_geometries = ['tetrahedral', 'octahedral', 'trigonal pyramidal',
                         'square pyramidal', 'trigonal bipyramidal',

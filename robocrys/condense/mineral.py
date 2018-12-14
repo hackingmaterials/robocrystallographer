@@ -11,8 +11,8 @@ from pkg_resources import resource_filename
 
 from pymatgen.analysis.aflow_prototypes import AflowPrototypeMatcher
 from pymatgen.core.structure import IStructure
-from robocrys.fingerprint import (get_structure_fingerprint,
-                                  get_fingerprint_distance)
+from robocrys.condense.fingerprint import (get_structure_fingerprint,
+                                           get_fingerprint_distance)
 
 
 class MineralMatcher(object):
@@ -46,7 +46,7 @@ class MineralMatcher(object):
                  aflow_initial_angle_tol: float = 5.,
                  use_fingerprint_matching: bool = True,
                  fingerprint_distance_cutoff: float = 0.4):
-        db_file = resource_filename('robocrys', 'mineral_db.json.gz')
+        db_file = resource_filename('robocrys.condense', 'mineral_db.json.gz')
         self.mineral_db = load_dataframe_from_json(db_file)
         self.aflow_initial_ltol = aflow_initial_ltol
         self.aflow_initial_stol = aflow_initial_stol

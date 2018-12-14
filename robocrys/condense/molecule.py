@@ -33,7 +33,7 @@ class MoleculeNamer(object):
                 to last.
         """
 
-        db_file = resource_filename('robocrys', 'molecule_db.json.gz')
+        db_file = resource_filename('robocrys.condense', 'molecule_db.json.gz')
         self.molecule_db = loadfn(db_file)
         self.matched_molecules = {}
         self.use_online_pubchem = use_online_pubchem

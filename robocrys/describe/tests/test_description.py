@@ -1,6 +1,6 @@
 """Currently this is just a backup and should be ignored"""
 
-from robocrys.site import SiteDescriber
+from robocrys.condense.site import SiteDescriber
 from robocrys.util import RobocrysTest
 
 

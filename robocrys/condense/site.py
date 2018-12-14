@@ -7,7 +7,7 @@ TODO: handle the case where no geometry type is given, just the CN
 """
 import copy
 from collections import defaultdict
-from typing import Dict, Any, List, Union, Optional
+from typing import Dict, Any, List, Union
 
 import numpy as np
 
@@ -17,7 +17,7 @@ from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.coord import get_angle
 from pymatgen.util.string import formula_double_format
-from robocrys.fingerprint import get_site_fingerprints
+from robocrys.condense.fingerprint import get_site_fingerprints
 from robocrys.util import connected_geometries, get_el, defaultdict_to_dict
 
 

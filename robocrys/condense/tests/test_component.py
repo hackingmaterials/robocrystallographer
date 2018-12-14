@@ -4,7 +4,7 @@ from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-from robocrys.component import (
+from robocrys.condense.component import (
     get_sym_inequiv_components, filter_molecular_components,
     get_reconstructed_structure, get_formula_from_components,
     get_formula_inequiv_components, components_are_vdw_heterostructure,

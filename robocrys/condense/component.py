@@ -15,7 +15,7 @@ from pymatgen.core.structure import Structure, PeriodicSite
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
 from robocrys import common_formulas
-from robocrys.fingerprint import get_structure_fingerprint
+from robocrys.condense.fingerprint import get_structure_fingerprint
 
 Component = Dict[str, Any]
 

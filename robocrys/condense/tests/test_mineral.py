@@ -1,4 +1,4 @@
-from robocrys.mineral import MineralMatcher
+from robocrys.condense.mineral import MineralMatcher
 from robocrys.util import RobocrysTest
 
 

@@ -3,25 +3,24 @@ This module defines a class to turn a structure into a dict representation.
 """
 
 from collections import defaultdict
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 
 from pymatgen.analysis.dimensionality import get_structure_components
-from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
 from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from robocrys import common_formulas
-from robocrys.component import (get_sym_inequiv_components,
-                                get_reconstructed_structure,
-                                get_formula_from_components,
-                                get_component_formula,
-                                components_are_vdw_heterostructure,
-                                get_vdw_heterostructure_information,
-                                get_structure_inequiv_components, Component)
-from robocrys.mineral import MineralMatcher
-from robocrys.molecule import MoleculeNamer
-from robocrys.site import SiteAnalyzer
+from robocrys.condense.component import (get_sym_inequiv_components,
+                                         get_reconstructed_structure,
+                                         get_formula_from_components,
+                                         get_component_formula,
+                                         components_are_vdw_heterostructure,
+                                         get_vdw_heterostructure_information,
+                                         get_structure_inequiv_components)
+from robocrys.condense.mineral import MineralMatcher
+from robocrys.condense.molecule import MoleculeNamer
+from robocrys.condense.site import SiteAnalyzer
 from robocrys.util import defaultdict_to_dict
 
 
@@ -251,7 +250,7 @@ def _get_all_site_summaries(site_analyzer: SiteAnalyzer):
 
 
 def _get_all_bond_summaries(site_analyzer: SiteAnalyzer):
-    bonds = defaultdict(lambda: dict)
+    bonds = defaultdict(dict)
 
     for site in set(site_analyzer.equivalent_sites):
         site_bonds = site_analyzer.get_bond_summary(site)

@@ -1,6 +1,6 @@
-from robocrys.fingerprint import (get_site_fingerprints,
-                                  get_structure_fingerprint,
-                                  get_fingerprint_distance)
+from robocrys.condense.fingerprint import (get_site_fingerprints,
+                                           get_structure_fingerprint,
+                                           get_fingerprint_distance)
 from robocrys.util import RobocrysTest
 
 
