@@ -136,10 +136,10 @@ class StructureCondenser(object):
         structure_data['angles'] = site_analyzer. \
             get_all_connectivity_angle_summaries()
 
-        components_data, n_components = self._condense_components(
+        component_summary, component_makeup = self._condense_components(
             components, sga, site_analyzer)
-        structure_data['components'] = components_data
-        structure_data['n_components'] = n_components
+        structure_data['components'] = component_summary
+        structure_data['component_makeup'] = component_makeup
 
         if components_are_vdw_heterostructure(components):
             hs_info = get_vdw_heterostructure_information(
