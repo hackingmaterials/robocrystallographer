@@ -1,5 +1,5 @@
 """
-This module provides functions for extracting information about site geometry.
+This module provides a class to extract geometry and neighbor information.
 
 TODO: distortion of geometry e.g. elongated along an axis
 """
@@ -15,6 +15,7 @@ from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.coord import get_angle
 from pymatgen.util.string import formula_double_format
+
 from robocrys.condense.fingerprint import get_site_fingerprints
 from robocrys.util import connected_geometries, get_el, defaultdict_to_dict
 

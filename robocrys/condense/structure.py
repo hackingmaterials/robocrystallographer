@@ -194,8 +194,10 @@ class StructureCondenser(object):
 
         return structure_data
 
-    def _condense_mineral(self, structure: Structure,
-                          components: List[Component]) -> Dict[str, Any]:
+    def _condense_mineral(self,
+                          structure: Structure,
+                          components: List[Component]
+                          ) -> Dict[str, Any]:
         """Condenses the mineral data.
 
         Initially the original structure will be matched against a library
@@ -243,8 +245,10 @@ class StructureCondenser(object):
 
         return mineral
 
-    def _condense_formula(self, structure: Structure,
-                          components: List[Component]) -> str:
+    def _condense_formula(self,
+                          structure: Structure,
+                          components: List[Component]
+                          ) -> str:
         """Condenses the structure formula.
 
         If :attr:`StructureCondenser.use_common_formulas` is ``True`` and the
