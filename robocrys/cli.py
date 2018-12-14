@@ -16,7 +16,7 @@ __date__ = "October 12, 2018"
 
 
 def robocrystallographer(structure):
-    sc = StructureCondenser(force_conventional_cell=True)
+    sc = StructureCondenser(use_conventional_cell=True)
     #describer = Describer()
 
     try:
