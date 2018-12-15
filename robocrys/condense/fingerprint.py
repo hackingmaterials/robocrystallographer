@@ -83,7 +83,7 @@ def get_structure_fingerprint(structure: IStructure,
 
 def get_fingerprint_distance(structure_a: Union[IStructure, Iterable],
                              structure_b: Union[IStructure, Iterable]
-                             ) -> np.ndarray:
+                             ) -> float:
     """Gets the euclidean distance between the fingerprints of two structures.
 
     Args:
