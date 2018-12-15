@@ -8,6 +8,7 @@ TODO: Handle distortion in connected polyhedra description.
 from collections import defaultdict
 from typing import Dict, Any, Tuple, List
 
+from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import (connected_geometries, geometry_to_polyhedra,
                            dimensionality_to_shape, get_el)
 import inflect
@@ -19,8 +20,8 @@ class Describer(object):
 
     def __init__(self, distorted_tol: float = 0.6,
                  describe_mineral: bool = True,
-                 describe_component_dimensionaly: bool = True,
-                 describe_components: bool = True,
+                 describe_component_dimensionaly: bool = False,
+                 describe_components: bool = False,
                  describe_oxidation_states: bool = True,
                  only_describe_cation_polyhedra_connectivity: bool = True):
         """
@@ -36,35 +37,25 @@ class Describer(object):
         self.describe_oxidation_state = describe_oxidation_states
         self.cation_polyhedra_only = \
             only_describe_cation_polyhedra_connectivity
+        self._da = None
 
     def describe(self, condensed_structure) -> str:
+        self._da = DescriptionAdapter(condensed_structure)
+
         description = list()
 
         if self.describe_mineral:
-            mineral_desc = self._get_mineral_description(
-                condensed_structure['mineral'], condensed_structure['formula'],
-                condensed_structure['spg_symbol'],
-                condensed_structure['crystal_system'])
-            description.append(mineral_desc)
+            description.append(self._get_mineral_description())
 
         if self.describe_component_dimensionality:
-            dimen_desc = self._get_component_dimensionality_description(
-                condensed_structure['dimensionality'],
-                condensed_structure['components'],
-                condensed_structure['n_components'])
-            description.append(dimen_desc)
+            description.append(self._get_component_dimensionality_description())
 
         if self.describe_components:
-            comp_descs = self._get_component_descriptions(
-                condensed_structure['components'],
-                condensed_structure['n_components'])
-            description.append(comp_descs)
+            description.append(self._get_component_descriptions())
 
         return " ".join(description)
 
-    @staticmethod
-    def _get_mineral_description(mineral_data: dict, formula: str,
-                                 spg_symbol: str, crystal_system: str) -> str:
+    def _get_mineral_description(self) -> str:
         """Gets the mineral name and space group description.
 
         If the structure is a perfect match for a known prototype (e.g.
@@ -90,40 +81,38 @@ class Describer(object):
             The description of the mineral name.
         """
         # TODO: indicate when molecules have been simplified
-        if mineral_data['type']:
-            if not mineral_data['n_species_type_match']:
+        if self._da.mineral['type']:
+            if not self._da.mineral['n_species_type_match']:
                 suffix = "-derived"
-            elif mineral_data['distance'] >= 0:
+            elif self._da.mineral['distance'] >= 0:
                 suffix = "-like"
             else:
                 suffix = ""
 
-            mineral_name = "{}{}".format(mineral_data['type'], suffix)
+            mineral_name = "{}{}".format(self._da.mineral['type'], suffix)
 
-            desc = "{} is {} structured and".format(formula, mineral_name)
+            desc = "{} is {} structured and".format(
+                self._da.formula, mineral_name)
 
         else:
-            desc = "{}".format(formula)
+            desc = "{}".format(self._da.formula)
 
         desc += " crystallizes in the {} {} space group.".format(
-            crystal_system, spg_symbol)
+            self._da.crystal_system, self._da.spg_symbol)
         return desc
 
-    @staticmethod
-    def _get_component_dimensionality_description(
-            dimensionality: int, component_data: Dict[int, Any],
-            n_components: int) -> str:
+    def _get_component_dimensionality_description(self):
         desc = "The structure is {}-dimensional".format(
-            en.number_to_words(dimensionality))
+            en.number_to_words(self._da.dimensionality))
 
-        if n_components == 1:
+        if len(self._da.components) == 1:
             desc += "."
 
         else:
             desc += " and consists of "
 
             dimen_component_descriptions = []
-            for comp_dimen, formula_data in component_data.items():
+            for comp_dimen, formula_data in self._da.components.items():
                 for formula, comp in formula_data.items():
 
                     count = en.number_to_words(comp['count'])
@@ -354,8 +343,10 @@ class Describer(object):
         if not self.describe_oxidation_state:
             element = get_el(element)
 
-        geometry_desc = '' if geometry[
-                                  'likeness'] > distorted_tol else 'distorted '
+        if geometry['likeness'] < self.distorted_tol:
+            geometry_desc = "distorted"
+        else:
+            geometry_desc = ""
         geometry_desc += geometry['type']
 
         desc = "{} is bonded in {} geometry to ".format(

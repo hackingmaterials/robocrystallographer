@@ -16,10 +16,9 @@ Attributes:
 from __future__ import unicode_literals
 
 import os
-import pprint
 import unittest
 from collections import defaultdict
-from typing import Union, Dict, List, Type
+from typing import Union, Dict, List
 
 from monty.json import MontyDecoder
 from monty.serialization import loadfn
@@ -92,33 +91,35 @@ def defaultdict_to_dict(dictionary: defaultdict) -> Dict:
     return dictionary
 
 
-class RobocrysTest(unittest.TestCase):
-    """Robocrystallographer base test class providing common functions.
+def json_keys_to_int(x):
+    """Convert dictionary keys from str to int if possible."""
+    if isinstance(x, dict):
+        return {int(k) if k.isdigit() else k: v for k, v in x.items()}
 
-    The main use of this class is currently the get_structure method,
-    which provides access to commonly used structures.
-    """
+
+class RobocrysTest(unittest.TestCase):
+    """Base test class providing access to common test data. """
 
     module_dir = os.path.dirname(os.path.abspath(__file__))
     structures_dir = os.path.join(module_dir, "tests", "structures")
+    condensed_structures_dir = os.path.join(
+        module_dir, "tests", "condensed_structures")
 
     test_structures = {}
     for fn in os.listdir(structures_dir):
         test_structures[fn.split(".")[0]] = loadfn(os.path.join(
             structures_dir, fn), cls=MontyDecoder)
 
+    test_condensed_structures = {}
+    for fn in os.listdir(condensed_structures_dir):
+        test_condensed_structures[fn.split(".")[0]] = loadfn(os.path.join(
+            condensed_structures_dir, fn), cls=MontyDecoder,
+            object_hook=json_keys_to_int)
+
     @classmethod
     def get_structure(cls, name):
         return cls.test_structures[name].copy()
 
-
-class RoboPrinter(pprint.PrettyPrinter):
-
-    def __init__(self, formats: Dict[Type, str], **kwargs):
-        super(RoboPrinter, self).__init__(**kwargs)
-        self.formats = formats
-
-    def format(self, obj, ctx, maxlvl, lvl):
-        if type(obj) in self.formats:
-            return self.formats[type(obj)] % obj, 1, 0
-        return pprint.PrettyPrinter.format(self, obj, ctx, maxlvl, lvl)
+    @classmethod
+    def get_condensed_structure(cls, name):
+        return cls.test_condensed_structures[name].copy()

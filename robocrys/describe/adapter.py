@@ -1,79 +1,161 @@
-# def get_nearest_neighbor_data(self, site_index: int,
-#                               split_into_groups: bool = True
-#                               ) -> Dict[str, Any]:
-#     """Gets a summary of all the nearest neighbors to a site.
-#
-#     Args:
-#         site_index: The site index (zero based).
-#         split_into_groups: Whether to split the nearest neighbors into
-#             groups of inequivalent atoms.
-#
-#     Returns:
-#         A summary of the nearest neighbor information as a dict. If
-#         ``split_into_groups=True``, the data is formatted as::
-#
-#             {
-#                 'Sn': {
-#                     'n_sites': 6,
-#                     'inequiv_groups': [
-#                         {
-#                             'n_sites': 4,
-#                             'inequiv_id': 0,
-#                             'dists': [1, 1, 2, 2]
-#                         },
-#                         {
-#                             'n_sites': 2,
-#                             'inequiv_id': 1,
-#                             'dists': [3, 3]
-#                         }
-#                     ]
-#                 }
-#             }
-#
-#         If ``split_into_groups=False``, the data is formatted as::
-#
-#             {
-#                 'Sn': {
-#                     'n_sites': 6,
-#                     'dists': [1, 1, 2, 2, 3, 3]
-#                 }
-#             }
-#
-#     """
-#     nn_info = self.get_nearest_neighbors(
-#         site_index, inc_inequiv_id=split_into_groups)
-#
-#     if split_into_groups:
-#         # first group nearest neighbors by element and inequiv_id
-#         # e.g. grouped_nn looks like {'el': {'inequiv_id': [sites]}}
-#         grouped_nn = defaultdict(lambda: defaultdict(list))
-#         for site in nn_info:
-#             grouped_nn[site['element']][site['inequiv_id']].append(site)
-#
-#         data = {}
-#         for element, sym_data in grouped_nn.items():
-#             n_sites = sum([len(sites) for sites in sym_data.values()])
-#             sym_groups = [
-#                 {'n_sites': len(sites),
-#                  'inequiv_id': sym_id,
-#                  'dists': [x['dist'] for x in sites]
-#                  } for sym_id, sites in sym_data.items()]
-#             data[element] = {'n_sites': n_sites,
-#                              'inequiv_groups': sym_groups}
-#
-#     else:
-#         # first group nearest neighbors by element
-#         # e.g. grouped_nn looks like {'el': [sites]}
-#         grouped_nn = defaultdict(list)
-#         for site in nn_info:
-#             grouped_nn[site['element']].append(site)
-#
-#         data = {element: {'n_sites': len(sites),
-#                           'dists': [x['dist'] for x in sites]}
-#                 for element, sites in grouped_nn.items()}
-#
-#     return data
-#
+"""
+This module implements a class to resolve the symbolic references in condensed
+structure data.
+"""
+
+from typing import Dict, Any, List, Union
+
+
+class DescriptionAdapter(object):
+    """Class to facilitate pulling data from the condensed structure dictionary.
+
+    Args:
+        condensed_structure: The condensed structure data, formatted as produced
+            by :meth:`robocrys.condense.StructureCondenser.condense_structure`.
+    """
+
+    def __init__(self, condensed_structure: Dict[str, Any]):
+        self._condensed_structure = condensed_structure
+
+    def get_nearest_neighbor_details(self, site_index: int) -> Dict[str, Any]:
+        """Gets a summary of all the nearest neighbors to a site.
+
+        Args:
+            site_index: The site index (zero based).
+
+        Returns:
+            A summary of the nearest neighbor information formatted as::
+
+                {
+                    'Sn': {
+                        'count': 6,
+                        'groups': [
+                            {
+                                'count': 4,
+                                'sym_label': '(0)',
+                                'dists': [1, 1, 2, 2]
+                            },
+                            {
+                                'count': 2,
+                                'sym_label': '(1)',
+                                'dists': [3, 3]
+                            }
+                        ]
+                    }
+                }
+        """
+        nn_sites = self.sites[site_index]['nn']
+        nn_elements = [self.sites[nn_site]['element']
+                       for nn_site in set(nn_sites)]
+        nn_details = {el: {'groups': [], 'count': 0} for el in nn_elements}
+
+        for nn_site in set(nn_sites):
+            count = nn_sites.count(nn_site)
+            element = self.sites[nn_site]['element']
+
+            # convert the sym_labels tuple into a str. E.g. (2, ) -> "(2)"
+            label = "({})".format(
+                ",".join(map(str, self.sites[nn_site]['sym_labels'])))
+
+            group = {'count': count,
+                     'sym_label': label,
+                     'distances': self.distances[site_index][nn_site]}
+            nn_details[element]['groups'].append(group)
+            nn_details[element]['count'] += count
+
+        return nn_details
+
+    @property
+    def mineral(self) -> Dict[str, Union[str, int, bool]]:
+        """The mineral data.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['mineral']
+
+    @property
+    def formula(self) -> str:
+        """The structure formula.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['formula']
+
+    @property
+    def spg_symbol(self) -> str:
+        """The space group symbol.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['spg_symbol']
+
+    @property
+    def crystal_system(self) -> str:
+        """The crystal system.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['crystal_system']
+
+    @property
+    def dimensionality(self) -> int:
+        """The overall dimensionality.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['dimensionality']
+
+    @property
+    def sites(self) -> Dict[int, Dict[str, Any]]:
+        """The site data.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['sites']
+
+    @property
+    def distances(self) -> Dict[int, Dict[int, List[float]]]:
+        """The distance data.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['distances']
+
+    @property
+    def angles(self) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
+        """The angle data.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['angles']
+
+    @property
+    def components(self) -> Dict[int, Dict[str, Any]]:
+        """The component data.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['components']
+
+    @property
+    def component_makeup(self) -> List[int]:
+        """The component makeup of the structure.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return self._condensed_structure['component_makeup']
+
+
 # def get_next_nearest_neighbor_data(self, site_index: int
 #                                    ) -> Dict[str, Any]:
 #     """Gets a summary of the next nearest neighbor connectivity.
@@ -126,14 +208,14 @@
 #     """Merges sites with the same properties except bond angles and distances.
 #
 #     Args:
-#         sites: A list of sites. Each site is formatted as a :ob:`dict` with the
-#             keys:
+#         sites: A list of sites. Each site is formatted as a :ob:`dict` with
+#           the keys:
 #
 #             - ``'element'`` (``str``): The element of the site.
 #             - ``'geometry'`` (``dict``): The geometry, as output by
 #                 :meth:`SiteAnalyzer.get_site_geometry`.
-#             - ``'nn_data'`` (``dict``): The nearest neighbor data, as output by
-#                 :meth:`SiteAnalyzer.get_nearest_neighbor_data`.
+#             - ``'nn_data'`` (``dict``): The nearest neighbor data, as output
+#             by :meth:`SiteAnalyzer.get_nearest_neighbor_data`.
 #             - ``'nnn_data'`` (``dict``): The next nearest neighbor data, as
 #                 given by :meth:`SiteAnalyzer.get_next_nearest_neighbor_data`.
 #
@@ -190,7 +272,8 @@
 #                 site['nn_data'], new_site['nn_data'],
 #                 match_bond_dists=False)
 #             nnn_match = nnn_summaries_match(
-#                 site['nnn_data'], new_site['nnn_data'], match_bond_angles=False)
+#                 site['nnn_data'], new_site['nnn_data'],
+#                 match_bond_angles=False)
 #
 #             if elem_match and geom_match and nn_match and nnn_match:
 #                 new_site['nn_data'] = _merge_nn_data(site['nn_data'],
@@ -213,7 +296,7 @@
 #     See the ``merge_similar_sites`` docstring for information on the format of
 #     the merged data.
 #
-#     Note an error will be thrown if this function is called on two sites that do
+#     Note an error will be thrown if this function is called on two sites that
 #     not have matching nearest neighbor summaries (ignoring bond distances).
 #     """
 #
@@ -241,7 +324,7 @@
 #     See the ``merge_similar_sites`` docstring for information on the format of
 #     the merged data.
 #
-#     Note an error will be thrown if this function is called on two sites that do
+#     Note an error will be thrown if this function is called on two sites that
 #     not have matching next nearest neighbor summaries (ignoring bond angles).
 #     """
 #     for el in site_nnn_data:
