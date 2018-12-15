@@ -65,18 +65,6 @@ class Describer(object):
         match to a mineral but contains a different number of element types than
         the mineral prototype, "-derived" will be added to the mineral name.
 
-        Args:
-            mineral_data: The mineral information as a :obj:`dict` with the keys
-                "mineral", "distance", "n_species_types_match", corresponding to
-                the mineral name, the fingerprint distance between the prototype
-                and known mineral, and whether the number of species types in
-                the structure matches the number in the known prototype,
-                respectively. If no mineral match, mineral_data will be
-                ``None``.
-            formula: The formula of the structure.
-            spg_symbol: The space group symbol.
-            crystal_system: The crystal system.
-
         Returns:
             The description of the mineral name.
         """
