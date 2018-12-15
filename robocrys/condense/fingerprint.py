@@ -71,11 +71,13 @@ def get_structure_fingerprint(structure: IStructure,
     # distance_cutoffs param
     if use_distance_cutoffs:
         ssf = SiteStatsFingerprint(
-            CrystalNNFingerprint.from_preset("ops", cation_anion=False))
+            CrystalNNFingerprint.from_preset("ops", cation_anion=False),
+            stats=stats)
     else:
         ssf = SiteStatsFingerprint(
             CrystalNNFingerprint.from_preset("ops", cation_anion=False,
-                                             distance_cutoffs=None))
+                                             distance_cutoffs=None),
+            stats=stats)
     return np.array(ssf.featurize(structure))
 
 
