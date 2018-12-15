@@ -7,7 +7,7 @@ class TestMineralMatcher(RobocrysTest):
 
     def setUp(self):
         self.matcher = MineralMatcher()
-        self.tin_dioxide = self.get_structure("tin_dioxide")
+        self.tin_dioxide = self.get_structure("SnO2")
         self.double_perov = self.get_structure("double_perovskite")
 
     def test_get_aflow_matches(self):
@@ -18,7 +18,7 @@ class TestMineralMatcher(RobocrysTest):
                          msg="number of matches is not equal to 1")
         self.assertEqual(matches[0]['type'], 'Rutile',
                          msg="SnO2 mineral name incorrect")
-        self.assertAlmostEqual(matches[0]['distance'], 0.099964369,
+        self.assertAlmostEqual(matches[0]['distance'], 0.15047694852244528,
                                msg="SnO2 fingerprint distance does not match")
         self.assertTrue('structure' in matches[0] and matches[0]['structure'],
                         msg="SnO2 structure not present in match dictionary")
@@ -30,7 +30,7 @@ class TestMineralMatcher(RobocrysTest):
                          msg="number of matches is not equal to 1")
         self.assertEqual(matches[0]['type'], 'Hydrophilite',
                          msg="SnO2 mineral name incorrect")
-        self.assertAlmostEqual(matches[0]['distance'], 0.0851268873,
+        self.assertAlmostEqual(matches[0]['distance'], 0.1429748846147379,
                                msg="SnO2 fingerprint distance does not match")
         self.assertTrue('structure' in matches[0] and matches[0]['structure'],
                         msg="SnO2 structure not present in match dictionary")
@@ -57,7 +57,7 @@ class TestMineralMatcher(RobocrysTest):
         """Test mineral name matching."""
         mineral_data = self.matcher.get_best_mineral_name(self.tin_dioxide)
         self.assertEqual(mineral_data['type'], 'Rutile')
-        self.assertAlmostEqual(mineral_data['distance'], 1.)
+        self.assertEqual(mineral_data['distance'], -1.)
         self.assertEqual(mineral_data['n_species_type_match'], True)
 
         mineral_data = self.matcher.get_best_mineral_name(self.double_perov)
