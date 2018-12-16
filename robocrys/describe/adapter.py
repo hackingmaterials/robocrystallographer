@@ -3,7 +3,19 @@ This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
 
+from collections import namedtuple, defaultdict
 from typing import Dict, Any, List, Union
+
+ComponentDetails = namedtuple('ComponentDetails',
+                              ['formula', 'count', 'dimensionality',
+                               'molecule_name', 'orientation', 'index'])
+
+ComponentGroup = namedtuple('ComponentGroup',
+                            ['formula', 'dimensionality', 'count', 'components',
+                             'molecule_name'])
+
+NeighborSiteDetails = namedtuple('NeighborSiteDetails',
+                                 ['element', 'count', 'sites', 'sym_label'])
 
 
 class DescriptionAdapter(object):
@@ -17,53 +29,125 @@ class DescriptionAdapter(object):
     def __init__(self, condensed_structure: Dict[str, Any]):
         self._condensed_structure = condensed_structure
 
-    def get_nearest_neighbor_details(self, site_index: int) -> Dict[str, Any]:
+    def get_nearest_neighbor_details(self, site_index: int,
+                                     group_by_element: bool = False
+                                     ) -> List[NeighborSiteDetails]:
         """Gets a summary of all the nearest neighbors to a site.
 
         Args:
-            site_index: The site index (zero based).
+            site_index: An inequivalent site index.
+            group_by_element: Whether to group all nearest neighbor sites
+                with the same element together.
 
         Returns:
-            A summary of the nearest neighbor information formatted as::
+            A :obj:`list` of ``ComponentDetails`` objects, each with the
+            attributes:
 
-                {
-                    'Sn': {
-                        'count': 6,
-                        'groups': [
-                            {
-                                'count': 4,
-                                'sym_label': '(0)',
-                                'dists': [1, 1, 2, 2]
-                            },
-                            {
-                                'count': 2,
-                                'sym_label': '(1)',
-                                'dists': [3, 3]
-                            }
-                        ]
-                    }
-                }
+            - ``element`` (``str``): The element of the nearest neighbor site.
+            - ``count`` (``int``): The number of sites of this type.
+            - ``sym_label`` (``str``): The symmetry label.
+            - ``sites`` (``list[int]``): The site indices representing this
+                nearest neighbor. Can be more than one site if
+                ``group_by_element=True``.
         """
         nn_sites = self.sites[site_index]['nn']
-        nn_elements = [self.sites[nn_site]['element']
-                       for nn_site in set(nn_sites)]
-        nn_details = {el: {'groups': [], 'count': 0} for el in nn_elements}
 
+        nn_dict = defaultdict(list)
         for nn_site in set(nn_sites):
-            count = nn_sites.count(nn_site)
             element = self.sites[nn_site]['element']
+            all_labels = self.sites[nn_site]['sym_labels']
+            identity = (element,) if group_by_element else (element, all_labels)
 
-            # convert the sym_labels tuple into a str. E.g. (2, ) -> "(2)"
-            label = "({})".format(
-                ",".join(map(str, self.sites[nn_site]['sym_labels'])))
+            count = nn_sites.count(nn_site)
+            nn_dict[identity].append(
+                {'count': count,
+                 'labels': all_labels,
+                 'site': nn_site})
 
-            group = {'count': count,
-                     'sym_label': label,
-                     'distances': self.distances[site_index][nn_site]}
-            nn_details[element]['groups'].append(group)
-            nn_details[element]['count'] += count
+        nn_details = []
+        for identity, nn_group in nn_dict:
+            # convert the sym_labels tuple into a str. E.g. (1, 2, ) -> "(1,2)"
+            all_labels = [label for nn_site in nn_group
+                          for label in list(nn_site['labels'])]
+            label = "({})".format(",".join(map(str, all_labels)))
 
-        return nn_details
+            nn_details.append(NeighborSiteDetails(
+                element=identity[0],
+                sites=[nn_site['site'] for nn_site in nn_group],
+                count=sum([nn_site['count'] for nn_site in nn_group]),
+                sym_label=label))
+
+        return sorted(nn_details, key=_site_order)
+
+    def get_component_details(self, group_components: bool = False
+                              ) -> Union[List[ComponentDetails],
+                                         List[ComponentGroup]]:
+        """Gets a summary of all components.
+
+        Returns:
+            If ``group_components=False``, a :obj:`list` of ``ComponentDetails``
+            objects, each with the attributes:
+
+            - ``count`` (``int``): The number of these components in the
+                structure.
+            - ``formula`` (``str``): The component formula.
+            - ``dimensionality`` (``int``): The component dimensionality.
+            - ``molecule_name`` (``str`` or ``None``): The molecule name if
+                applicable, else ``None``.
+            - ``orientation`` (``tuple[int]``): The component orientation.
+            - ``sites`` (``list[int]``): The site indices of the sites in the
+                component.
+
+            If ``group_components=True``, the components will be grouped
+            together if they have the same formula, dimensionality and
+            molecule name. The data will be returned as a :obj:`list` of
+            ``ComponentGroup`` objects, each with the attributes:
+
+            - ``count`` (``int``): The total number of components in this group.
+            - ``formula`` (``str``): The formula of the components..
+            - ``dimensionality`` (``int``): The dimensionality of the
+                components.
+            - ``molecule_name`` (``str`` or ``None``): The molecule name if
+                applicable, else ``None``.
+            - ``components`` (``list[ComponentDetails]``): The components
+                in the group.
+        """
+        component_details = []
+
+        for index in set(self.component_makeup):
+            component_details.append(ComponentDetails(
+                count=self.component_makeup.count(index),
+                formula=self.components[index]['formula'],
+                dimensionality=self.components[index]['dimensionality'],
+                molecule_name=self.components[index]['molecule_name'],
+                orientation=self.components[index]['orientation'],
+                index=index))
+
+        if not group_components:
+            return sorted(component_details, key=_component_order)
+
+        grouped_components = defaultdict(list)
+        for component in component_details:
+            identity = (component.dimensionality, component.formula,
+                        component.molecule_name)
+            grouped_components[identity].append(component)
+
+        component_group_details = []
+        for identity, group in grouped_components.items():
+            component_group_details.append(ComponentGroup(
+                count=sum(component.count for component in group),
+                dimensionality=identity[0],
+                formula=identity[1],
+                molecule_name=identity[2],
+                components=sorted(group, key=_component_order)))
+
+        return sorted(component_group_details, key=_component_order)
+
+    @property
+    def elements(self) -> Dict[int, str]:
+        """The site elements."""
+        return {site_index: site_data['element']
+                for site_index, site_data in self.sites.items()}
 
     @property
     def mineral(self) -> Dict[str, Union[str, int, bool]]:
@@ -154,6 +238,22 @@ class DescriptionAdapter(object):
         more details.
         """
         return self._condensed_structure['component_makeup']
+
+
+def _component_order(c):
+    """Utility function to help sort ComponentDetails and ComponentGroups."""
+    mn = c.molecule_name if c.molecule_name else 'z'
+
+    if isinstance(c, ComponentDetails):
+        ori = c.orientation if c.orientation else (0, 0, 0)
+        return [mn, c.dimensionality, c.formula, ori, c.count]
+    else:
+        return [mn, c.dimensionality, c.formula, c.count]
+
+
+def _site_order(s):
+    """Utility function to help sort NeighborSiteDetails."""
+    return [s.element, s.count, s.sym_label, s.sites]
 
 
 # def get_next_nearest_neighbor_data(self, site_index: int

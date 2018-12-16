@@ -20,6 +20,19 @@ class TestStructureCondenser(RobocrysTest):
         self.assertAlmostEqual(data["O2-"]['groups'][0]['distances'][0],
                                2.0922101061490546)
 
+    def test_get_component_summary(self):
+        """Check getting the component summaries."""
+        data = self.da.get_component_details()
+
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0].count, 1)
+        self.assertEqual(data[0].formula, 'SnO2')
+        self.assertEqual(data[0].dimensionality, 3)
+        self.assertEqual(data[0].molecule_name, None)
+        self.assertEqual(data[0].orientation, None)
+
+
+
     # def test_get_next_nearest_neighbor_details(self):
     #     """Check getting next nearest neighbor details."""
     #     info = self.da.get_next_nearest_neighbor_details(5)

@@ -2,10 +2,11 @@
 This module provides a class for generating descriptions of condensed structure
 data.
 
-TODO: Handle distortion in connected polyhedra description.
+TODO:
+    * Indicate when molecules have been simplified in the mineral description.
+    * Handle distortion in connected polyhedra description.
 """
 
-from collections import defaultdict
 from typing import Dict, Any, Tuple, List
 
 from robocrys.describe.adapter import DescriptionAdapter
@@ -18,28 +19,58 @@ en = inflect.engine()
 
 class Describer(object):
 
-    def __init__(self, distorted_tol: float = 0.6,
+    def __init__(self,
                  describe_mineral: bool = True,
-                 describe_component_dimensionaly: bool = False,
+                 describe_component_makeup: bool = True,
                  describe_components: bool = False,
+                 describe_symmetry_labels: bool = True,
                  describe_oxidation_states: bool = True,
+                 describe_bond_lengths: bool = True,
+                 bond_length_decimal_places: int = 2,
+                 distorted_tol: float = 0.6,
                  only_describe_cation_polyhedra_connectivity: bool = True):
-        """
+        """A class to convert condensed structure data into text descriptions.
 
         Args:
+            describe_mineral: Whether to describe the crystal mineral data.
+            describe_component_makeup: Whether to describe the component makeup
+                of the structure.
+            describe_components: Whether to describe the component's sites.
+            describe_symmetry_labels: Whether to include the symmetry labels
+                when describing atomic sites.
+            describe_oxidation_states: Whether to include oxidation states
+                in the description.
+            describe_bond_lengths: Whether to describe bond lengths.
+            bond_length_decimal_places: Number of decimal places to round
+                bond lengths.
             distorted_tol: The value under which the site geometry will be
                 classified as distorted.
+            only_describe_cation_polyhedra_connectivity: Whether to only
+                describe cation polyhedra instead of both cation and anion
+                polyhedra.
         """
         self.distorted_tol = distorted_tol
         self.describe_mineral = describe_mineral
-        self.describe_component_dimensionality = describe_component_dimensionaly
+        self.describe_component_dimensionality = describe_component_makeup
         self.describe_components = describe_components
+        self.describe_symmetry_labels = describe_symmetry_labels
         self.describe_oxidation_state = describe_oxidation_states
+        self.describe_bond_lengths = describe_bond_lengths
+        self.bond_length_decimal_places = bond_length_decimal_places
         self.cation_polyhedra_only = \
             only_describe_cation_polyhedra_connectivity
-        self._da = None
+        self._da: DescriptionAdapter = None
 
-    def describe(self, condensed_structure) -> str:
+    def describe(self, condensed_structure: Dict[str, Any]) -> str:
+        """Convert a condensed structure into a text description.
+
+        Args:
+            condensed_structure: The condensed structure data, formatted as
+                produced by :meth:`StructureCondenser.condense_structure`.
+
+        Returns:
+            A description of the structure.
+        """
         self._da = DescriptionAdapter(condensed_structure)
 
         description = list()
@@ -48,10 +79,10 @@ class Describer(object):
             description.append(self._get_mineral_description())
 
         if self.describe_component_dimensionality:
-            description.append(self._get_component_dimensionality_description())
+            description.append(self._get_component_makeup_summary())
 
         if self.describe_components:
-            description.append(self._get_component_descriptions())
+            description.append(self._get_all_component_descriptions())
 
         return " ".join(description)
 
@@ -68,7 +99,6 @@ class Describer(object):
         Returns:
             The description of the mineral name.
         """
-        # TODO: indicate when molecules have been simplified
         if self._da.mineral['type']:
             if not self._da.mineral['n_species_type_match']:
                 suffix = "-derived"
@@ -89,7 +119,13 @@ class Describer(object):
             self._da.crystal_system, self._da.spg_symbol)
         return desc
 
-    def _get_component_dimensionality_description(self):
+    def _get_component_makeup_summary(self) -> str:
+        """Gets a summary of the makeup of components in a structure.
+
+        Returns:
+            A description of the number of components and their dimensionalities
+            and orientations.
+        """
         desc = "The structure is {}-dimensional".format(
             en.number_to_words(self._da.dimensionality))
 
@@ -99,319 +135,184 @@ class Describer(object):
         else:
             desc += " and consists of "
 
-            dimen_component_descriptions = []
-            for comp_dimen, formula_data in self._da.components.items():
-                for formula, comp in formula_data.items():
+            component_makeup_summaries = []
+            for component_group in self._da.get_component_details(
+                    group_components=True):
+                count = en.number_to_words(component_group.count)
+                dimensionality = component_group.dimensionality
 
-                    count = en.number_to_words(comp['count'])
+                if component_group.molecule_name:
+                    shape = en.plural("molecule", count)
+                    formula = component_group.molecule_name
+                else:
+                    shape = en.plural(dimensionality_to_shape[dimensionality],
+                                      count)
+                    formula = component_group.formula
 
-                    if 'molecule_name' in comp:
-                        molecules = en.plural("molecule", comp['count'])
-                        comp_desc = "{} {} {}".format(
-                            count, comp['molecule_name'], molecules)
+                comp_desc = "{} {} {}".format(count, formula, shape)
 
-                    else:
-                        shape = en.plural(dimensionality_to_shape[comp_dimen],
-                                          count)
-                        comp_desc = "{} {} {}".format(count, formula, shape)
+                if component_group.dimensionality in [1, 2]:
+                    orientations = set(c.orientation for c in
+                                       component_group.components)
+                    direction = en.plural("direction", len(orientations))
+                    comp_desc += " oriented in the {} {}".format(
+                        en.join(orientations), direction)
 
-                    if comp_dimen in [1, 2]:
-                        orientations = set([c['orientation'] for c in
-                                            comp['inequiv_components']])
-                        dirs = en.plural("direction", len(orientations))
-                        orientations = en.join([o for o in orientations])
-                        comp_desc += " oriented in the {} {}".format(
-                            orientations, dirs)
+                component_makeup_summaries.append(comp_desc)
 
-                    dimen_component_descriptions.append(comp_desc)
-
-            desc += en.join(dimen_component_descriptions) + "."
+            desc += en.join(component_makeup_summaries) + "."
         return desc
 
-    def _get_component_descriptions(self, component_data: Dict[int, Any],
-                                    n_components: int) -> str:
-        if n_components == 1:
-            # very messy way of getting the only component out of a nested
-            # dict series where we don't know any of the keys in advance.
-            comp = list(list(component_data.values())[0].values())[0][
-                'inequiv_components'][0]
+    def _get_all_component_descriptions(self) -> str:
+        """Gets the descriptions of all components in the structure.
 
-            if _component_contains_connected_polyhedra(
-                    comp, self.cation_polyhedra_only):
-                desc = "The structure contains "
-            else:
-                desc = ""
-
-            desc += self._get_component_description(comp)
+        Returns:
+            A description of all components in the structure.
+        """
+        if len(self._da.components) == 1:
+            return self._get_component_description(
+                self._da.get_component_details()[0])
 
         else:
-            dimen_component_descriptions = []
-            for comp_dimen, formula_data in component_data.items():
-                for formula, comp in formula_data.items():
+            component_groups = self._da.get_component_details(
+                group_components=True)
 
-                    # don't describe known molecules
-                    if "molecule_name" in comp:
+            component_descriptions = []
+            for group in component_groups:
+                for component in group.components:
+
+                    if group.molecule_name:
+                        # don't describe known molecules
                         continue
 
-                    if len(comp['inequiv_components']) == 1:
-                        inequiv_comp = comp['inequiv_components'][0]
-                        count = inequiv_comp['count']
-                        prefix = "the" if count == 1 else "each"
-                        shape = dimensionality_to_shape[comp_dimen]
+                    formula = group.formula
+                    group_count = group.count
+                    component_count = component.count
+                    shape = dimensionality_to_shape[group.dimensionality]
 
-                        if _component_contains_connected_polyhedra(
-                                inequiv_comp, self.cation_polyhedra_only):
-                            comp_desc = "{} {} {} contains ".format(
-                                prefix.capitalize(), formula, shape)
-
-                        else:
-                            comp_desc = "In {} {} {}, ".format(
-                                prefix, formula, shape)
-
-                        comp_desc += self._get_component_description(
-                            inequiv_comp)
-
+                    if group_count == component_count:
+                        filler = "the" if group_count == 1 else "each"
                     else:
-                        comp_desc = ""
-                        for inequiv_comp in comp['inequiv_components']:
-                            count = en.number_to_words(inequiv_comp['count'])
-                            shape = en.plural(
-                                dimensionality_to_shape[comp_dimen],
-                                2)
+                        filler = "{} of the".format(component_count)
 
-                            if _component_contains_connected_polyhedra(
-                                    inequiv_comp, self.cation_polyhedra_only):
-                                comp_desc += "{} of the {} {}".format(
-                                    count.capitalize(), formula, shape)
+                    desc = "In {} {} {} ".format(filler, formula, shape)
+                    desc += self._get_component_description(component.index)
 
-                            else:
-                                comp_desc += "In {} of the {} {}, ".format(
-                                    count, formula, shape)
+                    component_descriptions.append(desc)
 
-                            comp_desc += self._get_component_description(
-                                inequiv_comp)
+            return " ".join(component_descriptions)
 
-                    dimen_component_descriptions.append(comp_desc)
+    def _get_component_description(self, component_index: int) -> str:
+        """Gets the descriptions of all sites in a component.
 
-            desc = " ".join(dimen_component_descriptions)
-        return desc
+        Args:
+            component_index: The index of the component
 
-    def _get_component_description(self, component: Dict[str, Any]) -> str:
-        conn_sites, other_sites = _filter_connected_polyhedra(
-            component, cation_polyhedra_only=self.cation_polyhedra_only)
+        Returns:
+            The description for all sites in the structure.
+        """
+        site_descriptions = []
+        for site_group in self._da.get_site_details(
+                component_index, group_sites=True):
 
-        desc = []
-        if conn_sites:
-            desc.append(
-                self._get_connected_polyhedral_sites_description(conn_sites))
+            if len(site_group.groups) == 1:
+                site_descriptions.append(
+                    self._get_site_description(site_groups.groups[0]))
 
-        for site in other_sites:
-            desc.append(self._get_site_description(
-                site['element'], site['geometry'], nn_data=site['nn_data'],
-                describe_bond_lengths=True))
+        return " ".join(site_descriptions)
 
-        desc = " ".join(desc)
-        return desc
-
-    def _get_connected_polyhedral_sites_description(self,
-                                                    connected_sites: List[dict]
-                                                    ) -> str:
-        """Gets a summary of the connected polyhedra sites."""
-
-        # first reorganise the data slightly.
-        # we only want to extract the connectivities for bonding to other
-        # tet or oct sites. Also we want to separate the oct and tet sites so
-        # that we can describe them separately.
-        # futhermore, the tilt angles are only nicely defined for
-        # corner sharing octahedra so we only report those here.
-
-        connected_data = {}
-        ordered_sites = []
-        octahedral_tilts = []
-
-        for geometry in connected_geometries:
-            geometry_data = defaultdict(list)
-
-            for site in connected_sites:
-                if geometry in site['geometry']['type']:
-                    connectivities = []
-                    for el_data in site['nnn_data'].values():
-                        for to_geometry in connected_geometries:
-                            if to_geometry in el_data:
-                                # store the different types of connectivity
-                                connectivities.extend(
-                                    el_data[to_geometry].keys())
-
-                                # if corner sharing octahedra store the angles
-                                if (geometry == 'octahedral' and
-                                        'corner-sharing' in el_data[
-                                            to_geometry]):
-                                    octahedral_tilts.extend(
-                                        el_data[to_geometry]['corner-sharing'][
-                                            'angles'])
-
-                    if connectivities:
-                        connectivities = list(set(connectivities))
-                        connectivities = [c.replace("sharing", "")
-                                          for c in connectivities]
-
-                        if len(connectivities) > 1:
-                            connectivities_str = "a mixture of "
-                        else:
-                            connectivities_str = ""
-                        connectivities_str += en.join(
-                            connectivities) + "sharing"
-
-                        if (site['polyhedra_formula'] not in
-                                geometry_data[connectivities_str]):
-                            geometry_data[connectivities_str].append(
-                                site['polyhedra_formula'])
-                            ordered_sites.append(site)
-
-            if geometry_data:
-                connected_data[geometry] = geometry_data
-
-        desc = []
-
-        for geometry in connected_geometries:
-            if geometry in connected_data:
-                for con_str, formulas in connected_data[geometry].items():
-                    formulas_str = en.join(formulas)
-                    polyhedra = geometry_to_polyhedra[geometry]
-                    desc.append("{} {} {}".format(con_str, formulas_str,
-                                                  polyhedra))
-
-        desc[-1] = desc[-1] + "."
-        all_sites_desc = [en.join(desc)]
-
-        if octahedral_tilts:
-            octahedral_tilts = [180 - t for t in octahedral_tilts]
-
-            tilts = list(set(_rounded_bond_lengths(
-                octahedral_tilts, decimal_places=1)))
-            tilt_desc = "The corner-sharing octahedra have tilt angles "
-
-            if len(tilts) == 1:
-                tilt_desc += "of {}°."
-            else:
-                tilt_desc += "between {}–{}°.".format(min(tilts), max(tilts))
-
-            all_sites_desc.append(tilt_desc)
-
-        for site in ordered_sites:
-            for bond_element, bond_data in site['nn_data'].items():
-                all_sites_desc.append(self._get_bond_length_description(
-                    site['element'], bond_element, bond_data))
-
-        return " ".join(all_sites_desc)
-
-    def _get_site_description(self, element: str, geometry: dict, nn_data: dict,
-                              describe_bond_lengths: bool = True) -> str:
-        """Gets a description of the geometry of a site.
+    def _get_site_description(self, site_index: int) -> str:
+        """Gets a description of the geometry and bonding of a site.
 
         If the site likeness (order parameter) is less than ``distorted_tol``,
         "distorted" will be added to the geometry description.
 
         Args:
-            element: The element of the species at the site.
-            geometry: The site geometry as a :obj:`dict` with keys "geometry"
-                and "likeness", corresponding to the geometry type (e.g.
-                octahedral) and order parameter, respectively.
-            nn_data: The nearest neighbour data for the site. This should have
-                the same format as returned by
-                :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_data`.
-            distorted_tol: The value under which the site geometry will be
-                classified as distorted.
-            describe_bond_lengths: Whether to provide a description of the
-                bond lengths. Defaults to ``True``.
+            site_index: An inequivalent site index.
 
         Returns:
             A description of the geometry and bonding of a site.
         """
+        site = self._da.sites[site_index]
+        element = site['elememt']
         if not self.describe_oxidation_state:
             element = get_el(element)
 
-        if geometry['likeness'] < self.distorted_tol:
+        if site['geometry']['likeness'] < self.distorted_tol:
             geometry_desc = "distorted"
         else:
             geometry_desc = ""
-        geometry_desc += geometry['type']
+        geometry_desc += site['geometry']['type']
 
         desc = "{} is bonded in {} geometry to ".format(
             element, en.a(geometry_desc))
 
-        # tackle the case that the bonding is only to a single element
-        if len(nn_data) == 1:
-            return desc + self._get_single_element_bonding_description(
-                element, nn_data, describe_bond_lengths)
-        else:
-            return desc + self._get_multi_element_bonding_description(
-                element, nn_data, describe_bond_lengths)
+        return desc + self._get_nearest_neighbor_description(site_index)
 
-    @staticmethod
-    def _get_bond_length_description(element: str, bond_element: str,
-                                     bond_data: dict) -> str:
-        """Gets a description of the bonding of a site to an element.
+    def _get_nearest_neighbor_description(self, site_index: int) -> str:
+        """Gets a description of a sites nearest neighbors.
 
-        Bonding description based on the nearest neighbour data in
-        `self.nearest_neighbour_data`. If you ask for the bonding description
-        for site_index and element that are not bonded an error will be thrown.
+        Note: This function is intended to be run directly after
+        :meth:`get_site_description`, as the output will not form a complete
+        sentence on its own.
 
         Args:
-            element: The central element name (e.g. element of species at site
-                to which bonds are made).
-            bond_element (str): The element too which bonding will be described.
-            bond_data: The bonding information as a :obj:`dict` with the
-                format::
+            site_index: An inequivalent site index.
 
-                    {
-                        'n_sites': 6
-                        'inequiv_groups': (
-                            {
-                                'n_sites': 4
-                                'inequiv_id': 0
-                                'dists': [1, 1, 2, 2]
-                            },
-                            {
-                                'n_sites': 2
-                                'inequiv_id': 1
-                                'dists': [3, 3]
-                            }
-                        )
-                    }
+        Returns:
+            A description of the nearest neighbors.
+        """
 
-                This is the same as output by
-                :obj:`robocrys.site.SiteAnalyzer.get_nearest_neighbor_data`.
-                Alternatively, if the information for several sites has been
-                merged together, the data can be formatted as::
+        # four O(1)2-, one Pb(1)2+, and one Pb(2)2+ atom.
+        nn_details = self._da.get_nearest_neighbor_details(
+            site_index, group_by_element=self.describe_symmetry_labels)
 
-                    {
-                        'n_sites': 6
-                        'dists': [1, 1, 1, 2, 2, 2, 2, 3, 3]
-                        )
-                    }
+        last_count = 0
+        nn_descriptions = []
+        bond_length_descriptions = []
+        for nn_site in nn_details:
+            if not self.describe_oxidation_state:
+                element = get_el(nn_site.element)
+            else:
+                element = nn_site.element
 
-                Note that there are now more distances than there are number of
-                sites. This is because n_sites gives the number of bonds to a
-                specific site, whereas the distances are the complete set of
-                distances for all similar (merged) sites.
+            if len(nn_site.sites) == 1 and not self.describe_symmetry_labels:
+                equivalent = "equivalent"
+            else:
+                equivalent = ""
+
+            nn_descriptions.append("{} {} {}".format(
+                en.number_to_words(nn_site.count), equivalent, element))
+            bond_length_descriptions.append(
+                self._get_bond_length_description(site_index, nn_site.sites))
+
+            last_count = nn_site.count
+
+        s_atoms = "atom" if last_count == 1 else "atoms"
+        nn_descriptions = "{} {}.".format(en.join(nn_descriptions), s_atoms)
+
+        return " ".join(nn_descriptions) + " ".join(bond_length_descriptions)
+
+    def _get_bond_length_description(self, from_site: int,
+                                     to_sites: List[int]) -> str:
+        """Gets a description of the bond lengths between sites.
+
+        Args:
+            from_site: An inequivalent site index.
+            to_sites: A :obj:`list` of site indices. The site indices should
+                all be for the same element.
 
         Returns:
             A description of the bond lengths.
         """
-        element = get_el(element)
-        bond_element = get_el(bond_element)
-
-        if 'dists' in bond_data:
-            dists = bond_data['dists']
-        else:
-            # combine all the inequivalent distances
-            dists = sum([x['dists'] for x in bond_data['inequiv_groups']], [])
+        from_element = get_el(self._da.elements[from_site])
+        to_element = get_el(self._da.elements[to_sites[0]])
+        dists = self._da.get_distance_details(from_site, to_sites)
 
         # if only one bond length
         if len(dists) == 1:
             return "The {}–{} bond length is {}.".format(
-                element, bond_element, _distance_to_string(dists[0]))
+                from_element, to_element, _distance_to_string(dists[0]))
 
         discrete_bond_lengths = _rounded_bond_lengths(dists)
 
@@ -419,7 +320,7 @@ class Describer(object):
         if len(set(discrete_bond_lengths)) == 1:
             intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
             return "{} {}–{} bond lengths are {}.".format(
-                intro, element, bond_element, _distance_to_string(dists[0]))
+                intro, from_element, to_element, _distance_to_string(dists[0]))
 
         # if two sets of bond lengths
         if len(set(discrete_bond_lengths)) == 2:
@@ -431,120 +332,18 @@ class Describer(object):
             # length will only be singular when there is 1 small and 1 big len
             length = en.plural('length', int((small + big) / 2))
 
-            return ("In this arrangement, there {} {} shorter ({}) and {} "
+            return ("There {} {} shorter ({}) and {} "
                     "longer ({}) {}–{} bond {}.").format(
                 en.plural_verb('is', small_count), small_count,
                 _distance_to_string(small), big_count,
-                _distance_to_string(big), element, bond_element, length)
+                _distance_to_string(big), from_element, to_element, length)
 
         # otherwise just detail the spread of bond lengths
         return ("There are a spread of {}–{} bond distances ranging from "
                 "{}.").format(
-            element, bond_element,
+            from_element, to_element,
             _distance_range_to_string(min(discrete_bond_lengths),
                                       max(discrete_bond_lengths)))
-
-    def _get_single_element_bonding_description(self, element, nn_data,
-                                                describe_bond_lengths) -> str:
-        """Utility func to get description of a site bonded to a one element."""
-        desc = ""
-        bond_element, bond_data = list(nn_data.items())[0]
-
-        if not self.describe_oxidation_state:
-            bond_element = get_el(bond_element)
-
-        if bond_data['n_sites'] == 1:
-            desc += "one {} atom. ".format(bond_element)
-
-        else:
-            if ('inequiv_groups' in bond_data and
-                    len(bond_data['inequiv_groups']) == 1):
-                equivalent = " equivalent "
-            else:
-                equivalent = " "
-
-            desc += "{}{}{} atoms.".format(
-                en.number_to_words(bond_data['n_sites']), equivalent,
-                bond_element)
-
-        if describe_bond_lengths:
-            desc += " "
-            desc += self._get_bond_length_description(element, bond_element,
-                                                      bond_data)
-        return desc
-
-    def _get_multi_element_bonding_description(self, element, nn_data,
-                                               describe_bond_lengths) -> str:
-        """Utility func to get description of a site bonded to multi elems."""
-        desc = ""
-
-        bonding_atoms = []
-        for el, data in nn_data.items():
-
-            if not self.describe_oxidation_state:
-                el = get_el(el)
-
-            count = en.number_to_words(data['n_sites'])
-
-            if ('inequiv_groups' in data and len(data['inequiv_groups']) == 1
-                    and data['n_sites'] > 1):
-                equiv = " equivalent "
-            else:
-                equiv = " "
-
-            bonding_atoms.append("{}{}{}".format(count, equiv, el))
-
-        desc += "{} atoms.".format(en.join(bonding_atoms))
-
-        intro = None
-        # only describe the equivalent groups if inequiv_groups key is in the
-        # data. if it is not in the data this means the information for several
-        # similar sites has been merged. See the merge_similar_sites method in
-        # structure.py for more information.
-        for i, (bond_element, bond_data) in enumerate(nn_data.items()):
-
-            if not self.describe_oxidation_state:
-                bond_element = get_el(bond_element)
-
-            if ('inequiv_groups' in bond_data and
-                    len(bond_data['inequiv_groups']) == 1 and
-                    bond_data['n_sites'] > 1):
-                # already described these previously
-                pass
-
-            elif 'inequiv_groups' in bond_data and bond_data['n_sites'] > 1:
-                intro = "Of these, the" if not intro else "The"
-
-                desc += ("{} {} atoms are found in {} distinct "
-                         "environments.").format(
-                    intro, bond_element,
-                    en.number_to_words(len(bond_data['inequiv_groups'])))
-
-            if describe_bond_lengths:
-                desc += " "
-                desc += self._get_bond_length_description(element, bond_element,
-                                                          bond_data)
-        return desc
-
-
-def _component_contains_connected_polyhedra(component: Dict[str, Any],
-                                            cation_polyhedra_only: bool = False
-                                            ) -> bool:
-    """Check if a component contains connected polyhedra."""
-    return any(['polyhedra_formula' in s for s in component['sites']
-                if not cation_polyhedra_only or '+' in s['element']])
-
-
-def _filter_connected_polyhedra(component: Dict[str, Any],
-                                cation_polyhedra_only: bool = False
-                                ) -> Tuple[List, List]:
-    """Function to separate out connected and non-connected sites."""
-    conn = [s for s in component['sites'] if 'polyhedra_formula' in s and
-            (not cation_polyhedra_only or '+' in s['element'])]
-    other = [s for s in component['sites'] if
-             'polyhedra_formula' not in s or
-             (cation_polyhedra_only and '+' not in s['element'])]
-    return conn, other
 
 
 def _rounded_bond_lengths(data, decimal_places=3) -> Tuple[float]:

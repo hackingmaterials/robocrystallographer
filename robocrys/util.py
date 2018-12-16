@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 import os
 import unittest
 from collections import defaultdict
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Any
 
 from monty.json import MontyDecoder
 from monty.serialization import loadfn
@@ -91,10 +91,23 @@ def defaultdict_to_dict(dictionary: defaultdict) -> Dict:
     return dictionary
 
 
-def json_keys_to_int(x):
-    """Convert dictionary keys from str to int if possible."""
-    if isinstance(x, dict):
-        return {int(k) if k.isdigit() else k: v for k, v in x.items()}
+def load_condensed_structure_json(filename: str) -> Dict[str, Any]:
+    """Load condensed structure data from a file.
+
+    Args:
+        filename: The filename.
+
+    Returns:
+        The condensed structure data.
+    """
+
+    # Json does not support using integeras a dictionary keys, therefore
+    # manually convert dictionary keys from str to int if possible.
+    def json_keys_to_int(x):
+        if isinstance(x, dict):
+            return {int(k) if k.isdigit() else k: v for k, v in x.items()}
+
+    return loadfn(filename, cls=MontyDecoder, object_hook=json_keys_to_int)
 
 
 class RobocrysTest(unittest.TestCase):
@@ -112,9 +125,9 @@ class RobocrysTest(unittest.TestCase):
 
     test_condensed_structures = {}
     for fn in os.listdir(condensed_structures_dir):
-        test_condensed_structures[fn.split(".")[0]] = loadfn(os.path.join(
-            condensed_structures_dir, fn), cls=MontyDecoder,
-            object_hook=json_keys_to_int)
+        test_condensed_structures[fn.split(".")[0]] = \
+            load_condensed_structure_json(os.path.join(
+                condensed_structures_dir, fn))
 
     @classmethod
     def get_structure(cls, name):
