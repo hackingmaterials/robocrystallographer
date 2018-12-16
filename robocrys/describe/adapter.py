@@ -21,6 +21,10 @@ NeighborSiteDetails = namedtuple('NeighborSiteDetails',
 class DescriptionAdapter(object):
     """Class to facilitate pulling data from the condensed structure dictionary.
 
+    Attributes:
+        elements: The site elements.
+        sym_labels: The symmetry labels as strings.
+
     Args:
         condensed_structure: The condensed structure data, formatted as produced
             by :meth:`robocrys.condense.StructureCondenser.condense_structure`.
@@ -28,6 +32,14 @@ class DescriptionAdapter(object):
 
     def __init__(self, condensed_structure: Dict[str, Any]):
         self._condensed_structure = condensed_structure
+
+        self.elements = {site_index: site_data['element']
+                         for site_index, site_data in self.sites.items()}
+
+        # convert the sym_labels tuple into a str. E.g. (1, 2, ) -> "(1,2)"
+        self.sym_labels = {
+            index: "({})".format(",".join(map(str, data['sym_labels'])))
+            for index, data in self.sites}
 
     def get_nearest_neighbor_details(self, site_index: int,
                                      group_by_element: bool = False
@@ -143,11 +155,6 @@ class DescriptionAdapter(object):
 
         return sorted(component_group_details, key=_component_order)
 
-    @property
-    def elements(self) -> Dict[int, str]:
-        """The site elements."""
-        return {site_index: site_data['element']
-                for site_index, site_data in self.sites.items()}
 
     @property
     def mineral(self) -> Dict[str, Union[str, int, bool]]:

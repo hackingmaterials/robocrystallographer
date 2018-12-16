@@ -9,6 +9,7 @@ TODO:
 
 from typing import Dict, Any, Tuple, List
 
+from pymatgen.core.periodic_table import get_el_sp, Specie
 from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import (connected_geometries, geometry_to_polyhedra,
                            dimensionality_to_shape, get_el)
@@ -28,7 +29,8 @@ class Describer(object):
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
                  distorted_tol: float = 0.6,
-                 only_describe_cation_polyhedra_connectivity: bool = True):
+                 only_describe_cation_polyhedra_connectivity: bool = True,
+                 latexify: bool = False):
         """A class to convert condensed structure data into text descriptions.
 
         Args:
@@ -48,6 +50,7 @@ class Describer(object):
             only_describe_cation_polyhedra_connectivity: Whether to only
                 describe cation polyhedra instead of both cation and anion
                 polyhedra.
+            latexify: Whether to latexify the description.
         """
         self.distorted_tol = distorted_tol
         self.describe_mineral = describe_mineral
@@ -59,6 +62,7 @@ class Describer(object):
         self.bond_length_decimal_places = bond_length_decimal_places
         self.cation_polyhedra_only = \
             only_describe_cation_polyhedra_connectivity
+        self.latexify = latexify
         self._da: DescriptionAdapter = None
 
     def describe(self, condensed_structure: Dict[str, Any]) -> str:
@@ -234,9 +238,11 @@ class Describer(object):
             A description of the geometry and bonding of a site.
         """
         site = self._da.sites[site_index]
-        element = site['elememt']
-        if not self.describe_oxidation_state:
-            element = get_el(element)
+        element = _get_formatted_el(
+            site['elememt'], self._da.sym_labels[site_index],
+            use_oxi_state=self.describe_oxidation_state,
+            use_sym_label=self.describe_symmetry_labels,
+            latexify=self.latexify)
 
         if site['geometry']['likeness'] < self.distorted_tol:
             geometry_desc = "distorted"
@@ -262,8 +268,6 @@ class Describer(object):
         Returns:
             A description of the nearest neighbors.
         """
-
-        # four O(1)2-, one Pb(1)2+, and one Pb(2)2+ atom.
         nn_details = self._da.get_nearest_neighbor_details(
             site_index, group_by_element=self.describe_symmetry_labels)
 
@@ -271,10 +275,11 @@ class Describer(object):
         nn_descriptions = []
         bond_length_descriptions = []
         for nn_site in nn_details:
-            if not self.describe_oxidation_state:
-                element = get_el(nn_site.element)
-            else:
-                element = nn_site.element
+            element = _get_formatted_el(
+                nn_site.element, self._da.sym_labels[site_index],
+                use_oxi_state=self.describe_oxidation_state,
+                use_sym_label=self.describe_symmetry_labels,
+                latexify=self.latexify)
 
             if len(nn_site.sites) == 1 and not self.describe_symmetry_labels:
                 equivalent = "equivalent"
@@ -305,8 +310,17 @@ class Describer(object):
         Returns:
             A description of the bond lengths.
         """
-        from_element = get_el(self._da.elements[from_site])
-        to_element = get_el(self._da.elements[to_sites[0]])
+        from_element = _get_formatted_el(
+            self._da.elements[from_site],
+            self._da.sym_labels[from_site],
+            use_oxi_state=False,
+            use_sym_label=self.describe_symmetry_labels)
+        to_element = _get_formatted_el(
+            self._da.elements[to_sites[0]],
+            self._da.sym_labels[to_sites[0]],
+            use_oxi_state=False,
+            use_sym_label=self.describe_symmetry_labels)
+
         dists = self._da.get_distance_details(from_site, to_sites)
 
         # if only one bond length
@@ -344,6 +358,59 @@ class Describer(object):
             from_element, to_element,
             _distance_range_to_string(min(discrete_bond_lengths),
                                       max(discrete_bond_lengths)))
+
+
+def _get_formatted_el(element: str,
+                      sym_label: str,
+                      use_oxi_state: bool = True,
+                      use_sym_label: bool = True,
+                      latexify: bool = False):
+    """Formats the element string.
+
+    Performs a variety of functions, including:
+
+    - Changing "Sn+0" to "Sn".
+    - Inserting the symmetry label between the element and oxidation state, if
+        required.
+    - Removing the oxidation state if required.
+    - Latexifying the element and oxidation state.
+
+    Args:
+        element: The element string (possibly including the oxidation state.
+            E.g. "Sn" or "Sn+2".
+        sym_label: The symmetry label. E.g. "(1)"
+        use_oxi_state: Whether to include the oxidation state, if present.
+        use_sym_label: Whether to use the symmetry label.
+        latexify: Whether to convert the str for use in latex.
+
+    Returns:
+        The formatted element string.
+    """
+    specie = get_el_sp(element)
+
+    if isinstance(specie, Specie):
+        oxi_state = specie.oxi_state
+        if oxi_state == 0:
+            oxi_state = None
+        elif oxi_state % 1 == 0:
+            oxi_state = '{:+d}'.format(oxi_state)
+        else:
+            oxi_state = '{:+.2f}'.format(oxi_state)
+    else:
+        oxi_state = None
+
+    formatted_element = specie.name
+
+    if use_sym_label:
+        formatted_element += sym_label
+
+    if use_oxi_state and oxi_state:
+        if latexify:
+            oxi_state = "^{{{}}}".format(oxi_state)
+
+        formatted_element += oxi_state
+
+    return formatted_element
 
 
 def _rounded_bond_lengths(data, decimal_places=3) -> Tuple[float]:
