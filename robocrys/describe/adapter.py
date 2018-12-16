@@ -155,7 +155,6 @@ class DescriptionAdapter(object):
 
         return sorted(component_group_details, key=_component_order)
 
-
     @property
     def mineral(self) -> Dict[str, Union[str, int, bool]]:
         """The mineral data.

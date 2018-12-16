@@ -7,7 +7,7 @@ TODO:
     * Handle distortion in connected polyhedra description.
 """
 
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, Tuple, List, Set
 
 from pymatgen.core.periodic_table import get_el_sp, Specie
 from robocrys.describe.adapter import DescriptionAdapter
@@ -30,6 +30,7 @@ class Describer(object):
                  bond_length_decimal_places: int = 2,
                  distorted_tol: float = 0.6,
                  only_describe_cation_polyhedra_connectivity: bool = True,
+                 only_describe_bonds_once: bool = True,
                  latexify: bool = False):
         """A class to convert condensed structure data into text descriptions.
 
@@ -50,6 +51,9 @@ class Describer(object):
             only_describe_cation_polyhedra_connectivity: Whether to only
                 describe cation polyhedra instead of both cation and anion
                 polyhedra.
+            only_describe_bonds_once: Whether only describe bond lengths once.
+                For example, don't describe the bond lengths from Pb to I and
+                also from I to Pb.
             latexify: Whether to latexify the description.
         """
         self.distorted_tol = distorted_tol
@@ -62,8 +66,10 @@ class Describer(object):
         self.bond_length_decimal_places = bond_length_decimal_places
         self.cation_polyhedra_only = \
             only_describe_cation_polyhedra_connectivity
+        self.only_describe_bonds_once = only_describe_bonds_once
         self.latexify = latexify
         self._da: DescriptionAdapter = None
+        self._seen_bonds: set = None
 
     def describe(self, condensed_structure: Dict[str, Any]) -> str:
         """Convert a condensed structure into a text description.
@@ -76,6 +82,7 @@ class Describer(object):
             A description of the structure.
         """
         self._da = DescriptionAdapter(condensed_structure)
+        self._seen_bonds = set()
 
         description = list()
 
@@ -310,6 +317,14 @@ class Describer(object):
         Returns:
             A description of the bond lengths.
         """
+        # get a list of tuples of (from_site, to_site) for all to_sites
+
+        if self.only_describe_bonds_once:
+            to_sites = self._filter_seen_bonds(from_site, to_sites)
+
+            if not to_sites:
+                return ""
+
         from_element = _get_formatted_el(
             self._da.elements[from_site],
             self._da.sym_labels[from_site],
@@ -358,6 +373,32 @@ class Describer(object):
             from_element, to_element,
             _distance_range_to_string(min(discrete_bond_lengths),
                                       max(discrete_bond_lengths)))
+
+    def _filter_seen_bonds(self, from_site: int, to_sites: List[int]
+                           ) -> List[int]:
+        """Filter the list of to_sites to only include unseen bonds.
+
+        Args:
+            from_site: An inequivalent site index.
+            to_sites: A :obj:`list` of site indices. The site indices should
+                all be for the same element.
+
+        Returns:
+            The list of unseen bonds.
+        """
+        bonds = [(f, t) for f, t in zip([from_site] * len(to_sites), to_sites)]
+
+        # use frozen set as some times we might see the to and from sites
+        # the other way around (e.g. from is to and to is from)
+        not_seen_sites = filter(
+            lambda x: frozenset(x) not in self._seen_bonds, bonds)
+
+        to_sites = []  # only describe the bonds between unseen site pairs
+        for from_site, to_site in not_seen_sites:
+            to_sites.append(to_site)
+            self._seen_bonds.add(frozenset((from_site, to_site)))
+
+        return to_sites
 
 
 def _get_formatted_el(element: str,
