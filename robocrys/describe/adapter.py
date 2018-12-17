@@ -21,6 +21,11 @@ SiteGroup = namedtuple('SiteGroup', ['element', 'count', 'sites'])
 NeighborSiteDetails = namedtuple('NeighborSiteDetails',
                                  ['element', 'count', 'sites', 'sym_label'])
 
+NextNeighborSiteDetails = namedtuple('NextNeighborSiteDetails',
+                                     ['element', 'count', 'geometry', 'sites',
+                                      'sym_label', 'connectivity',
+                                      'poly_formula'])
+
 
 class DescriptionAdapter(object):
     """Class to facilitate pulling data from the condensed structure dictionary.
@@ -48,8 +53,6 @@ class DescriptionAdapter(object):
 
         self.elements = {site_index: site_data['element']
                          for site_index, site_data in self.sites.items()}
-
-        # convert the sym_labels tuple into a str. E.g. (1, 2, ) -> "(1,2)"
         self.sym_labels = {site_index: self.get_sym_label(site_index)
                            for site_index in self.sites.keys()}
 
@@ -64,7 +67,7 @@ class DescriptionAdapter(object):
                 with the same element together.
 
         Returns:
-            A :obj:`list` of ``ComponentDetails`` objects, each with the
+            A :obj:`list` of ``NeighborSiteDetails`` objects, each with the
             attributes:
 
             - ``element`` (``str``): The element of the nearest neighbor site.
@@ -79,18 +82,16 @@ class DescriptionAdapter(object):
         nn_dict = defaultdict(list)
         for nn_site in set(nn_sites):
             element = self.sites[nn_site]['element']
-            all_labels = self.sites[nn_site]['sym_labels']
-            identity = (element,) if group_by_element else (element, all_labels)
+            labels = self.sites[nn_site]['sym_labels']
+            identity = (element,) if group_by_element else (element, labels)
 
-            count = nn_sites.count(nn_site)
             nn_dict[identity].append(
-                {'count': count,
-                 'labels': all_labels,
+                {'count': nn_sites.count(nn_site),
+                 'labels': labels,
                  'site': nn_site})
 
         nn_details = []
         for identity, nn_group in nn_dict.items():
-            # convert the sym_labels tuple into a str. E.g. (1, 2, ) -> "(1,2)"
             sites = [nn_site['site'] for nn_site in nn_group]
             nn_details.append(NeighborSiteDetails(
                 element=identity[0],
@@ -99,6 +100,78 @@ class DescriptionAdapter(object):
                 sym_label=self.get_sym_label(sites)))
 
         return sorted(nn_details, key=self._site_order)
+
+    def get_next_nearest_neighbor_details(self, site_index: int,
+                                          group: bool = False
+                                          ) -> List[NextNeighborSiteDetails]:
+        """Gets a summary of all the next nearest neighbors to a site.
+
+        We only get the summaries for next nearest neighbor sites that have a
+        geometry type listed in :attr:`robocrys.util.connected_geometries` and
+        have a ``poly_formula``.
+
+        Args:
+            site_index: An inequivalent site index.
+            group: Whether to group together all next nearest neighbor sites
+                with the same element, connectivity and geometry.
+
+        Returns:
+            A :obj:`list` of ``NextNeighborSiteDetails`` objects, each with the
+            attributes:
+
+            - ``element`` (``str``): The element of the next nearest neighbor
+                site.
+            - ``connectivity`` (``str``): The connectivity type to this site.
+            - ``geometry`` (``str``): The geometry type of the next nearest
+                neighbor.
+            - ``count`` (``int``): The number of sites of this type.
+            - ``sym_label`` (``str``): The symmetry label.
+            - ``sites`` (``list[int]``): The site indices representing this
+                next nearest neighbor. Can be more than one site if
+                ``group=True``.
+        """
+        nnn = self.sites[site_index]['nnn']
+
+        # get a list of tuples of (nnn_site_index, connectivity)
+        con_data = [(nnn_site_index, connectivity) for connectivity, sites in
+                    nnn.items() for nnn_site_index in set(sites)]
+
+        nnn_dict = defaultdict(list)
+        for nnn_site, connectivity in con_data:
+            poly_formula = self.sites[nnn_site]['poly_formula']
+            if not poly_formula:
+                # only interested in describing the connectivity to other
+                # polyhedral sites of interest.
+                continue
+
+            element = self.sites[nnn_site]['element']
+            labels = self.sites[nnn_site]['sym_labels']
+            geometry = self.sites[nnn_site]['geometry']['type']
+
+            if group:
+                identity = (element, connectivity, geometry)
+            else:
+                identity = (element, connectivity, geometry, labels)
+
+            nnn_dict[identity].append(
+                {'count': nnn[connectivity].count(nnn_site),
+                 'labels': labels,
+                 'site': nnn_site,
+                 'poly_formula': poly_formula})
+
+        nnn_details = []
+        for identity, nnn_group in nnn_dict.items():
+            sites = [nnn_site['site'] for nnn_site in nnn_group]
+            nnn_details.append(NextNeighborSiteDetails(
+                element=identity[0],
+                connectivity=identity[1],
+                geometry=identity[2],
+                sites=sites,
+                poly_formula=nnn_group[0]['poly_formula'],
+                count=sum([nn_site['count'] for nn_site in nnn_group]),
+                sym_label=self.get_sym_label(sites)))
+
+        return sorted(nnn_details, key=self._site_order)
 
     def get_distance_details(self, from_site: int,
                              to_sites: Union[int, List[int]]) -> List[float]:
@@ -211,8 +284,16 @@ class DescriptionAdapter(object):
         return sorted(site_groups, key=self._site_order)
 
     def get_sym_label(self, site_indices: Union[int, List[int]]) -> str:
-        """Utility function to convert site indices into a sym label string."""
-        # convert the sym_labels tuple into a str. E.g. (1, 2, ) -> "(1,2)"
+        """Convert site indices into a formatted symmetry label.
+
+        Args:
+            site_indices:  THe site indices.
+
+        Returns:
+            The formatted symmetry label. E.g., if the set of symmetry labels
+            for the sites looks like ``(1, 2)``, the symmetry label will be
+            ``(1,2)``.
+        """
         if isinstance(site_indices, int):
             site_indices = [site_indices]
 
@@ -310,19 +391,23 @@ class DescriptionAdapter(object):
         """
         return self._condensed_structure['component_makeup']
 
-    def _site_order(self, s):
+    def _site_order(self, s: Union[SiteGroup,
+                                   NeighborSiteDetails,
+                                   NextNeighborSiteDetails]):
         """Utility function to help sort NeighborSiteDetails and SiteGroups."""
         specie = get_el_sp(s.element)
         x = specie.iupac_ordering if self.use_iupac_ordering else specie.X
 
         if isinstance(s, NeighborSiteDetails):
             return [x, s.count, s.sym_label, s.sites]
+        elif isinstance(s, NextNeighborSiteDetails):
+            return [s.connectivity, s.geometry, s.count, x, s.poly_formula,
+                    s.sym_label, s.sites]
         else:
             return [x, s.count, s.sites]
 
 
-
-def _component_order(c):
+def _component_order(c: Union[ComponentDetails, ComponentGroup]):
     """Utility function to help sort ComponentDetails and ComponentGroups."""
     mn = c.molecule_name if c.molecule_name else 'z'
 
@@ -331,182 +416,3 @@ def _component_order(c):
         return [mn, c.dimensionality, c.formula, ori, c.count]
     else:
         return [mn, c.dimensionality, c.formula, c.count]
-
-# def get_next_nearest_neighbor_data(self, site_index: int
-#                                    ) -> Dict[str, Any]:
-#     """Gets a summary of the next nearest neighbor connectivity.
-#
-#     Args:
-#         site_index: The site index (zero based).
-#
-#     Returns:
-#         A summary of the next nearest neighbor information as a dict.
-#         Formatted as::
-#
-#             {
-#                 'Sn': {
-#                     'octahedral': {
-#                         'corner-sharing': {
-#                             'n_sites': 8,
-#                             'angles': [180, 180, 180, ...]
-#                         }
-#                     }
-#                 }
-#             }
-#
-#     """
-#     nnn_info = self.get_next_nearest_neighbors(site_index)
-#
-#     # group next nearest neighbors by element, connectivity and geometry
-#     # e.g. grouped_nnn looks like {el: {connectivity: {geometry: [sites]}}}
-#     grouped_nnn = defaultdict(
-#         lambda: defaultdict(lambda: defaultdict(list)))
-#
-#     for site in nnn_info:
-#         grouped_nnn[site['element']][
-#             site['geometry']['type']][site['connectivity']].append(site)
-#
-#     nnn_data = {}
-#     for element, geom_data in grouped_nnn.items():
-#         nnn_el_data = {}
-#         for geometry, con_data in geom_data.items():
-#             nnn_geom_data = {}
-#             for connectivity, sites in con_data.items():
-#                 nnn_geom_data[connectivity] = {
-#                     'n_sites': len(sites),
-#                     'angles': [angle for site in sites
-#                                for angle in site['angles']]}
-#             nnn_el_data[geometry] = nnn_geom_data
-#         nnn_data[element] = nnn_el_data
-#     return nnn_data
-
-# def merge_similar_sites(sites: List[Dict[str, Any]]):
-#     """Merges sites with the same properties except bond angles and distances.
-#
-#     Args:
-#         sites: A list of sites. Each site is formatted as a :ob:`dict` with
-#           the keys:
-#
-#             - ``'element'`` (``str``): The element of the site.
-#             - ``'geometry'`` (``dict``): The geometry, as output by
-#                 :meth:`SiteAnalyzer.get_site_geometry`.
-#             - ``'nn_data'`` (``dict``): The nearest neighbor data, as output
-#             by :meth:`SiteAnalyzer.get_nearest_neighbor_data`.
-#             - ``'nnn_data'`` (``dict``): The next nearest neighbor data, as
-#                 given by :meth:`SiteAnalyzer.get_next_nearest_neighbor_data`.
-#
-#     Returns:
-#         A list of merged sites with the same format as above. Merged sites
-#         have a different ``nn_data`` format than unmerged sites. For example,
-#         ``nn_data`` in unmerged sites is formatted as::
-#
-#             {
-#                 'Sn': {
-#                     'n_sites': 6,
-#                     'inequiv_groups': [
-#                         {
-#                             'n_sites': 4,
-#                             'inequiv_id': 0,
-#                             'dists': [1, 1, 2, 2]
-#                         },
-#                         {
-#                             'n_sites': 2,
-#                             'inequiv_id': 1,
-#                             'dists': [3, 3]
-#                         }
-#                     ]
-#                 }
-#             }
-#
-#         Merged sites do not contain an ``inequiv_groups`` key and are instead
-#         formatted as::
-#
-#             {
-#                 'n_sites': 6
-#                 'dists': [1, 1, 1, 2, 2, 2, 2, 3, 3]
-#                 )
-#             }
-#
-#         Note that there are now more distances than there are number of sites.
-#         This is because n_sites gives the number of bonds to a specific site,
-#         whereas the distances are for the complete set of distances for all
-#         similar (merged) sites. Similarly, merged next nearest neighbor
-#         data can contain more angles than number of sites, however, the
-#         general format of the ``nnn_data`` dict is unaltered.
-#     """
-#     sites = copy.deepcopy(sites)
-#     new_sites = []
-#
-#     for site in sites:
-#
-#         matched = False
-#         for new_site in new_sites:
-#             elem_match = site['element'] == new_site['element']
-#             geom_match = geometries_match(
-#                 site['geometry'], new_site['geometry'], likeness_tol=1)
-#             nn_match = nn_summaries_match(
-#                 site['nn_data'], new_site['nn_data'],
-#                 match_bond_dists=False)
-#             nnn_match = nnn_summaries_match(
-#                 site['nnn_data'], new_site['nnn_data'],
-#                 match_bond_angles=False)
-#
-#             if elem_match and geom_match and nn_match and nnn_match:
-#                 new_site['nn_data'] = _merge_nn_data(site['nn_data'],
-#                                                      new_site['nn_data'])
-#                 new_site['nnn_data'] = _merge_nnn_data(site['nnn_data'],
-#                                                        new_site['nnn_data'])
-#                 matched = True
-#                 break
-#
-#         if not matched:
-#             # no matches therefore store original site id
-#             new_sites.append(site)
-#
-#     return new_sites
-#
-#
-# def _merge_nn_data(site_nn_data, new_site_nn_data):
-#     """Utility function to merge nearest neighbor data.
-#
-#     See the ``merge_similar_sites`` docstring for information on the format of
-#     the merged data.
-#
-#     Note an error will be thrown if this function is called on two sites that
-#     not have matching nearest neighbor summaries (ignoring bond distances).
-#     """
-#
-#     for el in site_nn_data:
-#         site_dists = [dist for group in
-#                       site_nn_data[el]['inequiv_groups']
-#                       for dist in group['dists']]
-#
-#         if 'inequiv_groups' in new_site_nn_data[el]:
-#             # remove inequiv_groups key and group all distances
-#             # together
-#             groups = new_site_nn_data[el].pop('inequiv_groups')
-#             dists = [dist for dist_set in groups
-#                      for dist in dist_set['dists']]
-#             new_site_nn_data[el]['dists'] = dists + site_dists
-#         else:
-#             new_site_nn_data[el]['dists'] += site_dists
-#
-#     return new_site_nn_data
-#
-#
-# def _merge_nnn_data(site_nnn_data, new_site_nnn_data):
-#     """Utility function to merge next nearest neighbor data.
-#
-#     See the ``merge_similar_sites`` docstring for information on the format of
-#     the merged data.
-#
-#     Note an error will be thrown if this function is called on two sites that
-#     not have matching next nearest neighbor summaries (ignoring bond angles).
-#     """
-#     for el in site_nnn_data:
-#         for geometry in site_nnn_data[el]:
-#             for connectivity in site_nnn_data[el][geometry]:
-#                 new_site_nnn_data[el][geometry][connectivity]['angles'].extend(
-#                     site_nnn_data[el][geometry][connectivity]['angles'])
-#
-#     return new_site_nnn_data

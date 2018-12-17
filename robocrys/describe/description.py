@@ -7,12 +7,12 @@ TODO:
     * Handle distortion in connected polyhedra description.
 """
 
-from typing import Dict, Any, Tuple, List, Set, Optional
+from typing import Dict, Any, Tuple, List
 
 from pymatgen.core.periodic_table import get_el_sp, Specie
 from robocrys.describe.adapter import DescriptionAdapter
-from robocrys.util import (connected_geometries, geometry_to_polyhedra,
-                           dimensionality_to_shape, get_el)
+from robocrys.util import (geometry_to_polyhedra, dimensionality_to_shape,
+                           get_el, polyhedra_plurals)
 import inflect
 
 en = inflect.engine()
@@ -24,7 +24,7 @@ class Describer(object):
                  describe_mineral: bool = True,
                  describe_component_makeup: bool = True,
                  describe_components: bool = True,
-                 describe_symmetry_labels: bool = True,
+                 describe_symmetry_labels: bool = False,
                  describe_oxidation_states: bool = False,
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
@@ -148,25 +148,25 @@ class Describer(object):
 
             component_makeup_summaries = []
             for component_group in self._da.get_component_groups():
-                count = en.number_to_words(component_group.count)
+                s_count = en.number_to_words(component_group.count)
                 dimensionality = component_group.dimensionality
 
                 if component_group.molecule_name:
-                    shape = en.plural("molecule", count)
+                    shape = en.plural("molecule", s_count)
                     formula = component_group.molecule_name
                 else:
                     shape = en.plural(dimensionality_to_shape[dimensionality],
-                                      count)
+                                      s_count)
                     formula = component_group.formula
 
-                comp_desc = "{} {} {}".format(count, formula, shape)
+                comp_desc = "{} {} {}".format(s_count, formula, shape)
 
                 if component_group.dimensionality in [1, 2]:
                     orientations = list(set(c.orientation for c in
                                             component_group.components))
-                    direction = en.plural("direction", len(orientations))
+                    s_direction = en.plural("direction", len(orientations))
                     comp_desc += " oriented in the {} {}".format(
-                        en.join(orientations), direction)
+                        en.join(orientations), s_direction)
 
                 component_makeup_summaries.append(comp_desc)
 
@@ -200,12 +200,12 @@ class Describer(object):
                     shape = dimensionality_to_shape[group.dimensionality]
 
                     if group_count == component_count:
-                        filler = "the" if group_count == 1 else "each"
+                        s_filler = "the" if group_count == 1 else "each"
                     else:
-                        filler = "{} of the".format(component_count)
+                        s_filler = "{} of the".format(component_count)
                         shape = en.plural(shape, component_count)
 
-                    desc = "In {} {} {}, ".format(filler, formula, shape)
+                    desc = "In {} {} {}, ".format(s_filler, formula, shape)
                     desc += self._get_component_description(component.index)
 
                     component_descriptions.append(desc)
@@ -236,10 +236,10 @@ class Describer(object):
                     latexify=self.latexify)
 
                 s_there = "there" if first_group else "There"
-                count = en.number_to_words(len(site_group.sites))
+                s_count = en.number_to_words(len(site_group.sites))
 
                 desc.append("{} are {} inequivalent {} sites.".format(
-                    s_there, count, element))
+                    s_there, s_count, element))
 
                 for i, site in enumerate(site_group.sites):
                     s_ordinal = en.number_to_words(en.ordinal(i + 1))
@@ -263,22 +263,111 @@ class Describer(object):
             A description of the geometry and bonding of a site.
         """
         site = self._da.sites[site_index]
-        element = _get_formatted_el(
+
+        if (site['poly_formula'] and
+                (self.cation_polyhedra_only or '+' in site['element'])):
+            desc = self._get_poly_site_description(site_index)
+        else:
+            element = _get_formatted_el(
+                site['element'], self._da.sym_labels[site_index],
+                use_oxi_state=self.describe_oxidation_state,
+                use_sym_label=self.describe_symmetry_labels,
+                latexify=self.latexify)
+
+            if site['geometry']['likeness'] < self.distorted_tol:
+                s_geometry = "distorted "
+            else:
+                s_geometry = ""
+            s_geometry += site['geometry']['type']
+
+            desc = "{} is bonded in {} geometry to ".format(
+                element, en.a(s_geometry))
+            desc += self._get_nearest_neighbor_description(site_index)
+
+        bond_length_desc = self._get_nearest_neighbor_bond_length_descriptions(
+            site_index)
+        if bond_length_desc:
+            desc += ". " + bond_length_desc
+        else:
+            desc += "."
+
+        return desc
+
+    def _get_poly_site_description(self, site_index: int):
+        """Gets a description of a connected polyhedral site.
+
+        If the site likeness (order parameter) is less than ``distorted_tol``,
+        "distorted" will be added to the geometry description.
+
+        Args:
+            site_index: An inequivalent site index.
+
+        Returns:
+            A description the a polyhedral site, including connectivity.
+        """
+        site = self._da.sites[site_index]
+        nnn_details = self._da.get_next_nearest_neighbor_details(
+            site_index, group=not self.describe_symmetry_labels)
+
+        from_element = _get_formatted_el(
             site['element'], self._da.sym_labels[site_index],
             use_oxi_state=self.describe_oxidation_state,
             use_sym_label=self.describe_symmetry_labels,
             latexify=self.latexify)
+        s_from_poly_formula = get_el(site['element']) + site['poly_formula']
 
         if site['geometry']['likeness'] < self.distorted_tol:
-            geometry_desc = "distorted "
+            s_distorted = "distorted "
         else:
-            geometry_desc = ""
-        geometry_desc += site['geometry']['type']
+            s_distorted = ""
+        s_polyhedra = geometry_to_polyhedra[site['geometry']['type']]
+        s_polyhedra = polyhedra_plurals[s_polyhedra]
 
-        desc = "{} is bonded in {} geometry to ".format(
-            element, en.a(geometry_desc))
+        nn_desc = self._get_nearest_neighbor_description(site_index)
+        desc = "{} is bonded to {} to form ".format(from_element, nn_desc)
 
-        return desc + self._get_nearest_neighbor_description(site_index)
+        # handle the case we were are connected to the same type of polyhedra
+        if (nnn_details[0].element == site['element'] and
+            len(set([(nnn_site.element, nnn_site.poly_formula) for nnn_site in
+                     nnn_details]))) == 1:
+            connectivities = [nnn_site.connectivity for nnn_site in nnn_details]
+            s_mixture = "a mixture of " if len(set(connectivities)) != 1 else ""
+            s_connectivities = en.join(connectivities)
+
+            desc += "{}{}{}-sharing {} {}".format(
+                s_mixture, s_distorted, s_connectivities, s_from_poly_formula,
+                s_polyhedra)
+            return desc
+
+        # otherwise loop through nnn connectivities and describe individually
+        desc += "{}{} {} that share ".format(s_distorted, s_from_poly_formula,
+                                             s_polyhedra)
+        nnn_descriptions = []
+        for nnn_site in nnn_details:
+            to_element = _get_formatted_el(
+                nnn_site.element, nnn_site.sym_label,
+                use_oxi_state=False,
+                use_sym_label=self.describe_symmetry_labels)
+            to_poly_formula = to_element + nnn_site.poly_formula
+            to_shape = geometry_to_polyhedra[nnn_site.geometry]
+
+            if len(nnn_site.sites) == 1 and nnn_site.count != 1:
+                s_equivalent = " equivalent "
+            else:
+                s_equivalent = " "
+
+            if nnn_site.count == 1:
+                s_an = " {}".format(en.an(nnn_site.connectivity))
+            else:
+                s_an = ""
+                to_shape = polyhedra_plurals[to_shape]
+
+            nnn_descriptions.append("{}{} with {}{}{} {}".format(
+                s_an, en.plural(nnn_site.connectivity, nnn_site.count),
+                en.number_to_words(nnn_site.count), s_equivalent,
+                to_poly_formula, to_shape))
+
+        return desc + en.join(nnn_descriptions)
 
     def _get_nearest_neighbor_description(self, site_index: int) -> str:
         """Gets a description of a sites nearest neighbors.
@@ -294,11 +383,10 @@ class Describer(object):
             A description of the nearest neighbors.
         """
         nn_details = self._da.get_nearest_neighbor_details(
-            site_index, group_by_element=self.describe_symmetry_labels)
+            site_index, group_by_element=not self.describe_symmetry_labels)
 
         last_count = 0
         nn_descriptions = []
-        bond_length_descriptions = ""
         for nn_site in nn_details:
             element = _get_formatted_el(
                 nn_site.element, nn_site.sym_label,
@@ -307,23 +395,32 @@ class Describer(object):
                 latexify=self.latexify)
 
             if len(nn_site.sites) == 1 and nn_site.count != 1:
-                equivalent = " equivalent "
+                s_equivalent = " equivalent "
             else:
-                equivalent = " "
+                s_equivalent = " "
 
             nn_descriptions.append("{}{}{}".format(
-                en.number_to_words(nn_site.count), equivalent, element))
-
-            bond_length_description = self._get_bond_length_description(
-                site_index, nn_site.sites)
-            if bond_length_description:
-                bond_length_descriptions += " " + bond_length_description
-
+                en.number_to_words(nn_site.count), s_equivalent, element))
             last_count = nn_site.count
 
         s_atoms = "atom" if last_count == 1 else "atoms"
-        nn_descriptions = "{} {}.".format(en.join(nn_descriptions), s_atoms)
-        return nn_descriptions + bond_length_descriptions
+        return "{} {}".format(en.join(nn_descriptions), s_atoms)
+
+    def _get_nearest_neighbor_bond_length_descriptions(self, site_index: int
+                                                       ) -> str:
+        if not self.describe_bond_lengths:
+            return ""
+
+        nn_details = self._da.get_nearest_neighbor_details(
+            site_index, group_by_element=not self.describe_symmetry_labels)
+
+        bond_descriptions = []
+        for nn_site in nn_details:
+            bond_descriptions.append(self._get_bond_length_description(
+                site_index, nn_site.sites))
+
+        # filter empty bond length description strings
+        return " ".join(filter(lambda x: x, bond_descriptions))
 
     def _get_bond_length_description(self, from_site: int,
                                      to_sites: List[int]) -> str:
@@ -369,25 +466,27 @@ class Describer(object):
 
         # if multiple bond lengths but they are all the same
         if len(set(discrete_bond_lengths)) == 1:
-            intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
+            s_intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
             return "{} {}–{} bond lengths are {}.".format(
-                intro, from_element, to_element, _distance_to_string(dists[0]))
+                s_intro, from_element, to_element,
+                _distance_to_string(dists[0]))
 
         # if two sets of bond lengths
         if len(set(discrete_bond_lengths)) == 2:
             small = min(discrete_bond_lengths)
-            small_count = en.number_to_words(discrete_bond_lengths.count(small))
+            s_small_count = en.number_to_words(discrete_bond_lengths.count(
+                small))
             big = max(discrete_bond_lengths)
-            big_count = en.number_to_words(discrete_bond_lengths.count(big))
+            s_big_count = en.number_to_words(discrete_bond_lengths.count(big))
 
             # length will only be singular when there is 1 small and 1 big len
-            length = en.plural('length', int((small + big) / 2))
+            s_length = en.plural('length', int((small + big) / 2))
 
             return ("There {} {} shorter ({}) and {} "
                     "longer ({}) {}–{} bond {}.").format(
-                en.plural_verb('is', small_count), small_count,
-                _distance_to_string(small), big_count,
-                _distance_to_string(big), from_element, to_element, length)
+                en.plural_verb('is', s_small_count), s_small_count,
+                _distance_to_string(small), s_big_count,
+                _distance_to_string(big), from_element, to_element, s_length)
 
         # otherwise just detail the spread of bond lengths
         return ("There are a spread of {}–{} bond distances ranging from "

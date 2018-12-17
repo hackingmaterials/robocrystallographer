@@ -40,14 +40,26 @@ connected_geometries: List[str] = [
 geometry_to_polyhedra: Dict[str, str] = {
     'octahedral': 'octahedra',
     'tetrahedral': 'tetrahedra',
-    'trigonal pyramidal': 'trigonal pyramids',
-    'square pyramidal': 'square pyramids',
-    'trigonal bipyramidal': 'trigonal bipyramids',
-    'pentagonal pyramidal': 'pentagonal pyramids',
-    'hexagonal pyramidal': 'hexagonal pyramids',
-    'pentagonal bipyramidal': 'pentagonal bipyramids',
-    'hexagonal bipyramidal': 'hexagonal bipyramids',
+    'trigonal pyramidal': 'trigonal pyramid',
+    'square pyramidal': 'square pyramid',
+    'trigonal bipyramidal': 'trigonal bipyramid',
+    'pentagonal pyramidal': 'pentagonal pyramid',
+    'hexagonal pyramidal': 'hexagonal pyramid',
+    'pentagonal bipyramidal': 'pentagonal bipyramid',
+    'hexagonal bipyramidal': 'hexagonal bipyramid',
     'cuboctahedral': 'cuboctahedra'}
+
+polyhedra_plurals: Dict[str, str] = {
+    'octahedra': 'octahedra',
+    'tetrahedra': 'tetrahedra',
+    'trigonal pyramid': 'trigonal pyramids',
+    'square pyramid': 'square pyramids',
+    'trigonal bipyramid': 'trigonal bipyramids',
+    'pentagonal pyramid': 'pentagonal pyramids',
+    'hexagonal pyramid': 'hexagonal pyramids',
+    'pentagonal bipyramid': 'pentagonal bipyramids',
+    'hexagonal bipyramid': 'hexagonal bipyramids',
+    'cuboctahedra': 'cuboctahedra'}
 
 dimensionality_to_shape: Dict[int, str] = {
     3: 'framework', 2: 'sheet', 1: 'ribbon', 0: 'cluster'}
