@@ -129,6 +129,7 @@ class DescriptionAdapter(object):
             - ``sites`` (``list[int]``): The site indices representing this
                 next nearest neighbor. Can be more than one site if
                 ``group=True``.
+            - ``poly_formula`` (``str``): The polyhedral formula.
         """
         nnn = self.sites[site_index]['nnn']
 

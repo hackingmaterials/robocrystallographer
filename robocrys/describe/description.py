@@ -7,7 +7,7 @@ TODO:
     * Handle distortion in connected polyhedra description.
 """
 
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, Tuple, List, Union
 
 from pymatgen.core.periodic_table import get_el_sp, Specie
 from robocrys.describe.adapter import DescriptionAdapter
@@ -31,7 +31,8 @@ class Describer(object):
                  distorted_tol: float = 0.6,
                  only_describe_cation_polyhedra_connectivity: bool = True,
                  only_describe_bonds_once: bool = True,
-                 latexify: bool = False):
+                 latexify: bool = False,
+                 return_parts: bool = False):
         """A class to convert condensed structure data into text descriptions.
 
         Args:
@@ -55,10 +56,13 @@ class Describer(object):
                 For example, don't describe the bond lengths from Pb to I and
                 also from I to Pb.
             latexify: Whether to latexify the description.
+            return_parts: Whether to return the individual parts of the
+                description as a :obj:`dict`, or the whole description as a
+                :obj:`str`.
         """
         self.distorted_tol = distorted_tol
         self.describe_mineral = describe_mineral
-        self.describe_component_dimensionality = describe_component_makeup
+        self.describe_component_makeup = describe_component_makeup
         self.describe_components = describe_components
         self.describe_symmetry_labels = describe_symmetry_labels
         self.describe_oxidation_state = describe_oxidation_states
@@ -68,10 +72,13 @@ class Describer(object):
             only_describe_cation_polyhedra_connectivity
         self.only_describe_bonds_once = only_describe_bonds_once
         self.latexify = latexify
+        self.return_parts = return_parts
+
         self._da: DescriptionAdapter = None
         self._seen_bonds: set = None
 
-    def describe(self, condensed_structure: Dict[str, Any]) -> str:
+    def describe(self, condensed_structure: Dict[str, Any]
+                 ) -> Union[str, Dict[str, str]]:
         """Convert a condensed structure into a text description.
 
         Args:
@@ -79,23 +86,32 @@ class Describer(object):
                 produced by :meth:`StructureCondenser.condense_structure`.
 
         Returns:
-            A description of the structure.
+            A description of the structure. If :attr:`Describer.return_parts`
+            is ``False``, the description will be returned as a :obj:`str`. If
+            it is equal to ``True``, the description will be returned as a
+            :obj:`dict` with the keys 'mineral', 'component_makeup' and
+            'components', each containing the relevant part of the description.
         """
         self._da = DescriptionAdapter(condensed_structure)
         self._seen_bonds = set()
 
-        description = list()
+        description = {}
 
         if self.describe_mineral:
-            description.append(self._get_mineral_description())
+            description['mineral'] = self._get_mineral_description()
 
-        if self.describe_component_dimensionality:
-            description.append(self._get_component_makeup_summary())
+        if self.describe_component_makeup:
+            description['component_makeup'] = (
+                self._get_component_makeup_summary())
 
         if self.describe_components:
-            description.append(self._get_all_component_descriptions())
+            description['components'] = self._get_all_component_descriptions()
 
-        return " ".join(description)
+        if not self.return_parts:
+            return " ".join(description[part] for part in
+                            ['mineral', 'component_makeup', 'components'])
+        else:
+            return description
 
     def _get_mineral_description(self) -> str:
         """Gets the mineral name and space group description.
@@ -408,6 +424,14 @@ class Describer(object):
 
     def _get_nearest_neighbor_bond_length_descriptions(self, site_index: int
                                                        ) -> str:
+        """Gets the descriptions of the bond lengths for nearest neighbor sites.
+
+        Args:
+            site_index: An inequivalent site index.
+
+        Returns:
+            A description of the nearest neighbor bond lengths.
+        """
         if not self.describe_bond_lengths:
             return ""
 
@@ -424,7 +448,7 @@ class Describer(object):
 
     def _get_bond_length_description(self, from_site: int,
                                      to_sites: List[int]) -> str:
-        """Gets a description of the bond lengths between sites.
+        """Gets a description of the bond lengths between two sets of sites.
 
         Args:
             from_site: An inequivalent site index.
