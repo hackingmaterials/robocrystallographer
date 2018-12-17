@@ -119,6 +119,7 @@ class SiteAnalyzer(object):
             # return the geometry type without the CN at the end, e.g.
             # "square co-planar CN_4" -> "square co-planar"
             geometry = " ".join(parameter[0].split()[:-1])
+            geometry = "single-bond" if geometry == "sgl_bnd" else geometry
             likeness = parameter[1]
 
         return {'type': geometry, 'likeness': likeness}
