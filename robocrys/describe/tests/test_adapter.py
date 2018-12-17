@@ -22,7 +22,7 @@ class TestStructureCondenser(RobocrysTest):
 
     def test_get_component_summary(self):
         """Check getting the component summaries."""
-        data = self.da.get_component_details()
+        data = self.da.get_component_groups()
 
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0].count, 1)

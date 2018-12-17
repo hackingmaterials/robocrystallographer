@@ -7,7 +7,7 @@ TODO:
     * Handle distortion in connected polyhedra description.
 """
 
-from typing import Dict, Any, Tuple, List, Set
+from typing import Dict, Any, Tuple, List, Set, Optional
 
 from pymatgen.core.periodic_table import get_el_sp, Specie
 from robocrys.describe.adapter import DescriptionAdapter
@@ -23,9 +23,9 @@ class Describer(object):
     def __init__(self,
                  describe_mineral: bool = True,
                  describe_component_makeup: bool = True,
-                 describe_components: bool = False,
+                 describe_components: bool = True,
                  describe_symmetry_labels: bool = True,
-                 describe_oxidation_states: bool = True,
+                 describe_oxidation_states: bool = False,
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
                  distorted_tol: float = 0.6,
@@ -147,8 +147,7 @@ class Describer(object):
             desc += " and consists of "
 
             component_makeup_summaries = []
-            for component_group in self._da.get_component_details(
-                    group_components=True):
+            for component_group in self._da.get_component_groups():
                 count = en.number_to_words(component_group.count)
                 dimensionality = component_group.dimensionality
 
@@ -163,8 +162,8 @@ class Describer(object):
                 comp_desc = "{} {} {}".format(count, formula, shape)
 
                 if component_group.dimensionality in [1, 2]:
-                    orientations = set(c.orientation for c in
-                                       component_group.components)
+                    orientations = list(set(c.orientation for c in
+                                            component_group.components))
                     direction = en.plural("direction", len(orientations))
                     comp_desc += " oriented in the {} {}".format(
                         en.join(orientations), direction)
@@ -182,11 +181,10 @@ class Describer(object):
         """
         if len(self._da.components) == 1:
             return self._get_component_description(
-                self._da.get_component_details()[0])
+                self._da.get_component_groups()[0].components[0].index)
 
         else:
-            component_groups = self._da.get_component_details(
-                group_components=True)
+            component_groups = self._da.get_component_groups()
 
             component_descriptions = []
             for group in component_groups:
@@ -205,8 +203,9 @@ class Describer(object):
                         filler = "the" if group_count == 1 else "each"
                     else:
                         filler = "{} of the".format(component_count)
+                        shape = en.plural(shape, component_count)
 
-                    desc = "In {} {} {} ".format(filler, formula, shape)
+                    desc = "In {} {} {}, ".format(filler, formula, shape)
                     desc += self._get_component_description(component.index)
 
                     component_descriptions.append(desc)
@@ -222,15 +221,34 @@ class Describer(object):
         Returns:
             The description for all sites in the structure.
         """
-        site_descriptions = []
-        for site_group in self._da.get_site_details(
-                component_index, group_sites=True):
+        desc = []
+        first_group = True
+        for site_group in self._da.get_component_site_groups(component_index):
 
-            if len(site_group.groups) == 1:
-                site_descriptions.append(
-                    self._get_site_description(site_groups.groups[0]))
+            if len(site_group.sites) == 1:
+                desc.append(self._get_site_description(site_group.sites[0]))
 
-        return " ".join(site_descriptions)
+            else:
+                element = _get_formatted_el(
+                    site_group.element, "",
+                    use_oxi_state=self.describe_oxidation_state,
+                    use_sym_label=False,
+                    latexify=self.latexify)
+
+                s_there = "there" if first_group else "There"
+                count = en.number_to_words(len(site_group.sites))
+
+                desc.append("{} are {} inequivalent {} sites.".format(
+                    s_there, count, element))
+
+                for i, site in enumerate(site_group.sites):
+                    s_ordinal = en.number_to_words(en.ordinal(i + 1))
+                    desc.append("In the {} {} site,".format(
+                        s_ordinal, element))
+                    desc.append(self._get_site_description(site))
+
+            first_group = False
+        return " ".join(desc)
 
     def _get_site_description(self, site_index: int) -> str:
         """Gets a description of the geometry and bonding of a site.
@@ -246,13 +264,13 @@ class Describer(object):
         """
         site = self._da.sites[site_index]
         element = _get_formatted_el(
-            site['elememt'], self._da.sym_labels[site_index],
+            site['element'], self._da.sym_labels[site_index],
             use_oxi_state=self.describe_oxidation_state,
             use_sym_label=self.describe_symmetry_labels,
             latexify=self.latexify)
 
         if site['geometry']['likeness'] < self.distorted_tol:
-            geometry_desc = "distorted"
+            geometry_desc = "distorted "
         else:
             geometry_desc = ""
         geometry_desc += site['geometry']['type']
@@ -280,30 +298,32 @@ class Describer(object):
 
         last_count = 0
         nn_descriptions = []
-        bond_length_descriptions = []
+        bond_length_descriptions = ""
         for nn_site in nn_details:
             element = _get_formatted_el(
-                nn_site.element, self._da.sym_labels[site_index],
+                nn_site.element, nn_site.sym_label,
                 use_oxi_state=self.describe_oxidation_state,
                 use_sym_label=self.describe_symmetry_labels,
                 latexify=self.latexify)
 
-            if len(nn_site.sites) == 1 and not self.describe_symmetry_labels:
-                equivalent = "equivalent"
+            if len(nn_site.sites) == 1 and nn_site.count != 1:
+                equivalent = " equivalent "
             else:
-                equivalent = ""
+                equivalent = " "
 
-            nn_descriptions.append("{} {} {}".format(
+            nn_descriptions.append("{}{}{}".format(
                 en.number_to_words(nn_site.count), equivalent, element))
-            bond_length_descriptions.append(
-                self._get_bond_length_description(site_index, nn_site.sites))
+
+            bond_length_description = self._get_bond_length_description(
+                site_index, nn_site.sites)
+            if bond_length_description:
+                bond_length_descriptions += " " + bond_length_description
 
             last_count = nn_site.count
 
         s_atoms = "atom" if last_count == 1 else "atoms"
         nn_descriptions = "{} {}.".format(en.join(nn_descriptions), s_atoms)
-
-        return " ".join(nn_descriptions) + " ".join(bond_length_descriptions)
+        return nn_descriptions + bond_length_descriptions
 
     def _get_bond_length_description(self, from_site: int,
                                      to_sites: List[int]) -> str:
@@ -315,7 +335,9 @@ class Describer(object):
                 all be for the same element.
 
         Returns:
-            A description of the bond lengths.
+            A description of the bond lengths or an empty string if
+            :attr:`Describer.only_describe_bonds_once` is ``True`` and all
+            all bond lengths have already been described.
         """
         # get a list of tuples of (from_site, to_site) for all to_sites
 
@@ -332,7 +354,7 @@ class Describer(object):
             use_sym_label=self.describe_symmetry_labels)
         to_element = _get_formatted_el(
             self._da.elements[to_sites[0]],
-            self._da.sym_labels[to_sites[0]],
+            self._da.get_sym_label(to_sites),
             use_oxi_state=False,
             use_sym_label=self.describe_symmetry_labels)
 
@@ -388,17 +410,16 @@ class Describer(object):
         """
         bonds = [(f, t) for f, t in zip([from_site] * len(to_sites), to_sites)]
 
-        # use frozen set as some times we might see the to and from sites
-        # the other way around (e.g. from is to and to is from)
-        not_seen_sites = filter(
-            lambda x: frozenset(x) not in self._seen_bonds, bonds)
+        # use frozen set as it is invariant to the order of the sites
+        not_seen = [x for x in bonds if frozenset(x) not in self._seen_bonds]
 
-        to_sites = []  # only describe the bonds between unseen site pairs
-        for from_site, to_site in not_seen_sites:
-            to_sites.append(to_site)
+        # only describe the bonds between unseen site pairs
+        not_seen_to_sites = []
+        for from_site, to_site in not_seen:
+            not_seen_to_sites.append(to_site)
             self._seen_bonds.add(frozenset((from_site, to_site)))
 
-        return to_sites
+        return not_seen_to_sites
 
 
 def _get_formatted_el(element: str,
@@ -406,7 +427,7 @@ def _get_formatted_el(element: str,
                       use_oxi_state: bool = True,
                       use_sym_label: bool = True,
                       latexify: bool = False):
-    """Formats the element string.
+    """Formats an element string.
 
     Performs a variety of functions, including:
 
@@ -422,7 +443,7 @@ def _get_formatted_el(element: str,
         sym_label: The symmetry label. E.g. "(1)"
         use_oxi_state: Whether to include the oxidation state, if present.
         use_sym_label: Whether to use the symmetry label.
-        latexify: Whether to convert the str for use in latex.
+        latexify: Whether to convert the string for use in latex.
 
     Returns:
         The formatted element string.
@@ -434,7 +455,7 @@ def _get_formatted_el(element: str,
         if oxi_state == 0:
             oxi_state = None
         elif oxi_state % 1 == 0:
-            oxi_state = '{:+d}'.format(oxi_state)
+            oxi_state = '{:+d}'.format(int(oxi_state))
         else:
             oxi_state = '{:+.2f}'.format(oxi_state)
     else:
@@ -454,7 +475,7 @@ def _get_formatted_el(element: str,
     return formatted_element
 
 
-def _rounded_bond_lengths(data, decimal_places=3) -> Tuple[float]:
+def _rounded_bond_lengths(data, decimal_places=2) -> Tuple[float]:
     """Utility function to round bond lengths to a number of decimal places."""
     return tuple(float("{:.{}f}".format(x, decimal_places)) for x in data)
 

@@ -227,7 +227,6 @@ class MineralMatcher(object):
         if np.linalg.norm(fingerprint) < 0.4:
             # fingerprint is too small for a reasonable match, indicates very
             # little bonding or small order parameter matches
-            print("hello")
             fingerprint = get_structure_fingerprint(
                 structure, use_distance_cutoffs=False)
 
