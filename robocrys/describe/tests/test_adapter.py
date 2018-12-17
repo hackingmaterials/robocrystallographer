@@ -30,20 +30,3 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(data[0].dimensionality, 3)
         self.assertEqual(data[0].molecule_name, None)
         self.assertEqual(data[0].orientation, None)
-
-
-
-    # def test_get_next_nearest_neighbor_details(self):
-    #     """Check getting next nearest neighbor details."""
-    #     info = self.da.get_next_nearest_neighbor_details(5)
-    #
-    #     self.assertTrue("octahedral" in info["Sn"])
-    #     self.assertTrue('corner-sharing' in info["Sn"]['octahedral'])
-    #     self.assertEqual(info["Sn"]['octahedral']['corner-sharing']['n_sites'],
-    #                      8)
-    #     self.assertAlmostEqual(
-    #         info["Sn"]["octahedral"]['corner-sharing']["angles"][0],
-    #         130.16984393647132)
-    #     self.assertEqual(
-    #         len(info["Sn"]["octahedral"]['corner-sharing']["angles"]),
-    #         8)
