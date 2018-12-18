@@ -1,4 +1,3 @@
-"""Currently this is just a backup and should be ignored"""
 from robocrys import Describer
 from robocrys.util import RobocrysTest
 
