@@ -184,14 +184,16 @@ class RobocrysTest(unittest.TestCase):
 
     test_structures = {}
     for fn in os.listdir(structures_dir):
-        test_structures[fn.split(".")[0]] = loadfn(os.path.join(
-            structures_dir, fn), cls=MontyDecoder)
+        if ".json.gz" in fn:
+            test_structures[fn.split(".")[0]] = loadfn(os.path.join(
+                structures_dir, fn), cls=MontyDecoder)
 
     test_condensed_structures = {}
     for fn in os.listdir(condensed_structures_dir):
-        test_condensed_structures[fn.split(".")[0]] = \
-            load_condensed_structure_json(os.path.join(
-                condensed_structures_dir, fn))
+        if ".json.gz" in fn:
+            test_condensed_structures[fn.split(".")[0]] = \
+                load_condensed_structure_json(os.path.join(
+                    condensed_structures_dir, fn))
 
     @classmethod
     def get_structure(cls, name):

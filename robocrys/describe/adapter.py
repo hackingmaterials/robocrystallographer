@@ -177,7 +177,7 @@ class DescriptionAdapter(object):
 
     def get_distance_details(self, from_site: int,
                              to_sites: Union[int, List[int]]) -> List[float]:
-        """
+        """Gets the bond lengths between two sets of sites.
 
         Args:
             from_site: An inequivalent site index.
@@ -192,6 +192,26 @@ class DescriptionAdapter(object):
 
         return [distance for to_site in to_sites
                 for distance in self.distances[from_site][to_site]]
+
+    def get_angle_details(self, from_site: int, to_sites: Union[int, List[int]],
+                          connectivity: str) -> List[float]:
+        """Gets the connectivity angles between two sets of sites.
+
+        Args:
+            from_site: An inequivalent site index.
+            to_sites: One ore more inequivalent site indices.
+            connectivity: The site connectivity type. I.e. "corner", "edge", or
+                "face".
+
+        Returns:
+            The distances between the sites.
+        """
+        if isinstance(to_sites, int):
+            # If only one to_site is provided turn it into a list
+            to_sites = [to_sites]
+
+        return [angle for to_site in to_sites
+                for angle in self.angles[from_site][to_site][connectivity]]
 
     def get_component_details(self) -> List[ComponentDetails]:
         """Gets a summary of all components.

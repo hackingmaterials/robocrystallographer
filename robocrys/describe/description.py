@@ -74,6 +74,7 @@ class Describer(object):
         self.only_describe_bonds_once = only_describe_bonds_once
         self.latexify = latexify
         self.return_parts = return_parts
+        self.angle_decimal_places = 0
 
         self._da: DescriptionAdapter = None
         self._seen_bonds: set = None
@@ -160,15 +161,17 @@ class Describer(object):
         """
         desc = "The structure is {}-dimensional".format(
             en.number_to_words(self._da.dimensionality))
+        component_groups = self._da.get_component_groups()
 
-        if len(self._da.components) == 1:
+        if (len(component_groups) == 1 and component_groups[0].count == 1 and
+                component_groups[0].dimensionality == 3):
             desc += "."
 
         else:
             desc += " and consists of "
 
             component_makeup_summaries = []
-            for component_group in self._da.get_component_groups():
+            for component_group in component_groups:
                 s_count = en.number_to_words(component_group.count)
                 dimensionality = component_group.dimensionality
 
@@ -185,6 +188,7 @@ class Describer(object):
 
                 comp_desc = "{} {} {}".format(s_count, formula, shape)
 
+                print(component_group.dimensionality)
                 if component_group.dimensionality in [1, 2]:
                     orientations = list(set(c.orientation for c in
                                             component_group.components))
@@ -247,7 +251,7 @@ class Describer(object):
             component_index: The index of the component
 
         Returns:
-            The description for all sites in the structure.
+            The description for all sites in the components.
         """
         desc = []
         first_group = True
@@ -295,6 +299,9 @@ class Describer(object):
         if (site['poly_formula'] and
                 (self.cation_polyhedra_only or '+' in site['element'])):
             desc = self._get_poly_site_description(site_index)
+            tilt_desc = self._get_octahedral_tilt_description(site_index)
+            if tilt_desc:
+                desc += ". " + tilt_desc
         else:
             element = get_formatted_el(
                 site['element'], self._da.sym_labels[site_index],
@@ -363,7 +370,7 @@ class Describer(object):
             len(set([(nnn_site.element, nnn_site.poly_formula) for nnn_site in
                      nnn_details]))) == 1:
             connectivities = list(set([nnn_site.connectivity
-                                  for nnn_site in nnn_details]))
+                                       for nnn_site in nnn_details]))
             s_mixture = "a mixture of " if len(connectivities) != 1 else ""
             s_connectivities = en.join(connectivities)
 
@@ -481,8 +488,6 @@ class Describer(object):
             :attr:`Describer.only_describe_bonds_once` is ``True`` and all
             all bond lengths have already been described.
         """
-        # get a list of tuples of (from_site, to_site) for all to_sites
-
         if self.only_describe_bonds_once:
             to_sites = self._filter_seen_bonds(from_site, to_sites)
 
@@ -525,11 +530,12 @@ class Describer(object):
             s_big_count = en.number_to_words(discrete_bond_lengths.count(big))
 
             # length will only be singular when there is 1 small and 1 big len
-            s_length = en.plural('length', int((small + big) / 2))
+            plural = int((small + big) / 2)
+            s_length = en.plural('length', plural)
 
             return ("There {} {} shorter ({}) and {} "
                     "longer ({}) {}–{} bond {}.").format(
-                en.plural_verb('is', s_small_count), s_small_count,
+                en.plural_verb('is', plural), s_small_count,
                 self._distance_to_string(small), s_big_count,
                 self._distance_to_string(big), from_element, to_element,
                 s_length)
@@ -540,6 +546,42 @@ class Describer(object):
             from_element, to_element,
             self._distance_range_to_string(min(discrete_bond_lengths),
                                            max(discrete_bond_lengths)))
+
+    def _get_octahedral_tilt_description(self, site_index: int,
+                                         ) -> str:
+        """Gets a description of octahedral tilting angles between two sites.
+
+        Currently only implemented for corner-sharing octahedra.
+        Will throw an error if the two sites are not next nearest neighbors.
+
+        Args:
+            site_index: An inequivalent site index.
+
+        Returns:
+            A description of the octahedral tilting angles.
+        """
+        nnn_details = self._da.get_next_nearest_neighbor_details(
+            site_index, group=not self.describe_symmetry_labels)
+        to_sites = [site for nnn_site in nnn_details
+                    for site in nnn_site.sites
+                    if nnn_site.geometry == "octahedral"
+                    and nnn_site.connectivity == "corner"]
+
+        angles = self._da.get_angle_details(site_index, to_sites, 'corner')
+        discrete_angles = list(set(self._rounded_angles(angles)))
+        tilts = [abs(180 - angle) for angle in discrete_angles]
+
+        if not tilts:
+            return ""
+
+        # if only one bond length
+        if len(tilts) == 1:
+            return "The corner-sharing octahedral tilt angles are {}".format(
+                self._angle_to_string(tilts[0]))
+
+        # otherwise just detail the spread of bond lengths
+        return "The corner-sharing octahedra tilt angles range from {}".format(
+            self._angle_range_to_string(min(tilts), max(tilts)))
 
     def _filter_seen_bonds(self, from_site: int, to_sites: List[int]
                            ) -> List[int]:
@@ -553,6 +595,7 @@ class Describer(object):
         Returns:
             The list of unseen bonds.
         """
+        # get a list of tuples of (from_site, to_site) for all to_sites
         bonds = [(f, t) for f, t in zip([from_site] * len(to_sites), to_sites)]
 
         # use frozen set as it is invariant to the order of the sites
@@ -566,17 +609,31 @@ class Describer(object):
 
         return not_seen_to_sites
 
-    def _rounded_bond_lengths(self, data) -> Tuple[float]:
+    def _rounded_bond_lengths(self, data: List[float]) -> Tuple[float]:
         """Function to round bond lengths to a number of decimal places."""
         return tuple(float("{:.{}f}".format(x, self.bond_length_decimal_places))
                      for x in data)
 
-    def _distance_to_string(self, distance) -> str:
+    def _distance_to_string(self, distance: float) -> str:
         """Utility function to round a distance and add an Angstrom symbol."""
         return "{:.{}f} Å".format(distance, self.bond_length_decimal_places)
 
-    def _distance_range_to_string(self, dist_a, dist_b) -> str:
+    def _distance_range_to_string(self, dist_a: float, dist_b: float) -> str:
         """Utility function to format a range of distances."""
         return "{:.{}f}–{:.{}f} Å".format(
             dist_a, self.bond_length_decimal_places,
             dist_b, self.bond_length_decimal_places)
+
+    def _rounded_angles(self, data: List[float]) -> Tuple[float]:
+        """Function to round angles to a number of decimal places."""
+        return tuple(float("{:.{}f}".format(x, self.angle_decimal_places))
+                     for x in data)
+
+    def _angle_to_string(self, angle: float) -> str:
+        """Utility function to round a distance and add an Angstrom symbol."""
+        return "{:.{}f}°".format(angle, self.angle_decimal_places)
+
+    def _angle_range_to_string(self, angle_a: float, angle_b: float) -> str:
+        """Utility function to format a range of distances."""
+        return "{:.{}f}–{:.{}f}°".format(angle_a, self.angle_decimal_places,
+                                         angle_b, self.angle_decimal_places)

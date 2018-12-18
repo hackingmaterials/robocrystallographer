@@ -77,6 +77,17 @@ class TestStructureCondenser(RobocrysTest):
         self.assertTrue(len(distances), 4)
         self.assertAlmostEqual(distances[0], 1.0386222568611572)
 
+    def test_get_angle_details(self):
+        # test get angles using int works
+        distances = self.tin_dioxide_da.get_angle_details(0, 0, 'corner')
+        self.assertTrue(len(distances), 8)
+        self.assertAlmostEqual(distances[0], 129.18849530149342)
+
+        # test get angles using list works
+        distances = self.tin_dioxide_da.get_angle_details(0, [0], 'corner')
+        self.assertTrue(len(distances), 8)
+        self.assertAlmostEqual(distances[0], 129.18849530149342)
+
     def test_get_component_details(self):
         """Check getting component details"""
         all_details = self.mapi_da.get_component_details()
