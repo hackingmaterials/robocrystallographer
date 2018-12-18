@@ -23,7 +23,7 @@ class Describer(object):
                  describe_mineral: bool = True,
                  describe_component_makeup: bool = True,
                  describe_components: bool = True,
-                 describe_symmetry_labels: bool = True,
+                 describe_symmetry_labels: bool = False,
                  describe_oxidation_states: bool = False,
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
@@ -345,8 +345,9 @@ class Describer(object):
         if (nnn_details[0].element == site['element'] and
             len(set([(nnn_site.element, nnn_site.poly_formula) for nnn_site in
                      nnn_details]))) == 1:
-            connectivities = [nnn_site.connectivity for nnn_site in nnn_details]
-            s_mixture = "a mixture of " if len(set(connectivities)) != 1 else ""
+            connectivities = list(set([nnn_site.connectivity
+                                  for nnn_site in nnn_details]))
+            s_mixture = "a mixture of " if len(connectivities) != 1 else ""
             s_connectivities = en.join(connectivities)
 
             desc += "{}{}{}-sharing {} {}".format(
