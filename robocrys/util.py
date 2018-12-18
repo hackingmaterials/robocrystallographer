@@ -89,6 +89,59 @@ def get_el(obj: Union[Element, Specie, str, int]) -> str:
         raise ValueError("Unsupported element type: {}.".format(type(obj)))
 
 
+def get_formatted_el(element: str,
+                     sym_label: str,
+                     use_oxi_state: bool = True,
+                     use_sym_label: bool = True,
+                     latexify: bool = False):
+    """Formats an element string.
+
+    Performs a variety of functions, including:
+
+    - Changing "Sn+0" to "Sn".
+    - Inserting the symmetry label between the element and oxidation state, if
+        required.
+    - Removing the oxidation state if required.
+    - Latexifying the element and oxidation state.
+
+    Args:
+        element: The element string (possibly including the oxidation state.
+            E.g. "Sn" or "Sn+2".
+        sym_label: The symmetry label. E.g. "(1)"
+        use_oxi_state: Whether to include the oxidation state, if present.
+        use_sym_label: Whether to use the symmetry label.
+        latexify: Whether to convert the string for use in latex.
+
+    Returns:
+        The formatted element string.
+    """
+    specie = get_el_sp(element)
+
+    if isinstance(specie, Specie):
+        oxi_state = specie.oxi_state
+        if oxi_state == 0:
+            oxi_state = None
+        elif oxi_state % 1 == 0:
+            oxi_state = '{:+d}'.format(int(oxi_state))
+        else:
+            oxi_state = '{:+.2f}'.format(oxi_state)
+    else:
+        oxi_state = None
+
+    formatted_element = specie.name
+
+    if use_sym_label:
+        formatted_element += sym_label
+
+    if use_oxi_state and oxi_state:
+        if latexify:
+            oxi_state = "^{{{}}}".format(oxi_state)
+
+        formatted_element += oxi_state
+
+    return formatted_element
+
+
 def defaultdict_to_dict(dictionary: defaultdict) -> Dict:
     """Recursively convert nested :obj:`defaultdict` to :obj:`dict`.
 

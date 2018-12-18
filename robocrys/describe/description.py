@@ -9,10 +9,9 @@ TODO:
 
 from typing import Dict, Any, Tuple, List, Union
 
-from pymatgen.core.periodic_table import get_el_sp, Specie
 from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import (geometry_to_polyhedra, dimensionality_to_shape,
-                           get_el, polyhedra_plurals)
+                           get_el, polyhedra_plurals, get_formatted_el)
 import inflect
 
 en = inflect.engine()
@@ -245,7 +244,7 @@ class Describer(object):
                 desc.append(self._get_site_description(site_group.sites[0]))
 
             else:
-                element = _get_formatted_el(
+                element = get_formatted_el(
                     site_group.element, "",
                     use_oxi_state=self.describe_oxidation_state,
                     use_sym_label=False,
@@ -284,7 +283,7 @@ class Describer(object):
                 (self.cation_polyhedra_only or '+' in site['element'])):
             desc = self._get_poly_site_description(site_index)
         else:
-            element = _get_formatted_el(
+            element = get_formatted_el(
                 site['element'], self._da.sym_labels[site_index],
                 use_oxi_state=self.describe_oxidation_state,
                 use_sym_label=self.describe_symmetry_labels,
@@ -325,7 +324,7 @@ class Describer(object):
         nnn_details = self._da.get_next_nearest_neighbor_details(
             site_index, group=not self.describe_symmetry_labels)
 
-        from_element = _get_formatted_el(
+        from_element = get_formatted_el(
             site['element'], self._da.sym_labels[site_index],
             use_oxi_state=self.describe_oxidation_state,
             use_sym_label=self.describe_symmetry_labels,
@@ -360,7 +359,7 @@ class Describer(object):
                                              s_polyhedra)
         nnn_descriptions = []
         for nnn_site in nnn_details:
-            to_element = _get_formatted_el(
+            to_element = get_formatted_el(
                 nnn_site.element, nnn_site.sym_label,
                 use_oxi_state=False,
                 use_sym_label=self.describe_symmetry_labels)
@@ -404,7 +403,7 @@ class Describer(object):
         last_count = 0
         nn_descriptions = []
         for nn_site in nn_details:
-            element = _get_formatted_el(
+            element = get_formatted_el(
                 nn_site.element, nn_site.sym_label,
                 use_oxi_state=self.describe_oxidation_state,
                 use_sym_label=self.describe_symmetry_labels,
@@ -468,12 +467,12 @@ class Describer(object):
             if not to_sites:
                 return ""
 
-        from_element = _get_formatted_el(
+        from_element = get_formatted_el(
             self._da.elements[from_site],
             self._da.sym_labels[from_site],
             use_oxi_state=False,
             use_sym_label=self.describe_symmetry_labels)
-        to_element = _get_formatted_el(
+        to_element = get_formatted_el(
             self._da.elements[to_sites[0]],
             self._da.get_sym_label(to_sites),
             use_oxi_state=False,
@@ -484,16 +483,16 @@ class Describer(object):
         # if only one bond length
         if len(dists) == 1:
             return "The {}–{} bond length is {}.".format(
-                from_element, to_element, _distance_to_string(dists[0]))
+                from_element, to_element, self._distance_to_string(dists[0]))
 
-        discrete_bond_lengths = _rounded_bond_lengths(dists)
+        discrete_bond_lengths = self._rounded_bond_lengths(dists)
 
         # if multiple bond lengths but they are all the same
         if len(set(discrete_bond_lengths)) == 1:
             s_intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
             return "{} {}–{} bond lengths are {}.".format(
                 s_intro, from_element, to_element,
-                _distance_to_string(dists[0]))
+                self._distance_to_string(dists[0]))
 
         # if two sets of bond lengths
         if len(set(discrete_bond_lengths)) == 2:
@@ -509,15 +508,16 @@ class Describer(object):
             return ("There {} {} shorter ({}) and {} "
                     "longer ({}) {}–{} bond {}.").format(
                 en.plural_verb('is', s_small_count), s_small_count,
-                _distance_to_string(small), s_big_count,
-                _distance_to_string(big), from_element, to_element, s_length)
+                self._distance_to_string(small), s_big_count,
+                self._distance_to_string(big), from_element, to_element,
+                s_length)
 
         # otherwise just detail the spread of bond lengths
         return ("There are a spread of {}–{} bond distances ranging from "
                 "{}.").format(
             from_element, to_element,
-            _distance_range_to_string(min(discrete_bond_lengths),
-                                      max(discrete_bond_lengths)))
+            self._distance_range_to_string(min(discrete_bond_lengths),
+                                           max(discrete_bond_lengths)))
 
     def _filter_seen_bonds(self, from_site: int, to_sites: List[int]
                            ) -> List[int]:
@@ -544,71 +544,17 @@ class Describer(object):
 
         return not_seen_to_sites
 
+    def _rounded_bond_lengths(self, data) -> Tuple[float]:
+        """Function to round bond lengths to a number of decimal places."""
+        return tuple(float("{:.{}f}".format(x, self.bond_length_decimal_places))
+                     for x in data)
 
-def _get_formatted_el(element: str,
-                      sym_label: str,
-                      use_oxi_state: bool = True,
-                      use_sym_label: bool = True,
-                      latexify: bool = False):
-    """Formats an element string.
+    def _distance_to_string(self, distance) -> str:
+        """Utility function to round a distance and add an Angstrom symbol."""
+        return "{:.{}f} Å".format(distance, self.bond_length_decimal_places)
 
-    Performs a variety of functions, including:
-
-    - Changing "Sn+0" to "Sn".
-    - Inserting the symmetry label between the element and oxidation state, if
-        required.
-    - Removing the oxidation state if required.
-    - Latexifying the element and oxidation state.
-
-    Args:
-        element: The element string (possibly including the oxidation state.
-            E.g. "Sn" or "Sn+2".
-        sym_label: The symmetry label. E.g. "(1)"
-        use_oxi_state: Whether to include the oxidation state, if present.
-        use_sym_label: Whether to use the symmetry label.
-        latexify: Whether to convert the string for use in latex.
-
-    Returns:
-        The formatted element string.
-    """
-    specie = get_el_sp(element)
-
-    if isinstance(specie, Specie):
-        oxi_state = specie.oxi_state
-        if oxi_state == 0:
-            oxi_state = None
-        elif oxi_state % 1 == 0:
-            oxi_state = '{:+d}'.format(int(oxi_state))
-        else:
-            oxi_state = '{:+.2f}'.format(oxi_state)
-    else:
-        oxi_state = None
-
-    formatted_element = specie.name
-
-    if use_sym_label:
-        formatted_element += sym_label
-
-    if use_oxi_state and oxi_state:
-        if latexify:
-            oxi_state = "^{{{}}}".format(oxi_state)
-
-        formatted_element += oxi_state
-
-    return formatted_element
-
-
-def _rounded_bond_lengths(data, decimal_places=2) -> Tuple[float]:
-    """Utility function to round bond lengths to a number of decimal places."""
-    return tuple(float("{:.{}f}".format(x, decimal_places)) for x in data)
-
-
-def _distance_to_string(distance, decimal_places=2) -> str:
-    """Utility function to round a distance and add an Angstrom symbol."""
-    return "{:.{}f} Å".format(distance, decimal_places)
-
-
-def _distance_range_to_string(dist_a, dist_b, decimal_places=2) -> str:
-    """Utility function to format a range of distances."""
-    return "{:.{}f}–{:.{}f} Å".format(dist_a, decimal_places, dist_b,
-                                      decimal_places)
+    def _distance_range_to_string(self, dist_a, dist_b) -> str:
+        """Utility function to format a range of distances."""
+        return "{:.{}f}–{:.{}f} Å".format(
+            dist_a, self.bond_length_decimal_places,
+            dist_b, self.bond_length_decimal_places)

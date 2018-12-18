@@ -1,6 +1,5 @@
 """Currently this is just a backup and should be ignored"""
-
-from robocrys.condense.site import SiteDescriber
+from robocrys import Describer
 from robocrys.util import RobocrysTest
 
 
@@ -8,43 +7,80 @@ class TestDescriptionMethods(RobocrysTest):
     """Class to test mineral matching functionality."""
 
     def setUp(self):
-        self.tin_dioxide = self.get_structure("tin_dioxide")
+        self.tin_dioxide = self.get_condensed_structure("SnO2")
+        self.mapi = self.get_condensed_structure("mapi")
 
-        self.ba_n = self.get_structure("BaN2")
+    def test_describe(self):
+        """Broad tests to check the right information is in the description."""
+        # test general
+        d = Describer(describe_oxidation_states=True,
+                      describe_symmetry_labels=True,
+                      return_parts=False,
+                      bond_length_decimal_places=2,
+                      latexify=False)
+        description = d.describe(self.tin_dioxide)
+        self.assertTrue("Rutile" in description)
+        self.assertTrue("SnO2" in description)
+        self.assertTrue("tetragonal" in description)
+        self.assertTrue("P4_2/mnm" in description)
+        self.assertTrue("three-dimensional" in description)
+        self.assertTrue("Sn(1)+4" in description)
+        self.assertTrue("equivalent" in description)
+        self.assertTrue("corner" in description)
+        self.assertTrue("edge" in description)
+        self.assertTrue("Sn(1)–O(1)" in description)
+        self.assertTrue("2.09" in description)
 
-    def test_get_bond_length_description(self):
-        """Check getting bond length descriptions"""
-        # content liable to change so just check function runs without error
-        # and returns *something*.
-        describer = SiteDescriber(self.tin_dioxide)
-        desc = describer.get_bond_length_description(0, "Sn")
-        self.assertNotEqual(desc, None)
+        # test different settings
+        d = Describer(describe_oxidation_states=False,
+                      describe_symmetry_labels=True,
+                      return_parts=False,
+                      bond_length_decimal_places=4,
+                      latexify=False)
+        description = d.describe(self.tin_dioxide)
+        self.assertTrue("Sn(1)" in description)
+        self.assertTrue("Sn(1)–O(1)" in description)
+        self.assertTrue("2.0922" in description)
 
-        desc = describer.get_bond_length_description(4, "O")
-        self.assertNotEqual(desc, None)
+        # test different settings
+        d = Describer(describe_oxidation_states=True,
+                      describe_symmetry_labels=False,
+                      return_parts=False,
+                      bond_length_decimal_places=2,
+                      latexify=True)
+        description = d.describe(self.tin_dioxide)
+        self.assertTrue(r"Sn^{+4}" in description)
+        self.assertTrue("Sn–O" in description)
 
-        # check different structure
-        describer = SiteDescriber(self.ba_n)
-        desc = describer.get_bond_length_description(0, "Ba")
-        self.assertNotEqual(desc, None)
+        # test return parts
+        d = Describer(describe_oxidation_states=True,
+                      describe_symmetry_labels=True,
+                      return_parts=True,
+                      bond_length_decimal_places=2,
+                      latexify=False)
+        description = d.describe(self.tin_dioxide)
+        self.assertTrue("Rutile" in description['mineral'])
+        self.assertTrue("SnO2" in description['mineral'])
+        self.assertTrue("tetragonal" in description['mineral'])
+        self.assertTrue("P4_2/mnm" in description['mineral'])
 
-    def test_get_site_description(self):
-        """Check getting site description."""
-        # content liable to change so just check function runs without error
-        # and returns *something*.
-        describer = SiteDescriber(self.tin_dioxide)
-        desc = describer._get_site_description(0)
-        self.assertNotEqual(desc, None)
+        self.assertTrue("three-dimensional" in description['component_makeup'])
+        self.assertTrue("Sn(1)+4" in description['components'])
+        self.assertTrue("equivalent" in description['components'])
+        self.assertTrue("corner" in description['components'])
+        self.assertTrue("edge" in description['components'])
+        self.assertTrue("Sn(1)–O(1)" in description['components'])
+        self.assertTrue("2.09" in description['components'])
 
-        desc = describer._get_site_description(4)
-        self.assertNotEqual(desc, None)
+    def test_grammar_and_punctuation(self):
+        """Check common grammatical errors are not present"""
+        d = Describer()
+        description = d.describe(self.tin_dioxide)
+        self.assertTrue(".." not in description)
+        self.assertTrue("  " not in description)
+        self.assertTrue(". ." not in description)
 
-        # check output changes when turning of bond length information
-        desc_bond_lengths = describer._get_site_description(
-            4, describe_bond_lengths=False)
-        self.assertNotEqual(desc, desc_bond_lengths)
-
-        # check different structure
-        describer = SiteDescriber(self.ba_n)
-        desc = describer._get_site_description(0)
-        self.assertNotEqual(desc, None)
+        description = d.describe(self.mapi)
+        self.assertTrue(".." not in description)
+        self.assertTrue("  " not in description)
+        self.assertTrue(". ." not in description)
