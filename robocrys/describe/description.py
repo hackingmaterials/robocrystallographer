@@ -9,6 +9,8 @@ TODO:
 
 from typing import Dict, Any, Tuple, List, Union
 
+from pymatgen.util.string import latexify as latexify_formula
+from pymatgen.util.string import latexify_spacegroup
 from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import (geometry_to_polyhedra, dimensionality_to_shape,
                            get_el, polyhedra_plurals, get_formatted_el)
@@ -23,8 +25,8 @@ class Describer(object):
                  describe_mineral: bool = True,
                  describe_component_makeup: bool = True,
                  describe_components: bool = True,
-                 describe_symmetry_labels: bool = False,
-                 describe_oxidation_states: bool = False,
+                 describe_symmetry_labels: bool = True,
+                 describe_oxidation_states: bool = True,
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
                  distorted_tol: float = 0.6,
@@ -125,6 +127,12 @@ class Describer(object):
         Returns:
             The description of the mineral name.
         """
+        spg_symbol = self._da.spg_symbol
+        formula = self._da.formula
+        if self.latexify:
+            spg_symbol = latexify_spacegroup(self._da.spg_symbol)
+            formula = latexify_formula(formula)
+
         if self._da.mineral['type']:
             if not self._da.mineral['n_species_type_match']:
                 suffix = "-derived"
@@ -134,15 +142,13 @@ class Describer(object):
                 suffix = ""
 
             mineral_name = "{}{}".format(self._da.mineral['type'], suffix)
-
-            desc = "{} is {} structured and".format(
-                self._da.formula, mineral_name)
+            desc = "{} is {} structured and".format(formula, mineral_name)
 
         else:
-            desc = "{}".format(self._da.formula)
+            desc = "{}".format(formula)
 
         desc += " crystallizes in the {} {} space group.".format(
-            self._da.crystal_system, self._da.spg_symbol)
+            self._da.crystal_system, spg_symbol)
         return desc
 
     def _get_component_makeup_summary(self) -> str:
@@ -173,6 +179,9 @@ class Describer(object):
                     shape = en.plural(dimensionality_to_shape[dimensionality],
                                       s_count)
                     formula = component_group.formula
+
+                if self.latexify:
+                    formula = latexify_formula(formula)
 
                 comp_desc = "{} {} {}".format(s_count, formula, shape)
 
@@ -214,11 +223,15 @@ class Describer(object):
                     component_count = component.count
                     shape = dimensionality_to_shape[group.dimensionality]
 
+                    if self.latexify:
+                        formula = latexify_formula(formula)
+
                     if group_count == component_count:
                         s_filler = "the" if group_count == 1 else "each"
                     else:
-                        s_filler = "{} of the".format(component_count)
-                        shape = en.plural(shape, component_count)
+                        s_filler = "{} of the".format(
+                            en.number_to_words(component_count))
+                        shape = en.plural(shape)
 
                     desc = "In {} {} {}, ".format(s_filler, formula, shape)
                     desc += self._get_component_description(component.index)
@@ -329,7 +342,11 @@ class Describer(object):
             use_oxi_state=self.describe_oxidation_state,
             use_sym_label=self.describe_symmetry_labels,
             latexify=self.latexify)
-        s_from_poly_formula = get_el(site['element']) + site['poly_formula']
+
+        from_poly_formula = site['poly_formula']
+        if self.latexify:
+            from_poly_formula = latexify_formula(from_poly_formula)
+        s_from_poly_formula = get_el(site['element']) + from_poly_formula
 
         if site['geometry']['likeness'] < self.distorted_tol:
             s_distorted = "distorted "
@@ -364,7 +381,11 @@ class Describer(object):
                 nnn_site.element, nnn_site.sym_label,
                 use_oxi_state=False,
                 use_sym_label=self.describe_symmetry_labels)
-            to_poly_formula = to_element + nnn_site.poly_formula
+
+            to_poly_formula = nnn_site.poly_formula
+            if self.latexify:
+                to_poly_formula = latexify_formula(to_poly_formula)
+            to_poly_formula = to_element + to_poly_formula
             to_shape = geometry_to_polyhedra[nnn_site.geometry]
 
             if len(nnn_site.sites) == 1 and nnn_site.count != 1:
