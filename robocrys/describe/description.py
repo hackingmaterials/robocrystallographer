@@ -9,7 +9,8 @@ TODO:
 
 from typing import Dict, Any, Tuple, List, Union
 
-from pymatgen.util.string import latexify_spacegroup, latexify
+from pymatgen.util.string import latexify as latexify_formula
+from pymatgen.util.string import latexify_spacegroup
 from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import (geometry_to_polyhedra, dimensionality_to_shape,
                            get_el, polyhedra_plurals, get_formatted_el)
@@ -130,7 +131,7 @@ class Describer(object):
         formula = self._da.formula
         if self.latexify:
             spg_symbol = latexify_spacegroup(self._da.spg_symbol)
-            formula = latexify(formula)
+            formula = latexify_formula(formula)
 
         if self._da.mineral['type']:
             if not self._da.mineral['n_species_type_match']:
@@ -180,7 +181,7 @@ class Describer(object):
                     formula = component_group.formula
 
                 if self.latexify:
-                    formula = latexify(formula)
+                    formula = latexify_formula(formula)
 
                 comp_desc = "{} {} {}".format(s_count, formula, shape)
 
@@ -223,7 +224,7 @@ class Describer(object):
                     shape = dimensionality_to_shape[group.dimensionality]
 
                     if self.latexify:
-                        formula = latexify(formula)
+                        formula = latexify_formula(formula)
 
                     if group_count == component_count:
                         s_filler = "the" if group_count == 1 else "each"
@@ -344,7 +345,7 @@ class Describer(object):
 
         from_poly_formula = site['poly_formula']
         if self.latexify:
-            from_poly_formula = latexify(from_poly_formula)
+            from_poly_formula = latexify_formula(from_poly_formula)
         s_from_poly_formula = get_el(site['element']) + from_poly_formula
 
         if site['geometry']['likeness'] < self.distorted_tol:
@@ -382,7 +383,7 @@ class Describer(object):
 
             to_poly_formula = nnn_site.poly_formula
             if self.latexify:
-                to_poly_formula = latexify(to_poly_formula)
+                to_poly_formula = latexify_formula(to_poly_formula)
             to_poly_formula = to_element + to_poly_formula
             to_shape = geometry_to_polyhedra[nnn_site.geometry]
 
