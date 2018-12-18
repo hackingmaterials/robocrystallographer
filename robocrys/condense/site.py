@@ -329,7 +329,7 @@ class SiteAnalyzer(object):
                 {to_site: [dist_1, dist_2, dist_3, ...]}
 
             Where ``to_site`` is the index of a nearest neighbor site
-            and ``dist_1`` etc are the bond distances as :obj:`float`s.
+            and ``dist_1`` etc are the bond distances as :obj:`float`.
         """
         bonds = defaultdict(list)
         for nn_site in self.get_nearest_neighbors(site_index):
@@ -362,7 +362,7 @@ class SiteAnalyzer(object):
             ``connectivity_a`` etc are the bonding connectivity type, e.g.
             ``'edge'`` or ``'corner'`` (for edge-sharing and corner-sharing
             connectivity), and ``angle_1`` etc are the bond angles as
-            :obj:`float`s.
+            :obj:`float`.
         """
         connectivities = defaultdict(lambda: defaultdict(list))
 
@@ -378,7 +378,7 @@ class SiteAnalyzer(object):
         """Gets the site summaries for all sites.
 
         Returns:
-            The site summaries for all sites, formatted as:
+            The site summaries for all sites, formatted as::
 
                 {
                     site_index: site_summary
@@ -395,7 +395,7 @@ class SiteAnalyzer(object):
         """Gets the bond distance summaries for all sites.
 
         Returns:
-            The bond distance summaries for all sites, formatted as:
+            The bond distance summaries for all sites, formatted as::
 
                 {
                     from_site: {
@@ -417,7 +417,7 @@ class SiteAnalyzer(object):
         next nearest neighbors.
 
         Returns:
-            The connectivity angle summaries for all sites, formatted as:
+            The connectivity angle summaries for all sites, formatted as::
 
                 {
                     from_site: {

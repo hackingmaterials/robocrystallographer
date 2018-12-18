@@ -26,6 +26,7 @@ class MineralMatcher(object):
                G., & Curtarolo, S. (2017), The AFLOW library of crystallographic
                prototypes: part 1. Computational Materials Science, 136,
                S1-S828. doi: 10.1016/j.commatsci.2017.01.017
+
     Args:
         aflow_initial_ltol: The fractional length tolerance used in the AFLOW
             structure matching.

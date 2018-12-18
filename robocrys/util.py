@@ -177,28 +177,28 @@ def load_condensed_structure_json(filename: str) -> Dict[str, Any]:
 class RobocrysTest(unittest.TestCase):
     """Base test class providing access to common test data. """
 
-    module_dir = os.path.dirname(os.path.abspath(__file__))
-    structures_dir = os.path.join(module_dir, "tests", "structures")
-    condensed_structures_dir = os.path.join(
-        module_dir, "tests", "condensed_structures")
+    _module_dir = os.path.dirname(os.path.abspath(__file__))
+    _structures_dir = os.path.join(_module_dir, "tests", "structures")
+    _condensed_structures_dir = os.path.join(
+        _module_dir, "tests", "condensed_structures")
 
-    test_structures = {}
-    for fn in os.listdir(structures_dir):
-        if ".json.gz" in fn:
-            test_structures[fn.split(".")[0]] = loadfn(os.path.join(
-                structures_dir, fn), cls=MontyDecoder)
+    _test_structures = {}
+    for _fn in os.listdir(_structures_dir):
+        if ".json.gz" in _fn:
+            _test_structures[_fn.split(".")[0]] = loadfn(os.path.join(
+                _structures_dir, _fn), cls=MontyDecoder)
 
-    test_condensed_structures = {}
-    for fn in os.listdir(condensed_structures_dir):
-        if ".json.gz" in fn:
-            test_condensed_structures[fn.split(".")[0]] = \
+    _test_condensed_structures = {}
+    for _fn in os.listdir(_condensed_structures_dir):
+        if ".json.gz" in _fn:
+            _test_condensed_structures[_fn.split(".")[0]] = \
                 load_condensed_structure_json(os.path.join(
-                    condensed_structures_dir, fn))
+                    _condensed_structures_dir, _fn))
 
     @classmethod
     def get_structure(cls, name):
-        return cls.test_structures[name].copy()
+        return cls._test_structures[name].copy()
 
     @classmethod
     def get_condensed_structure(cls, name):
-        return cls.test_condensed_structures[name].copy()
+        return cls._test_condensed_structures[name].copy()
