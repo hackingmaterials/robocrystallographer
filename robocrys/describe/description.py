@@ -24,7 +24,7 @@ class Describer(object):
                  describe_component_makeup: bool = True,
                  describe_components: bool = True,
                  describe_symmetry_labels: bool = True,
-                 describe_oxidation_states: bool = False,
+                 describe_oxidation_states: bool = True,
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
                  distorted_tol: float = 0.6,

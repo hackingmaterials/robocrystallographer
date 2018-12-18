@@ -57,7 +57,7 @@ class StructureCondenser(object):
     """
 
     def __init__(self,
-                 use_conventional_cell: bool = False,
+                 use_conventional_cell: bool = True,
                  near_neighbors: Optional[NearNeighbors] = None,
                  mineral_matcher: Optional[MineralMatcher] = None,
                  use_symmetry: bool = False,
