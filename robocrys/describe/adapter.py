@@ -57,13 +57,13 @@ class DescriptionAdapter(object):
                            for site_index in self.sites.keys()}
 
     def get_nearest_neighbor_details(self, site_index: int,
-                                     group_by_element: bool = False
+                                     group: bool = False
                                      ) -> List[NeighborSiteDetails]:
         """Gets a summary of all the nearest neighbors to a site.
 
         Args:
             site_index: An inequivalent site index.
-            group_by_element: Whether to group all nearest neighbor sites
+            group: Whether to group all nearest neighbor sites
                 with the same element together.
 
         Returns:
@@ -82,8 +82,8 @@ class DescriptionAdapter(object):
         nn_dict = defaultdict(list)
         for nn_site in set(nn_sites):
             element = self.sites[nn_site]['element']
-            labels = self.sites[nn_site]['sym_labels']
-            identity = (element,) if group_by_element else (element, labels)
+            labels = self.sym_labels[nn_site]
+            identity = (element,) if group else (element, labels)
 
             nn_dict[identity].append(
                 {'count': nn_sites.count(nn_site),
@@ -113,7 +113,8 @@ class DescriptionAdapter(object):
         Args:
             site_index: An inequivalent site index.
             group: Whether to group together all next nearest neighbor sites
-                with the same element, connectivity and geometry.
+                with the same element, connectivity and geometry but different
+                symmetry labels.
 
         Returns:
             A :obj:`list` of ``NextNeighborSiteDetails`` objects, each with the
@@ -146,7 +147,7 @@ class DescriptionAdapter(object):
                 continue
 
             element = self.sites[nnn_site]['element']
-            labels = self.sites[nnn_site]['sym_labels']
+            labels = self.sym_labels[nnn_site]
             geometry = self.sites[nnn_site]['geometry']['type']
 
             if group:

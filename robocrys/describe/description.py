@@ -24,7 +24,7 @@ class Describer(object):
                  describe_mineral: bool = True,
                  describe_component_makeup: bool = True,
                  describe_components: bool = True,
-                 describe_symmetry_labels: bool = False,
+                 describe_symmetry_labels: bool = True,
                  describe_oxidation_states: bool = False,
                  describe_bond_lengths: bool = True,
                  bond_length_decimal_places: int = 2,
@@ -399,7 +399,7 @@ class Describer(object):
             A description of the nearest neighbors.
         """
         nn_details = self._da.get_nearest_neighbor_details(
-            site_index, group_by_element=not self.describe_symmetry_labels)
+            site_index, group=not self.describe_symmetry_labels)
 
         last_count = 0
         nn_descriptions = []
@@ -436,7 +436,7 @@ class Describer(object):
             return ""
 
         nn_details = self._da.get_nearest_neighbor_details(
-            site_index, group_by_element=not self.describe_symmetry_labels)
+            site_index, group=not self.describe_symmetry_labels)
 
         bond_descriptions = []
         for nn_site in nn_details:
