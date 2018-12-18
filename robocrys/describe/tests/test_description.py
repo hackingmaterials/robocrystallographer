@@ -24,7 +24,7 @@ class TestDescriptionMethods(RobocrysTest):
         self.assertTrue("tetragonal" in description)
         self.assertTrue("P4_2/mnm" in description)
         self.assertTrue("three-dimensional" in description)
-        self.assertTrue("Sn(1)+4" in description)
+        self.assertTrue("Sn(1)4+" in description)
         self.assertTrue("equivalent" in description)
         self.assertTrue("corner" in description)
         self.assertTrue("edge" in description)
@@ -49,7 +49,7 @@ class TestDescriptionMethods(RobocrysTest):
                       bond_length_decimal_places=2,
                       latexify=True)
         description = d.describe(self.tin_dioxide)
-        self.assertTrue(r"Sn^{+4}" in description)
+        self.assertTrue(r"Sn^{4+}" in description)
         self.assertTrue("Sn–O" in description)
 
         # test return parts
@@ -65,7 +65,7 @@ class TestDescriptionMethods(RobocrysTest):
         self.assertTrue("P4_2/mnm" in description['mineral'])
 
         self.assertTrue("three-dimensional" in description['component_makeup'])
-        self.assertTrue("Sn(1)+4" in description['components'])
+        self.assertTrue("Sn(1)4+" in description['components'])
         self.assertTrue("equivalent" in description['components'])
         self.assertTrue("corner" in description['components'])
         self.assertTrue("edge" in description['components'])

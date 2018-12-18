@@ -106,7 +106,7 @@ def get_formatted_el(element: str,
 
     Args:
         element: The element string (possibly including the oxidation state.
-            E.g. "Sn" or "Sn+2".
+            E.g. "Sn" or "Sn2+".
         sym_label: The symmetry label. E.g. "(1)"
         use_oxi_state: Whether to include the oxidation state, if present.
         use_sym_label: Whether to use the symmetry label.
@@ -119,12 +119,13 @@ def get_formatted_el(element: str,
 
     if isinstance(specie, Specie):
         oxi_state = specie.oxi_state
+        sign = '+' if oxi_state > 0 else '-'
         if oxi_state == 0:
             oxi_state = None
         elif oxi_state % 1 == 0:
-            oxi_state = '{:+d}'.format(int(oxi_state))
+            oxi_state = '{:d}{}'.format(int(abs(oxi_state)), sign)
         else:
-            oxi_state = '{:+.2f}'.format(oxi_state)
+            oxi_state = '{:+.2f}{}'.format(abs(oxi_state), sign)
     else:
         oxi_state = None
 
