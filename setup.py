@@ -1,5 +1,5 @@
 """"
-robocrystallographer: Automated structure descriptions.
+robocrystallographer: Automatic generation of crystal structure descriptions.
 """
 
 from setuptools import setup, find_packages
@@ -11,8 +11,8 @@ with open('README.rst', 'r') as file:
 
 setup(
     name='robocrys',
-    version='0.0.1',
-    description='Automated structure descriptions',
+    version='0.1.0',
+    description='Automatic generation of crystal structure descriptions',
     url='https://github.com/hackingmaterials/robocrystallographer',
     author='Alex Ganose',
     author_email='aganose@lbl.gov',
@@ -31,12 +31,13 @@ setup(
         'Topic :: Other/Nonlisted Topic',
         'Operating System :: OS Independent',
         ],
-    keywords='crystal structure crystallography descriptions',
+    keywords='crystal-structure crystallography materials-science',
     test_suite='nose.collector',
     packages=find_packages(),
     install_requires=['spglib', 'numpy', 'scipy', 'pymatgen>=2017.12.30',
                       'inflect', 'networkx', 'matminer', 'monty', 'pubchempy'],
-    extras_require={'docs': ['sphinx', 'sphinx-argparse'],
+    extras_require={'docs': ['sphinx', 'sphinx-argparse',
+                             'sphinx-autodoc-types>=2.1.1'],
                     'dev': ['tqdm', 'pybel', 'pebble', 'maggma']},
     package_data={'robocrys': [path_join('condense', 'mineral_db.json.gz'),
                                path_join('condense', 'molecule_db.json.gz'),
