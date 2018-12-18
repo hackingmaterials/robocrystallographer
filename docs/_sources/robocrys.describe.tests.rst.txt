@@ -1,0 +1,30 @@
+robocrys.describe.tests package
+===============================
+
+Submodules
+----------
+
+robocrys.describe.tests.test\_adapter module
+--------------------------------------------
+
+.. automodule:: robocrys.describe.tests.test_adapter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+robocrys.describe.tests.test\_description module
+------------------------------------------------
+
+.. automodule:: robocrys.describe.tests.test_description
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: robocrys.describe.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

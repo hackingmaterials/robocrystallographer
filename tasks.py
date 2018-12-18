@@ -12,11 +12,13 @@ import re
 from robocrys import __version__
 from monty.os import cd
 
+exclude_paths = "'../robocrys/*/tests' ../robocrys/tests"
+
 
 @task
 def make_doc(ctx):
     with cd("docs_rst"):
-        ctx.run("sphinx-apidoc -o . -f ../robocrys -o source")
+        ctx.run("sphinx-apidoc -f -o source ../robocrys " + exclude_paths)
         ctx.run("make html")
         ctx.run("cp -r build/html/* ../docs")
 

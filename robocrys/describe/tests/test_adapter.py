@@ -2,8 +2,8 @@ from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import RobocrysTest
 
 
-class TestStructureCondenser(RobocrysTest):
-    """Class to test mineral matching functionality."""
+class TestDescriptionAdapter(RobocrysTest):
+    """Class to test the description adapter functionality."""
 
     def setUp(self):
         tin_dioxide = self.get_condensed_structure("SnO2")

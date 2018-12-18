@@ -19,7 +19,7 @@ import inflect
 en = inflect.engine()
 
 
-class Describer(object):
+class StructureDescriber(object):
 
     def __init__(self,
                  describe_mineral: bool = True,
@@ -88,11 +88,12 @@ class Describer(object):
                 produced by :meth:`StructureCondenser.condense_structure`.
 
         Returns:
-            A description of the structure. If :attr:`Describer.return_parts`
-            is ``False``, the description will be returned as a :obj:`str`. If
-            it is equal to ``True``, the description will be returned as a
-            :obj:`dict` with the keys 'mineral', 'component_makeup' and
-            'components', each containing the relevant part of the description.
+            A description of the structure. If
+            :attr:`StructureDescriber.return_parts` is ``False``, the
+            description will be returned as a :obj:`str`. If it is equal to
+            ``True``, the description will be returned as a :obj:`dict` with the
+            keys 'mineral', 'component_makeup' and 'components', each containing
+            the relevant part of the description.
         """
         self._da = DescriptionAdapter(condensed_structure)
         self._seen_bonds = set()
@@ -188,7 +189,6 @@ class Describer(object):
 
                 comp_desc = "{} {} {}".format(s_count, formula, shape)
 
-                print(component_group.dimensionality)
                 if component_group.dimensionality in [1, 2]:
                     orientations = list(set(c.orientation for c in
                                             component_group.components))
@@ -485,8 +485,8 @@ class Describer(object):
 
         Returns:
             A description of the bond lengths or an empty string if
-            :attr:`Describer.only_describe_bonds_once` is ``True`` and all
-            all bond lengths have already been described.
+            :attr:`StructureDescriber.only_describe_bonds_once` is ``True`` and
+            all all bond lengths have already been described.
         """
         if self.only_describe_bonds_once:
             to_sites = self._filter_seen_bonds(from_site, to_sites)

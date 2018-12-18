@@ -1,0 +1,33 @@
+.. include:: ../../README.rst
+
+
+Changelog, contributors, license
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   changelog
+   contributors
+
+
+Code documentation
+------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   Python API <modules>
+
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   contributing
+   license
+

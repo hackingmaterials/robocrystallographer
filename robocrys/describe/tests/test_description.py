@@ -1,4 +1,4 @@
-from robocrys import Describer
+from robocrys import StructureDescriber
 from robocrys.util import RobocrysTest
 
 
@@ -12,11 +12,11 @@ class TestDescriptionMethods(RobocrysTest):
     def test_describe(self):
         """Broad tests to check the right information is in the description."""
         # test general
-        d = Describer(describe_oxidation_states=True,
-                      describe_symmetry_labels=True,
-                      return_parts=False,
-                      bond_length_decimal_places=2,
-                      latexify=False)
+        d = StructureDescriber(describe_oxidation_states=True,
+                               describe_symmetry_labels=True,
+                               return_parts=False,
+                               bond_length_decimal_places=2,
+                               latexify=False)
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Rutile" in description)
         self.assertTrue("SnO2" in description)
@@ -31,32 +31,32 @@ class TestDescriptionMethods(RobocrysTest):
         self.assertTrue("2.09" in description)
 
         # test different settings
-        d = Describer(describe_oxidation_states=False,
-                      describe_symmetry_labels=True,
-                      return_parts=False,
-                      bond_length_decimal_places=4,
-                      latexify=False)
+        d = StructureDescriber(describe_oxidation_states=False,
+                               describe_symmetry_labels=True,
+                               return_parts=False,
+                               bond_length_decimal_places=4,
+                               latexify=False)
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Sn(1)" in description)
         self.assertTrue("Sn(1)–O(1)" in description)
         self.assertTrue("2.0922" in description)
 
         # test different settings
-        d = Describer(describe_oxidation_states=True,
-                      describe_symmetry_labels=False,
-                      return_parts=False,
-                      bond_length_decimal_places=2,
-                      latexify=True)
+        d = StructureDescriber(describe_oxidation_states=True,
+                               describe_symmetry_labels=False,
+                               return_parts=False,
+                               bond_length_decimal_places=2,
+                               latexify=True)
         description = d.describe(self.tin_dioxide)
         self.assertTrue(r"Sn^{4+}" in description)
         self.assertTrue("Sn–O" in description)
 
         # test return parts
-        d = Describer(describe_oxidation_states=True,
-                      describe_symmetry_labels=True,
-                      return_parts=True,
-                      bond_length_decimal_places=2,
-                      latexify=False)
+        d = StructureDescriber(describe_oxidation_states=True,
+                               describe_symmetry_labels=True,
+                               return_parts=True,
+                               bond_length_decimal_places=2,
+                               latexify=False)
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Rutile" in description['mineral'])
         self.assertTrue("SnO2" in description['mineral'])
@@ -73,7 +73,7 @@ class TestDescriptionMethods(RobocrysTest):
 
     def test_grammar_and_punctuation(self):
         """Check common grammatical errors are not present"""
-        d = Describer()
+        d = StructureDescriber()
         description = d.describe(self.tin_dioxide)
         self.assertTrue(".." not in description)
         self.assertTrue("  " not in description)

@@ -1,0 +1,430 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.condense.structure &#8212; Robocrystallographer 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for robocrys.condense.structure</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines a class for condensing structures into dict representations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.dimensionality</span> <span class="k">import</span> <span class="n">get_structure_components</span>
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.local_env</span> <span class="k">import</span> <span class="n">NearNeighbors</span><span class="p">,</span> <span class="n">CrystalNN</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="k">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="k">import</span> <span class="n">SpacegroupAnalyzer</span>
+
+<span class="kn">from</span> <span class="nn">robocrys</span> <span class="k">import</span> <span class="n">common_formulas</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.component</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_sym_inequiv_components</span><span class="p">,</span>
+                                         <span class="n">get_reconstructed_structure</span><span class="p">,</span>
+                                         <span class="n">get_formula_from_components</span><span class="p">,</span>
+                                         <span class="n">get_component_formula</span><span class="p">,</span>
+                                         <span class="n">components_are_vdw_heterostructure</span><span class="p">,</span>
+                                         <span class="n">get_vdw_heterostructure_information</span><span class="p">,</span>
+                                         <span class="n">get_structure_inequiv_components</span><span class="p">,</span>
+                                         <span class="n">Component</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.mineral</span> <span class="k">import</span> <span class="n">MineralMatcher</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.molecule</span> <span class="k">import</span> <span class="n">MoleculeNamer</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.site</span> <span class="k">import</span> <span class="n">SiteAnalyzer</span>
+
+
+<div class="viewcode-block" id="StructureCondenser"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.structure.StructureCondenser">[docs]</a><span class="k">class</span> <span class="nc">StructureCondenser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to transform a structure into an intermediate dict representation.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        use_conventional_cell: Whether to always use the convention cell</span>
+<span class="sd">            representation of the structure.</span>
+<span class="sd">        near_neighbors: A ``NearNeighbors`` instance used to calculate the</span>
+<span class="sd">            bonding in the structure. For example, one of</span>
+<span class="sd">            :class:`pymatgen.analysis.local_env.CrystalNN`,</span>
+<span class="sd">            :class:`pymatgen.analysis.local_env.VoronoiNN`, etc. Defaults to</span>
+<span class="sd">            ``None``, in which case</span>
+<span class="sd">            :class:`pymatgen.analysis.local_env.CrystalNN` will be used.</span>
+<span class="sd">        mineral_matcher: A ``MineralMatcher`` instance. Defaults to ``None``</span>
+<span class="sd">            in which case the default ``MineralMatcher`` settings will be used.</span>
+<span class="sd">        use_symmetry: Whether to use symmetry to determine if structure</span>
+<span class="sd">            compoents and sites are equivalent. If ``False``, the site geometry</span>
+<span class="sd">            and bonding graph information will be used.</span>
+<span class="sd">        symprec: The tolerance used when determining the symmetry of</span>
+<span class="sd">            the structure. The symmetry is used to determine if multiple</span>
+<span class="sd">            sites are symmetrically equivalent. If ``use_symmetry=False`` this</span>
+<span class="sd">            option will be ignored.</span>
+<span class="sd">        use_iupac_formula (bool, optional): Whether to order formulas</span>
+<span class="sd">            by the iupac &quot;electronegativity&quot; series, defined in</span>
+<span class="sd">            Table VI of &quot;Nomenclature of Inorganic Chemistry (IUPAC</span>
+<span class="sd">            Recommendations 2005)&quot;. This ordering effectively follows</span>
+<span class="sd">            the groups and rows of the periodic table, except the</span>
+<span class="sd">            Lanthanides, Actanides and hydrogen. If set to ``False``, the</span>
+<span class="sd">            elements will be ordered according to the electronegativity values.</span>
+<span class="sd">        use_common_formulas: Whether to use the database of common formulas.</span>
+<span class="sd">            The common formula will be used preferentially to the iupac or</span>
+<span class="sd">            reduced formula.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">use_conventional_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">near_neighbors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NearNeighbors</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mineral_matcher</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MineralMatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">use_symmetry</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">symprec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                 <span class="n">simplify_molecules</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">near_neighbors</span><span class="p">:</span>
+            <span class="n">near_neighbors</span> <span class="o">=</span> <span class="n">CrystalNN</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mineral_matcher</span><span class="p">:</span>
+            <span class="n">mineral_matcher</span> <span class="o">=</span> <span class="n">MineralMatcher</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_conventional_cell</span> <span class="o">=</span> <span class="n">use_conventional_cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">near_neighbors</span> <span class="o">=</span> <span class="n">near_neighbors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mineral_matcher</span> <span class="o">=</span> <span class="n">mineral_matcher</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_symmetry</span> <span class="o">=</span> <span class="n">use_symmetry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">symprec</span> <span class="o">=</span> <span class="n">symprec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simplify_molecules</span> <span class="o">=</span> <span class="n">simplify_molecules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_common_formulas</span> <span class="o">=</span> <span class="n">use_common_formulas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_formula</span> <span class="o">=</span> <span class="n">use_iupac_formula</span>
+
+<div class="viewcode-block" id="StructureCondenser.condense_structure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.structure.StructureCondenser.condense_structure">[docs]</a>    <span class="k">def</span> <span class="nf">condense_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Condenses the structure into an intermediate dict representation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure: A pymatgen structure object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The condensed structure information. The data is formatted as a</span>
+<span class="sd">            :obj:`dict` with a fixed set of keys. For example, the condensed</span>
+<span class="sd">            representation of MoS2 is shown below::</span>
+
+<span class="sd">                {&#39;mineral&#39;: {&#39;type&#39;: &#39;Molybdenite&#39;,</span>
+<span class="sd">                             &#39;distance&#39;: -1,</span>
+<span class="sd">                             &#39;n_species_type_match&#39;: True,</span>
+<span class="sd">                             &#39;simplified&#39;: False},</span>
+<span class="sd">                 &#39;formula&#39;: &#39;MoS2&#39;,</span>
+<span class="sd">                 &#39;spg_symbol&#39;: &#39;P6_3/mmc&#39;,</span>
+<span class="sd">                 &#39;crystal_system&#39;: &#39;hexagonal&#39;,</span>
+<span class="sd">                 &#39;dimensionality&#39;: 2,</span>
+<span class="sd">                 &#39;sites&#39;: {0: {&#39;element&#39;: &#39;Mo4+&#39;,</span>
+<span class="sd">                               &#39;geometry&#39;: {&#39;likeness&#39;: 0.5566,</span>
+<span class="sd">                                            &#39;type&#39;: &#39;pentagonal pyramidal&#39;},</span>
+<span class="sd">                               &#39;nn&#39;: [2, 2, 2, 2, 2, 2],</span>
+<span class="sd">                               &#39;nnn&#39;: {&#39;edge&#39;: [0, 0, 0, 0, 0, 0]},</span>
+<span class="sd">                               &#39;poly_formula&#39;: &#39;S6&#39;,</span>
+<span class="sd">                               &#39;sym_labels&#39;: (1,)},</span>
+<span class="sd">                           2: {&#39;element&#39;: &#39;S2-&#39;,</span>
+<span class="sd">                               &#39;geometry&#39;: {&#39;likeness&#39;: 0.8888,</span>
+<span class="sd">                                   &#39;type&#39;: &#39;3-coordinate&#39;},</span>
+<span class="sd">                               &#39;nn&#39;: [0, 0, 0],</span>
+<span class="sd">                               &#39;nnn&#39;: {&#39;corner&#39;: [2, 2, 2, ...],</span>
+<span class="sd">                                       &#39;face&#39;: [2]},</span>
+<span class="sd">                               &#39;poly_formula&#39;: None,</span>
+<span class="sd">                               &#39;sym_labels&#39;: (1,)}},</span>
+<span class="sd">                 &#39;distances&#39;: {0: {2: [2.42, 2.42, 2.42, ...]},</span>
+<span class="sd">                               2: {0: [2.42, 2.42, 2.42]}},</span>
+<span class="sd">                 &#39;angles&#39;: {0: {0: {&#39;edge&#39;: [82.60, 82.60, 82.60, ...]}},</span>
+<span class="sd">                            2: {2: {&#39;corner&#39;: [135.20, 82.60, 135.20, ...],</span>
+<span class="sd">                                    &#39;face&#39;: [80.70, 80.70, 80.70]}}},</span>
+<span class="sd">                 &#39;components&#39;: {0: {&#39;formula&#39;:</span>
+<span class="sd">                                    &#39;MoS2&#39;,</span>
+<span class="sd">                                    &#39;sites&#39;: [0, 2]</span>
+<span class="sd">                                    &#39;dimensionality&#39;: 2,</span>
+<span class="sd">                                    &#39;molecule_name&#39;: None,</span>
+<span class="sd">                                    &#39;orientation&#39;: (0, 0, 1)}},</span>
+<span class="sd">                 &#39;component_makeup&#39;: [0, 0],</span>
+<span class="sd">                 &#39;vdw_heterostructure_info&#39;: {&#39;intercalant_formulas&#39;: [],</span>
+<span class="sd">                                              &#39;num_repetitions&#39;: 2,</span>
+<span class="sd">                                              &#39;repeating_unit&#39;: [&#39;MoS2&#39;]}}</span>
+
+<span class="sd">            For more information on the ``mineral`` key, see</span>
+<span class="sd">            :meth:`StructureCondenser._condense_mineral`. For more information</span>
+<span class="sd">            on the ``site`` key see :meth:`SiteAnalyzer.get_all_site_summaries`.</span>
+<span class="sd">            For more information on the ``distance`` and ``angles`` keys, see</span>
+<span class="sd">            :meth:`SiteAnalyzer.get_all_bond_distance_summaries` and</span>
+<span class="sd">            :meth:`SiteAnalyzer.get_all_connectivity_angle_summaries`. For more</span>
+<span class="sd">            information on the ``components`` and ``components_makeup`` keys,</span>
+<span class="sd">            see :meth:`StructureCondenser._condense_components`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># sort so we can give proper symmetry labels</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">get_sorted_structure</span><span class="p">()</span>
+
+        <span class="c1"># wrap all site coords into unit cell</span>
+        <span class="n">structure</span><span class="o">.</span><span class="n">translate_sites</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">structure</span><span class="o">.</span><span class="n">num_sites</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">sga</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symprec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_conventional_cell</span><span class="p">:</span>
+            <span class="n">structure</span> <span class="o">=</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_conventional_standard_structure</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">structure</span> <span class="o">=</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_symmetrized_structure</span><span class="p">()</span>
+
+        <span class="n">bonded_structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">near_neighbors</span><span class="o">.</span><span class="n">get_bonded_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+
+        <span class="n">components</span> <span class="o">=</span> <span class="n">get_structure_components</span><span class="p">(</span>
+            <span class="n">bonded_structure</span><span class="p">,</span> <span class="n">inc_orientation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inc_site_ids</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">inc_molecule_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">dimensionality</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span><span class="p">)</span>
+        <span class="n">mineral</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condense_mineral</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condense_formula</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span>
+
+        <span class="n">structure_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;formula&#39;</span><span class="p">:</span> <span class="n">formula</span><span class="p">,</span>
+            <span class="s1">&#39;spg_symbol&#39;</span><span class="p">:</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_space_group_symbol</span><span class="p">(),</span>
+            <span class="s1">&#39;crystal_system&#39;</span><span class="p">:</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_crystal_system</span><span class="p">(),</span>
+            <span class="s1">&#39;mineral&#39;</span><span class="p">:</span> <span class="n">mineral</span><span class="p">,</span>
+            <span class="s1">&#39;dimensionality&#39;</span><span class="p">:</span> <span class="n">dimensionality</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">site_analyzer</span> <span class="o">=</span> <span class="n">SiteAnalyzer</span><span class="p">(</span>
+            <span class="n">bonded_structure</span><span class="p">,</span> <span class="n">use_symmetry_equivalent_sites</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_symmetry</span><span class="p">,</span>
+            <span class="n">symprec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">symprec</span><span class="p">)</span>
+        <span class="n">structure_data</span><span class="p">[</span><span class="s1">&#39;sites&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site_analyzer</span><span class="o">.</span><span class="n">get_all_site_summaries</span><span class="p">()</span>
+        <span class="n">structure_data</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site_analyzer</span><span class="o">.</span> \
+            <span class="n">get_all_bond_distance_summaries</span><span class="p">()</span>
+        <span class="n">structure_data</span><span class="p">[</span><span class="s1">&#39;angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site_analyzer</span><span class="o">.</span> \
+            <span class="n">get_all_connectivity_angle_summaries</span><span class="p">()</span>
+
+        <span class="n">component_summary</span><span class="p">,</span> <span class="n">component_makeup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condense_components</span><span class="p">(</span>
+            <span class="n">components</span><span class="p">,</span> <span class="n">sga</span><span class="p">,</span> <span class="n">site_analyzer</span><span class="p">)</span>
+        <span class="n">structure_data</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component_summary</span>
+        <span class="n">structure_data</span><span class="p">[</span><span class="s1">&#39;component_makeup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component_makeup</span>
+
+        <span class="k">if</span> <span class="n">components_are_vdw_heterostructure</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+            <span class="n">hs_info</span> <span class="o">=</span> <span class="n">get_vdw_heterostructure_information</span><span class="p">(</span>
+                <span class="n">components</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_formula</span><span class="p">,</span>
+                <span class="n">use_common_formulas</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_common_formulas</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hs_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">structure_data</span><span class="p">[</span><span class="s1">&#39;vdw_heterostructure_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hs_info</span>
+
+        <span class="k">return</span> <span class="n">structure_data</span></div>
+
+    <span class="k">def</span> <span class="nf">_condense_mineral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+                          <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Condenses the mineral data.</span>
+
+<span class="sd">        Initially the original structure will be matched against a library</span>
+<span class="sd">        of known minerals. If no match is found, the structure will be</span>
+<span class="sd">        reconstructed, with all zero-dimensional components replaced by single</span>
+<span class="sd">        atoms at their centre of mass, and the matching performed again.</span>
+<span class="sd">        This allows for matching of systems with molecular substituents in</span>
+<span class="sd">        known mineral prototypes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure: A pymatgen structure object.</span>
+<span class="sd">            components: A list of structure components, generated using</span>
+<span class="sd">                :obj:`pymatgen.analysis.dimensionality.get_structure_components`</span>
+<span class="sd">                with ``inc_molecule_graph=True``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The mineral information as a :obj:`dict`, formatted as::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    &#39;type&#39;: mineral (str),</span>
+<span class="sd">                    &#39;distance&#39;: distance (float),</span>
+<span class="sd">                    &#39;n_species_type_match&#39;: match (bool),</span>
+<span class="sd">                    &#39;simplified&#39;: simplified (bool</span>
+<span class="sd">                }</span>
+
+<span class="sd">            The  ``type``, ``distance``, and ``n_species_types_match`` keys</span>
+<span class="sd">            correspond to the mineral name (e.g. Perovskite), the fingerprint</span>
+<span class="sd">            distance between the prototype and known mineral, and whether the</span>
+<span class="sd">            number of species types in the structure matches the number in the</span>
+<span class="sd">            known prototype. If no mineral match is determined, the mineral type</span>
+<span class="sd">            will be ``None``. If an exact mineral match is found the distance</span>
+<span class="sd">            will be set to ``-1``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mineral</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mineral_matcher</span><span class="o">.</span><span class="n">get_best_mineral_name</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mineral</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+            <span class="n">mineral_structure</span> <span class="o">=</span> <span class="n">get_reconstructed_structure</span><span class="p">(</span>
+                <span class="n">components</span><span class="p">,</span> <span class="n">simplify_molecules</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simplify_molecules</span><span class="p">)</span>
+            <span class="n">mineral</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mineral_matcher</span><span class="o">.</span><span class="n">get_best_mineral_name</span><span class="p">(</span>
+                <span class="n">mineral_structure</span><span class="p">)</span>
+            <span class="n">mineral</span><span class="p">[</span><span class="s1">&#39;simplified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mineral</span><span class="p">[</span><span class="s1">&#39;simplified&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">mineral</span>
+
+    <span class="k">def</span> <span class="nf">_condense_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
+                          <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Condenses the structure formula.</span>
+
+<span class="sd">        If :attr:`StructureCondenser.use_common_formulas` is ``True`` and the</span>
+<span class="sd">        formula is found in a database of 100,000 known formulas we</span>
+<span class="sd">        preferentially use the known formula, otherwise we reconstruct the</span>
+<span class="sd">        formula from the structure components.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure: A pymatgen structure object.</span>
+<span class="sd">            components: A list of structure components, generated using</span>
+<span class="sd">                :obj:`pymatgen.analysis.dimensionality.get_structure_components`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The chemical formula.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reduced_formula</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">reduced_formula</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_common_formulas</span> <span class="ow">and</span> <span class="n">reduced_formula</span> <span class="ow">in</span> <span class="n">common_formulas</span><span class="p">:</span>
+            <span class="n">formula</span> <span class="o">=</span> <span class="n">common_formulas</span><span class="p">[</span><span class="n">reduced_formula</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span>
+                <span class="n">components</span><span class="p">,</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_common_formulas</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formula</span>
+
+    <span class="k">def</span> <span class="nf">_condense_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                             <span class="n">spacegroup_analyzer</span><span class="p">:</span> <span class="n">SpacegroupAnalyzer</span><span class="p">,</span>
+                             <span class="n">site_analyzer</span><span class="p">:</span> <span class="n">SiteAnalyzer</span>
+                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Condenses the component data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            components: A list of structure components, generated using</span>
+<span class="sd">                :obj:`pymatgen.analysis.dimensionality.get_structure_components`</span>
+<span class="sd">            site_analyzer: A site analyzer object for the structure containing</span>
+<span class="sd">                the components.</span>
+<span class="sd">            spacegroup_analyzer: A space group analyzer object for the structure</span>
+<span class="sd">                containing the components.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The condensed component data and the component makeup of the</span>
+<span class="sd">            structure. The condensed components have the form::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    0: {</span>
+<span class="sd">                        &#39;formula&#39;: &#39;MoS2&#39;,</span>
+<span class="sd">                        &#39;sites&#39;: [0, 2]</span>
+<span class="sd">                        &#39;dimensionality&#39;: 2,</span>
+<span class="sd">                        &#39;molecule_name&#39;: None,</span>
+<span class="sd">                        &#39;orientation&#39;: (0, 0, 1)</span>
+<span class="sd">                    }</span>
+<span class="sd">                }</span>
+
+<span class="sd">            Where the ``0`` key is the component identifier. The ``sites``</span>
+<span class="sd">            key gives a :obj:`list` of the indexes of the inequivalent sites</span>
+<span class="sd">            in the structure. If the component is zero-dimensional and</span>
+<span class="sd">            is a known molecule, the ``molecule_name`` key will be a :obj:`str`</span>
+<span class="sd">            with the molecule name. The ``orientation`` key is the miller</span>
+<span class="sd">            index (for two-dimensional components) or direction of propagation</span>
+<span class="sd">            (for one-dimensional components).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_symmetry</span><span class="p">:</span>
+            <span class="n">inequiv_components</span> <span class="o">=</span> <span class="n">get_sym_inequiv_components</span><span class="p">(</span>
+                <span class="n">components</span><span class="p">,</span> <span class="n">spacegroup_analyzer</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inequiv_components</span> <span class="o">=</span> <span class="n">get_structure_inequiv_components</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+        <span class="n">molecule_namer</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="p">()</span>
+
+        <span class="n">components</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">component_makeup</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inequiv_components</span><span class="p">):</span>
+            <span class="n">formula</span> <span class="o">=</span> <span class="n">get_component_formula</span><span class="p">(</span>
+                <span class="n">component</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_formula</span><span class="p">,</span>
+                <span class="n">use_common_formulas</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_common_formulas</span><span class="p">)</span>
+
+            <span class="n">sites</span> <span class="o">=</span> <span class="n">site_analyzer</span><span class="o">.</span><span class="n">get_inequivalent_site_indices</span><span class="p">(</span>
+                <span class="n">component</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">molecule_name</span> <span class="o">=</span> <span class="n">molecule_namer</span><span class="o">.</span><span class="n">get_name_from_molecule_graph</span><span class="p">(</span>
+                    <span class="n">component</span><span class="p">[</span><span class="s1">&#39;molecule_graph&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">molecule_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;formula&#39;</span><span class="p">:</span> <span class="n">formula</span><span class="p">,</span>
+                             <span class="s1">&#39;dimensionality&#39;</span><span class="p">:</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">],</span>
+                             <span class="s1">&#39;molecule_name&#39;</span><span class="p">:</span> <span class="n">molecule_name</span><span class="p">,</span>
+                             <span class="s1">&#39;sites&#39;</span><span class="p">:</span> <span class="n">sites</span><span class="p">}</span>
+            <span class="n">component_makeup</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">components</span><span class="p">,</span> <span class="n">component_makeup</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+
+  </body>
+</html>

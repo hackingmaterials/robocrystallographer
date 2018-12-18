@@ -1,0 +1,138 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.condense.tests.test_molecule &#8212; Robocrystallographer 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for robocrys.condense.tests.test_molecule</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.dimensionality</span> <span class="k">import</span> <span class="n">get_structure_components</span>
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.local_env</span> <span class="k">import</span> <span class="n">CrystalNN</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.component</span> <span class="k">import</span> <span class="n">filter_molecular_components</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.molecule</span> <span class="k">import</span> <span class="n">MoleculeNamer</span>
+<span class="kn">from</span> <span class="nn">robocrys.util</span> <span class="k">import</span> <span class="n">RobocrysTest</span>
+
+<span class="n">test_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="TestMoleculeMatcher"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_molecule.TestMoleculeMatcher">[docs]</a><span class="k">class</span> <span class="nc">TestMoleculeMatcher</span><span class="p">(</span><span class="n">RobocrysTest</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to test component related functions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestMoleculeMatcher.setUp"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_molecule.TestMoleculeMatcher.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cnn</span> <span class="o">=</span> <span class="n">CrystalNN</span><span class="p">()</span>
+
+        <span class="n">mapi</span> <span class="o">=</span> <span class="n">cnn</span><span class="o">.</span><span class="n">get_bonded_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;mapi&quot;</span><span class="p">))</span>
+        <span class="n">mapi_components</span> <span class="o">=</span> <span class="n">get_structure_components</span><span class="p">(</span><span class="n">mapi</span><span class="p">,</span>
+                                                   <span class="n">inc_molecule_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">mol_components</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">filter_molecular_components</span><span class="p">(</span><span class="n">mapi_components</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">methylammonium</span> <span class="o">=</span> <span class="n">mol_components</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;molecule_graph&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TestMoleculeMatcher.test_init"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_molecule.TestMoleculeMatcher.test_init">[docs]</a>    <span class="k">def</span> <span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test initialising MoleculeNamer.&quot;&quot;&quot;</span>
+        <span class="n">mn</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">mn</span><span class="p">)</span>
+
+        <span class="n">mn</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="p">(</span><span class="n">use_online_pubchem</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">mn</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestMoleculeMatcher.test_molecule_graph_to_smiles"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_molecule.TestMoleculeMatcher.test_molecule_graph_to_smiles">[docs]</a>    <span class="k">def</span> <span class="nf">test_molecule_graph_to_smiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test converting a molecule graph to SMILES string.&quot;&quot;&quot;</span>
+        <span class="n">smiles</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="o">.</span><span class="n">molecule_graph_to_smiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">methylammonium</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="s2">&quot;C[NH3]&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestMoleculeMatcher.test_get_name_from_pubchem"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_molecule.TestMoleculeMatcher.test_get_name_from_pubchem">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_name_from_pubchem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test downloading the molecule name from Pubchem.&quot;&quot;&quot;</span>
+        <span class="n">mn</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">mn</span><span class="o">.</span><span class="n">get_name_from_pubchem</span><span class="p">(</span><span class="s2">&quot;C[NH3]&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;methylammonium&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestMoleculeMatcher.test_get_name_from_molecule_graph"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_molecule.TestMoleculeMatcher.test_get_name_from_molecule_graph">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_name_from_molecule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test getting a molecule name from the molecule graph.&quot;&quot;&quot;</span>
+        <span class="n">mn</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">mn</span><span class="o">.</span><span class="n">get_name_from_molecule_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">methylammonium</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;methylammonium&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test iupac naming source</span>
+        <span class="n">mn</span> <span class="o">=</span> <span class="n">MoleculeNamer</span><span class="p">(</span><span class="n">name_preference</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;iupac&quot;</span><span class="p">,))</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">mn</span><span class="o">.</span><span class="n">get_name_from_molecule_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">methylammonium</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;methylazanium&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+
+  </body>
+</html>

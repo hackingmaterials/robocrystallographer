@@ -9,7 +9,7 @@ import warnings
 from typing import Optional
 
 from pymatgen.core.structure import Structure
-from robocrys import StructureCondenser, Describer
+from robocrys import StructureCondenser, StructureDescriber
 
 __author__ = "Alex Ganose"
 __version__ = "0.1.0"
@@ -29,7 +29,7 @@ def robocrystallographer(structure: Structure,
         condenser_kwargs: Keyword arguments that will be passed to
             :obj:`robocrys.condense.StructureCondenser`.
         describer_kwargs: Keyword arguments that will be passed to
-            :obj:`robocrys.describe.Describer`.
+            :obj:`robocrys.describe.StructureDescriber`.
 
     Returns:
         The description.
@@ -38,7 +38,7 @@ def robocrystallographer(structure: Structure,
     describer_kwargs = describer_kwargs if describer_kwargs else {}
 
     sc = StructureCondenser(**condenser_kwargs)
-    describer = Describer(**describer_kwargs)
+    describer = StructureDescriber(**describer_kwargs)
 
     try:
         logging.info("Adding oxidation states...")

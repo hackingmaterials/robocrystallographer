@@ -32,7 +32,7 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(data['sites'][0]['element'], 'Sn4+')
         self.assertEqual(data['sites'][0]['geometry']['type'], 'octahedral')
         self.assertAlmostEqual(data['sites'][0]['geometry']['likeness'],
-                               0.9349776258427136)
+                               0.9349817375244279)
         self.assertEqual(len(data['sites'][0]['nn']), 6)
         self.assertEqual(len(data['sites'][0]['nnn']['corner']), 8)
         self.assertEqual(len(data['sites'][0]['nnn']['edge']), 2)
@@ -72,7 +72,7 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(data['sites'][0]['element'], 'Sn4+')
         self.assertEqual(data['sites'][0]['geometry']['type'], 'octahedral')
         self.assertAlmostEqual(data['sites'][0]['geometry']['likeness'],
-                               0.9349776258427136)
+                               0.9349817375244279)
         self.assertEqual(len(data['sites'][0]['nn']), 6)
         self.assertEqual(len(data['sites'][0]['nnn']['corner']), 8)
         self.assertEqual(len(data['sites'][0]['nnn']['edge']), 2)

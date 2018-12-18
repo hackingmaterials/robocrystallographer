@@ -1,0 +1,201 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.condense.fingerprint &#8212; Robocrystallographer 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for robocrys.condense.fingerprint</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matminer.featurizers.site</span> <span class="k">import</span> <span class="n">CrystalNNFingerprint</span>
+<span class="kn">from</span> <span class="nn">matminer.featurizers.structure</span> <span class="k">import</span> <span class="n">SiteStatsFingerprint</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="k">import</span> <span class="n">IStructure</span>
+
+
+<div class="viewcode-block" id="get_site_fingerprints"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_site_fingerprints">[docs]</a><span class="k">def</span> <span class="nf">get_site_fingerprints</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
+                          <span class="n">as_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;CrystalNNFingerprint_ops&#39;</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the fingerprint for all sites in a structure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure: A structure.</span>
+<span class="sd">        as_dict: Whether to return the fingerprints as a dictionary of</span>
+<span class="sd">            ``{&#39;op&#39;: val}``. Defaults to ``True``.</span>
+<span class="sd">        preset: The preset to use when calculating the fingerprint. See</span>
+<span class="sd">            :class:`matminer.featurizers.structure.SiteStatsFingerprint``</span>
+<span class="sd">            for more details.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The fingerprint for all sites in the structure. If ``as_dict == True``,</span>
+<span class="sd">        the data will be returned as a :obj:`list` of :obj:`dict` containing the</span>
+<span class="sd">        order parameters as::</span>
+
+<span class="sd">            [{&#39;op&#39;: val}]</span>
+
+<span class="sd">        for each site. If ``as_dict == False``, the data will be returned as a</span>
+<span class="sd">        :class:`numoy.ndarray` containing the fingerprint for each site as::</span>
+
+<span class="sd">            [site_index][op_index]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ssf</span> <span class="o">=</span> <span class="n">SiteStatsFingerprint</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="n">preset</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># transpose fingerprint from [op_type][site] to [site][op_type]</span>
+    <span class="n">site_fingerprints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ssf</span><span class="o">.</span><span class="n">featurize</span><span class="p">(</span><span class="n">structure</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">if</span> <span class="n">as_dict</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">ssf</span><span class="o">.</span><span class="n">feature_labels</span><span class="p">()</span>
+        <span class="n">site_fingerprints</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">site_fingerprints</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">site_fingerprints</span></div>
+
+
+<div class="viewcode-block" id="get_structure_fingerprint"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_structure_fingerprint">[docs]</a><span class="k">def</span> <span class="nf">get_structure_fingerprint</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
+                              <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;CrystalNNFingerprint_ops&#39;</span><span class="p">,</span>
+                              <span class="n">stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std_dev&#39;</span><span class="p">),</span>
+                              <span class="n">use_distance_cutoffs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the fingerprint for a structure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure: A structure.</span>
+<span class="sd">        preset: The preset to use when calculating the fingerprint. See</span>
+<span class="sd">            :class:`matminer.featurizers.structure.SiteStatsFingerprint``</span>
+<span class="sd">            for more details.</span>
+<span class="sd">        stats: The stats to include in fingerprint. See</span>
+<span class="sd">            :class:`matminer.featurizers.structure.SiteStatsFingerprint``</span>
+<span class="sd">            for more details.</span>
+<span class="sd">        use_distance_cutoffs: Whether to use distance cutoffs when calculating</span>
+<span class="sd">            the structure fingerprint.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The structure fingerprint as a :class:`numpy.ndarray`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Add distance_cutoff option to matminer so we can user preset arg</span>
+    <span class="c1"># currently don&#39;t use SiteStatsFingerprint.from_preset as we need to pass in</span>
+    <span class="c1"># distance_cutoffs param</span>
+    <span class="k">if</span> <span class="n">use_distance_cutoffs</span><span class="p">:</span>
+        <span class="n">ssf</span> <span class="o">=</span> <span class="n">SiteStatsFingerprint</span><span class="p">(</span>
+            <span class="n">CrystalNNFingerprint</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="n">cation_anion</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ssf</span> <span class="o">=</span> <span class="n">SiteStatsFingerprint</span><span class="p">(</span>
+            <span class="n">CrystalNNFingerprint</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="n">cation_anion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                             <span class="n">distance_cutoffs</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ssf</span><span class="o">.</span><span class="n">featurize</span><span class="p">(</span><span class="n">structure</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_fingerprint_distance"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_fingerprint_distance">[docs]</a><span class="k">def</span> <span class="nf">get_fingerprint_distance</span><span class="p">(</span><span class="n">structure_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
+                             <span class="n">structure_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span>
+                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the euclidean distance between the fingerprints of two structures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_a: The first structure or fingerprint. Can be provided as a</span>
+<span class="sd">            structure or a fingerprint. If provided as a structure, the</span>
+<span class="sd">            fingerprint will be calculated first, so generally it is quicker</span>
+<span class="sd">            to pre-calculate the fingerprint if comparing against multiple</span>
+<span class="sd">            structures in turn.</span>
+<span class="sd">        structure_b: The second structure or fingerprint. Can be provided as a</span>
+<span class="sd">            structure or a fingerprint. If provided as a structure, the</span>
+<span class="sd">            fingerprint will be calculated first, so generally it is quicker</span>
+<span class="sd">            to pre-calculate the fingerprint if comparing against multiple</span>
+<span class="sd">            structures in turn.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The euclidean distance between fingerprints as a :class:`numpy.ndarray`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">structure_a</span><span class="p">),</span> <span class="n">IStructure</span><span class="p">):</span>
+        <span class="n">fingerprint_a</span> <span class="o">=</span> <span class="n">get_structure_fingerprint</span><span class="p">(</span><span class="n">structure_a</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fingerprint_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">structure_a</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">structure_b</span><span class="p">),</span> <span class="n">IStructure</span><span class="p">):</span>
+        <span class="n">fingerprint_b</span> <span class="o">=</span> <span class="n">get_structure_fingerprint</span><span class="p">(</span><span class="n">structure_b</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fingerprint_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">structure_b</span><span class="p">)</span>
+
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">fingerprint_a</span> <span class="o">-</span> <span class="n">fingerprint_b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dist</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+
+  </body>
+</html>
