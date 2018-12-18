@@ -217,8 +217,9 @@ class Describer(object):
                     if group_count == component_count:
                         s_filler = "the" if group_count == 1 else "each"
                     else:
-                        s_filler = "{} of the".format(component_count)
-                        shape = en.plural(shape, component_count)
+                        s_filler = "{} of the".format(
+                            en.number_to_words(component_count))
+                        shape = en.plural(shape)
 
                     desc = "In {} {} {}, ".format(s_filler, formula, shape)
                     desc += self._get_component_description(component.index)

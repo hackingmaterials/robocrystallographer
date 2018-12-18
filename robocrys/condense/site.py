@@ -73,7 +73,7 @@ class SiteAnalyzer(object):
                                  symprec=symprec)
         equivalent_sites = sga.get_symmetry_dataset()['equivalent_atoms']
         if use_symmetry_equivalent_sites:
-            self.equivalent_sites = equivalent_sites
+            self.equivalent_sites = equivalent_sites.tolist()
         else:
             self.equivalent_sites = self._calculate_equivalent_sites()
 

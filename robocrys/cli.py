@@ -52,7 +52,6 @@ def robocrystallographer(structure: Structure,
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
     logging.info(description)
-
     return description
 
 
