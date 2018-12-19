@@ -4,6 +4,12 @@ Change Log
 [Unreleased]
 ------------
 
+v0.1.3
+------
+
+Fix Pypi installation.
+
+
 v0.1.2
 ------
 
