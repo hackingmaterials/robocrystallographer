@@ -26,9 +26,9 @@ robocrys mp-856
 ```
 
 Alternatively, a structure file can be specified in place of a Materials Project id.
-Robocrystallographer supports the same file formats as [pymatgen](http://pymatgen.org), including
-the Crystallographic Information Format (CIF), and common electronic structure
-package formats such POSCAR files.
+Robocrystallographer supports the same file formats as 
+[pymatgen](http://pymatgen.org), including the Crystallographic Information 
+Format (CIF), and common electronic structure package formats such POSCAR files.
 
 ### Python interface
 
