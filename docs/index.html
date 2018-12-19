@@ -13,7 +13,6 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Change Log" href="changelog.html" />
@@ -44,8 +43,9 @@
             
   <div class="section" id="robocrystallographer">
 <h1>Robocrystallographer<a class="headerlink" href="#robocrystallographer" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://badge.fury.io/py/robocrys"><img alt="Pypi Repository" src="https://badge.fury.io/py/robocrys.svg" /></a>
-<a class="reference external image-reference" href="https://travis-ci.org/hackingmaterials/robocrystallographer"><img alt="Build Status" src="https://travis-ci.org/hackingmaterials/robocrystallographer.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://travis-ci.org/hackingmaterials/robocrystallographer"><img alt="Pypi Repository" src="https://badge.fury.io/py/robocrys.svg" /></a>
+<a class="reference external image-reference" href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/47f851408d364efa9a8cdf0ed844cd8b" /></a>
+<a class="reference external image-reference" href="https://circleci.com/gh/hackingmaterials/robocrystallographer"><img alt="CircleCI" src="https://circleci.com/gh/hackingmaterials/robocrystallographer.svg?style=svg" /></a>
 <p>Robocrystallographer is a tool to generate text descriptions of crystal
 structures. Similar to how a real-life crystallographer would analyse a
 structure, robocrystallographer looks at the symmetry, local environment, and
@@ -56,16 +56,17 @@ heterostructure information, and more…</p>
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Robocrystallographer can be used from the command-line or from a python API.
 The package integrates with the <a class="reference external" href="https://materialsproject.org">Materials Project</a>
-to for allow generation of structure descriptions directly from materials project
-ids. For example, to generate the description of SnO <sub>2</sub> (<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>), one
+to for allow generation of structure descriptions directly from Materials Project
+ids. For example, to generate the description of SnO<span class="raw-html-m2r"><sub>2</sub></span>
+(<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>), one
 can simply run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>robocrys mp-856
 </pre></div>
 </div>
-<p>Alternatively, a structure file can be specified in place of an mp-id.
-Robocrystallographer supports the same file formats as <a class="reference external" href="http://pymatgen.org">pymatgen</a>, including
-the Crystallographic Information Format (CIF), and common electronic structure
-package formats such as POSCAR.</p>
+<p>Alternatively, a structure file can be specified in place of a Materials Project id.
+Robocrystallographer supports the same file formats as
+<a class="reference external" href="http://pymatgen.org">pymatgen</a>, including the Crystallographic Information
+Format (CIF), and common electronic structure package formats such POSCAR files.</p>
 <div class="section" id="python-interface">
 <h3>Python interface<a class="headerlink" href="#python-interface" title="Permalink to this headline">¶</a></h3>
 <p>The two core classes in robocrystallographer are:</p>
@@ -86,19 +87,21 @@ representation.</li>
 </div>
 <p>Where <code class="docutils literal notranslate"><span class="pre">structure</span></code> is a pymatgen Structure object. Both classes have many
 options for customising the output of the structure
-descriptions. More information is provided in the <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/">module documentation</a>.</p>
+descriptions. More information is provided in the
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/">module documentation</a>.</p>
 </div>
 <div class="section" id="intermediate-json-format">
 <h3>Intermediate JSON format<a class="headerlink" href="#intermediate-json-format" title="Permalink to this headline">¶</a></h3>
 <p>The format of the intermediate JSON representation is detailed on the
-<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/format.html">Condensed structure format page</a>.</p>
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/format.html">condensed structure format page</a>.</p>
 </div>
 <div class="section" id="example-output">
 <h3>Example output<a class="headerlink" href="#example-output" title="Permalink to this headline">¶</a></h3>
-<p>An example of the output generated by robocrystallographer for SnO <sub>2</sub>
-(<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>) is given below:</p>
-<a class="reference internal image-reference" href="https://hackingmaterials.github.io/robocrystallographer/_images/rutile.jpg"><img alt="SnO2 crystal structure" class="align-center" src="https://hackingmaterials.github.io/robocrystallographer/_images/rutile.jpg" style="height: 200px;" /></a>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>SnO2 is Rutile structured and crystallizes in the tetragonal P4_2/mnm space
+<p>An example of the output generated by robocrystallographer for SnO<span class="raw-html-m2r"><sub>2</sub></span> (<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>) is given below:</p>
+<p align="center">
+<img alt="SnO2 crystal structure" src="https://raw.githubusercontent.com/hackingmaterials/robocrystallographer/master/docs/_static/rutile.jpg" height=
+"200px">
+</p><div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>SnO2 is Rutile structured and crystallizes in the tetragonal P4_2/mnm space
 group. The structure is three-dimensional. Sn(1) is bonded to six equivalent
 O(1) atoms to form a mixture of edge and corner-sharing SnO6 octahedra. The
 corner-sharing octahedral tilt angles are 51°. All Sn(1)–O(1) bond lengths
@@ -114,21 +117,24 @@ Sn(1) atoms.
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install robocrys
 </pre></div>
 </div>
-<p>Robocrystallographer requires Python 3.5+. The <a class="reference external" href="http://openbabel.org/wiki/Python">OpenBabel</a> package is required to determine molecule
-names. This is an optional requirement but its use is recommended for best
+<p>Robocrystallographer requires Python 3.6+. The
+<a class="reference external" href="http://openbabel.org/wiki/Python">OpenBabel</a>
+package is required to determine molecule names. This is an optional
+requirement but its use is recommended for best
 results. If you are using the <a class="reference external" href="https://conda.io/">Conda</a> package management
 system, OpenBabel can be installed using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c openbabel openbabel
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda install -c openbabel openbabel
 </pre></div>
 </div>
 </div>
 <div class="section" id="whats-new">
 <h2>What’s new?<a class="headerlink" href="#whats-new" title="Permalink to this headline">¶</a></h2>
-<p>Track changes to robocrystallographer through the <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/changelog.html">Changelog</a>.</p>
+<p>Track changes to robocrystallographer through the
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/changelog.html">Changelog</a>.</p>
 </div>
 <div class="section" id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
-<p>Robocrystallographer is in early development and we therefore welcome your
+<p>Robocrystallographer is in early development but we still welcome your
 contributions. Please read our <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/contributing.html">contribution guidelines</a>
 for more information. We maintain a list of all
 contributors <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/contributors.html">here</a>.</p>
@@ -136,7 +142,8 @@ contributors <a class="reference external" href="https://hackingmaterials.github
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p>Robocrystallographer is released under a modified BSD license;
-the full text can be found <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/license.html">here</a>.</p>
+the full text can be found
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/license.html">here</a>.</p>
 </div>
 <div class="section" id="code-documentation">
 <h2>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
@@ -219,7 +226,7 @@ the full text can be found <a class="reference external" href="https://hackingma
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Alex Ganose.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
 
   </body>

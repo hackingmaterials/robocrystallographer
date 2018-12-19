@@ -38,7 +38,7 @@ setup(
                       'inflect', 'networkx', 'matminer', 'monty', 'pubchempy',
                       'pybtex'],
     extras_require={'docs': ['sphinx', 'sphinx-argparse',
-                             'sphinx-autodoc-types>=2.1.1'],
+                             'sphinx-autodoc-typehints', 'm2r'],
                     'dev': ['tqdm', 'pybel', 'pebble', 'maggma'],
                     'tests': ['nose', 'coverage', 'coveralls']},
     package_data={'robocrys': [path_join('condense', 'mineral_db.json.gz'),

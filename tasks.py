@@ -35,6 +35,7 @@ def update_doc(ctx):
         ctx.run("git commit -a -m \"Update to v{}\"".format(__version__))
         ctx.run("git push")
 
+
 @task
 def publish(ctx):
     ctx.run("rm dist/*.*", warn=True)

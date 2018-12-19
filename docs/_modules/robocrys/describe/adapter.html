@@ -13,7 +13,6 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
  
@@ -45,6 +44,7 @@
 <span class="sd">structure data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -358,7 +358,8 @@
 <span class="sd">            for the sites looks like ``(1, 2)``, the symmetry label will be</span>
 <span class="sd">            ``(1,2)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">site_indices</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">site_indices</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">site_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">):</span>
+            <span class="c1"># If only one to_site is provided turn it into a list</span>
             <span class="n">site_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">site_indices</span><span class="p">]</span>
 
         <span class="n">all_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">label</span> <span class="k">for</span> <span class="n">site_index</span> <span class="ow">in</span> <span class="n">site_indices</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span>
@@ -519,7 +520,7 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Alex Ganose.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
 
   </body>

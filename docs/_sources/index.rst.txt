@@ -1,4 +1,4 @@
-.. include:: ../../README.rst
+.. mdinclude:: ../../README.md
 
 
 Code documentation
@@ -19,4 +19,3 @@ Code documentation
    modules
    contributing
    license
-
