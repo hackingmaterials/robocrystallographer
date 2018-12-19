@@ -12,7 +12,7 @@ Fix for Pypi documentation.
 v0.1.1
 ------
 
-Varius minor bugfixes.
+Various minor bugfixes.
 
 v0.1.0
 ------
