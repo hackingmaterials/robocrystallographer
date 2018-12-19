@@ -1,8 +1,8 @@
 Robocrystallographer
 ====================
 
-.. image:: https://badge.fury.io/py/robocrystallographer.svg
-    :target: https://badge.fury.io/py/robocrystallographeer
+.. image:: https://badge.fury.io/py/robocrys.svg
+    :target: https://badge.fury.io/py/robocrys
     :alt: Pypi Repository
 
 .. image:: https://travis-ci.org/hackingmaterials/robocrystallographer.svg?branch=master
@@ -27,7 +27,7 @@ can simply run:
 
 .. code-block:: bash
 
-    robocrystallographer mp-856
+    robocrys mp-856
 
 Alternatively, a structure file can be specified in place of an mp-id.
 Robocrystallographer supports the same file formats as pymatgen_, including
@@ -80,7 +80,7 @@ Robocrystallographer can be installed using pip:
 
 .. code-block:: bash
 
-    pip install robocrystallographer
+    pip install robocrys
 
 Robocrystallographer requires Python 3.5+. The `OpenBabel
 <http://openbabel.org/wiki/Python>`_ package is required to determine molecule

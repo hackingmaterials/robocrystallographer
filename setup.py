@@ -17,7 +17,7 @@ setup(
     author='Alex Ganose',
     author_email='aganose@lbl.gov',
     long_description=long_description,
-    license='MIT',
+    license='modified BSD',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
@@ -26,8 +26,8 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Scientific/Engineering :: Chemistry',
-        'Topic :: Scientific/Engineering :: Physics'
-        'Topic :: Scientific/Engineering'
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Scientific/Engineering',
         'Topic :: Other/Nonlisted Topic',
         'Operating System :: OS Independent',
         ],

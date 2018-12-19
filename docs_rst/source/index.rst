@@ -1,8 +1,8 @@
 .. include:: ../../README.rst
 
 
-Changelog, contributors, license
---------------------------------
+Changelog, contributors
+-----------------------
 
 .. toctree::
    :maxdepth: 1
@@ -14,12 +14,7 @@ Changelog, contributors, license
 Code documentation
 ------------------
 
-.. toctree::
-   :maxdepth: 1
-
-   Python API <modules>
-
-
+* `Python API <modules>`_
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
@@ -28,6 +23,7 @@ Code documentation
    :hidden:
    :maxdepth: 1
 
+   modules
    contributing
    license
 

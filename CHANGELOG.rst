@@ -5,7 +5,7 @@ Change Log
 ------------
 
 v0.1.0
--------
+------
 
 Initial release, containing:
 
@@ -16,4 +16,4 @@ Initial release, containing:
 - Site geometry and connectivity analysis.
 - Heterostructure determination.
 - Structural descriptions.
-- `robocrys` script files.
+- ``robocrys`` script files.
