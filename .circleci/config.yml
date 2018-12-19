@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  py3test:
+  build:
     working_directory: ~/atomate
     docker:
       - image: materialsvirtuallab/circle-ci-pmg-py3:0.0.2
