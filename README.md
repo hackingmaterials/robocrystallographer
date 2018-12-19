@@ -3,7 +3,8 @@
 [![PyPI version](https://badge.fury.io/py/robocrys.svg)](https://pypi.org/project/robocrys/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
-[![CircleCI](https://circleci.com/gh/hackingmaterials/robocrystallographer.svg?style=svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
+[![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser/master.svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
+
 
 
 Robocrystallographer is a tool to generate text descriptions of crystal
