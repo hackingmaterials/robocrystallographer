@@ -1,0 +1,26 @@
+[run]
+source=robocrys
+
+[report]
+exclude_lines =
+    # Ignore coverage of code that requires the module to be executed.
+    if __name__ == .__main__.:
+ignore_errors=True
+omit =
+    */dev_scripts/*
+    */docs/*
+    */docs_rst/*
+    */examples/*
+    */.cicleci/*
+    */python?.?/*
+    */site-packages/*
+    *tests/*
+    */versioneer.py
+    */_version.py
+    */*.md
+    */*.gitignore
+    */*.txt
+    */setup.py
+    */__init__.py
+    */robocrys.egg-info/*
+    */docs/*
