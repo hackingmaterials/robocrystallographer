@@ -14,6 +14,7 @@
 #
 import os
 import sys
+from robocrys import __version__
 sys.path.insert(0, os.path.abspath('../../'))
 
 
@@ -26,7 +27,7 @@ author = 'Alex Ganose'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
