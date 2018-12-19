@@ -40,11 +40,12 @@
             
   <h1>Source code for robocrys.condense.molecule</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module implments a class to match molecule graphs to molecule names.</span>
+<span class="sd">This module implements a class to match molecule graphs to molecule names.</span>
 
 <span class="sd">Some functionality relies on having a working internet connection.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span>
@@ -95,6 +96,9 @@
 <span class="sd">            The molecule name if a match is found else ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">smiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_graph_to_smiles</span><span class="p">(</span><span class="n">molecule_graph</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">smiles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">match</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">smiles</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_molecules</span><span class="p">:</span>
@@ -155,9 +159,15 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The SMILES representation of the molecule.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bma</span> <span class="o">=</span> <span class="n">BabelMolAdaptor</span><span class="o">.</span><span class="n">from_molecule_graph</span><span class="p">(</span><span class="n">molecule_graph</span><span class="p">)</span>
-        <span class="n">pbmol</span> <span class="o">=</span> <span class="n">bma</span><span class="o">.</span><span class="n">pybel_mol</span>
-        <span class="k">return</span> <span class="n">pbmol</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;smi&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bma</span> <span class="o">=</span> <span class="n">BabelMolAdaptor</span><span class="o">.</span><span class="n">from_molecule_graph</span><span class="p">(</span><span class="n">molecule_graph</span><span class="p">)</span>
+            <span class="n">pbmol</span> <span class="o">=</span> <span class="n">bma</span><span class="o">.</span><span class="n">pybel_mol</span>
+            <span class="k">return</span> <span class="n">pbmol</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;smi&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Molecule naming requires openbabel to be installed &quot;</span>
+                          <span class="s2">&quot;with Python bindings. Please get it at &quot;</span>
+                          <span class="s2">&quot;http://openbabel.org.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">_process_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smiles</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>

@@ -30,6 +30,8 @@ Alternatively, a structure file can be specified in place of a Materials Project
 Robocrystallographer supports the same file formats as 
 [pymatgen](http://pymatgen.org), including the Crystallographic Information 
 Format (CIF), and common electronic structure package formats such as POSCAR files.
+More information can be found on the 
+[command-line interface page](https://hackingmaterials.github.io/robocrystallographer/cli.html).
 
 ### Python interface
 
@@ -54,7 +56,7 @@ description = describer.describe(condensed_structure)
 Where `structure` is a pymatgen Structure object. Both classes have many
 options for customising the output of the structure
 descriptions. More information is provided in the 
-[module documentation](https://hackingmaterials.github.io/robocrystallographer/).
+[module documentation](https://hackingmaterials.github.io/robocrystallographer/modules).
 
 ### Intermediate JSON format
 

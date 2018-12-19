@@ -13,6 +13,7 @@ Code documentation
    :hidden:
    :maxdepth: 1
 
+   cli
    changelog
    format
    contributors
