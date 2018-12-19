@@ -1,9 +1,10 @@
 """
-This module implments a class to match molecule graphs to molecule names.
+This module implements a class to match molecule graphs to molecule names.
 
 Some functionality relies on having a working internet connection.
 """
 
+import warnings
 from typing import Optional, Tuple
 
 from pkg_resources import resource_filename
@@ -54,6 +55,9 @@ class MoleculeNamer(object):
             The molecule name if a match is found else ``None``.
         """
         smiles = self.molecule_graph_to_smiles(molecule_graph)
+
+        if not smiles:
+            return None
 
         match = None
         if smiles in self.matched_molecules:
@@ -114,9 +118,15 @@ class MoleculeNamer(object):
         Returns:
             The SMILES representation of the molecule.
         """
-        bma = BabelMolAdaptor.from_molecule_graph(molecule_graph)
-        pbmol = bma.pybel_mol
-        return pbmol.write(str("smi")).split()[0]
+        try:
+            bma = BabelMolAdaptor.from_molecule_graph(molecule_graph)
+            pbmol = bma.pybel_mol
+            return pbmol.write(str("smi")).split()[0]
+        except RuntimeError:
+            warnings.warn("Molecule naming requires openbabel to be installed "
+                          "with Python bindings. Please get it at "
+                          "http://openbabel.org.")
+            return None
 
     def _process_match(self, smiles: str, match: Optional[str]
                        ) -> Optional[str]:
