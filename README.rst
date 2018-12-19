@@ -1,6 +1,7 @@
 Robocrystallographer
 ====================
 
+[![Pypi](https://circleci.com/gh/hackingmaterials/automatminer.svg?style=svg)]
 .. image:: https://badge.fury.io/py/robocrys.svg
     :target: https://badge.fury.io/py/robocrys
     :alt: Pypi Repository
