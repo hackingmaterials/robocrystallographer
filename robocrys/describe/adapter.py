@@ -3,6 +3,7 @@ This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
 
+import numpy as np
 from collections import namedtuple, defaultdict
 from typing import Dict, Any, List, Union
 
@@ -316,7 +317,8 @@ class DescriptionAdapter(object):
             for the sites looks like ``(1, 2)``, the symmetry label will be
             ``(1,2)``.
         """
-        if isinstance(site_indices, int):
+        if isinstance(site_indices, int) or isinstance(site_indices, np.int32):
+            # If only one to_site is provided turn it into a list
             site_indices = [site_indices]
 
         all_labels = sorted([label for site_index in site_indices for label in
