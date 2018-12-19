@@ -115,6 +115,3 @@ License
 Robocrystallographer is released under a modified BSD license;
 the full text can be found 
 [here](https://hackingmaterials.github.io/robocrystallographer/license.html).
-
-.. _pymatgen: http://pymatgen.org
-.. _mp-856: https://materialsproject.org/materials/mp-856/
