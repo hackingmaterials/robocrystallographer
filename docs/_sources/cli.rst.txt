@@ -10,7 +10,6 @@ on the command-line. This page details the basic usage of the program.
    :local:
    :backlinks: None
 
-
 Usage
 -----
 
@@ -36,7 +35,6 @@ also supported. For example, to generate the description of a CIF file::
 
     robocrys MyStructure.cif
 
-
 Basic options
 ~~~~~~~~~~~~~
 
@@ -44,7 +42,6 @@ Generating a structure description is split into two steps, the first is to
 condense the structure into an intermediate JSON representation, the second is
 to generate a description from the intermediate representation. The ``robocrys``
 program contains options for controlling both steps of this process.
-
 
 Condenser options
 ~~~~~~~~~~~~~~~~~
@@ -70,7 +67,6 @@ symmetry used to determine site inequivalence, and a symmetry tolerance of
 
     robocrys MyStructure.cif --conventional --symmetry --symprec 0.001
 
-
 Describer options
 ~~~~~~~~~~~~~~~~~
 
@@ -85,7 +81,6 @@ can be used.
 
 Robocrystallographer also supports generating LaTeX ready descriptions through
 the ``--latexify`` option.
-
 
 Command-line interface
 ----------------------
