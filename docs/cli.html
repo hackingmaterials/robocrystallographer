@@ -1,0 +1,339 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys program &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Change Log" href="changelog.html" />
+    <link rel="prev" title="Robocrystallographer" href="index.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="changelog.html" title="Change Log"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Robocrystallographer"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="robocrys-program">
+<h1><code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program<a class="headerlink" href="#robocrys-program" title="Permalink to this headline">¶</a></h1>
+<p>Robocrystallographer can be used on the command-line through the <code class="docutils literal notranslate"><span class="pre">robocrys</span></code>
+command. Most of the options provided in the Python API are also accessible
+on the command-line. This page details the basic usage of the program.</p>
+<div class="contents local topic" id="table-of-contents">
+<p class="topic-title first">Table of Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#usage" id="id1">Usage</a><ul>
+<li><a class="reference internal" href="#basic-options" id="id2">Basic options</a></li>
+<li><a class="reference internal" href="#condenser-options" id="id3">Condenser options</a></li>
+<li><a class="reference internal" href="#describer-options" id="id4">Describer options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#command-line-interface" id="id5">Command-line interface</a><ul>
+<li><a class="reference internal" href="#Positional Arguments" id="id6">Positional Arguments</a></li>
+<li><a class="reference internal" href="#Named Arguments" id="id7">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The full range of options supported by <code class="docutils literal notranslate"><span class="pre">robocrys</span></code> are detailed in the
+<a class="reference internal" href="#command-line-interface">Command-line interface</a> section, and be can be listed using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>The package integrates with the <a class="reference external" href="https://materialsproject.org">Materials Project</a> to for allow generation of structure
+descriptions directly from Materials Project ids. For example, to generate the
+description of SnO​​ <sub>2</sub> (<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>), one can simply run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="n">mp</span><span class="o">-</span><span class="mi">856</span>
+</pre></div>
+</div>
+<p>Alternatively, a structure file can be specified in place of a Materials Project
+id. Robocrystallographer supports the same file formats as
+<a class="reference external" href="http://pymatgen.org">pymatgen</a>, including the Crystallographic Information
+Format (CIF), common electronic structure package formats such as POSCAR
+files, and JSON files containing pymatgen Structure objects. Gzipped files are
+also supported. For example, to generate the description of a CIF file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="n">MyStructure</span><span class="o">.</span><span class="n">cif</span>
+</pre></div>
+</div>
+<div class="section" id="basic-options">
+<h3>Basic options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h3>
+<p>Generating a structure description is split into two steps, the first is to
+condense the structure into an intermediate JSON representation, the second is
+to generate a description from the intermediate representation. The <code class="docutils literal notranslate"><span class="pre">robocrys</span></code>
+program contains options for controlling both steps of this process.</p>
+</div>
+<div class="section" id="condenser-options">
+<h3>Condenser options<a class="headerlink" href="#condenser-options" title="Permalink to this headline">¶</a></h3>
+<p>By default, robocrystallographer determines whether sites are equivalent using
+the site information (element, geometry, order parameter), nearest neighbor
+information (number and types of neighbors, bond lengths), and next nearest
+neighbor information (number and types of neighbors, connectivity, bond angles).
+To instead use symmetry to determine which sites are equivalent, the
+<code class="docutils literal notranslate"><span class="pre">--symmetry</span></code> option can be used. The symmetry tolerance is controlled using
+the <code class="docutils literal notranslate"><span class="pre">--symprec</span></code> option. Note that the symmetry information will always be used
+to determine the symmetry labels for the sites, even if the equivalent sites are
+determined through structural properties.</p>
+<p>Robocrystallographer will produce a description for the structure provided as
+is. However, generally best results will be obtained when describing the
+conventional cell structure. The <code class="docutils literal notranslate"><span class="pre">--conventional</span></code> optional will automatically
+convert the structure into the standardized conventional cell representation.</p>
+<p>For example, to generate the description for the conventional cell, with
+symmetry used to determine site inequivalence, and a symmetry tolerance of
+0.001, the command would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="n">MyStructure</span><span class="o">.</span><span class="n">cif</span> <span class="o">--</span><span class="n">conventional</span> <span class="o">--</span><span class="n">symmetry</span> <span class="o">--</span><span class="n">symprec</span> <span class="mf">0.001</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="describer-options">
+<h3>Describer options<a class="headerlink" href="#describer-options" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program has many options to control the verbosity of the
+description. By default, oxidation states and symmetry labels
+are included in the description. These can be disabled using the <code class="docutils literal notranslate"><span class="pre">--no-oxi</span></code>
+and <code class="docutils literal notranslate"><span class="pre">--no-symmetry--labels</span></code> options, respectively.</p>
+<p>By default, only the connectivity of cation-polyhedra is included. To also
+describe the connectivity anion polyhedra, the <code class="docutils literal notranslate"><span class="pre">--anion-polyhedra</span></code> option
+can be used.</p>
+<p>Robocrystallographer also supports generating LaTeX ready descriptions through
+the <code class="docutils literal notranslate"><span class="pre">--latexify</span></code> option.</p>
+</div>
+</div>
+<div class="section" id="command-line-interface">
+<h2>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h2>
+<p>robocrystallographer is a tool to generate crystal structure descriptions</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">robocrys</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">symprec</span> <span class="n">SYMPREC</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">simplify</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">iupac</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">formulas</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">mineral</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">makeup</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">components</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">symmetry</span><span class="o">-</span><span class="n">labels</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">oxi</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">bond</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">precision</span> <span class="n">P</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">distorted</span><span class="o">-</span><span class="n">tol</span> <span class="n">T</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">anion</span><span class="o">-</span><span class="n">polyhedra</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">verbose</span><span class="o">-</span><span class="n">bonds</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">latexify</span><span class="p">]</span>
+                <span class="n">filename</span>
+</pre></div>
+</div>
+<div class="section" id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>filename</kbd></td>
+<td>structure file or mpid</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd>-c, --conventional</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">use the convention cell</p>
+<p class="last">Default: False</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-s, --symmetry</kbd></td>
+<td><p class="first">use symmetry to determine inequivalent sites</p>
+<p class="last">Default: False</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--symprec</kbd></td>
+<td><p class="first">symmetry tolerance</p>
+<p class="last">Default: 0.01</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--no-simplify</kbd></td>
+<td><p class="first">don’t simplify molecules when mineral matching</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--no-iupac</kbd></td>
+<td><p class="first">don’t use IUPAC formula ordering</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd>--no-common-formulas</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">don’t use common formulas</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--no-mineral</kbd></td>
+<td><p class="first">don’t describe the mineral information</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--no-makeup</kbd></td>
+<td><p class="first">don’t describe the component makeup</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd>--no-components</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">don’t describe the components</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd>--no-symmetry-labels</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">don’t describe symmetry labels</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--no-oxi</kbd></td>
+<td><p class="first">don’t describe oxidation states</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--no-bond</kbd></td>
+<td><p class="first">don’t describe bond lengths</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--precision</kbd></td>
+<td><p class="first">decimal places for bond lengths</p>
+<p class="last">Default: 2</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd>--distorted-tol</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">order parameter below which sites are distorted</p>
+<p class="last">Default: 0.6</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd>--anion-polyhedra</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">describe anion polyhedra connectivity</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd>--verbose-bonds</kbd></td>
+</tr>
+<tr><td>&#160;</td><td><p class="first">describe bond lengths for each site</p>
+<p class="last">Default: True</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>--latexify</kbd></td>
+<td><p class="first">format the description for use in LaTeX</p>
+<p class="last">Default: False</p>
+</td></tr>
+</tbody>
+</table>
+</div>
+<p>Author: Alex Ganose, Version: 0.1.2, Last updated: December 17, 2018</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#basic-options">Basic options</a></li>
+<li><a class="reference internal" href="#condenser-options">Condenser options</a></li>
+<li><a class="reference internal" href="#describer-options">Describer options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#command-line-interface">Command-line interface</a><ul>
+<li><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Robocrystallographer</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="changelog.html"
+                        title="next chapter">Change Log</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cli.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="changelog.html" title="Change Log"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Robocrystallographer"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+
+  </body>
+</html>

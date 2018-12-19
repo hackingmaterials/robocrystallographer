@@ -1,0 +1,62 @@
+robocrys.condense.tests package
+===============================
+
+Submodules
+----------
+
+robocrys.condense.tests.test\_component module
+----------------------------------------------
+
+.. automodule:: robocrys.condense.tests.test_component
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+robocrys.condense.tests.test\_fingerprint module
+------------------------------------------------
+
+.. automodule:: robocrys.condense.tests.test_fingerprint
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+robocrys.condense.tests.test\_mineral module
+--------------------------------------------
+
+.. automodule:: robocrys.condense.tests.test_mineral
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+robocrys.condense.tests.test\_molecule module
+---------------------------------------------
+
+.. automodule:: robocrys.condense.tests.test_molecule
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+robocrys.condense.tests.test\_site module
+-----------------------------------------
+
+.. automodule:: robocrys.condense.tests.test_site
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+robocrys.condense.tests.test\_structure module
+----------------------------------------------
+
+.. automodule:: robocrys.condense.tests.test_structure
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: robocrys.condense.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

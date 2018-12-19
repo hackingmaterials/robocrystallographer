@@ -1,0 +1,527 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.describe.adapter &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for robocrys.describe.adapter</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module implements a class to resolve the symbolic references in condensed</span>
+<span class="sd">structure data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="k">import</span> <span class="n">get_el_sp</span>
+
+<span class="n">ComponentDetails</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ComponentDetails&#39;</span><span class="p">,</span>
+                              <span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;dimensionality&#39;</span><span class="p">,</span>
+                               <span class="s1">&#39;molecule_name&#39;</span><span class="p">,</span> <span class="s1">&#39;orientation&#39;</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">])</span>
+
+<span class="n">ComponentGroup</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ComponentGroup&#39;</span><span class="p">,</span>
+                            <span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">,</span> <span class="s1">&#39;dimensionality&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;components&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;molecule_name&#39;</span><span class="p">])</span>
+
+<span class="n">SiteGroup</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SiteGroup&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;sites&#39;</span><span class="p">])</span>
+
+<span class="n">NeighborSiteDetails</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;NeighborSiteDetails&#39;</span><span class="p">,</span>
+                                 <span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;sites&#39;</span><span class="p">,</span> <span class="s1">&#39;sym_label&#39;</span><span class="p">])</span>
+
+<span class="n">NextNeighborSiteDetails</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;NextNeighborSiteDetails&#39;</span><span class="p">,</span>
+                                     <span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;sites&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;sym_label&#39;</span><span class="p">,</span> <span class="s1">&#39;connectivity&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;poly_formula&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="DescriptionAdapter"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter">[docs]</a><span class="k">class</span> <span class="nc">DescriptionAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to facilitate pulling data from the condensed structure dictionary.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        elements: The site elements.</span>
+<span class="sd">        sym_labels: The symmetry labels as strings.</span>
+<span class="sd">        use_iupac_ordering (bool, optional): Whether to order formulas</span>
+<span class="sd">            by the iupac &quot;electronegativity&quot; series, defined in</span>
+<span class="sd">            Table VI of &quot;Nomenclature of Inorganic Chemistry (IUPAC</span>
+<span class="sd">            Recommendations 2005)&quot;. This ordering effectively follows</span>
+<span class="sd">            the groups and rows of the periodic table, except the</span>
+<span class="sd">            Lanthanides, Actanides and hydrogen. If set to ``False``, the</span>
+<span class="sd">            elements will be ordered according to the electronegativity values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condensed_structure: The condensed structure data, formatted as produced</span>
+<span class="sd">            by :meth:`robocrys.condense.StructureCondenser.condense_structure`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                 <span class="n">use_iupac_ordering</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span> <span class="o">=</span> <span class="n">condensed_structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_ordering</span> <span class="o">=</span> <span class="n">use_iupac_ordering</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="p">{</span><span class="n">site_index</span><span class="p">:</span> <span class="n">site_data</span><span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">]</span>
+                         <span class="k">for</span> <span class="n">site_index</span><span class="p">,</span> <span class="n">site_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sym_labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">site_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sym_label</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">site_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_nearest_neighbor_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_nearest_neighbor_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_nearest_neighbor_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                     <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NeighborSiteDetails</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets a summary of all the nearest neighbors to a site.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            site_index: An inequivalent site index.</span>
+<span class="sd">            group: Whether to group all nearest neighbor sites</span>
+<span class="sd">                with the same element together.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :obj:`list` of ``NeighborSiteDetails`` objects, each with the</span>
+<span class="sd">            attributes:</span>
+
+<span class="sd">            - ``element`` (``str``): The element of the nearest neighbor site.</span>
+<span class="sd">            - ``count`` (``int``): The number of sites of this type.</span>
+<span class="sd">            - ``sym_label`` (``str``): The symmetry label.</span>
+<span class="sd">            - ``sites`` (``list[int]``): The site indices representing this</span>
+<span class="sd">              nearest neighbor. Can be more than one site if</span>
+<span class="sd">              ``group_by_element=True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nn_sites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site_index</span><span class="p">][</span><span class="s1">&#39;nn&#39;</span><span class="p">]</span>
+
+        <span class="n">nn_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">nn_site</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">nn_sites</span><span class="p">):</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nn_site</span><span class="p">][</span><span class="s1">&#39;element&#39;</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sym_labels</span><span class="p">[</span><span class="n">nn_site</span><span class="p">]</span>
+            <span class="n">identity</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,)</span> <span class="k">if</span> <span class="n">group</span> <span class="k">else</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+            <span class="n">nn_dict</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="n">nn_sites</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">nn_site</span><span class="p">),</span>
+                 <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">,</span>
+                 <span class="s1">&#39;site&#39;</span><span class="p">:</span> <span class="n">nn_site</span><span class="p">})</span>
+
+        <span class="n">nn_details</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">identity</span><span class="p">,</span> <span class="n">nn_group</span> <span class="ow">in</span> <span class="n">nn_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">nn_site</span><span class="p">[</span><span class="s1">&#39;site&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nn_site</span> <span class="ow">in</span> <span class="n">nn_group</span><span class="p">]</span>
+            <span class="n">nn_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NeighborSiteDetails</span><span class="p">(</span>
+                <span class="n">element</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">sites</span><span class="o">=</span><span class="n">sites</span><span class="p">,</span>
+                <span class="n">count</span><span class="o">=</span><span class="nb">sum</span><span class="p">([</span><span class="n">nn_site</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nn_site</span> <span class="ow">in</span> <span class="n">nn_group</span><span class="p">]),</span>
+                <span class="n">sym_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sym_label</span><span class="p">(</span><span class="n">sites</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nn_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_site_order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_next_nearest_neighbor_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_next_nearest_neighbor_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_next_nearest_neighbor_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                          <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+                                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NextNeighborSiteDetails</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets a summary of all the next nearest neighbors to a site.</span>
+
+<span class="sd">        We only get the summaries for next nearest neighbor sites that have a</span>
+<span class="sd">        geometry type listed in :attr:`robocrys.util.connected_geometries` and</span>
+<span class="sd">        have a ``poly_formula``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            site_index: An inequivalent site index.</span>
+<span class="sd">            group: Whether to group together all next nearest neighbor sites</span>
+<span class="sd">                with the same element, connectivity and geometry but different</span>
+<span class="sd">                symmetry labels.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :obj:`list` of ``NextNeighborSiteDetails`` objects, each with the</span>
+<span class="sd">            attributes:</span>
+
+<span class="sd">            - ``element`` (``str``): The element of the next nearest neighbor</span>
+<span class="sd">              site.</span>
+<span class="sd">            - ``connectivity`` (``str``): The connectivity type to this site.</span>
+<span class="sd">            - ``geometry`` (``str``): The geometry type of the next nearest</span>
+<span class="sd">              neighbor.</span>
+<span class="sd">            - ``count`` (``int``): The number of sites of this type.</span>
+<span class="sd">            - ``sym_label`` (``str``): The symmetry label.</span>
+<span class="sd">            - ``sites`` (``list[int]``): The site indices representing this</span>
+<span class="sd">              next nearest neighbor. Can be more than one site if</span>
+<span class="sd">              ``group=True``.</span>
+<span class="sd">            - ``poly_formula`` (``str``): The polyhedral formula.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nnn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site_index</span><span class="p">][</span><span class="s1">&#39;nnn&#39;</span><span class="p">]</span>
+
+        <span class="c1"># get a list of tuples of (nnn_site_index, connectivity)</span>
+        <span class="n">con_data</span> <span class="o">=</span> <span class="p">[(</span><span class="n">nnn_site_index</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">)</span> <span class="k">for</span> <span class="n">connectivity</span><span class="p">,</span> <span class="n">sites</span> <span class="ow">in</span>
+                    <span class="n">nnn</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">nnn_site_index</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">sites</span><span class="p">)]</span>
+
+        <span class="n">nnn_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">nnn_site</span><span class="p">,</span> <span class="n">connectivity</span> <span class="ow">in</span> <span class="n">con_data</span><span class="p">:</span>
+            <span class="n">poly_formula</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">poly_formula</span><span class="p">:</span>
+                <span class="c1"># only interested in describing the connectivity to other</span>
+                <span class="c1"># polyhedral sites of interest.</span>
+                <span class="k">continue</span>
+
+            <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;element&#39;</span><span class="p">]</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sym_labels</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">]</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
+                <span class="n">identity</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">identity</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+            <span class="n">nnn_dict</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="n">nnn</span><span class="p">[</span><span class="n">connectivity</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">nnn_site</span><span class="p">),</span>
+                 <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="n">labels</span><span class="p">,</span>
+                 <span class="s1">&#39;site&#39;</span><span class="p">:</span> <span class="n">nnn_site</span><span class="p">,</span>
+                 <span class="s1">&#39;poly_formula&#39;</span><span class="p">:</span> <span class="n">poly_formula</span><span class="p">})</span>
+
+        <span class="n">nnn_details</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">identity</span><span class="p">,</span> <span class="n">nnn_group</span> <span class="ow">in</span> <span class="n">nnn_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">nnn_site</span><span class="p">[</span><span class="s1">&#39;site&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">nnn_group</span><span class="p">]</span>
+            <span class="n">nnn_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NextNeighborSiteDetails</span><span class="p">(</span>
+                <span class="n">element</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">connectivity</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">geometry</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="n">sites</span><span class="o">=</span><span class="n">sites</span><span class="p">,</span>
+                <span class="n">poly_formula</span><span class="o">=</span><span class="n">nnn_group</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">],</span>
+                <span class="n">count</span><span class="o">=</span><span class="nb">sum</span><span class="p">([</span><span class="n">nn_site</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nn_site</span> <span class="ow">in</span> <span class="n">nnn_group</span><span class="p">]),</span>
+                <span class="n">sym_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_sym_label</span><span class="p">(</span><span class="n">sites</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nnn_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_site_order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_distance_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_distance_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                             <span class="n">to_sites</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets the bond lengths between two sets of sites.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            from_site: An inequivalent site index.</span>
+<span class="sd">            to_sites: One ore more inequivalent site indices.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The distances between the sites.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_sites</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="c1"># If only one to_site is provided turn it into a list</span>
+            <span class="n">to_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_sites</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">distance</span> <span class="k">for</span> <span class="n">to_site</span> <span class="ow">in</span> <span class="n">to_sites</span>
+                <span class="k">for</span> <span class="n">distance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="n">from_site</span><span class="p">][</span><span class="n">to_site</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_angle_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_angle_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_angle_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+                          <span class="n">connectivity</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets the connectivity angles between two sets of sites.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            from_site: An inequivalent site index.</span>
+<span class="sd">            to_sites: One ore more inequivalent site indices.</span>
+<span class="sd">            connectivity: The site connectivity type. I.e. &quot;corner&quot;, &quot;edge&quot;, or</span>
+<span class="sd">                &quot;face&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The distances between the sites.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_sites</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="c1"># If only one to_site is provided turn it into a list</span>
+            <span class="n">to_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_sites</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">angle</span> <span class="k">for</span> <span class="n">to_site</span> <span class="ow">in</span> <span class="n">to_sites</span>
+                <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="n">from_site</span><span class="p">][</span><span class="n">to_site</span><span class="p">][</span><span class="n">connectivity</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_component_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ComponentDetails</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets a summary of all components.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :obj:`list` of ``ComponentDetails`` objects, each with the</span>
+<span class="sd">            attributes:</span>
+
+<span class="sd">            - ``count`` (``int``): The number of these components in the</span>
+<span class="sd">              structure.</span>
+<span class="sd">            - ``formula`` (``str``): The component formula.</span>
+<span class="sd">            - ``dimensionality`` (``int``): The component dimensionality.</span>
+<span class="sd">            - ``molecule_name`` (``str`` or ``None``): The molecule name if</span>
+<span class="sd">              applicable, else ``None``.</span>
+<span class="sd">            - ``orientation`` (``tuple[int]``): The component orientation.</span>
+<span class="sd">            - ``index`` (``list[int]``): The component inequivalent index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">component_details</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span><span class="p">):</span>
+            <span class="n">component_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ComponentDetails</span><span class="p">(</span>
+                <span class="n">count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">index</span><span class="p">),</span>
+                <span class="n">formula</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;formula&#39;</span><span class="p">],</span>
+                <span class="n">dimensionality</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">],</span>
+                <span class="n">molecule_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;molecule_name&#39;</span><span class="p">],</span>
+                <span class="n">orientation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;orientation&#39;</span><span class="p">],</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">component_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_component_order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_component_groups"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ComponentGroup</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets a summary of all components groups.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The components, grouped together by formula, dimensionality and</span>
+<span class="sd">            molecule name. The data will be returned as a :obj:`list` of</span>
+<span class="sd">            ``ComponentGroup`` objects, each with the attributes:</span>
+
+<span class="sd">            - ``count`` (``int``): The total number of components in this group.</span>
+<span class="sd">            - ``formula`` (``str``): The formula of the components.</span>
+<span class="sd">            - ``dimensionality`` (``int``): The dimensionality of the</span>
+<span class="sd">              components.</span>
+<span class="sd">            - ``molecule_name`` (``str`` or ``None``): The molecule name if</span>
+<span class="sd">              applicable, else ``None``.</span>
+<span class="sd">            - ``components`` (``list[ComponentDetails]``): The components</span>
+<span class="sd">              in the group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">component_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component_details</span><span class="p">()</span>
+
+        <span class="n">grouped_components</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">component_details</span><span class="p">:</span>
+            <span class="n">identity</span> <span class="o">=</span> <span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span> <span class="n">component</span><span class="o">.</span><span class="n">formula</span><span class="p">,</span>
+                        <span class="n">component</span><span class="o">.</span><span class="n">molecule_name</span><span class="p">)</span>
+            <span class="n">grouped_components</span><span class="p">[</span><span class="n">identity</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+        <span class="n">component_group_details</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">identity</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped_components</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">component_group_details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ComponentGroup</span><span class="p">(</span>
+                <span class="n">count</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">count</span> <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">group</span><span class="p">),</span>
+                <span class="n">dimensionality</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">formula</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">molecule_name</span><span class="o">=</span><span class="n">identity</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="n">components</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_component_order</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">component_group_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_component_order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_component_site_groups"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_site_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_site_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span>
+                                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SiteGroup</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets a summary of the sites in a component.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The sites, grouped together by element. The data will be returned</span>
+<span class="sd">            as a :obj:`list` of ``SiteGroup`` objects, each with the attributes:</span>
+
+<span class="sd">            - ``count`` (``int``): The total number of sites in this group.</span>
+<span class="sd">            - ``element`` (``str``): The site element.</span>
+<span class="sd">            - ``sites`` (``list[int]``): A list of site indices in this group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">][</span><span class="s1">&#39;sites&#39;</span><span class="p">]</span>
+
+        <span class="n">grouped_sites</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">site_index</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">:</span>
+            <span class="n">grouped_sites</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="n">site_index</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span>
+
+        <span class="n">site_groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped_sites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">site_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SiteGroup</span><span class="p">(</span>
+                <span class="n">count</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">sites</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">site_index</span> <span class="ow">in</span> <span class="n">group</span><span class="p">),</span>
+                <span class="n">element</span><span class="o">=</span><span class="n">element</span><span class="p">,</span>
+                <span class="n">sites</span><span class="o">=</span><span class="n">group</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">site_groups</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_site_order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DescriptionAdapter.get_sym_label"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_sym_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_sym_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert site indices into a formatted symmetry label.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            site_indices:  THe site indices.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The formatted symmetry label. E.g., if the set of symmetry labels</span>
+<span class="sd">            for the sites looks like ``(1, 2)``, the symmetry label will be</span>
+<span class="sd">            ``(1,2)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">site_indices</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">site_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">):</span>
+            <span class="c1"># If only one to_site is provided turn it into a list</span>
+            <span class="n">site_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">site_indices</span><span class="p">]</span>
+
+        <span class="n">all_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">label</span> <span class="k">for</span> <span class="n">site_index</span> <span class="ow">in</span> <span class="n">site_indices</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site_index</span><span class="p">][</span><span class="s1">&#39;sym_labels&#39;</span><span class="p">]])</span>
+        <span class="k">return</span> <span class="s2">&quot;(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_labels</span><span class="p">))))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mineral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;The mineral data.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;mineral&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The structure formula.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spg_symbol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The space group symbol.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;spg_symbol&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">crystal_system</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The crystal system.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;crystal_system&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dimensionality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The overall dimensionality.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sites</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;The site data.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;sites&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;The distance data.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]]:</span>
+        <span class="sd">&quot;&quot;&quot;The angle data.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;angles&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;The component data.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">component_makeup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The component makeup of the structure.</span>
+
+<span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
+<span class="sd">        more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s1">&#39;component_makeup&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_site_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SiteGroup</span><span class="p">,</span>
+                                   <span class="n">NeighborSiteDetails</span><span class="p">,</span>
+                                   <span class="n">NextNeighborSiteDetails</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Utility function to help sort NeighborSiteDetails and SiteGroups.&quot;&quot;&quot;</span>
+        <span class="n">specie</span> <span class="o">=</span> <span class="n">get_el_sp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">specie</span><span class="o">.</span><span class="n">iupac_ordering</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_ordering</span> <span class="k">else</span> <span class="n">specie</span><span class="o">.</span><span class="n">X</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">NeighborSiteDetails</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">sym_label</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">sites</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">NextNeighborSiteDetails</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">connectivity</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">poly_formula</span><span class="p">,</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">sym_label</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">sites</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">sites</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">_component_order</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ComponentDetails</span><span class="p">,</span> <span class="n">ComponentGroup</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Utility function to help sort ComponentDetails and ComponentGroups.&quot;&quot;&quot;</span>
+    <span class="n">mn</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">molecule_name</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">molecule_name</span> <span class="k">else</span> <span class="s1">&#39;z&#39;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">ComponentDetails</span><span class="p">):</span>
+        <span class="n">ori</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">orientation</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">orientation</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">mn</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">formula</span><span class="p">,</span> <span class="n">ori</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">count</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">mn</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">formula</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">count</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+
+  </body>
+</html>

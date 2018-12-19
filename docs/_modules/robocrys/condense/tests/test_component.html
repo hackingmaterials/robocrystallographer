@@ -1,0 +1,343 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.condense.tests.test_component &#8212; Robocrystallographer 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for robocrys.condense.tests.test_component</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.dimensionality</span> <span class="k">import</span> <span class="n">get_structure_components</span>
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.local_env</span> <span class="k">import</span> <span class="n">CrystalNN</span>
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.structure_matcher</span> <span class="k">import</span> <span class="n">StructureMatcher</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="k">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.component</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">get_sym_inequiv_components</span><span class="p">,</span> <span class="n">filter_molecular_components</span><span class="p">,</span>
+    <span class="n">get_reconstructed_structure</span><span class="p">,</span> <span class="n">get_formula_from_components</span><span class="p">,</span>
+    <span class="n">get_formula_inequiv_components</span><span class="p">,</span> <span class="n">components_are_vdw_heterostructure</span><span class="p">,</span>
+    <span class="n">get_vdw_heterostructure_information</span><span class="p">,</span> <span class="n">get_component_formula_and_factor</span><span class="p">,</span>
+    <span class="n">get_component_formula</span><span class="p">,</span> <span class="n">components_are_isomorphic</span><span class="p">,</span>
+    <span class="n">get_structure_inequiv_components</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">robocrys.util</span> <span class="k">import</span> <span class="n">RobocrysTest</span>
+
+<span class="n">test_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="TestComponent"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent">[docs]</a><span class="k">class</span> <span class="nc">TestComponent</span><span class="p">(</span><span class="n">RobocrysTest</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to test component related functions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestComponent.setUp"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cnn</span> <span class="o">=</span> <span class="n">CrystalNN</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapi</span> <span class="o">=</span> <span class="n">cnn</span><span class="o">.</span><span class="n">get_bonded_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;mapi&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span> <span class="o">=</span> <span class="n">get_structure_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi</span><span class="p">,</span> <span class="n">inc_molecule_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inc_site_ids</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">inc_orientation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vdw_hetero</span> <span class="o">=</span> <span class="n">cnn</span><span class="o">.</span><span class="n">get_bonded_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;MoWS4&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vdw_hetero_components</span> <span class="o">=</span> <span class="n">get_structure_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vdw_hetero</span><span class="p">,</span> <span class="n">inc_molecule_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inc_site_ids</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">inc_orientation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_component_formula_and_factor"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_component_formula_and_factor">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_component_formula_and_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test getting the component formula and factor.&quot;&quot;&quot;</span>
+        <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">get_component_formula_and_factor</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;CH3NH3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">get_component_formula_and_factor</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;PbI3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+        <span class="c1"># test without common formulas</span>
+        <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">get_component_formula_and_factor</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;CNH6&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># test without common formulas and without iupac formula</span>
+        <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">get_component_formula_and_factor</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;H6CN&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_component_formula"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_component_formula">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_component_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test getting the component formula.&quot;&quot;&quot;</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_component_formula</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;CH3NH3&quot;</span><span class="p">)</span>
+
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_component_formula</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;PbI3&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test without common formulas</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_component_formula</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;CNH6&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test without common formulas and without iupac formula</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_component_formula</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;H6CN&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_sym_inequiv_components"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_sym_inequiv_components">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_sym_inequiv_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test getting symmetrically inequivalent structure components.&quot;&quot;&quot;</span>
+        <span class="n">sga</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+        <span class="n">inequiv_comp</span> <span class="o">=</span> <span class="n">get_sym_inequiv_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">sga</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_comp_inequiv_components"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_comp_inequiv_components">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_comp_inequiv_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test getting compositionally inequivalent structure components.&quot;&quot;&quot;</span>
+
+        <span class="n">inequiv_comp</span> <span class="o">=</span> <span class="n">get_formula_inequiv_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;formula&#39;</span><span class="p">],</span> <span class="s2">&quot;CH3NH3&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;formula&#39;</span><span class="p">],</span> <span class="s1">&#39;PbI3&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Test not using common_formulas but with iupac formula</span>
+        <span class="n">inequiv_comp</span> <span class="o">=</span> <span class="n">get_formula_inequiv_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;formula&#39;</span><span class="p">],</span> <span class="s2">&quot;CNH6&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test non-iupac formula</span>
+        <span class="n">inequiv_comp</span> <span class="o">=</span> <span class="n">get_formula_inequiv_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;formula&#39;</span><span class="p">],</span> <span class="s2">&quot;H6CN&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_filter_molecular_components"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_filter_molecular_components">[docs]</a>    <span class="k">def</span> <span class="nf">test_filter_molecular_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test filtering of molecular components.&quot;&quot;&quot;</span>
+        <span class="n">mol_comps</span><span class="p">,</span> <span class="n">comps</span> <span class="o">=</span> <span class="n">filter_molecular_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">)</span>
+        <span class="n">mol_dimen</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mol_comps</span><span class="p">]))</span>
+        <span class="n">other_dimen</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">comps</span><span class="p">]))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mol_comps</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mol_dimen</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">mol_dimen</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comps</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="mi">0</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other_dimen</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_reconstructed_structure"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_reconstructed_structure">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_reconstructed_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">get_reconstructed_structure</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">simplify_molecules</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># check the reconstructred structure matches the original using</span>
+        <span class="c1"># pymatgen&#39;s structure matcher.</span>
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">StructureMatcher</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primitive_cell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ltol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+                              <span class="n">stol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">angle_tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapi</span><span class="o">.</span><span class="n">structure</span><span class="p">))</span>
+
+        <span class="c1"># Test the structure matches when we simplify molecules.</span>
+        <span class="c1"># To do this we ignore all C, H, and N atoms.</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="n">get_reconstructed_structure</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">simplify_molecules</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">StructureMatcher</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primitive_cell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ltol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+                              <span class="n">stol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">angle_tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+                              <span class="n">ignored_species</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapi</span><span class="o">.</span><span class="n">structure</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_formula_from_components"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_formula_from_components">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_formula_from_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;CH3NH3PbI3&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check not using common formulas</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;CNH6PbI3&quot;</span><span class="p">)</span>
+
+        <span class="c1"># check non-iupac ordering works</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;H6CNPbI3&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test multiple groups of different numbers of compositions</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">CrystalNN</span><span class="p">()</span><span class="o">.</span><span class="n">get_bonded_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;CuH8CN5Cl3&quot;</span><span class="p">))</span>
+        <span class="n">comps</span> <span class="o">=</span> <span class="n">get_structure_components</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span><span class="n">comps</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                              <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;(CuCN4HCl)2(NH2)2(H2)3(HCl)4&quot;</span><span class="p">)</span>
+
+        <span class="c1"># test putting molecules first</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">CrystalNN</span><span class="p">()</span><span class="o">.</span><span class="n">get_bonded_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;ZrCuH8C2NCl6&quot;</span><span class="p">))</span>
+        <span class="n">comps</span> <span class="o">=</span> <span class="n">get_structure_components</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span>
+            <span class="n">comps</span><span class="p">,</span> <span class="n">molecules_first</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;ZrCuCl6(CH3)2NH2&quot;</span><span class="p">)</span>
+
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula_from_components</span><span class="p">(</span>
+            <span class="n">comps</span><span class="p">,</span> <span class="n">molecules_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="s2">&quot;(CH3)2NH2ZrCuCl6&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_components_are_vdw_heterostructure"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_components_are_vdw_heterostructure">[docs]</a>    <span class="k">def</span> <span class="nf">test_components_are_vdw_heterostructure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">components_are_vdw_heterostructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw_hetero_components</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">components_are_vdw_heterostructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_vdw_heterostructure_information"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_vdw_heterostructure_information">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_vdw_heterostructure_information</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">get_vdw_heterostructure_information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw_hetero_components</span><span class="p">,</span>
+                                                   <span class="n">inc_ordered_components</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                   <span class="n">inc_intercalants</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ordered_components&#39;</span><span class="p">]),</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ordered_components&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
+                <span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.33330876</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ordered_components&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span>
+                <span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">frac_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.6666924</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;repeating_unit&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;MoS2&#39;</span><span class="p">,</span> <span class="s1">&#39;WS2&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;num_repetitions&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;intercalants&#39;</span><span class="p">],</span> <span class="p">[])</span>
+
+        <span class="c1"># test error catching</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">get_vdw_heterostructure_information</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">get_vdw_heterostructure_information</span><span class="p">,</span>
+                          <span class="n">get_structure_components</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw_hetero</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_components_are_isomorphic"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_components_are_isomorphic">[docs]</a>    <span class="k">def</span> <span class="nf">test_components_are_isomorphic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># check two CH3NH3 components are isomorphic</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">components_are_isomorphic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># check CH3NH3 and PbI3 are not isomorphic</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">components_are_isomorphic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestComponent.test_get_structure_inequiv_components"><a class="viewcode-back" href="../../../../robocrys.condense.tests.html#robocrys.condense.tests.test_component.TestComponent.test_get_structure_inequiv_components">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_structure_inequiv_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inequiv_comp</span> <span class="o">=</span> <span class="n">get_structure_inequiv_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_structure_graph</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="c1"># TODO: Uncomment out inequivalent ids when functionality implemented</span>
+        <span class="c1"># self.assertEqual(inequiv_comp[0][&#39;inequivalent_ids&#39;],</span>
+        <span class="c1">#                  (0, 8, 12, 44, 20, 28))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># self.assertEqual(inequiv_comp[1][&#39;inequivalent_ids&#39;],</span>
+        <span class="c1">#                  (32, 24, 36))</span>
+
+        <span class="c1"># test using graph/fingerprint matching</span>
+        <span class="n">inequiv_comp</span> <span class="o">=</span> <span class="n">get_structure_inequiv_components</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapi_components</span><span class="p">,</span> <span class="n">use_structure_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="c1"># self.assertEqual(inequiv_comp[0][&#39;inequivalent_ids&#39;],</span>
+        <span class="c1">#                  (0, 8, 12, 44, 20, 28))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">inequiv_comp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="c1"># self.assertEqual(inequiv_comp[1][&#39;inequivalent_ids&#39;],</span>
+        <span class="c1">#                  (32, 24, 36))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/robocrystallographer
+    docker:
+      - image: materialsvirtuallab/circle-ci-pmg-py3:0.0.2
+        environment:
+          CODACY_PROJECT_TOKEN: "c62c7dddf4b14f0e938b3eddce06db19"
+          CI: "CIRCLE"
+    steps:
+      - checkout
+      - run:
+          command: |
+            export PATH=$HOME/miniconda3/bin:$PATH
+            conda create --quiet --yes --name test_env python=3.6
+            source activate test_env
+            conda install --quiet --yes numpy scipy matplotlib sympy pandas
+            conda install --quiet --yes -c openbabel openbabel
+            conda update --quiet --all
+            # Add executables and path.
+            for EXEPATH in `pwd`/cmd_line/*/Linux_64bit; do export PATH=$PATH:$EXEPATH; done
+            pip install -e .
+            pip install -e .[tests]
+            pip install coverage
+            pip install codacy-coverage
+            coverage run setup.py test
+            coverage xml
+            python-codacy-coverage -r coverage.xml
+          no_output_timeout: 3600
