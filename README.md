@@ -1,7 +1,8 @@
 # Robocrystallographer
 
 [![Pypi Repository](https://badge.fury.io/py/robocrys.svg)](https://travis-ci.org/hackingmaterials/robocrystallographer)
-[![Build Status](https://travis-ci.org/hackingmaterials/robocrystallographer.svg?branch=master)](https://badge.fury.io/py/robocrys)
+[![CircleCI](https://circleci.com/gh/hackingmaterials/robocrystallographer.svg?style=svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
 
 
 Robocrystallographer is a tool to generate text descriptions of crystal

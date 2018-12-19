@@ -220,7 +220,7 @@ class MineralMatcher(object):
         Args:
             structure: A structure.
         """
-        if self._structure == structure and self._mineral_db:
+        if self._structure == structure and self._mineral_db is not None:
             return
 
         data = self.mineral_db.copy()
