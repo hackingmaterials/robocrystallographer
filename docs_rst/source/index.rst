@@ -1,16 +1,6 @@
 .. include:: ../../README.rst
 
 
-Changelog, contributors
------------------------
-
-.. toctree::
-   :maxdepth: 1
-
-   changelog
-   contributors
-
-
 Code documentation
 ------------------
 
@@ -23,6 +13,8 @@ Code documentation
    :hidden:
    :maxdepth: 1
 
+   changelog
+   contributors
    modules
    contributing
    license

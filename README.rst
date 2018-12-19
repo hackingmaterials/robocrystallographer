@@ -44,7 +44,8 @@ The two core classes in robocrystallographer are:
 - ``StructureDescriber``: to turn the condensed structure into a text description.
 
 The format of the intermediate JSON representation is detailed on the
-`Condensed Structure Format page <https://google.com>`_ page.
+`Condensed Structure Format page
+<https://hackingmaterials.github.io/format.html>`_ page.
 A minimal working example for generating text descriptions is simply:
 
 .. code-block:: python
@@ -57,8 +58,8 @@ A minimal working example for generating text descriptions is simply:
     description = describer.describe(condensed_structure)
 
 Both classes have many options for customising the output of the structure
-descriptions. More information is provided in the `Module Documentation page
-<http://google.com>`_.
+descriptions. More information is provided in the `module documentation
+<https://hackingmaterials.github.io/>`_.
 
 Example Output
 ^^^^^^^^^^^^^^
@@ -94,20 +95,29 @@ system, OpenBabel can be installed using:
 
 More information is available `here <https://anaconda.org/openbabel/openbabel>`__.
 
-License
--------
 
-Robocrystallographer is released under a modified BSD license;
-the full text can be found `here
-<https://github.com/hackingmaterials/robocrystallographer/blob/master/LICENSE>`__.
+What’s new?
+-----------
+
+Track changes to robocrystallographer through the `Changelog
+<https://hackingmaterials.github.io/robocrystallographer/changelog.html>`_.
 
 Contributing
 ------------
 
 Robocrystallographer is in early development and we therefore welcome your
 contributions. Please read our `contribution guidelines
-<https://github.com/hackingmaterials/robocrystallographer/blob/master/CONTRIBUTING.rst>`_
-for more information.
+<https://hackingmaterials.github.io/robocrystallographer/contributing.html>`_
+for more information. We maintain a list of all
+contributors `here
+<https://hackingmaterials.github.io/robocrystallographer/contributors.html>`__.
+
+License
+-------
+
+Robocrystallographer is released under a modified BSD license;
+the full text can be found `here
+<https://hackingmaterials.github.io/robocrystallographer/license.html>`__.
 
 .. _pymatgen: http://pymatgen.org
 .. _mp-856: https://materialsproject.org/materials/mp-856/

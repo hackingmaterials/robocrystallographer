@@ -39,7 +39,8 @@ Contributing code modifications or additions through Github
 
 We use github to host code, to track issues and feature requests,
 as well as accept pull requests. We maintain a list of all
-contributors `here <http://atomate.org/contributors.html>`__.
+contributors `here
+<https://hackingmaterials.github.io/robocrystallographer/contributors.html>`__.
 
 Pull requests are the best way to propose changes to the codebase.
 Follow the `Github flow
