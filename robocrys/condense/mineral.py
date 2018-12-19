@@ -54,6 +54,8 @@ class MineralMatcher(object):
         self.aflow_initial_angle_tol = aflow_initial_angle_tol
         self.fingerprint_distance_cutoff = fingerprint_distance_cutoff
         self.use_fingerprint_matching = use_fingerprint_matching
+        self._structure = None
+        self._mineral_db = None
 
     def get_best_mineral_name(self, structure: IStructure) -> Dict[Text, Any]:
         """Gets the "best" mineral name for a structure.
@@ -151,7 +153,7 @@ class MineralMatcher(object):
         # quicker.
         def _match_prototype(structure_matcher, s):
             tags = []
-            for index, row in self.mineral_db_.iterrows():
+            for _, row in self._mineral_db.iterrows():
                 p = row['structure']
                 m = structure_matcher.fit_anonymous(p, s)
                 if m:
@@ -192,7 +194,7 @@ class MineralMatcher(object):
         """
         self._set_distance_matrix(structure)
 
-        mineral_db = self.mineral_db_
+        mineral_db = self._mineral_db
 
         if match_n_sp:
             ntypesp = structure.ntypesp
@@ -218,8 +220,7 @@ class MineralMatcher(object):
         Args:
             structure: A structure.
         """
-        if (hasattr(self, 'structure_') and self.structure_ == structure and
-                hasattr(self, 'mineral_db_')):
+        if self._structure == structure and self._mineral_db:
             return
 
         data = self.mineral_db.copy()
@@ -234,8 +235,8 @@ class MineralMatcher(object):
         data['distance'] = data['fingerprint'].apply(
             lambda x: get_fingerprint_distance(x, fingerprint))
 
-        self.mineral_db_ = data.sort_values(by='distance')
-        self.structure_ = structure
+        self._mineral_db = data.sort_values(by='distance')
+        self._structure = structure
 
 
 def _get_row_data(row: Dict) -> Dict[Text, Any]:
