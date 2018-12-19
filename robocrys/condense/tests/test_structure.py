@@ -48,7 +48,7 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(len(data['angles'][0][0]['corner']), 8)
         self.assertEqual(len(data['angles'][0][0]['edge']), 4)
         self.assertAlmostEqual(data['angles'][0][0]['edge'][0],
-                               101.62287790513848)
+                               101.62284671698572)
 
         # check components
         self.assertEqual(data['components'][0]['dimensionality'], 3)
@@ -88,7 +88,7 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(len(data['angles'][0][0]['corner']), 8)
         self.assertEqual(len(data['angles'][0][0]['edge']), 4)
         self.assertAlmostEqual(data['angles'][0][0]['edge'][0],
-                               101.62287790513848)
+                               101.62284671698572)
 
         # check components
         self.assertEqual(data['components'][0]['dimensionality'], 3)
