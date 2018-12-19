@@ -97,20 +97,19 @@ system, OpenBabel can be installed using:
 conda install -c openbabel openbabel
 ```
 
-### What’s new?
+## What’s new?
 
 Track changes to robocrystallographer through the 
 [Changelog](https://hackingmaterials.github.io/robocrystallographer/changelog.html).
 
-### Contributing
+## Contributing
 
 Robocrystallographer is in early development but we still welcome your
 contributions. Please read our (contribution guidelines)[https://hackingmaterials.github.io/robocrystallographer/contributing.html]
 for more information. We maintain a list of all
 contributors [here](https://hackingmaterials.github.io/robocrystallographer/contributors.html).
 
-License
--------
+## License
 
 Robocrystallographer is released under a modified BSD license;
 the full text can be found 
