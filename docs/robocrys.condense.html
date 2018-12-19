@@ -1,0 +1,1427 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.condense package &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="robocrys.describe package" href="robocrys.describe.html" />
+    <link rel="prev" title="robocrys package" href="robocrys.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="robocrys.describe.html" title="robocrys.describe package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="robocrys.html" title="robocrys package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >robocrys</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="robocrys.html" accesskey="U">robocrys package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="robocrys-condense-package">
+<h1>robocrys.condense package<a class="headerlink" href="#robocrys-condense-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-robocrys.condense.component">
+<span id="robocrys-condense-component-module"></span><h2>robocrys.condense.component module<a class="headerlink" href="#module-robocrys.condense.component" title="Permalink to this headline">¶</a></h2>
+<p>This module implements functions for handling structure components.</p>
+<dl class="function">
+<dt id="robocrys.condense.component.components_are_isomorphic">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">components_are_isomorphic</code><span class="sig-paren">(</span><em>component_a</em>, <em>component_b</em>, <em>use_weights=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#components_are_isomorphic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.components_are_isomorphic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the graphs of two components are isomorphic.</p>
+<p>Only takes into account graph connectivity and not local geometry (e.g. bond
+angles and distances).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>component_a</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The first component.</li>
+<li><strong>component_b</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The second component.</li>
+<li><strong>use_weights</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the graph edge weights in comparing graphs.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Whether the components are isomorphic.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.components_are_vdw_heterostructure">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">components_are_vdw_heterostructure</code><span class="sig-paren">(</span><em>components</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#components_are_vdw_heterostructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.components_are_vdw_heterostructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether a list of components form a van der Waals heterostructure.</p>
+<p>A heterostructure is defined here as a structure with more than one
+formula inequivalent 2D component.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Whether the list of components from a heterostructure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.filter_molecular_components">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">filter_molecular_components</code><span class="sig-paren">(</span><em>components</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#filter_molecular_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.filter_molecular_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Separate list of components into molecular and non-molecular components.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The filtered components as a tuple of <code class="docutils literal notranslate"><span class="pre">(molecular_components,</span>
+<span class="pre">other_components)</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_component_formula">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_component_formula</code><span class="sig-paren">(</span><em>component</em>, <em>use_iupac_formula=True</em>, <em>use_common_formulas=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_component_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_component_formula" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the reduced formula of a single component.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>component</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – A structure component, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas by the
+iupac “electronegativity” series, defined in Table VI of
+“Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)”.
+This ordering effectively follows the groups and rows of the
+periodic table, except the Lanthanides, Actanides and hydrogen. If
+set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the elements will be ordered according to the
+electronegativity values.</li>
+<li><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The formula and factor of the component.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_component_formula_and_factor">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_component_formula_and_factor</code><span class="sig-paren">(</span><em>component</em>, <em>use_iupac_formula=True</em>, <em>use_common_formulas=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_component_formula_and_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_component_formula_and_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the reduced formula and factor of a single component.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>component</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – A structure component, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas by the
+iupac “electronegativity” series, defined in Table VI of
+“Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)”.
+This ordering effectively follows the groups and rows of the
+periodic table, except the Lanthanides, Actanides and hydrogen. If
+set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the elements will be ordered according to the
+electronegativity values.</li>
+<li><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The formula and factor of the component.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_formula_from_components">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_formula_from_components</code><span class="sig-paren">(</span><em>components</em>, <em>molecules_first=False</em>, <em>use_iupac_formula=True</em>, <em>use_common_formulas=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_formula_from_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_formula_from_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstructs a chemical formula from structure components.</p>
+<p>The chemical formulas for the individual components will be grouped
+together. If two components share the same composition, they will be
+treated as equivalent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>.</li>
+<li><strong>molecules_first</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to put any molecules (zero-dimensional
+components) at the beginning of the formula.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas by the
+iupac “electronegativity” series, defined in Table VI of
+“Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)”.
+This ordering effectively follows the groups and rows of the
+periodic table, except the Lanthanides, Actanides and hydrogen. If
+set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the elements will be ordered according to the
+electronegativity values.</li>
+<li><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The chemical formula.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_formula_inequiv_components">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_formula_inequiv_components</code><span class="sig-paren">(</span><em>components</em>, <em>use_iupac_formula=True</em>, <em>use_common_formulas=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_formula_inequiv_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_formula_inequiv_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets and counts the inequivalent components based on their formuula.</p>
+<p>Note that the counting of compounds is different to in
+<code class="docutils literal notranslate"><span class="pre">get_sym_inequiv_equivalent</span></code>. I.e. the count is not the number of
+components with the same formula. For example, the count of the formula
+“GaAs” in a system with two Ga2As2 components would be 4.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>,
+with <code class="docutils literal notranslate"><span class="pre">inc_site_ids=True</span></code>.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas by the
+iupac “electronegativity” series, defined in Table VI of
+“Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)”.
+This ordering effectively follows the groups and rows of the
+periodic table, except the Lanthanides, Actanides and hydrogen. If
+set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the elements will be ordered according to the
+electronegativity values.</li>
+<li><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A list of the compositionally inequivalent components. Any duplicate
+components will only be returned once. The component objects are in the
+same format is given by
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a> but
+have two additional fields:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of formula units of this
+component. Note, this is not the number of components with the same
+formula. For example, the count of the formula “GaAs” in a system
+with two Ga2As2 components would be 4.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;formula&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The reduced formula of the component.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_reconstructed_structure">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_reconstructed_structure</code><span class="sig-paren">(</span><em>components</em>, <em>simplify_molecules=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_reconstructed_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_reconstructed_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstructs a structure from a list of components.</p>
+<p>Has the option to simplify molecular components into a single site
+positioned at the centre of mass of the molecular. If using this option,
+the components must have been generated with <code class="docutils literal notranslate"><span class="pre">inc_molecule_graph=True</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>,
+with <code class="docutils literal notranslate"><span class="pre">inc_molecule_graph=True</span></code>.</li>
+<li><strong>simplify_molecules</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to simplify the molecular components into
+a single site positioned at the centre of mass of the molecule.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.Structure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The reconstructed structure.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_structure_inequiv_components">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_structure_inequiv_components</code><span class="sig-paren">(</span><em>components</em>, <em>use_structure_graph=False</em>, <em>fingerprint_tol=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_structure_inequiv_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_structure_inequiv_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets and counts the structurally inequivalent components.</p>
+<p>Supports matching through StructureMatcher or by a combined structure graph/
+site fingerprint approach. For the latter method, the component data has to
+have been generated with <code class="docutils literal notranslate"><span class="pre">inc_graph=True</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>.
+If <code class="docutils literal notranslate"><span class="pre">use_structure_graph=True</span></code>, the components should be generated
+with <code class="docutils literal notranslate"><span class="pre">inc_graph=True</span></code>.</li>
+<li><strong>use_structure_graph</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the bonding graph and site
+fingerprints to determine if components are structurally equivalent.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.structure_matcher.html#pymatgen.analysis.structure_matcher.StructureMatcher" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.structure_matcher.StructureMatcher</span></code></a> will be
+used to compare the components.</li>
+<li><strong>fingerprint_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The fingerprint tolerance to determine whether two
+components have a matching fingerprint. This option is ignored if
+<code class="docutils literal notranslate"><span class="pre">use_structure_graph=False</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A list of the structurally inequivalent components. Any duplicate
+components will only be returned once. The component objects are in the
+same format is given by
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a> but
+have an additional field:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of times this component appears
+in the structure.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_sym_inequiv_components">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_sym_inequiv_components</code><span class="sig-paren">(</span><em>components</em>, <em>spg_analyzer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_sym_inequiv_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_sym_inequiv_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets and counts the symmetrically inequivalent components.</p>
+<p>Component data has to have been generated with <code class="docutils literal notranslate"><span class="pre">inc_site_ids=True</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>,
+with <code class="docutils literal notranslate"><span class="pre">inc_site_ids=True</span></code>.</li>
+<li><strong>spg_analyzer</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.symmetry.analyzer.html#pymatgen.symmetry.analyzer.SpacegroupAnalyzer" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpacegroupAnalyzer</span></code></a>) – A <cite>pymatgen.symmetry.analyzer.SpacegroupAnalyzer</cite> analyzer
+object for the structure containing the components.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A list of the symmetrically inequivalent components. Any duplicate
+components will only be returned once. The component objects are in the
+same format is given by
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a> but
+the additional property:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of times this component appears
+in the structure.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.component.get_vdw_heterostructure_information">
+<code class="descclassname">robocrys.condense.component.</code><code class="descname">get_vdw_heterostructure_information</code><span class="sig-paren">(</span><em>components</em>, <em>use_iupac_formula=True</em>, <em>use_common_formulas=True</em>, <em>inc_ordered_components=False</em>, <em>inc_intercalants=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/component.html#get_vdw_heterostructure_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.component.get_vdw_heterostructure_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets information about ordering of components in a vdw heterostructure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – A list of structure components, generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a>
+with <code class="docutils literal notranslate"><span class="pre">inc_orientation=True</span></code>.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas by the
+iupac “electronegativity” series, defined in Table VI of
+“Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)”.
+This ordering effectively follows the groups and rows of the
+periodic table, except the Lanthanides, Actanides and hydrogen. If
+set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the elements will be ordered according to the
+electronegativity values.</li>
+<li><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</li>
+<li><strong>inc_ordered_components</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to return a list of the ordered
+components. If False, just the component formulas will be returned.</li>
+<li><strong>inc_intercalants</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to return a list of the intercalants. If
+False, just the intercalant formulas will be returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&quot;repeating_unit&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[str]</span></code>): A <code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of formulas of the
+smallest repeating series of components. For example. if the
+structure consists of A and B components ordered as “A B A B A B”,
+the repeating unit is “A B”.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;num_repetitions&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of repetitions of the
+repeating unit that forms the overall structure. For example. if
+the structure consists of A and B components ordered as
+“A B A B A B”, the number of repetitions is 3.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;intercalant_formulas&quot;</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list[str]</span></code>): The formulas of the
+intercalated compounds.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;ordered_components&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[component]</span></code>): If
+<code class="docutils literal notranslate"><span class="pre">inc_ordered_components</span></code>, a <code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of components, ordered as
+they appear in the heteostructure stacking direction.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;intercalants&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[component]</span></code>: If <code class="docutils literal notranslate"><span class="pre">inc_intercalants</span></code>, a
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of intercalated components.</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Information on the heterostructure, as an <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> with they keys</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.condense.fingerprint">
+<span id="robocrys-condense-fingerprint-module"></span><h2>robocrys.condense.fingerprint module<a class="headerlink" href="#module-robocrys.condense.fingerprint" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="robocrys.condense.fingerprint.get_fingerprint_distance">
+<code class="descclassname">robocrys.condense.fingerprint.</code><code class="descname">get_fingerprint_distance</code><span class="sig-paren">(</span><em>structure_a</em>, <em>structure_b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/fingerprint.html#get_fingerprint_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.fingerprint.get_fingerprint_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the euclidean distance between the fingerprints of two structures.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>structure_a</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructure</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[+T_co]]) – The first structure or fingerprint. Can be provided as a
+structure or a fingerprint. If provided as a structure, the
+fingerprint will be calculated first, so generally it is quicker
+to pre-calculate the fingerprint if comparing against multiple
+structures in turn.</li>
+<li><strong>structure_b</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructure</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[+T_co]]) – The second structure or fingerprint. Can be provided as a
+structure or a fingerprint. If provided as a structure, the
+fingerprint will be calculated first, so generally it is quicker
+to pre-calculate the fingerprint if comparing against multiple
+structures in turn.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The euclidean distance between fingerprints as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.fingerprint.get_site_fingerprints">
+<code class="descclassname">robocrys.condense.fingerprint.</code><code class="descname">get_site_fingerprints</code><span class="sig-paren">(</span><em>structure</em>, <em>as_dict=True</em>, <em>preset='CrystalNNFingerprint_ops'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/fingerprint.html#get_site_fingerprints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.fingerprint.get_site_fingerprints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the fingerprint for all sites in a structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>structure</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructure</span></code></a>) – A structure.</li>
+<li><strong>as_dict</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to return the fingerprints as a dictionary of
+<code class="docutils literal notranslate"><span class="pre">{'op':</span> <span class="pre">val}</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>preset</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The preset to use when calculating the fingerprint. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">matminer.featurizers.structure.SiteStatsFingerprint`</span></code>
+for more details.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]], <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>The fingerprint for all sites in the structure. If <code class="docutils literal notranslate"><span class="pre">as_dict</span> <span class="pre">==</span> <span class="pre">True</span></code>,
+the data will be returned as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> containing the
+order parameters as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;op&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">}]</span>
+</pre></div>
+</div>
+<p>for each site. If <code class="docutils literal notranslate"><span class="pre">as_dict</span> <span class="pre">==</span> <span class="pre">False</span></code>, the data will be returned as a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numoy.ndarray</span></code> containing the fingerprint for each site as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">site_index</span><span class="p">][</span><span class="n">op_index</span><span class="p">]</span>
+</pre></div>
+</div>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.fingerprint.get_structure_fingerprint">
+<code class="descclassname">robocrys.condense.fingerprint.</code><code class="descname">get_structure_fingerprint</code><span class="sig-paren">(</span><em>structure</em>, <em>preset='CrystalNNFingerprint_ops'</em>, <em>stats=('mean'</em>, <em>'std_dev')</em>, <em>use_distance_cutoffs=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/fingerprint.html#get_structure_fingerprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.fingerprint.get_structure_fingerprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the fingerprint for a structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>structure</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructure</span></code></a>) – A structure.</li>
+<li><strong>preset</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The preset to use when calculating the fingerprint. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">matminer.featurizers.structure.SiteStatsFingerprint`</span></code>
+for more details.</li>
+<li><strong>stats</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]) – The stats to include in fingerprint. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">matminer.featurizers.structure.SiteStatsFingerprint`</span></code>
+for more details.</li>
+<li><strong>use_distance_cutoffs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use distance cutoffs when calculating
+the structure fingerprint.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The structure fingerprint as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.condense.mineral">
+<span id="robocrys-condense-mineral-module"></span><h2>robocrys.condense.mineral module<a class="headerlink" href="#module-robocrys.condense.mineral" title="Permalink to this headline">¶</a></h2>
+<p>This module provides tools for matching structures to known mineral class.</p>
+<dl class="class">
+<dt id="robocrys.condense.mineral.MineralMatcher">
+<em class="property">class </em><code class="descclassname">robocrys.condense.mineral.</code><code class="descname">MineralMatcher</code><span class="sig-paren">(</span><em>aflow_initial_ltol=0.2</em>, <em>aflow_initial_stol=0.3</em>, <em>aflow_initial_angle_tol=5.0</em>, <em>use_fingerprint_matching=True</em>, <em>fingerprint_distance_cutoff=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/mineral.html#MineralMatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.mineral.MineralMatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class to match a structure to a mineral name.</p>
+<p>Uses a precomputed database of minerals and their fingerprints, extracted
+from the AFLOW prototype database. For more information on this database
+see reference <a class="reference internal" href="#aflow" id="id1">[aflow]</a>:</p>
+<table class="docutils citation" frame="void" id="aflow" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[aflow]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>)</em> Mehl, M. J., Hicks, D., Toher, C., Levy, O., Hanson, R. M., Hart,
+G., &amp; Curtarolo, S. (2017), The AFLOW library of crystallographic
+prototypes: part 1. Computational Materials Science, 136,
+S1-S828. doi: 10.1016/j.commatsci.2017.01.017</td></tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>aflow_initial_ltol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The fractional length tolerance used in the AFLOW
+structure matching.</li>
+<li><strong>aflow_initial_stol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The site coordinate tolerance used in the AFLOW
+structure matching.</li>
+<li><strong>aflow_initial_angle_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The angle tolerance used in the AFLOW structure
+matching.</li>
+<li><strong>use_fingerprint_matching</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the fingerprint distance to
+match minerals.</li>
+<li><strong>fingerprint_distance_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Cutoff to determine how similar a match
+must be to be returned. The distance is measured between the
+structural fingerprints in euclidean space.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="robocrys.condense.mineral.MineralMatcher.get_aflow_matches">
+<code class="descname">get_aflow_matches</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/mineral.html#MineralMatcher.get_aflow_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.mineral.MineralMatcher.get_aflow_matches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets minerals for a structure by matching to AFLOW prototypes.</p>
+<p>Overrides
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.aflow_prototypes.html#pymatgen.analysis.aflow_prototypes.AflowPrototypeMatcher" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.aflow_prototypes.AflowPrototypeMatcher</span></code></a> to
+only return matches to prototypes with known mineral names.</p>
+<p>The AFLOW tolerance parameters (defined in the init method) are passed
+to a <a class="reference external" href="http://pymatgen.org/pymatgen.analysis.structure_matcher.html#pymatgen.analysis.structure_matcher.StructureMatcher" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.structure_matcher.StructureMatcher</span></code></a>
+object. The tolerances are gradually decreased until only a single match
+is found (if possible).</p>
+<p>The AFLOW structure prototypes are detailed in reference <a class="reference internal" href="#aflow" id="id2">[aflow]</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>structure</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructure</span></code></a>) – A pymatgen structure to match.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, sorted by how close the match is, with
+the keys ‘type’, ‘distance’, ‘structure’. Distance is the
+euclidean distance between the structure and prototype fingerprints.
+If no match was found within the tolerances, <code class="docutils literal notranslate"><span class="pre">None</span></code> will be
+returned.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.mineral.MineralMatcher.get_best_mineral_name">
+<code class="descname">get_best_mineral_name</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/mineral.html#MineralMatcher.get_best_mineral_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.mineral.MineralMatcher.get_best_mineral_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the “best” mineral name for a structure.</p>
+<p>Uses a combination of AFLOW prototype matching and fingerprinting to
+get the best mineral name.</p>
+<p>The AFLOW structure prototypes are detailed in reference <a class="reference internal" href="#aflow" id="id3">[aflow]</a>.</p>
+<p>The algorithm works as follows:</p>
+<ol class="arabic simple">
+<li>Check for AFLOW match. If single match return mineral name.</li>
+<li>If multiple matches, return the one with the smallest fingerprint
+distance.</li>
+<li>If no AFLOW match, get fingerprints within tolerance. If there are
+any matches, take the one with the smallest distance.</li>
+<li>If no fingerprints within tolerance, check get fingerprints without
+constraining the number of species types. If any matches, take the
+best one.</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>structure</strong> (<em>Structure</em>) – A pymatgen <code class="docutils literal notranslate"><span class="pre">Structure</span></code> object to match.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The mineral name information. Stored as a dict with the keys
+“type”, “distance”, “n_species_types_match”, corresponding to the
+mineral name, the fingerprint distance between the prototype and
+known mineral, and whether the number of species types in the
+structure matches the number in the known prototype, respectively.
+If no mineral match is determined, the mineral type will be
+<code class="docutils literal notranslate"><span class="pre">None</span></code>. If an AFLOW match is found, the distance will be set to
+-1.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.mineral.MineralMatcher.get_fingerprint_matches">
+<code class="descname">get_fingerprint_matches</code><span class="sig-paren">(</span><em>structure</em>, <em>max_n_matches=None</em>, <em>match_n_sp=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/mineral.html#MineralMatcher.get_fingerprint_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.mineral.MineralMatcher.get_fingerprint_matches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets minerals for a structure by matching to AFLOW fingerprints.</p>
+<p>Only AFLOW prototypes with mineral names are considered. The AFLOW
+structure prototypes are detailed in reference <a class="reference internal" href="#aflow" id="id4">[aflow]</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>structure</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IStructure</span></code></a>) – A structure to match.</li>
+<li><strong>max_n_matches</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Maximum number of matches to return. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code>
+to return all matches within the cutoff.</li>
+<li><strong>match_n_sp</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether the structure and mineral must have the same
+number of species. Defaults to True.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>, sorted by how close the match is, with
+the keys ‘type’, ‘distance’, ‘structure’. Distance is the
+euclidean distance between the structure and prototype fingerprints.
+If no match was found within the tolerances, <code class="docutils literal notranslate"><span class="pre">None</span></code> will be
+returned.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.condense.molecule">
+<span id="robocrys-condense-molecule-module"></span><h2>robocrys.condense.molecule module<a class="headerlink" href="#module-robocrys.condense.molecule" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a class to match molecule graphs to molecule names.</p>
+<p>Some functionality relies on having a working internet connection.</p>
+<dl class="class">
+<dt id="robocrys.condense.molecule.MoleculeNamer">
+<em class="property">class </em><code class="descclassname">robocrys.condense.molecule.</code><code class="descname">MoleculeNamer</code><span class="sig-paren">(</span><em>use_online_pubchem=True</em>, <em>name_preference=('traditional'</em>, <em>'iupac')</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/molecule.html#MoleculeNamer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.molecule.MoleculeNamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="robocrys.condense.molecule.MoleculeNamer.get_name_from_molecule_graph">
+<code class="descname">get_name_from_molecule_graph</code><span class="sig-paren">(</span><em>molecule_graph</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/molecule.html#MoleculeNamer.get_name_from_molecule_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.molecule.MoleculeNamer.get_name_from_molecule_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the name of a molecule from a molecule graph object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>molecule_graph</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.graphs.html#pymatgen.analysis.graphs.MoleculeGraph" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeGraph</span></code></a>) – A molecule graph.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The molecule name if a match is found else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.molecule.MoleculeNamer.get_name_from_pubchem">
+<code class="descname">get_name_from_pubchem</code><span class="sig-paren">(</span><em>smiles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/molecule.html#MoleculeNamer.get_name_from_pubchem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.molecule.MoleculeNamer.get_name_from_pubchem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to get the name of a molecule from the Pubchem website.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>smiles</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – A SMILES string.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The molecule name if a match is found else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="robocrys.condense.molecule.MoleculeNamer.molecule_graph_to_smiles">
+<em class="property">static </em><code class="descname">molecule_graph_to_smiles</code><span class="sig-paren">(</span><em>molecule_graph</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/molecule.html#MoleculeNamer.molecule_graph_to_smiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.molecule.MoleculeNamer.molecule_graph_to_smiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a molecule graph to SMILES string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>molecule_graph</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.graphs.html#pymatgen.analysis.graphs.MoleculeGraph" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeGraph</span></code></a>) – A molecule graph.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The SMILES representation of the molecule.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robocrys.condense.molecule.MoleculeNamer.name_sources">
+<code class="descname">name_sources</code><em class="property"> = ('traditional', 'iupac')</em><a class="headerlink" href="#robocrys.condense.molecule.MoleculeNamer.name_sources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.condense.site">
+<span id="robocrys-condense-site-module"></span><h2>robocrys.condense.site module<a class="headerlink" href="#module-robocrys.condense.site" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a class to extract geometry and neighbor information.</p>
+<dl class="class">
+<dt id="robocrys.condense.site.SiteAnalyzer">
+<em class="property">class </em><code class="descclassname">robocrys.condense.site.</code><code class="descname">SiteAnalyzer</code><span class="sig-paren">(</span><em>bonded_structure</em>, <em>use_symmetry_equivalent_sites=False</em>, <em>symprec=0.01</em>, <em>minimum_geometry_op=0.4</em>, <em>use_iupac_formula=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class to extract information on site geometry and bonding.</p>
+<dl class="attribute">
+<dt id="robocrys.condense.site.SiteAnalyzer.symmetry_labels">
+<code class="descname">symmetry_labels</code><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.symmetry_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> mapping the site indices to the symmetry
+label for that site. If two sites are symmetrically equivalent they
+share the same symmetry label. The numbering begins at 1 for each
+element in the structure.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robocrys.condense.site.SiteAnalyzer.equivalent_sites">
+<code class="descname">equivalent_sites</code><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.equivalent_sites" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of indices mapping each site in
+the structure to a symmetrically or structurally equivalent site,
+depending on the value of <code class="docutils literal notranslate"><span class="pre">use_symmetry_equivalent_sites</span></code>.</p>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>bonded_structure</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.graphs.html#pymatgen.analysis.graphs.StructureGraph" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureGraph</span></code></a>) – A bonded structure with nearest neighbor data
+included. For example generated using
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.CrystalNN" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.CrystalNN</span></code></a> or
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.VoronoiNN" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.VoronoiNN</span></code></a>.</li>
+<li><strong>use_symmetry_equivalent_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use symmetry to determine if
+sites are inequivalent. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the site geometry and (next)
+nearest neighbor information will be used.</li>
+<li><strong>symprec</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used when determining the symmetry of
+the structure. The symmetry can used both to determine if multiple
+sites are symmetrically equivalent and to obtain the symmetry labels
+for each site.</li>
+<li><strong>minimum_geometry_op</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The minimum geometrical order parameter for a
+geometry match to be returned.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas
+by the iupac “electronegativity” series, defined in
+Table VI of “Nomenclature of Inorganic Chemistry (IUPAC
+Recommendations 2005)”. This ordering effectively follows
+the groups and rows of the periodic table, except the
+Lanthanides, Actanides and hydrogen. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
+elements will be ordered according to the electronegativity values.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_all_bond_distance_summaries">
+<code class="descname">get_all_bond_distance_summaries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_all_bond_distance_summaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_all_bond_distance_summaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the bond distance summaries for all sites.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The bond distance summaries for all sites, formatted as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">from_site</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">to_site</span><span class="p">:</span> <span class="n">distances</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">from_site</span></code> and <code class="docutils literal notranslate"><span class="pre">to_site</span></code> are site indices and
+<code class="docutils literal notranslate"><span class="pre">distances</span></code> is a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a> of bond distances.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_all_connectivity_angle_summaries">
+<code class="descname">get_all_connectivity_angle_summaries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_all_connectivity_angle_summaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_all_connectivity_angle_summaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the connectivity angle summaries for all sites.</p>
+<p>The connectivity angles are the angles between a site and its
+next nearest neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The connectivity angle summaries for all sites, formatted as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">from_site</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">to_site</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">connectivity</span><span class="p">:</span> <span class="n">angles</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">from_site</span></code> and <code class="docutils literal notranslate"><span class="pre">to_site</span></code> are the site indices of
+two sites, <code class="docutils literal notranslate"><span class="pre">connectivity</span></code> is the connectivity type (e.g.
+<code class="docutils literal notranslate"><span class="pre">'edge'</span></code> or <code class="docutils literal notranslate"><span class="pre">'face'</span></code>) and <code class="docutils literal notranslate"><span class="pre">angles</span></code> is a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of
+<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a> of connectivity angles.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_all_site_summaries">
+<code class="descname">get_all_site_summaries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_all_site_summaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_all_site_summaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the site summaries for all sites.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The site summaries for all sites, formatted as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">site_index</span><span class="p">:</span> <span class="n">site_summary</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">site_summary</span></code> has the same format as produced by
+<a class="reference internal" href="#robocrys.condense.site.SiteAnalyzer.get_site_summary" title="robocrys.condense.site.SiteAnalyzer.get_site_summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SiteAnalyzer.get_site_summary()</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_bond_distance_summary">
+<code class="descname">get_bond_distance_summary</code><span class="sig-paren">(</span><em>site_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_bond_distance_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_bond_distance_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the bond distance summary for a site.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The site index (zero based).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The bonding data for the site, formatted as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">to_site</span><span class="p">:</span> <span class="p">[</span><span class="n">dist_1</span><span class="p">,</span> <span class="n">dist_2</span><span class="p">,</span> <span class="n">dist_3</span><span class="p">,</span> <span class="o">...</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">to_site</span></code> is the index of a nearest neighbor site
+and <code class="docutils literal notranslate"><span class="pre">dist_1</span></code> etc are the bond distances as <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_connectivity_angle_summary">
+<code class="descname">get_connectivity_angle_summary</code><span class="sig-paren">(</span><em>site_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_connectivity_angle_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_connectivity_angle_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the connectivity angle summary for a site.</p>
+<p>The connectivity angles are the angles between a site and its
+next nearest neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The site index (zero based).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The connectivity angle data for the site, formatted as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="n">to_site</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">connectivity_a</span><span class="p">:</span> <span class="p">[</span><span class="n">angle_1</span><span class="p">,</span> <span class="n">angle_2</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+        <span class="n">connectivity_b</span><span class="p">:</span> <span class="p">[</span><span class="n">angle_1</span><span class="p">,</span> <span class="n">angle_2</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">to_site</span></code> is the index of a next nearest neighbor site,
+<code class="docutils literal notranslate"><span class="pre">connectivity_a</span></code> etc are the bonding connectivity type, e.g.
+<code class="docutils literal notranslate"><span class="pre">'edge'</span></code> or <code class="docutils literal notranslate"><span class="pre">'corner'</span></code> (for edge-sharing and corner-sharing
+connectivity), and <code class="docutils literal notranslate"><span class="pre">angle_1</span></code> etc are the bond angles as
+<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_inequivalent_site_indices">
+<code class="descname">get_inequivalent_site_indices</code><span class="sig-paren">(</span><em>site_indices</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_inequivalent_site_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_inequivalent_site_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the inequivalent site indices from a list of site indices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_indices</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – The site indices.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The inequivalent site indices. For example, if a structure has 4
+sites where the first two are equivalent and the last two are
+inequivalent. If  <code class="docutils literal notranslate"><span class="pre">site_indices=[0,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code> the output will be:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_nearest_neighbors">
+<code class="descname">get_nearest_neighbors</code><span class="sig-paren">(</span><em>site_index</em>, <em>inc_inequivalent_site_index=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_nearest_neighbors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_nearest_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets information about the bonded nearest neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The site index (zero based).</li>
+<li><strong>inc_inequivalent_site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to include the inequivalent
+site indices in the nearest neighbor information.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>For each site bonded to <code class="docutils literal notranslate"><span class="pre">site_index</span></code>, returns a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>
+with the format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="n">el</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">:</span> <span class="n">distance</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">inc_inequivalent_site_index=True</span></code>, the data will have an
+additional key <code class="docutils literal notranslate"><span class="pre">'inequiv_index'</span></code> corresponding to the inequivalent
+site index. E.g. if two sites are structurally/symmetrically
+equivalent (depending on the value of <code class="docutils literal notranslate"><span class="pre">self.use_symmetry</span></code> then
+they will have the same <code class="docutils literal notranslate"><span class="pre">inequiv_index</span></code>.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_next_nearest_neighbors">
+<code class="descname">get_next_nearest_neighbors</code><span class="sig-paren">(</span><em>site_index</em>, <em>inc_inequivalent_site_index=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_next_nearest_neighbors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_next_nearest_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets information about the bonded next nearest neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The site index (zero based).</li>
+<li><strong>inc_inequivalent_site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to include the inequivalent
+site indices.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A list of the next nearest neighbor information. For each next
+nearest neighbor site, returns a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> with the format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="n">el</span><span class="p">,</span> <span class="s1">&#39;connectivity&#39;</span><span class="p">:</span> <span class="n">con</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="n">geom</span><span class="p">,</span>
+ <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="n">angles</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">connectivity</span></code> property is the connectivity type to the
+next nearest neighbor, e.g. “face”, “corner”, or
+“edge”. The <code class="docutils literal notranslate"><span class="pre">geometry</span></code> property gives the geometry of the
+next nearest neighbor site. See the <code class="docutils literal notranslate"><span class="pre">get_site_geometry</span></code> method for
+the format of this data. The <code class="docutils literal notranslate"><span class="pre">angles</span></code> property gives the bond
+angles between the site and the next nearest neighbour. Returned as
+a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>. Multiple bond angles are given when
+the two sites share more than nearest neighbor (e.g. if they are
+face-sharing or edge-sharing).
+If <code class="docutils literal notranslate"><span class="pre">inc_inequivalent_site_index=True</span></code>, the data will have an
+additional key <code class="docutils literal notranslate"><span class="pre">'inequiv_index'</span></code> corresponding to the inequivalent
+site index. E.g. if two sites are structurally/symmetrically
+equivalent (depending on the value of <code class="docutils literal notranslate"><span class="pre">self.use_symmetry</span></code> then
+they will have the same <code class="docutils literal notranslate"><span class="pre">inequiv_index</span></code>.</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_site_geometry">
+<code class="descname">get_site_geometry</code><span class="sig-paren">(</span><em>site_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_site_geometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_site_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the bonding geometry of a site.</p>
+<p>For example, “octahedral” or “square-planar”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The site index (zero based).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The site geometry information formatted at as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">geometry_type</span><span class="p">,</span> <span class="s1">&#39;likeness&#39;</span><span class="p">:</span> <span class="n">order_parameter</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">geometry_type</span></code> is a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> corresponding to the
+geometry type (e.g. octahedral) and <code class="docutils literal notranslate"><span class="pre">order_parameter</span></code> is a
+<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a> indicating whether how close the geometry is to the
+perfect geometry. If the largest geometrical order parameter falls
+beneath <code class="xref py py-attr docutils literal notranslate"><span class="pre">robocrys.site.SiteAnalyzer.minimum_geometry_op</span></code>, the
+geometry type will be returned as “X-coordinate”, where X is the
+coordination number.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.condense.site.SiteAnalyzer.get_site_summary">
+<code class="descname">get_site_summary</code><span class="sig-paren">(</span><em>site_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#SiteAnalyzer.get_site_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.SiteAnalyzer.get_site_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a summary of the site information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The site index (zero based).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A summary of the site information, formatted as:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="s1">&#39;Mo4+&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;likesness&#39;</span><span class="p">:</span> <span class="mf">0.5544</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal pyramidal&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;nn&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="s1">&#39;nnn&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;edge&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
+    <span class="s1">&#39;poly_formula&#39;</span><span class="p">:</span> <span class="s1">&#39;S6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sym_labels&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">element</span></code> is the species string (if the species has
+oxidation states, these will be included in the string). The
+<code class="docutils literal notranslate"><span class="pre">geometry</span></code> key is the geometry information as produced by
+<a class="reference internal" href="#robocrys.condense.site.SiteAnalyzer.get_site_geometry" title="robocrys.condense.site.SiteAnalyzer.get_site_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SiteAnalyzer.get_site_geometry()</span></code></a>. The <cite>nn</cite> key lists
+the site indices of the nearest neighbor bonding sites. Note the
+inequivalent site index is given for each site. The <cite>nnn</cite> key gives
+the next nearest neighbor information, broken up by the connectivity
+to that neighbor. The <code class="docutils literal notranslate"><span class="pre">poly_formula</span></code> key gives the formula of the
+bonded nearest neighbors. <code class="docutils literal notranslate"><span class="pre">poly_formula</span></code> will be <code class="docutils literal notranslate"><span class="pre">None</span></code> if the
+site geometry is not in <a class="reference internal" href="robocrys.html#robocrys.util.connected_geometries" title="robocrys.util.connected_geometries"><code class="xref py py-data docutils literal notranslate"><span class="pre">robocrys.util.connected_geometries</span></code></a>.
+The <code class="docutils literal notranslate"><span class="pre">sym_labels</span></code> key gives the symmetry labels of the site. If
+two sites are symmetrically equivalent they share the same symmetry
+label. The numbering begins at 1 for each element in the structure.
+If <code class="xref py py-attr docutils literal notranslate"><span class="pre">SiteAnalyzer.use_symmetry_inequivalnt_sites</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+each site may have more than one symmetry label, as structural
+features have instead been used to determine the site equivalences,
+i.e. two sites are symmetrically distinct but share the same
+geometry, nearest neighbor and next nearest neighbor properties.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.site.geometries_match">
+<code class="descclassname">robocrys.condense.site.</code><code class="descname">geometries_match</code><span class="sig-paren">(</span><em>geometry_a</em>, <em>geometry_b</em>, <em>likeness_tol=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#geometries_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.geometries_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether two site geometries match.</p>
+<p>Geometry data should be formatted the same as produced by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.site.SiteAnalyzer.get_site_geometry()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>geometry_a</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The first set of geometry data.</li>
+<li><strong>geometry_b</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The second set of geometry data.</li>
+<li><strong>likeness_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used to determine if two likeness parameters
+are the same.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Whether the two geometries are the same.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.site.nn_summaries_match">
+<code class="descclassname">robocrys.condense.site.</code><code class="descname">nn_summaries_match</code><span class="sig-paren">(</span><em>nn_sites_a</em>, <em>nn_sites_b</em>, <em>bond_dist_tol=0.01</em>, <em>match_bond_dists=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#nn_summaries_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.nn_summaries_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether two sets of nearest neighbors match.</p>
+<p>Nearest neighbor data should be formatted the same as produced by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.site.SiteAnalyzer.get_nearest_neighbors()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nn_sites_a</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]]) – The first set of nearest neighbors.</li>
+<li><strong>nn_sites_b</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]]) – The second set of nearest neighbors.</li>
+<li><strong>bond_dist_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used to determine if two bond lengths
+are the same.</li>
+<li><strong>match_bond_dists</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to consider bond distances when matching.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Whether the two sets of nearest neighbors match.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.condense.site.nnn_summaries_match">
+<code class="descclassname">robocrys.condense.site.</code><code class="descname">nnn_summaries_match</code><span class="sig-paren">(</span><em>nnn_sites_a</em>, <em>nnn_sites_b</em>, <em>likeness_tol=0.001</em>, <em>bond_angle_tol=0.1</em>, <em>match_bond_angles=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/site.html#nnn_summaries_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.site.nnn_summaries_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether two sets of next nearest neighbors match.</p>
+<p>Next nearest neighbor data should be formatted the same as produced by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.site.SiteAnalyzer.get_next_nearest_neighbors()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nnn_sites_a</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – The first set of next nearest neighbors.</li>
+<li><strong>nnn_sites_b</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]) – The second set of next nearest neighbors.</li>
+<li><strong>likeness_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used to determine if two likeness parameters
+are the same.</li>
+<li><strong>bond_angle_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used to determine if two bond angles
+are the same.</li>
+<li><strong>match_bond_angles</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to consider bond angles when matching.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Whether the two sets of next nearest neighbors match.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.condense.structure">
+<span id="robocrys-condense-structure-module"></span><h2>robocrys.condense.structure module<a class="headerlink" href="#module-robocrys.condense.structure" title="Permalink to this headline">¶</a></h2>
+<p>This module defines a class for condensing structures into dict representations.</p>
+<dl class="class">
+<dt id="robocrys.condense.structure.StructureCondenser">
+<em class="property">class </em><code class="descclassname">robocrys.condense.structure.</code><code class="descname">StructureCondenser</code><span class="sig-paren">(</span><em>use_conventional_cell=True</em>, <em>near_neighbors=None</em>, <em>mineral_matcher=None</em>, <em>use_symmetry=False</em>, <em>symprec=0.01</em>, <em>simplify_molecules=True</em>, <em>use_iupac_formula=True</em>, <em>use_common_formulas=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/structure.html#StructureCondenser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.structure.StructureCondenser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class to transform a structure into an intermediate dict representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>use_conventional_cell</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to always use the convention cell
+representation of the structure.</li>
+<li><strong>near_neighbors</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.NearNeighbors" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NearNeighbors</span></code></a>]) – A <code class="docutils literal notranslate"><span class="pre">NearNeighbors</span></code> instance used to calculate the
+bonding in the structure. For example, one of
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.CrystalNN" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.CrystalNN</span></code></a>,
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.VoronoiNN" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.VoronoiNN</span></code></a>, etc. Defaults to
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case
+<a class="reference external" href="http://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.CrystalNN" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.CrystalNN</span></code></a> will be used.</li>
+<li><strong>mineral_matcher</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#robocrys.condense.mineral.MineralMatcher" title="robocrys.condense.mineral.MineralMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">MineralMatcher</span></code></a>]) – A <code class="docutils literal notranslate"><span class="pre">MineralMatcher</span></code> instance. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>
+in which case the default <code class="docutils literal notranslate"><span class="pre">MineralMatcher</span></code> settings will be used.</li>
+<li><strong>use_symmetry</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use symmetry to determine if structure
+compoents and sites are equivalent. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the site geometry
+and bonding graph information will be used.</li>
+<li><strong>symprec</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used when determining the symmetry of
+the structure. The symmetry is used to determine if multiple
+sites are symmetrically equivalent. If <code class="docutils literal notranslate"><span class="pre">use_symmetry=False</span></code> this
+option will be ignored.</li>
+<li><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas
+by the iupac “electronegativity” series, defined in
+Table VI of “Nomenclature of Inorganic Chemistry (IUPAC
+Recommendations 2005)”. This ordering effectively follows
+the groups and rows of the periodic table, except the
+Lanthanides, Actanides and hydrogen. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
+elements will be ordered according to the electronegativity values.</li>
+<li><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="robocrys.condense.structure.StructureCondenser.condense_structure">
+<code class="descname">condense_structure</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/structure.html#StructureCondenser.condense_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.condense.structure.StructureCondenser.condense_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condenses the structure into an intermediate dict representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>structure</strong> (<a class="reference external" href="http://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.Structure" title="(in pymatgen v2018.12.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code></a>) – A pymatgen structure object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The condensed structure information. The data is formatted as a
+<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> with a fixed set of keys. For example, the condensed
+representation of MoS2 is shown below:<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;mineral&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Molybdenite&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+             <span class="s1">&#39;n_species_type_match&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="s1">&#39;simplified&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+ <span class="s1">&#39;formula&#39;</span><span class="p">:</span> <span class="s1">&#39;MoS2&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;spg_symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;P6_3/mmc&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;crystal_system&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagonal&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;dimensionality&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+ <span class="s1">&#39;sites&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="s1">&#39;Mo4+&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;likeness&#39;</span><span class="p">:</span> <span class="mf">0.5566</span><span class="p">,</span>
+                            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal pyramidal&#39;</span><span class="p">},</span>
+               <span class="s1">&#39;nn&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+               <span class="s1">&#39;nnn&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;edge&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
+               <span class="s1">&#39;poly_formula&#39;</span><span class="p">:</span> <span class="s1">&#39;S6&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;sym_labels&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)},</span>
+           <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="s1">&#39;S2-&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;likeness&#39;</span><span class="p">:</span> <span class="mf">0.8888</span><span class="p">,</span>
+                   <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;3-coordinate&#39;</span><span class="p">},</span>
+               <span class="s1">&#39;nn&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+               <span class="s1">&#39;nnn&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;corner&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                       <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]},</span>
+               <span class="s1">&#39;poly_formula&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="s1">&#39;sym_labels&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)}},</span>
+ <span class="s1">&#39;distances&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">,</span> <span class="o">...</span><span class="p">]},</span>
+               <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">]}},</span>
+ <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;edge&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">82.60</span><span class="p">,</span> <span class="mf">82.60</span><span class="p">,</span> <span class="mf">82.60</span><span class="p">,</span> <span class="o">...</span><span class="p">]}},</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;corner&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">135.20</span><span class="p">,</span> <span class="mf">82.60</span><span class="p">,</span> <span class="mf">135.20</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                    <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">80.70</span><span class="p">,</span> <span class="mf">80.70</span><span class="p">,</span> <span class="mf">80.70</span><span class="p">]}}},</span>
+ <span class="s1">&#39;components&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;formula&#39;</span><span class="p">:</span>
+                    <span class="s1">&#39;MoS2&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;sites&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+                    <span class="s1">&#39;dimensionality&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="s1">&#39;molecule_name&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}},</span>
+ <span class="s1">&#39;component_makeup&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+ <span class="s1">&#39;vdw_heterostructure_info&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;intercalant_formulas&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                              <span class="s1">&#39;num_repetitions&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                              <span class="s1">&#39;repeating_unit&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MoS2&#39;</span><span class="p">]}}</span>
+</pre></div>
+</div>
+<p>For more information on the <code class="docutils literal notranslate"><span class="pre">mineral</span></code> key, see
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">StructureCondenser._condense_mineral()</span></code>. For more information
+on the <code class="docutils literal notranslate"><span class="pre">site</span></code> key see <code class="xref py py-meth docutils literal notranslate"><span class="pre">SiteAnalyzer.get_all_site_summaries()</span></code>.
+For more information on the <code class="docutils literal notranslate"><span class="pre">distance</span></code> and <code class="docutils literal notranslate"><span class="pre">angles</span></code> keys, see
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">SiteAnalyzer.get_all_bond_distance_summaries()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">SiteAnalyzer.get_all_connectivity_angle_summaries()</span></code>. For more
+information on the <code class="docutils literal notranslate"><span class="pre">components</span></code> and <code class="docutils literal notranslate"><span class="pre">components_makeup</span></code> keys,
+see <code class="xref py py-meth docutils literal notranslate"><span class="pre">StructureCondenser._condense_components()</span></code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.condense">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-robocrys.condense" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">robocrys.condense package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense.component">robocrys.condense.component module</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense.fingerprint">robocrys.condense.fingerprint module</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense.mineral">robocrys.condense.mineral module</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense.molecule">robocrys.condense.molecule module</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense.site">robocrys.condense.site module</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense.structure">robocrys.condense.structure module</a></li>
+<li><a class="reference internal" href="#module-robocrys.condense">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="robocrys.html"
+                        title="previous chapter">robocrys package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="robocrys.describe.html"
+                        title="next chapter">robocrys.describe package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/robocrys.condense.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="robocrys.describe.html" title="robocrys.describe package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="robocrys.html" title="robocrys package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >robocrys</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="robocrys.html" >robocrys package</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+
+  </body>
+</html>

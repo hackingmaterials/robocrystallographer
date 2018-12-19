@@ -1,0 +1,236 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Robocrystallographer &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="robocrys program" href="cli.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cli.html" title="robocrys program"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Robocrystallographer 0.1.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="robocrystallographer">
+<h1>Robocrystallographer<a class="headerlink" href="#robocrystallographer" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://pypi.org/project/robocrys/"><img alt="PyPI version" src="https://badge.fury.io/py/robocrys.svg" /></a>
+<a class="reference external image-reference" href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/47f851408d364efa9a8cdf0ed844cd8b" /></a>
+<a class="reference external image-reference" href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Coverage/47f851408d364efa9a8cdf0ed844cd8b" /></a>
+<a class="reference external image-reference" href="https://circleci.com/gh/hackingmaterials/robocrystallographer"><img alt="CircleCI" src="https://circleci.com/gh/hackingmaterials/robocrystallographer.svg?style=svg" /></a>
+<p>Robocrystallographer is a tool to generate text descriptions of crystal
+structures. Similar to how a real-life crystallographer would analyse a
+structure, robocrystallographer looks at the symmetry, local environment, and
+extended connectivity when generating a description. The package includes
+utilities for identifying molecule names, component orientations,
+heterostructure information, and more…</p>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Robocrystallographer can be used from the command-line or from a python API.
+The package integrates with the <a class="reference external" href="https://materialsproject.org">Materials Project</a>
+to for allow generation of structure descriptions directly from Materials Project
+ids. For example, to generate the description of SnO<span class="raw-html-m2r"><sub>2</sub></span>
+(<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>), one
+can simply run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>robocrys mp-856
+</pre></div>
+</div>
+<p>Alternatively, a structure file can be specified in place of a Materials Project id.
+Robocrystallographer supports the same file formats as
+<a class="reference external" href="http://pymatgen.org">pymatgen</a>, including the Crystallographic Information
+Format (CIF), and common electronic structure package formats such as POSCAR files.
+More information can be found on the
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/cli.html">command-line interface page</a>.</p>
+<div class="section" id="python-interface">
+<h3>Python interface<a class="headerlink" href="#python-interface" title="Permalink to this headline">¶</a></h3>
+<p>The two core classes in robocrystallographer are:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">StructureCondenser</span></code>: to condense the structure into an intermediate JSON
+representation.</li>
+<li><code class="docutils literal notranslate"><span class="pre">StructureDescriber</span></code>: to turn the condensed structure into a text description.</li>
+</ul>
+<p>A minimal working example for generating text descriptions is simply:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span>
+
+<span class="n">condenser</span> <span class="o">=</span> <span class="n">StructureCondenser</span><span class="p">()</span>
+<span class="n">describer</span> <span class="o">=</span> <span class="n">StructureDescriber</span><span class="p">()</span>
+
+<span class="n">condensed_structure</span> <span class="o">=</span> <span class="n">condenser</span><span class="o">.</span><span class="n">condense_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+<span class="n">description</span> <span class="o">=</span> <span class="n">describer</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">condensed_structure</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">structure</span></code> is a pymatgen Structure object. Both classes have many
+options for customising the output of the structure
+descriptions. More information is provided in the
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/modules">module documentation</a>.</p>
+</div>
+<div class="section" id="intermediate-json-format">
+<h3>Intermediate JSON format<a class="headerlink" href="#intermediate-json-format" title="Permalink to this headline">¶</a></h3>
+<p>The format of the intermediate JSON representation is detailed on the
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/format.html">condensed structure format page</a>.</p>
+</div>
+<div class="section" id="example-output">
+<h3>Example output<a class="headerlink" href="#example-output" title="Permalink to this headline">¶</a></h3>
+<p>An example of the output generated by robocrystallographer for SnO<span class="raw-html-m2r"><sub>2</sub></span> (<a class="reference external" href="https://materialsproject.org/materials/mp-856/">mp-856</a>) is given below:</p>
+<p align="center">
+<img alt="SnO2 crystal structure" src="https://raw.githubusercontent.com/hackingmaterials/robocrystallographer/master/docs/_static/rutile.jpg" height=
+"200px">
+</p><div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>SnO2 is Rutile structured and crystallizes in the tetragonal P4_2/mnm space
+group. The structure is three-dimensional. Sn(1) is bonded to six equivalent
+O(1) atoms to form a mixture of edge and corner-sharing SnO6 octahedra. The
+corner-sharing octahedral tilt angles are 51°. All Sn(1)–O(1) bond lengths
+are 2.09 Å. O(1) is bonded in a trigonal planar geometry to three equivalent
+Sn(1) atoms.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Robocrystallographer can be installed using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install robocrys
+</pre></div>
+</div>
+<p>Robocrystallographer requires Python 3.6+. The
+<a class="reference external" href="http://openbabel.org/wiki/Python">OpenBabel</a>
+package is required to determine molecule names. This is an optional
+requirement but its use is recommended for best
+results. If you are using the <a class="reference external" href="https://conda.io/">Conda</a> package management
+system, OpenBabel can be installed using:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>conda install -c openbabel openbabel
+</pre></div>
+</div>
+</div>
+<div class="section" id="whats-new">
+<h2>What’s new?<a class="headerlink" href="#whats-new" title="Permalink to this headline">¶</a></h2>
+<p>Track changes to robocrystallographer through the
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/changelog.html">Changelog</a>.</p>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>Robocrystallographer is in early development but we still welcome your
+contributions. Please read our <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/contributing.html">contribution guidelines</a>
+for more information. We maintain a list of all
+contributors <a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/contributors.html">here</a>.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>Robocrystallographer is released under a modified BSD license;
+the full text can be found
+<a class="reference external" href="https://hackingmaterials.github.io/robocrystallographer/license.html">here</a>.</p>
+</div>
+<div class="section" id="code-documentation">
+<h2>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="modules">Python API</a></li>
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Robocrystallographer</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#python-interface">Python interface</a></li>
+<li><a class="reference internal" href="#intermediate-json-format">Intermediate JSON format</a></li>
+<li><a class="reference internal" href="#example-output">Example output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#whats-new">What’s new?</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#license">License</a></li>
+<li><a class="reference internal" href="#code-documentation">Code documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cli.html"
+                        title="next chapter"><code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cli.html" title="robocrys program"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Robocrystallographer 0.1.2 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+
+  </body>
+</html>

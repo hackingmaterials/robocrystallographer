@@ -1,0 +1,2 @@
+include LICENSE
+include robocrys/condense/*.json.gz

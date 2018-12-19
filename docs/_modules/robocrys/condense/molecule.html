@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>robocrys.condense.molecule &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for robocrys.condense.molecule</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module implements a class to match molecule graphs to molecule names.</span>
+
+<span class="sd">Some functionality relies on having a working internet connection.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span>
+<span class="kn">from</span> <span class="nn">pubchempy</span> <span class="k">import</span> <span class="n">get_compounds</span><span class="p">,</span> <span class="n">BadRequestError</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen</span> <span class="k">import</span> <span class="n">loadfn</span>
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.graphs</span> <span class="k">import</span> <span class="n">MoleculeGraph</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.babel</span> <span class="k">import</span> <span class="n">BabelMolAdaptor</span>
+
+
+<div class="viewcode-block" id="MoleculeNamer"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.molecule.MoleculeNamer">[docs]</a><span class="k">class</span> <span class="nc">MoleculeNamer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">name_sources</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;traditional&#39;</span><span class="p">,</span> <span class="s1">&#39;iupac&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_online_pubchem</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">name_preference</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">name_sources</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Class to match molecule graphs to known molecule names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            use_online_pubchem: Whether to try using the Pubchem website for</span>
+<span class="sd">                matching molecules if a match is not found in the offline</span>
+<span class="sd">                database. Defaults to ``True``. Requires a working internet</span>
+<span class="sd">                connection and for the ``pubchempy`` package to be installed.</span>
+<span class="sd">            name_preference: The order of preference for determining compound</span>
+<span class="sd">                names. Options are &quot;traditional&quot;, and &quot;iupac&quot;. If the</span>
+<span class="sd">                first option is not available, the subsequent options will be</span>
+<span class="sd">                used. Should be provided as a tuple of options, from 1st choice</span>
+<span class="sd">                to last.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">db_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;robocrys.condense&#39;</span><span class="p">,</span> <span class="s1">&#39;molecule_db.json.gz&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecule_db</span> <span class="o">=</span> <span class="n">loadfn</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matched_molecules</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_online_pubchem</span> <span class="o">=</span> <span class="n">use_online_pubchem</span>
+
+        <span class="c1"># append the sources list to the end in case the user only supplies</span>
+        <span class="c1"># a single preference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_preference</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">name_preference</span><span class="p">)</span> <span class="o">+</span>
+                                     <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_sources</span><span class="p">))</span>
+
+<div class="viewcode-block" id="MoleculeNamer.get_name_from_molecule_graph"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.molecule.MoleculeNamer.get_name_from_molecule_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_name_from_molecule_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule_graph</span><span class="p">:</span> <span class="n">MoleculeGraph</span><span class="p">,</span>
+                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets the name of a molecule from a molecule graph object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecule_graph: A molecule graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The molecule name if a match is found else ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">smiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_graph_to_smiles</span><span class="p">(</span><span class="n">molecule_graph</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">smiles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">match</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">smiles</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_molecules</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_molecules</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">smiles</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_db</span><span class="p">:</span>
+
+            <span class="c1"># we should use the first preference for which there is a match</span>
+            <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_preference</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_db</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="ow">and</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">molecule_db</span><span class="p">[</span><span class="n">source</span><span class="p">][</span><span class="n">smiles</span><span class="p">]):</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_db</span><span class="p">[</span><span class="n">smiles</span><span class="p">][</span><span class="n">source</span><span class="p">]</span>
+                    <span class="k">break</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_online_pubchem</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name_from_pubchem</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_match</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">match</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MoleculeNamer.get_name_from_pubchem"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.molecule.MoleculeNamer.get_name_from_pubchem">[docs]</a>    <span class="k">def</span> <span class="nf">get_name_from_pubchem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smiles</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Tries to get the name of a molecule from the Pubchem website.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            smiles: A SMILES string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The molecule name if a match is found else ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">comp</span> <span class="o">=</span> <span class="n">get_compounds</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;smiles&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">BadRequestError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">traditional</span> <span class="o">=</span> <span class="n">comp</span><span class="o">.</span><span class="n">synonyms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">comp</span><span class="o">.</span><span class="n">synonyms</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;traditional&#39;</span><span class="p">:</span> <span class="n">traditional</span><span class="p">,</span>
+                 <span class="s1">&#39;iupac&#39;</span><span class="p">:</span> <span class="n">comp</span><span class="o">.</span><span class="n">iupac_name</span><span class="p">}</span>
+
+        <span class="n">match</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_preference</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">names</span> <span class="ow">and</span> <span class="n">names</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_match</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">match</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MoleculeNamer.molecule_graph_to_smiles"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.molecule.MoleculeNamer.molecule_graph_to_smiles">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">molecule_graph_to_smiles</span><span class="p">(</span><span class="n">molecule_graph</span><span class="p">:</span> <span class="n">MoleculeGraph</span>
+                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Converts a molecule graph to SMILES string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecule_graph: A molecule graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The SMILES representation of the molecule.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bma</span> <span class="o">=</span> <span class="n">BabelMolAdaptor</span><span class="o">.</span><span class="n">from_molecule_graph</span><span class="p">(</span><span class="n">molecule_graph</span><span class="p">)</span>
+            <span class="n">pbmol</span> <span class="o">=</span> <span class="n">bma</span><span class="o">.</span><span class="n">pybel_mol</span>
+            <span class="k">return</span> <span class="n">pbmol</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;smi&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Molecule naming requires openbabel to be installed &quot;</span>
+                          <span class="s2">&quot;with Python bindings. Please get it at &quot;</span>
+                          <span class="s2">&quot;http://openbabel.org.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">_process_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smiles</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Utility function to store and process match.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">matched_molecules</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span> <span class="o">=</span> <span class="n">match</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matched_molecules</span><span class="p">[</span><span class="n">smiles</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">match</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+
+  </body>
+</html>
