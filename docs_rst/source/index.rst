@@ -14,6 +14,7 @@ Code documentation
    :maxdepth: 1
 
    changelog
+   format
    contributors
    modules
    contributing

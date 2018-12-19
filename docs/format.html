@@ -1,0 +1,154 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Condensed structure format &#8212; Robocrystallographer 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+ 
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="condensed-structure-format">
+<h1>Condensed structure format<a class="headerlink" href="#condensed-structure-format" title="Permalink to this headline">¶</a></h1>
+<p>An example of the condensed structure JSON format is given below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;mineral&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Molybdenite&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;n_species_type_match&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;simplified&#39;</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;formula&#39;</span><span class="p">:</span> <span class="s1">&#39;MoS2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;spg_symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;P6_3/mmc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;crystal_system&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagonal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dimensionality&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;sites&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="s1">&#39;Mo4+&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;distorted&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal pyramidal&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;nn&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s1">&#39;nnn&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;edge&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
+            <span class="s1">&#39;poly_formula&#39;</span><span class="p">:</span> <span class="s1">&#39;S6&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sym_labels&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+        <span class="p">},</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;element&#39;</span><span class="p">:</span> <span class="s1">&#39;S2-&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;distorted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;3-coordinate&#39;</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;nn&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;nnn&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;corner&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                    <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]},</span>
+            <span class="s1">&#39;poly_formula&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;sym_labels&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;distances&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">,</span> <span class="o">...</span><span class="p">]},</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">,</span> <span class="mf">2.42</span><span class="p">]}</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;edge&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">82.60</span><span class="p">,</span> <span class="mf">82.60</span><span class="p">,</span> <span class="mf">82.60</span><span class="p">,</span> <span class="o">...</span><span class="p">]}},</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;corner&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">135.20</span><span class="p">,</span> <span class="mf">82.60</span><span class="p">,</span> <span class="mf">135.20</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">80.70</span><span class="p">,</span> <span class="mf">80.70</span><span class="p">,</span> <span class="mf">80.70</span><span class="p">]}}},</span>
+    <span class="s1">&#39;components&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;formula&#39;</span><span class="p">:</span>
+            <span class="s1">&#39;MoS2&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sites&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="s1">&#39;dimensionality&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;molecule_name&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;component_makeup&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="s1">&#39;vdw_heterostructure_info&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;intercalant_formulas&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;num_repetitions&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;repeating_unit&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MoS2&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/format.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Alex Ganose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+
+  </body>
+</html>
