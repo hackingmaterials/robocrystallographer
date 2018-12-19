@@ -93,7 +93,7 @@
 <span class="sd">        have an additional field:</span>
 
 <span class="sd">        - ``&quot;count&quot;`` (:obj:`int`): The number of times this component appears</span>
-<span class="sd">            in the structure.</span>
+<span class="sd">          in the structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
 
@@ -209,7 +209,7 @@
 <span class="sd">        the additional property:</span>
 
 <span class="sd">        - ``&quot;count&quot;`` (:obj:`int`): The number of times this component appears</span>
-<span class="sd">            in the structure.</span>
+<span class="sd">          in the structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
 
@@ -266,9 +266,9 @@
 <span class="sd">        have two additional fields:</span>
 
 <span class="sd">        - ``&quot;count&quot;`` (:obj:`int`): The number of formula units of this</span>
-<span class="sd">            component. Note, this is not the number of components with the same</span>
-<span class="sd">            formula. For example, the count of the formula &quot;GaAs&quot; in a system</span>
-<span class="sd">            with two Ga2As2 components would be 4.</span>
+<span class="sd">          component. Note, this is not the number of components with the same</span>
+<span class="sd">          formula. For example, the count of the formula &quot;GaAs&quot; in a system</span>
+<span class="sd">          with two Ga2As2 components would be 4.</span>
 <span class="sd">        - ``&quot;formula&quot;`` (``list[int]``): The reduced formula of the component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
@@ -540,20 +540,20 @@
 <span class="sd">        Information on the heterostructure, as an :obj:`dict` with they keys:</span>
 
 <span class="sd">        - ``&quot;repeating_unit&quot;`` (``list[str]``): A :obj:`List` of formulas of the</span>
-<span class="sd">            smallest repeating series of components. For example. if the</span>
-<span class="sd">            structure consists of A and B components ordered as &quot;A B A B A B&quot;,</span>
-<span class="sd">            the repeating unit is &quot;A B&quot;.</span>
+<span class="sd">          smallest repeating series of components. For example. if the</span>
+<span class="sd">          structure consists of A and B components ordered as &quot;A B A B A B&quot;,</span>
+<span class="sd">          the repeating unit is &quot;A B&quot;.</span>
 <span class="sd">        - ``&quot;num_repetitions&quot;`` (:obj:`int`): The number of repetitions of the</span>
-<span class="sd">            repeating unit that forms the overall structure. For example. if</span>
-<span class="sd">            the structure consists of A and B components ordered as</span>
-<span class="sd">            &quot;A B A B A B&quot;, the number of repetitions is 3.</span>
+<span class="sd">          repeating unit that forms the overall structure. For example. if</span>
+<span class="sd">          the structure consists of A and B components ordered as</span>
+<span class="sd">          &quot;A B A B A B&quot;, the number of repetitions is 3.</span>
 <span class="sd">        - ``&quot;intercalant_formulas&quot;`` (:obj:`list[str]`): The formulas of the</span>
-<span class="sd">            intercalated compounds.</span>
+<span class="sd">          intercalated compounds.</span>
 <span class="sd">        - ``&quot;ordered_components&quot;`` (``list[component]``): If</span>
-<span class="sd">            ``inc_ordered_components``, a :obj:`List` of components, ordered as</span>
-<span class="sd">            they appear in the heteostructure stacking direction.</span>
+<span class="sd">          ``inc_ordered_components``, a :obj:`List` of components, ordered as</span>
+<span class="sd">          they appear in the heteostructure stacking direction.</span>
 <span class="sd">        - ``&quot;intercalants&quot;`` (``list[component]``: If ``inc_intercalants``, a</span>
-<span class="sd">            :obj:`List` of intercalated components.</span>
+<span class="sd">          :obj:`List` of intercalated components.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">components_are_vdw_heterostructure</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Components do not form a heterostructure.&quot;</span><span class="p">)</span>

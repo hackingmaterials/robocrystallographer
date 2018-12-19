@@ -330,18 +330,12 @@ more details.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">ComponentDetails</span></code> objects, each with the
 attributes:<ul class="simple">
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The number of these components in the</dt>
-<dd>structure.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The number of these components in the
+structure.</li>
 <li><code class="docutils literal notranslate"><span class="pre">formula</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The component formula.</li>
 <li><code class="docutils literal notranslate"><span class="pre">dimensionality</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The component dimensionality.</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">molecule_name</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>): The molecule name if</dt>
-<dd>applicable, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">molecule_name</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>): The molecule name if
+applicable, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
 <li><code class="docutils literal notranslate"><span class="pre">orientation</span></code> (<code class="docutils literal notranslate"><span class="pre">tuple[int]</span></code>): The component orientation.</li>
 <li><code class="docutils literal notranslate"><span class="pre">index</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The component inequivalent index.</li>
 </ul>
@@ -365,22 +359,13 @@ attributes:<ul class="simple">
 molecule name. The data will be returned as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of
 <code class="docutils literal notranslate"><span class="pre">ComponentGroup</span></code> objects, each with the attributes:<ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The total number of components in this group.</li>
-<li><code class="docutils literal notranslate"><span class="pre">formula</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The formula of the components..</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">dimensionality</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The dimensionality of the</dt>
-<dd>components.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">molecule_name</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>): The molecule name if</dt>
-<dd>applicable, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">components</span></code> (<code class="docutils literal notranslate"><span class="pre">list[ComponentDetails]</span></code>): The components</dt>
-<dd>in the group.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">formula</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The formula of the components.</li>
+<li><code class="docutils literal notranslate"><span class="pre">dimensionality</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The dimensionality of the
+components.</li>
+<li><code class="docutils literal notranslate"><span class="pre">molecule_name</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>): The molecule name if
+applicable, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">components</span></code> (<code class="docutils literal notranslate"><span class="pre">list[ComponentDetails]</span></code>): The components
+in the group.</li>
 </ul>
 </td>
 </tr>
@@ -458,12 +443,9 @@ attributes:</p>
 <li><code class="docutils literal notranslate"><span class="pre">element</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The element of the nearest neighbor site.</li>
 <li><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The number of sites of this type.</li>
 <li><code class="docutils literal notranslate"><span class="pre">sym_label</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The symmetry label.</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">sites</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The site indices representing this</dt>
-<dd>nearest neighbor. Can be more than one site if
-<code class="docutils literal notranslate"><span class="pre">group_by_element=True</span></code>.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">sites</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The site indices representing this
+nearest neighbor. Can be more than one site if
+<code class="docutils literal notranslate"><span class="pre">group_by_element=True</span></code>.</li>
 </ul>
 </p>
 </td>
@@ -497,25 +479,16 @@ symmetry labels.</li>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">NextNeighborSiteDetails</span></code> objects, each with the
 attributes:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">element</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The element of the next nearest neighbor</dt>
-<dd>site.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">element</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The element of the next nearest neighbor
+site.</li>
 <li><code class="docutils literal notranslate"><span class="pre">connectivity</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The connectivity type to this site.</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">geometry</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The geometry type of the next nearest</dt>
-<dd>neighbor.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">geometry</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The geometry type of the next nearest
+neighbor.</li>
 <li><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The number of sites of this type.</li>
 <li><code class="docutils literal notranslate"><span class="pre">sym_label</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The symmetry label.</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">sites</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The site indices representing this</dt>
-<dd>next nearest neighbor. Can be more than one site if
-<code class="docutils literal notranslate"><span class="pre">group=True</span></code>.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">sites</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The site indices representing this
+next nearest neighbor. Can be more than one site if
+<code class="docutils literal notranslate"><span class="pre">group=True</span></code>.</li>
 <li><code class="docutils literal notranslate"><span class="pre">poly_formula</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The polyhedral formula.</li>
 </ul>
 </p>

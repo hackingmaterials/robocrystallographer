@@ -52,7 +52,7 @@ def get_structure_inequiv_components(components: List[Component],
         have an additional field:
 
         - ``"count"`` (:obj:`int`): The number of times this component appears
-            in the structure.
+          in the structure.
     """
     components = deepcopy(components)
 
@@ -168,7 +168,7 @@ def get_sym_inequiv_components(components: List[Component],
         the additional property:
 
         - ``"count"`` (:obj:`int`): The number of times this component appears
-            in the structure.
+          in the structure.
     """
     components = deepcopy(components)
 
@@ -225,9 +225,9 @@ def get_formula_inequiv_components(components: List[Component],
         have two additional fields:
 
         - ``"count"`` (:obj:`int`): The number of formula units of this
-            component. Note, this is not the number of components with the same
-            formula. For example, the count of the formula "GaAs" in a system
-            with two Ga2As2 components would be 4.
+          component. Note, this is not the number of components with the same
+          formula. For example, the count of the formula "GaAs" in a system
+          with two Ga2As2 components would be 4.
         - ``"formula"`` (``list[int]``): The reduced formula of the component.
     """
     components = deepcopy(components)
@@ -499,20 +499,20 @@ def get_vdw_heterostructure_information(components: List[Component],
         Information on the heterostructure, as an :obj:`dict` with they keys:
 
         - ``"repeating_unit"`` (``list[str]``): A :obj:`List` of formulas of the
-            smallest repeating series of components. For example. if the
-            structure consists of A and B components ordered as "A B A B A B",
-            the repeating unit is "A B".
+          smallest repeating series of components. For example. if the
+          structure consists of A and B components ordered as "A B A B A B",
+          the repeating unit is "A B".
         - ``"num_repetitions"`` (:obj:`int`): The number of repetitions of the
-            repeating unit that forms the overall structure. For example. if
-            the structure consists of A and B components ordered as
-            "A B A B A B", the number of repetitions is 3.
+          repeating unit that forms the overall structure. For example. if
+          the structure consists of A and B components ordered as
+          "A B A B A B", the number of repetitions is 3.
         - ``"intercalant_formulas"`` (:obj:`list[str]`): The formulas of the
-            intercalated compounds.
+          intercalated compounds.
         - ``"ordered_components"`` (``list[component]``): If
-            ``inc_ordered_components``, a :obj:`List` of components, ordered as
-            they appear in the heteostructure stacking direction.
+          ``inc_ordered_components``, a :obj:`List` of components, ordered as
+          they appear in the heteostructure stacking direction.
         - ``"intercalants"`` (``list[component]``: If ``inc_intercalants``, a
-            :obj:`List` of intercalated components.
+          :obj:`List` of intercalated components.
     """
     if not components_are_vdw_heterostructure(components):
         raise ValueError("Components do not form a heterostructure.")

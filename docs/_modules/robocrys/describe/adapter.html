@@ -116,8 +116,8 @@
 <span class="sd">            - ``count`` (``int``): The number of sites of this type.</span>
 <span class="sd">            - ``sym_label`` (``str``): The symmetry label.</span>
 <span class="sd">            - ``sites`` (``list[int]``): The site indices representing this</span>
-<span class="sd">                nearest neighbor. Can be more than one site if</span>
-<span class="sd">                ``group_by_element=True``.</span>
+<span class="sd">              nearest neighbor. Can be more than one site if</span>
+<span class="sd">              ``group_by_element=True``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nn_sites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site_index</span><span class="p">][</span><span class="s1">&#39;nn&#39;</span><span class="p">]</span>
 
@@ -163,15 +163,15 @@
 <span class="sd">            attributes:</span>
 
 <span class="sd">            - ``element`` (``str``): The element of the next nearest neighbor</span>
-<span class="sd">                site.</span>
+<span class="sd">              site.</span>
 <span class="sd">            - ``connectivity`` (``str``): The connectivity type to this site.</span>
 <span class="sd">            - ``geometry`` (``str``): The geometry type of the next nearest</span>
-<span class="sd">                neighbor.</span>
+<span class="sd">              neighbor.</span>
 <span class="sd">            - ``count`` (``int``): The number of sites of this type.</span>
 <span class="sd">            - ``sym_label`` (``str``): The symmetry label.</span>
 <span class="sd">            - ``sites`` (``list[int]``): The site indices representing this</span>
-<span class="sd">                next nearest neighbor. Can be more than one site if</span>
-<span class="sd">                ``group=True``.</span>
+<span class="sd">              next nearest neighbor. Can be more than one site if</span>
+<span class="sd">              ``group=True``.</span>
 <span class="sd">            - ``poly_formula`` (``str``): The polyhedral formula.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nnn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site_index</span><span class="p">][</span><span class="s1">&#39;nnn&#39;</span><span class="p">]</span>
@@ -263,11 +263,11 @@
 <span class="sd">            attributes:</span>
 
 <span class="sd">            - ``count`` (``int``): The number of these components in the</span>
-<span class="sd">                structure.</span>
+<span class="sd">              structure.</span>
 <span class="sd">            - ``formula`` (``str``): The component formula.</span>
 <span class="sd">            - ``dimensionality`` (``int``): The component dimensionality.</span>
 <span class="sd">            - ``molecule_name`` (``str`` or ``None``): The molecule name if</span>
-<span class="sd">                applicable, else ``None``.</span>
+<span class="sd">              applicable, else ``None``.</span>
 <span class="sd">            - ``orientation`` (``tuple[int]``): The component orientation.</span>
 <span class="sd">            - ``index`` (``list[int]``): The component inequivalent index.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -293,13 +293,13 @@
 <span class="sd">            ``ComponentGroup`` objects, each with the attributes:</span>
 
 <span class="sd">            - ``count`` (``int``): The total number of components in this group.</span>
-<span class="sd">            - ``formula`` (``str``): The formula of the components..</span>
+<span class="sd">            - ``formula`` (``str``): The formula of the components.</span>
 <span class="sd">            - ``dimensionality`` (``int``): The dimensionality of the</span>
-<span class="sd">                components.</span>
+<span class="sd">              components.</span>
 <span class="sd">            - ``molecule_name`` (``str`` or ``None``): The molecule name if</span>
-<span class="sd">                applicable, else ``None``.</span>
+<span class="sd">              applicable, else ``None``.</span>
 <span class="sd">            - ``components`` (``list[ComponentDetails]``): The components</span>
-<span class="sd">                in the group.</span>
+<span class="sd">              in the group.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">component_details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component_details</span><span class="p">()</span>
 

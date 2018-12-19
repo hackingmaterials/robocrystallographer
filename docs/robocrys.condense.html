@@ -265,13 +265,10 @@ same format is given by
 <a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a> but
 have two additional fields:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of formula units of this</dt>
-<dd>component. Note, this is not the number of components with the same
+<li><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of formula units of this
+component. Note, this is not the number of components with the same
 formula. For example, the count of the formula “GaAs” in a system
-with two Ga2As2 components would be 4.</dd>
-</dl>
-</li>
+with two Ga2As2 components would be 4.</li>
 <li><code class="docutils literal notranslate"><span class="pre">&quot;formula&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): The reduced formula of the component.</li>
 </ul>
 </p>
@@ -347,11 +344,8 @@ same format is given by
 <a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a> but
 have an additional field:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of times this component appears</dt>
-<dd>in the structure.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of times this component appears
+in the structure.</li>
 </ul>
 </p>
 </td>
@@ -387,11 +381,8 @@ same format is given by
 <a class="reference external" href="http://pymatgen.org/pymatgen.analysis.dimensionality.html#pymatgen.analysis.dimensionality.get_structure_components" title="(in pymatgen v2018.12.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.analysis.dimensionality.get_structure_components</span></code></a> but
 the additional property:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of times this component appears</dt>
-<dd>in the structure.</dd>
-</dl>
-</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;count&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of times this component appears
+in the structure.</li>
 </ul>
 </p>
 </td>
@@ -430,36 +421,21 @@ False, just the intercalant formulas will be returned.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;repeating_unit&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[str]</span></code>): A <code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of formulas of the</dt>
-<dd>smallest repeating series of components. For example. if the
+<li><code class="docutils literal notranslate"><span class="pre">&quot;repeating_unit&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[str]</span></code>): A <code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of formulas of the
+smallest repeating series of components. For example. if the
 structure consists of A and B components ordered as “A B A B A B”,
-the repeating unit is “A B”.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;num_repetitions&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of repetitions of the</dt>
-<dd>repeating unit that forms the overall structure. For example. if
+the repeating unit is “A B”.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;num_repetitions&quot;</span></code> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>): The number of repetitions of the
+repeating unit that forms the overall structure. For example. if
 the structure consists of A and B components ordered as
-“A B A B A B”, the number of repetitions is 3.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;intercalant_formulas&quot;</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list[str]</span></code>): The formulas of the</dt>
-<dd>intercalated compounds.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;ordered_components&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[component]</span></code>): If</dt>
-<dd><code class="docutils literal notranslate"><span class="pre">inc_ordered_components</span></code>, a <code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of components, ordered as
-they appear in the heteostructure stacking direction.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;intercalants&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[component]</span></code>: If <code class="docutils literal notranslate"><span class="pre">inc_intercalants</span></code>, a</dt>
-<dd><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of intercalated components.</dd>
-</dl>
-</li>
+“A B A B A B”, the number of repetitions is 3.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;intercalant_formulas&quot;</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list[str]</span></code>): The formulas of the
+intercalated compounds.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;ordered_components&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[component]</span></code>): If
+<code class="docutils literal notranslate"><span class="pre">inc_ordered_components</span></code>, a <code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of components, ordered as
+they appear in the heteostructure stacking direction.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;intercalants&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">list[component]</span></code>: If <code class="docutils literal notranslate"><span class="pre">inc_intercalants</span></code>, a
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code> of intercalated components.</li>
 </ul>
 </p>
 </td>

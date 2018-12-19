@@ -75,8 +75,8 @@ class DescriptionAdapter(object):
             - ``count`` (``int``): The number of sites of this type.
             - ``sym_label`` (``str``): The symmetry label.
             - ``sites`` (``list[int]``): The site indices representing this
-                nearest neighbor. Can be more than one site if
-                ``group_by_element=True``.
+              nearest neighbor. Can be more than one site if
+              ``group_by_element=True``.
         """
         nn_sites = self.sites[site_index]['nn']
 
@@ -122,15 +122,15 @@ class DescriptionAdapter(object):
             attributes:
 
             - ``element`` (``str``): The element of the next nearest neighbor
-                site.
+              site.
             - ``connectivity`` (``str``): The connectivity type to this site.
             - ``geometry`` (``str``): The geometry type of the next nearest
-                neighbor.
+              neighbor.
             - ``count`` (``int``): The number of sites of this type.
             - ``sym_label`` (``str``): The symmetry label.
             - ``sites`` (``list[int]``): The site indices representing this
-                next nearest neighbor. Can be more than one site if
-                ``group=True``.
+              next nearest neighbor. Can be more than one site if
+              ``group=True``.
             - ``poly_formula`` (``str``): The polyhedral formula.
         """
         nnn = self.sites[site_index]['nnn']
@@ -222,11 +222,11 @@ class DescriptionAdapter(object):
             attributes:
 
             - ``count`` (``int``): The number of these components in the
-                structure.
+              structure.
             - ``formula`` (``str``): The component formula.
             - ``dimensionality`` (``int``): The component dimensionality.
             - ``molecule_name`` (``str`` or ``None``): The molecule name if
-                applicable, else ``None``.
+              applicable, else ``None``.
             - ``orientation`` (``tuple[int]``): The component orientation.
             - ``index`` (``list[int]``): The component inequivalent index.
         """
@@ -252,13 +252,13 @@ class DescriptionAdapter(object):
             ``ComponentGroup`` objects, each with the attributes:
 
             - ``count`` (``int``): The total number of components in this group.
-            - ``formula`` (``str``): The formula of the components..
+            - ``formula`` (``str``): The formula of the components.
             - ``dimensionality`` (``int``): The dimensionality of the
-                components.
+              components.
             - ``molecule_name`` (``str`` or ``None``): The molecule name if
-                applicable, else ``None``.
+              applicable, else ``None``.
             - ``components`` (``list[ComponentDetails]``): The components
-                in the group.
+              in the group.
         """
         component_details = self.get_component_details()
 
