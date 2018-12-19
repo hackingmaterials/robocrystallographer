@@ -1,7 +1,8 @@
 # Robocrystallographer
 
-[![Pypi Repository](https://badge.fury.io/py/robocrys.svg)](https://travis-ci.org/hackingmaterials/robocrystallographer)
+[![PyPI version](https://badge.fury.io/py/robocrys.svg)](https://pypi.org/project/robocrys/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
 [![CircleCI](https://circleci.com/gh/hackingmaterials/robocrystallographer.svg?style=svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
 
 
@@ -28,7 +29,7 @@ robocrys mp-856
 Alternatively, a structure file can be specified in place of a Materials Project id.
 Robocrystallographer supports the same file formats as 
 [pymatgen](http://pymatgen.org), including the Crystallographic Information 
-Format (CIF), and common electronic structure package formats such POSCAR files.
+Format (CIF), and common electronic structure package formats such as POSCAR files.
 
 ### Python interface
 
