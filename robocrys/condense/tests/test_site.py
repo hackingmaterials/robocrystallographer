@@ -33,12 +33,13 @@ class TestSiteAnalyzer(RobocrysTest):
 
         # test using symmetry to determine equivalent sites
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
-        self.assertEqual(sa.equivalent_sites.tolist(), [0, 0, 0, 0, 4, 4])
+        self.assertIsInstance(sa.equivalent_sites, list)
+        self.assertEqual(sa.equivalent_sites, [0, 0, 0, 0, 4, 4])
 
         # test symprec option works
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True,
                           symprec=0.0001)
-        self.assertEqual(sa.equivalent_sites.tolist(), [0, 1, 1, 0, 4, 4])
+        self.assertEqual(sa.equivalent_sites, [0, 1, 1, 0, 4, 4])
 
     def test_symmetry_labels(self):
         """Check equivalent sites instance variable set correctly."""

@@ -42,7 +42,7 @@ class TestStructureCondenser(RobocrysTest):
         # check distances
         self.assertEqual(len(data['distances'][0][2]), 6)
         self.assertEqual(len(data['distances'][2][0]), 3)
-        self.assertAlmostEqual(data['distances'][0][2][0], 2.0922101061490546)
+        self.assertAlmostEqual(data['distances'][0][2][0], 2.092210570377848)
 
         # check angles
         self.assertEqual(len(data['angles'][0][0]['corner']), 8)
@@ -82,7 +82,7 @@ class TestStructureCondenser(RobocrysTest):
         # check distances
         self.assertEqual(len(data['distances'][0][2]), 6)
         self.assertEqual(len(data['distances'][2][0]), 3)
-        self.assertAlmostEqual(data['distances'][0][2][0], 2.0922101061490546)
+        self.assertAlmostEqual(data['distances'][0][2][0], 2.092210570377848)
 
         # check angles
         self.assertEqual(len(data['angles'][0][0]['corner']), 8)
