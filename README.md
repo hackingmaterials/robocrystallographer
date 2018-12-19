@@ -105,7 +105,7 @@ Track changes to robocrystallographer through the
 ## Contributing
 
 Robocrystallographer is in early development but we still welcome your
-contributions. Please read our (contribution guidelines)[https://hackingmaterials.github.io/robocrystallographer/contributing.html]
+contributions. Please read our [contribution guidelines](https://hackingmaterials.github.io/robocrystallographer/contributing.html)
 for more information. We maintain a list of all
 contributors [here](https://hackingmaterials.github.io/robocrystallographer/contributors.html).
 
