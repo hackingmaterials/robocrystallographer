@@ -10,9 +10,9 @@ from typing import Optional
 
 from pymatgen.core.structure import Structure
 from robocrys import StructureCondenser, StructureDescriber
+from robocrys import __version__
 
 __author__ = "Alex Ganose"
-__version__ = "0.1.0"
 __maintainer__ = "Alex Ganose"
 __email__ = "aganose@lbl.gov"
 __date__ = "December 17, 2018"
@@ -53,12 +53,11 @@ def robocrystallographer(structure: Structure,
 
 
 def _get_parser():
-    parser = argparse.ArgumentParser(description="""
-    robocrystallographer is a tool to generate structure descriptions""",
-                                     epilog="""
-    Author: {}
-    Version: {}
-    Last updated: {}""".format(__author__, __version__, __date__))
+    parser = argparse.ArgumentParser(
+        description="robocrystallographer is a tool to generate crystal "
+                    "structure descriptions",
+        epilog="Author: {}, Version: {}, Last updated: {}".format(
+            __author__, __version__, __date__))
 
     parser.add_argument('filename',
                         help="structure file or mpid")
