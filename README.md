@@ -1,5 +1,6 @@
 # Robocrystallographer
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c62c7dddf4b14f0e938b3eddce06db19)](https://app.codacy.com/app/utf/robocrystallographer?utm_source=github.com&utm_medium=referral&utm_content=hackingmaterials/robocrystallographer&utm_campaign=Badge_Grade_Dashboard)
 [![Pypi Repository](https://badge.fury.io/py/robocrys.svg)](https://travis-ci.org/hackingmaterials/robocrystallographer)
 [![Build Status](https://travis-ci.org/hackingmaterials/robocrystallographer.svg?branch=master)](https://badge.fury.io/py/robocrys)
 
