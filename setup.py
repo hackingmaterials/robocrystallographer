@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 from os.path import join as path_join
 
 
-with open('README.rst', 'r') as file:
+with open('README.md', 'r') as file:
     long_description = file.read()
 
 setup(
