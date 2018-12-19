@@ -1,14 +1,8 @@
-Robocrystallographer
-====================
+# Robocrystallographer
 
-[![Pypi](https://circleci.com/gh/hackingmaterials/automatminer.svg?style=svg)]
-.. image:: https://badge.fury.io/py/robocrys.svg
-    :target: https://badge.fury.io/py/robocrys
-    :alt: Pypi Repository
+[![Pypi Repository](https://travis-ci.org/hackingmaterials/robocrystallographer)]
+[![Build Status](https://badge.fury.io/py/robocrys)]
 
-.. image:: https://travis-ci.org/hackingmaterials/robocrystallographer.svg?branch=master
-    :target: https://travis-ci.org/hackingmaterials/robocrystallographer
-    :alt: Build Status
 
 Robocrystallographer is a tool to generate text descriptions of crystal
 structures. Similar to how a real-life crystallographer would analyse a
@@ -17,18 +11,17 @@ extended connectivity when generating a description. The package includes
 utilities for identifying molecule names, component orientations,
 heterostructure information, and more...
 
-Usage
------
+## Usage
 
 Robocrystallographer can be used from the command-line or from a python API.
-The package integrates with the `Materials Project <https://materialsproject.org>`_
+The package integrates with the [Materials Project](https://materialsproject.org)
 to for allow generation of structure descriptions directly from materials project
 ids. For example, to generate the description of SnO :sub:`2` (mp-856_), one
 can simply run:
 
-.. code-block:: bash
-
+```bash
     robocrys mp-856
+```
 
 Alternatively, a structure file can be specified in place of an mp-id.
 Robocrystallographer supports the same file formats as pymatgen_, including
