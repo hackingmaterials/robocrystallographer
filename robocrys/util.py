@@ -13,8 +13,6 @@ Attributes:
         shape.
 """
 
-import os
-import unittest
 from collections import defaultdict
 from typing import Union, Dict, List, Any
 
@@ -172,33 +170,3 @@ def load_condensed_structure_json(filename: str) -> Dict[str, Any]:
             return {int(k) if k.isdigit() else k: v for k, v in x.items()}
 
     return loadfn(filename, cls=MontyDecoder, object_hook=json_keys_to_int)
-
-
-class RobocrysTest(unittest.TestCase):
-    """Base test class providing access to common test data. """
-
-    _module_dir = os.path.dirname(os.path.abspath(__file__))
-    _structures_dir = os.path.join(_module_dir, "tests", "structures")
-    _condensed_structures_dir = os.path.join(
-        _module_dir, "tests", "condensed_structures")
-
-    _test_structures = {}
-    for _fn in os.listdir(_structures_dir):
-        if ".json.gz" in _fn:
-            _test_structures[_fn.split(".")[0]] = loadfn(os.path.join(
-                _structures_dir, _fn), cls=MontyDecoder)
-
-    _test_condensed_structures = {}
-    for _fn in os.listdir(_condensed_structures_dir):
-        if ".json.gz" in _fn:
-            _test_condensed_structures[_fn.split(".")[0]] = \
-                load_condensed_structure_json(os.path.join(
-                    _condensed_structures_dir, _fn))
-
-    @classmethod
-    def get_structure(cls, name):
-        return cls._test_structures[name].copy()
-
-    @classmethod
-    def get_condensed_structure(cls, name):
-        return cls._test_condensed_structures[name].copy()

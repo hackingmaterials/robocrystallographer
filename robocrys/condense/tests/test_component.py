@@ -11,7 +11,7 @@ from robocrys.condense.component import (
     get_vdw_heterostructure_information, get_component_formula_and_factor,
     get_component_formula, components_are_isomorphic,
     get_structure_inequiv_components)
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 test_dir = os.path.join(os.path.dirname(__file__))
 

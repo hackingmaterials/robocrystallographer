@@ -3,14 +3,8 @@ Nominal tests for command line functions. Note this script does not actually
 test the main method with argparsing, just the robocrystallographer function.
 """
 
-import os
-
 from robocrys.cli import robocrystallographer
-from robocrys.util import RobocrysTest
-
-test_dir = os.path.dirname(os.path.abspath(__file__))
-structure_file = os.path.join(test_dir, '..', '..', 'tests', 'structures',
-                              'SnO2.json.gz')
+from robocrys.tests import RobocrysTest
 
 
 class TestCommandLineInterface(RobocrysTest):

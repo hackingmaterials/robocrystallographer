@@ -1,5 +1,5 @@
 from robocrys.condense.mineral import MineralMatcher
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 
 class TestMineralMatcher(RobocrysTest):

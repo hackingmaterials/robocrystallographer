@@ -2,7 +2,7 @@ from pymatgen.analysis.local_env import CrystalNN
 
 from robocrys.condense.site import (SiteAnalyzer, geometries_match,
                                     nn_summaries_match, nnn_summaries_match)
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 
 class TestSiteAnalyzer(RobocrysTest):

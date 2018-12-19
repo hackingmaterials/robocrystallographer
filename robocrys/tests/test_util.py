@@ -85,13 +85,3 @@ class TestDescriptionMethods(unittest.TestCase):
 
         component_keys = list(condensed_structure['components'].keys())
         self.assertIsInstance(component_keys[0], int)
-
-
-
-
-
-
-
-
-
-

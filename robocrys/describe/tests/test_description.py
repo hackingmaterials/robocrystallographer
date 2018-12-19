@@ -1,5 +1,5 @@
 from robocrys import StructureDescriber
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 
 class TestDescriptionMethods(RobocrysTest):

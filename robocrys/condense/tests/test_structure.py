@@ -1,5 +1,5 @@
 from robocrys.condense.structure import StructureCondenser
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 
 class TestStructureCondenser(RobocrysTest):

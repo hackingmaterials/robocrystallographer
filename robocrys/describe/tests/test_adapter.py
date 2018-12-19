@@ -1,5 +1,5 @@
 from robocrys.describe.adapter import DescriptionAdapter
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 
 class TestDescriptionAdapter(RobocrysTest):

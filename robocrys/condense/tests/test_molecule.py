@@ -4,7 +4,7 @@ from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 from robocrys.condense.component import filter_molecular_components
 from robocrys.condense.molecule import MoleculeNamer
-from robocrys.util import RobocrysTest
+from robocrys.tests import RobocrysTest
 
 test_dir = os.path.join(os.path.dirname(__file__))
 
