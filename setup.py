@@ -11,7 +11,7 @@ with open('README.md', 'r') as file:
 
 setup(
     name='robocrys',
-    version='0.1.0',
+    version='0.1.1',
     description='Automatic generation of crystal structure descriptions',
     url='https://github.com/hackingmaterials/robocrystallographer',
     author='Alex Ganose',
