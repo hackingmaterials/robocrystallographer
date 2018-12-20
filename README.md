@@ -1,9 +1,10 @@
 # Robocrystallographer
 
-[![PyPI version](https://badge.fury.io/py/robocrys.svg)](https://pypi.org/project/robocrys/)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/47f851408d364efa9a8cdf0ed844cd8b)](https://www.codacy.com/app/utf/robocrystallographer)
-[![CircleCI](https://circleci.com/gh/hackingmaterials/robocrystallographer.svg?style=svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
+[![PyPI version](https://img.shields.io/pypi/v/robocrys.svg?colorB=blue)](https://pypi.org/project/robocrys/)
+[![Codacy Grade](https://img.shields.io/codacy/grade/47f851408d364efa9a8cdf0ed844cd8b.svg)](https://www.codacy.com/app/utf/robocrystallographer)
+[![Codacy Coverage](https://img.shields.io/codacy/coverage/47f851408d364efa9a8cdf0ed844cd8b.svg?colorB=brightgreen)](https://www.codacy.com/app/utf/robocrystallographer)
+[![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser/master.svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
+
 
 
 Robocrystallographer is a tool to generate text descriptions of crystal
