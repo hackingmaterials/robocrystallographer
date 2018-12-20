@@ -19,10 +19,10 @@ jobs:
             conda update --quiet --all
             # Add executables and path.
             for EXEPATH in `pwd`/cmd_line/*/Linux_64bit; do export PATH=$PATH:$EXEPATH; done
-            pip install -e .
-            pip install -e .[tests]
-            pip install coverage
-            pip install codacy-coverage
+            pip install -q -e .
+            pip install -q -e .[tests]
+            pip install -q coverage
+            pip install -q codacy-coverage
             coverage run setup.py test
             coverage xml
             python-codacy-coverage -r coverage.xml
