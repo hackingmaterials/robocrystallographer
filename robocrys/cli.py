@@ -120,7 +120,7 @@ def _get_parser():
                         help="order parameter below which sites are distorted")
     parser.add_argument('--anion-polyhedra',
                         dest="only_describe_cation_polyhedra_connectivity",
-                        action="store_false",
+                        action="store_true",
                         help="describe anion polyhedra connectivity")
     parser.add_argument('--verbose-bonds',
                         dest="only_describe_bonds_once",
