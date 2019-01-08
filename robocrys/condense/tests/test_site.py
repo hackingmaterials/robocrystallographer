@@ -180,18 +180,18 @@ class TestSiteAnalyzer(RobocrysTest):
     def test_get_inequivalent_site_indices(self):
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
         inequiv_indices = sa.get_inequivalent_site_indices(list(range(6)))
-        self.assertEqual(inequiv_indices, [0, 4])
+        self.assertEqual(inequiv_indices, [0, 0, 0, 0, 4, 4])
 
         # test using symmetry to determine inequivalent sites.
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         inequiv_indices = sa.get_inequivalent_site_indices(list(range(6)))
-        self.assertEqual(inequiv_indices, [0, 4])
+        self.assertEqual(inequiv_indices, [0, 0, 0, 0, 4, 4])
 
         # test symprec option
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True,
                           symprec=0.000001)
         inequiv_indices = sa.get_inequivalent_site_indices(list(range(6)))
-        self.assertEqual(inequiv_indices, [0, 1, 4])
+        self.assertEqual(inequiv_indices, [0, 1, 1, 0, 4, 4])
 
     def test_geometries_match(self):
         """Test geometry matching function."""
