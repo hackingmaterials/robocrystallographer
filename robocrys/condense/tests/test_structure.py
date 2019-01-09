@@ -55,7 +55,7 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(data['components'][0]['orientation'], None)
         self.assertEqual(data['components'][0]['formula'], 'SnO2')
         self.assertEqual(data['components'][0]['molecule_name'], None)
-        self.assertEqual(data['components'][0]['sites'], [0, 2])
+        self.assertEqual(data['components'][0]['sites'], [0, 0, 2, 2, 2, 2])
         self.assertEqual(data['component_makeup'], [0])
 
         # check vdw heterostructure information doesn't exist
@@ -95,5 +95,5 @@ class TestStructureCondenser(RobocrysTest):
         self.assertEqual(data['components'][0]['orientation'], None)
         self.assertEqual(data['components'][0]['formula'], 'SnO2')
         self.assertEqual(data['components'][0]['molecule_name'], None)
-        self.assertEqual(data['components'][0]['sites'], [0, 2])
+        self.assertEqual(data['components'][0]['sites'], [0, 0, 2, 2, 2, 2])
         self.assertEqual(data['component_makeup'], [0])
