@@ -77,16 +77,18 @@ class StatisticsAdapter(BaseAdapter):
                 {element: {connectivity: count}}
         """
         connectivities = self.get_site_connectivities()
-        all_sites = [site for component_index in self.component_makeup
-                     for site in self.components[component_index]['sites']]
-        all_elements = [self.elements[site] for site in all_sites]
+        poly_sites = [site for component_index in self.component_makeup
+                      for site in self.components[component_index]['sites']
+                      if self.sites[site]['poly_formula']]
+        poly_elements = [self.elements[site] for site in poly_sites
+                         if self.sites[site]['poly_formula']]
         n_elements = self.get_element_count()
 
         counts = defaultdict(lambda: defaultdict(int))
-        for element, site_index in zip(all_elements, all_sites):
+        for element, site_index in zip(poly_elements, poly_sites):
             for connectivity, present in connectivities[site_index].items():
                 # uses the fact that bool will be cast to int
-                count = present/n_elements[element] if normalize else present
+                count = present / n_elements[element] if normalize else present
                 counts[element][connectivity] += count
 
         return defaultdict_to_dict(counts)
