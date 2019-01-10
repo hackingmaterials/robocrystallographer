@@ -149,3 +149,12 @@ class BaseAdapter(object):
         more details.
         """
         return self._condensed_structure['component_makeup']
+
+    @property
+    def is_vdw_heterostructure(self) -> bool:
+        """Whether the structure is a vdw heterostructure.
+
+        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
+        more details.
+        """
+        return bool(self._condensed_structure['vdw_heterostructure_info'])
