@@ -1,4 +1,4 @@
-from robocrys.condense.structure import StructureCondenser
+from robocrys.condense.condenser import StructureCondenser
 from robocrys.tests import RobocrysTest
 
 
