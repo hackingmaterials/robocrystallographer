@@ -38,7 +38,6 @@ class RobocrysFeaturizer(BaseFeaturizer):
                  distorted_tol: float = 0.6):
         condenser_kwargs = condenser_kwargs if condenser_kwargs else {}
         self._sc = StructureCondenser(**condenser_kwargs)
-
         self._distorted_tol = distorted_tol
 
     def featurize(self, s: Structure) -> List[Union[float, bool, str]]:
@@ -50,7 +49,8 @@ class RobocrysFeaturizer(BaseFeaturizer):
         Returns:
             The robocrystallographer features.
         """
-        fa = FeaturizerAdapter(self._sc.condense_structure(s))
+        fa = FeaturizerAdapter(self._sc.condense_structure(s),
+                               distorted_tol=self._distorted_tol)
 
         # add general structure features
         features = [fa.mineral['type'], fa.spg_symbol, fa.crystal_system,
@@ -71,6 +71,9 @@ class RobocrysFeaturizer(BaseFeaturizer):
         features += [fa.contains_geometry_type(g) for g in _geometries]
         features += [fa.contains_geometry_type(g, distorted=True)
                      for g in _geometries]
+        features += [fa.average_coordination_number,
+                     fa.average_cation_coordination_number,
+                     fa.average_anion_coordination_number]
 
         # add polyhedral features
         features += [fa.contains_polyhedra,
@@ -109,6 +112,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         # geometry features
         labels += ['contains_{}'.format(g) for g in _geometries]
         labels += ['contains_distorted_{}'.format(g) for g in _geometries]
+        labels += ['average_site_cn', 'average_cation_cn', 'average_anion_cn']
 
         # polyhedral features
         labels += ['contains_polyhedra', 'contains_corner_sharing_polyhedra',
