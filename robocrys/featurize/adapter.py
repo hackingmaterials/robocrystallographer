@@ -17,11 +17,13 @@ class FeaturizerAdapter(BaseAdapter):
             by :meth:`robocrys.condense.StructureCondenser.condense_structure`.
     """
 
-    def __init__(self, condensed_structure: Dict[str, Any]):
+    def __init__(self, condensed_structure: Dict[str, Any],
+                 distorted_tol: float = 0.6):
         super().__init__(condensed_structure)
         self._all_sites = [site for component_index in
                            self.component_makeup for site in
                            self.components[component_index]['sites']]
+        self._distorted_tol = distorted_tol
 
     @property
     def component_dimensionalities(self) -> List[int]:
@@ -102,6 +104,33 @@ class FeaturizerAdapter(BaseAdapter):
         else:
             return None
 
+    @property
+    def average_coordination_number(self):
+        """The average coordination number across all sites."""
+        return mean([len(self.sites[site]['nn']) for site in self._all_sites])
+
+    @property
+    def average_cation_coordination_number(self):
+        """The average coordination number across cation sites."""
+        cns = [len(self.sites[site]['nn']) for site in self._all_sites
+               if '+' in self.sites[site]['element']]
+        if cns:
+            return mean(cns)
+        else:
+            # structure doesn't have oxidation states
+            return self.average_coordination_number
+
+    @property
+    def average_anion_coordination_number(self):
+        """The average coordination number across anion sites."""
+        cns = [len(self.sites[site]['nn']) for site in self._all_sites
+               if '-' in self.sites[site]['element']]
+        if cns:
+            return mean(cns)
+        else:
+            # structure doesn't have oxidation states
+            return self.average_coordination_number
+
     def contains_molecule(self, molecule_name: str) -> bool:
         """Whether the structure contains a specific molecule name.
 
@@ -141,8 +170,8 @@ class FeaturizerAdapter(BaseAdapter):
         Args:
             geometry: The site geometry.
             distorted: Whether the geometry is distorted or not. If set to
-                ``None``, then the geometry will match whether it is
-                distorted or not.
+                ``None``, then the matching does not take into account the
+                geometry likeness.
 
         Returns:
             Whether the structure contains a specific geometry.
@@ -152,11 +181,11 @@ class FeaturizerAdapter(BaseAdapter):
                        for s in self.sites.values())
         elif distorted:
             return any(s['geometry']['type'] == geometry and
-                       s['geometry']['likeness'] < distorted
+                       s['geometry']['likeness'] < self._distorted_tol
                        for s in self.sites.values())
         else:
             return any(s['geometry']['type'] == geometry and
-                       s['geometry']['likeness'] > distorted
+                       s['geometry']['likeness'] > self._distorted_tol
                        for s in self.sites.values())
 
     def contains_connected_geometry(self, connectivity: str, geometry: str
