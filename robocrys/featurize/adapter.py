@@ -96,7 +96,11 @@ class FeaturizerAdapter(BaseAdapter):
                 if self.sites[nnn_site]['geometry']['type'] == 'octahedral']
             angles.extend([abs(180 - angle) for nnn_site in nnn_sites for
                            angle in self.angles[site][nnn_site]['corner']])
-        return mean(angles)
+
+        if angles:
+            return mean(angles)
+        else:
+            return None
 
     def contains_molecule(self, molecule_name: str) -> bool:
         """Whether the structure contains a specific molecule name.
@@ -184,4 +188,16 @@ class FeaturizerAdapter(BaseAdapter):
             The fraction of sites with the specified geometry.
         """
         return sum(self.sites[site]['geometry']['type'] == geometry for site in
+                   self._all_sites) / len(self._all_sites)
+
+    def frac_sites_n_coordinate(self, num_neighbors: str) -> float:
+        """The fraction of sites with a specific coordination number.
+
+        Args:
+            num_neighbors: The number of nearest neighbors.
+
+        Returns:
+            The fraction of sites with the specified coordination number.
+        """
+        return sum(len(self.sites[site]['nn']) == num_neighbors for site in
                    self._all_sites) / len(self._all_sites)

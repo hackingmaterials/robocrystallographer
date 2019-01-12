@@ -22,6 +22,7 @@ _dimensionality_sets = ((3, 2, 1, 0), (3, 2, 1), (3, 2, 0), (3, 1, 0),
                         (1, 0))
 _molecules = ['water', 'oxygen', 'ammonia', 'methane']
 _connectivities = ['corner', 'edge', 'face']
+_cns = range(1, 13)
 
 
 class RobocrysFeaturizer(BaseFeaturizer):
@@ -86,6 +87,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         # add fractional features
         features += [fa.frac_sites_polyhedra]
         features += [fa.frac_site_geometry(g) for g in _geometries]
+        features += [fa.frac_sites_n_coordinate(n) for n in _cns]
 
         return features
 
@@ -123,6 +125,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         # fractional features
         labels += ['frac_site_polyhedra']
         labels += ['frac_sites_{}'.format(g) for g in _geometries]
+        labels += ['frac_sites_{}_coordinate'.format(n) for n in _cns]
 
         return labels
 
