@@ -1,9 +1,14 @@
-# Robocrystallographer
 
-[![PyPI version](https://img.shields.io/pypi/v/robocrys.svg?colorB=blue)](https://pypi.org/project/robocrys/)
-[![Codacy Grade](https://img.shields.io/codacy/grade/47f851408d364efa9a8cdf0ed844cd8b.svg)](https://www.codacy.com/app/utf/robocrystallographer)
-[![Codacy Coverage](https://img.shields.io/codacy/coverage/47f851408d364efa9a8cdf0ed844cd8b.svg?colorB=brightgreen)](https://www.codacy.com/app/utf/robocrystallographer)
-[![CircleCI](https://img.shields.io/circleci/project/github/hackingmaterials/robocrystallographer/master.svg)](https://circleci.com/gh/hackingmaterials/robocrystallographer)
+<p align="center">
+  <img alt="robocrystallographer logo" src="https://raw.githubusercontent.com/hackingmaterials/robocrystallographer/master/docs_rst/source/_static/logo-01.svg?sanitize=true" height="200px">
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/robocrys/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/robocrys.svg?colorB=blue"> </a> 
+  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Grade" src="https://img.shields.io/codacy/grade/47f851408d364efa9a8cdf0ed844cd8b.svg"> </a>   
+  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Coverage" src="https://img.shields.io/codacy/coverage/47f851408d364efa9a8cdf0ed844cd8b.svg?colorB=brightgreen"> </a> 
+<a href="https://circleci.com/gh/hackingmaterials/robocrystallographer"><img alt="CircleCI" src="https://img.shields.io/circleci/project/github/hackingmaterials/robocrystallographer/master.svg"> </a>
+</p>
 
 
 
@@ -119,3 +124,7 @@ contributors [here](https://hackingmaterials.github.io/robocrystallographer/cont
 Robocrystallographer is released under a modified BSD license;
 the full text can be found 
 [here](https://hackingmaterials.github.io/robocrystallographer/license.html).
+
+## Acknowledgements
+
+Logo by Somewan from the Noun Project.
