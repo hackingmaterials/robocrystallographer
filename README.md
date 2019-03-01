@@ -1,12 +1,12 @@
 
 <p align="center">
-  <img alt="robocrystallographer logo" src="https://raw.githubusercontent.com/hackingmaterials/robocrystallographer/master/docs_rst/source/_static/logo-01.png" height="200px">
+  <img alt="robocrystallographer logo" src="docs_rst/source/_static/logo-01.png" height="200px">
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/robocrys/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/robocrys.svg?colorB=blue"> </a> 
-  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Grade" src="https://img.shields.io/codacy/grade/47f851408d364efa9a8cdf0ed844cd8b.svg"> </a>   
-  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Coverage" src="https://img.shields.io/codacy/coverage/47f851408d364efa9a8cdf0ed844cd8b.svg?colorB=brightgreen"> </a> 
+  <a href="https://pypi.org/project/robocrys/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/robocrys.svg?colorB=blue"> </a>
+  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Grade" src="https://img.shields.io/codacy/grade/47f851408d364efa9a8cdf0ed844cd8b.svg"> </a>
+  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Coverage" src="https://img.shields.io/codacy/coverage/47f851408d364efa9a8cdf0ed844cd8b.svg?colorB=brightgreen"> </a>
 <a href="https://circleci.com/gh/hackingmaterials/robocrystallographer"><img alt="CircleCI" src="https://img.shields.io/circleci/project/github/hackingmaterials/robocrystallographer/master.svg"> </a>
 </p>
 
@@ -22,7 +22,7 @@ heterostructure information, and more...
 Robocrystallographer can be used from the command-line or from a python API.
 The package integrates with the [Materials Project](https://materialsproject.org)
 to for allow generation of structure descriptions directly from Materials Project
-ids. For example, to generate the description of SnO<sub>2</sub> 
+ids. For example, to generate the description of SnO<sub>2</sub>
 ([mp-856](https://materialsproject.org/materials/mp-856/)), one
 can simply run:
 
@@ -31,10 +31,10 @@ robocrys mp-856
 ```
 
 Alternatively, a structure file can be specified in place of a Materials Project id.
-Robocrystallographer supports the same file formats as 
-[pymatgen](http://pymatgen.org), including the Crystallographic Information 
+Robocrystallographer supports the same file formats as
+[pymatgen](http://pymatgen.org), including the Crystallographic Information
 Format (CIF), and common electronic structure package formats such as POSCAR files.
-More information can be found on the 
+More information can be found on the
 [command-line interface page](https://hackingmaterials.github.io/robocrystallographer/cli.html).
 
 ### Python interface
@@ -53,7 +53,7 @@ from robocrys import StructureCondenser, StructureDescriber
 
 structure = Structure.from_file("my_structure.cif") # other file formats also supported
 
-# alternatively, uncomment the lines below to use the MPRester object 
+# alternatively, uncomment the lines below to use the MPRester object
 # to fetch structures from the Materials Project database
 # from pymatgen import MPRester
 # structure = MPRester(API_KEY=None).get_structure_by_material_id("mp-856")
@@ -67,7 +67,7 @@ description = describer.describe(condensed_structure)
 
 Where `structure` is a pymatgen Structure object. Both classes have many
 options for customising the output of the structure
-descriptions. More information is provided in the 
+descriptions. More information is provided in the
 [module documentation](https://hackingmaterials.github.io/robocrystallographer/modules).
 
 ### Intermediate JSON format
@@ -106,9 +106,9 @@ Robocrystallographer can be installed using pip:
 pip install robocrys
 ```
 
-Robocrystallographer requires Python 3.6+. The 
-[OpenBabel](http://openbabel.org/wiki/Python) 
-package is required to determine molecule names. This is an optional 
+Robocrystallographer requires Python 3.6+. The
+[OpenBabel](http://openbabel.org/wiki/Python)
+package is required to determine molecule names. This is an optional
 requirement but its use is recommended for best
 results. If you are using the [Conda](https://conda.io/) package management
 system, OpenBabel can be installed using:
@@ -119,7 +119,7 @@ conda install -c openbabel openbabel
 
 ## What’s new?
 
-Track changes to robocrystallographer through the 
+Track changes to robocrystallographer through the
 [Changelog](https://hackingmaterials.github.io/robocrystallographer/changelog.html).
 
 ## Contributing
@@ -132,7 +132,7 @@ contributors [here](https://hackingmaterials.github.io/robocrystallographer/cont
 ## License
 
 Robocrystallographer is released under a modified BSD license;
-the full text can be found 
+the full text can be found
 [here](https://hackingmaterials.github.io/robocrystallographer/license.html).
 
 ## Acknowledgements
