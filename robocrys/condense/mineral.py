@@ -171,7 +171,8 @@ class MineralMatcher(object):
     def get_fingerprint_matches(self,
                                 structure: IStructure,
                                 max_n_matches: Optional[int] = None,
-                                match_n_sp: bool = True
+                                match_n_sp: bool = True,
+                                mineral_name_constraint: Optional[str] = None
                                 ) -> Optional[List[Dict[Text, Any]]]:
         """Gets minerals for a structure by matching to AFLOW fingerprints.
 
@@ -184,6 +185,8 @@ class MineralMatcher(object):
                 to return all matches within the cutoff.
             match_n_sp: Whether the structure and mineral must have the same
                 number of species. Defaults to True.
+            mineral_name_constraint: Whether to limit the matching to a specific
+                mineral name.
 
         Returns:
             A :obj:`list` of :obj:`dict`, sorted by how close the match is, with
@@ -195,6 +198,10 @@ class MineralMatcher(object):
         self._set_distance_matrix(structure)
 
         mineral_db = self._mineral_db
+
+        if mineral_name_constraint:
+            mineral_db = mineral_db[mineral_db["mineral"].str.lower() ==
+                                    mineral_name_constraint]
 
         if match_n_sp:
             ntypesp = structure.ntypesp
