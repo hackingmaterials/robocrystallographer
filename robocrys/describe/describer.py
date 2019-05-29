@@ -111,8 +111,10 @@ class StructureDescriber(object):
             description['components'] = self._get_all_component_descriptions()
 
         if not self.return_parts:
-            return " ".join(description[part] for part in
-                            ['mineral', 'component_makeup', 'components'])
+            return " ".join(
+                description[part] for part in
+                ['mineral', 'component_makeup', 'components']
+                if description[part] is not "")
         else:
             return description
 
@@ -135,17 +137,10 @@ class StructureDescriber(object):
             spg_symbol = latexify_spacegroup(self._da.spg_symbol)
             formula = latexify_formula(formula)
 
-        if self._da.mineral['type']:
-            if not self._da.mineral['n_species_type_match']:
-                suffix = "-derived"
-            elif self._da.mineral['distance'] >= 0:
-                suffix = "-like"
-            else:
-                suffix = ""
+        mineral_name = get_mineral_name(self._da.mineral)
 
-            mineral_name = "{}{}".format(self._da.mineral['type'], suffix)
+        if mineral_name:
             desc = "{} is {} structured and".format(formula, mineral_name)
-
         else:
             desc = "{}".format(formula)
 
@@ -160,16 +155,15 @@ class StructureDescriber(object):
             A description of the number of components and their dimensionalities
             and orientations.
         """
-        desc = "The structure is {}-dimensional".format(
-            en.number_to_words(self._da.dimensionality))
         component_groups = self._da.get_component_groups()
 
         if (len(component_groups) == 1 and component_groups[0].count == 1 and
                 component_groups[0].dimensionality == 3):
-            desc += "."
+            desc = ""
 
         else:
-            desc += " and consists of "
+            desc = "The structure is {}-dimensional and consists of ".format(
+                en.number_to_words(self._da.dimensionality))
 
             component_makeup_summaries = []
             for component_group in component_groups:
@@ -529,13 +523,11 @@ class StructureDescriber(object):
             big = max(discrete_bond_lengths)
             s_big_count = en.number_to_words(discrete_bond_lengths.count(big))
 
-            # length will only be singular when there is 1 small and 1 big len
-            plural = int((small + big) / 2)
-            s_length = en.plural('length', plural)
+            s_length = en.plural('length', small)
 
             return ("There {} {} shorter ({}) and {} "
                     "longer ({}) {}–{} bond {}.").format(
-                en.plural_verb('is', plural), s_small_count,
+                en.plural_verb('is', small), s_small_count,
                 self._distance_to_string(small), s_big_count,
                 self._distance_to_string(big), from_element, to_element,
                 s_length)
@@ -637,3 +629,28 @@ class StructureDescriber(object):
         """Utility function to format a range of distances."""
         return "{:.{}f}–{:.{}f}°".format(angle_a, self.angle_decimal_places,
                                          angle_b, self.angle_decimal_places)
+
+
+def get_mineral_name(mineral_dict: Dict[str, Any]) -> Union[str, None]:
+    """Get the mineral name from a mineral dictionary.
+
+    Args:
+        mineral_dict: The mineral dictionary from the condensed description.
+
+    Returns:
+        If ``mineral_dict["type"]`` is set, the mineral name will be returned as
+        a string, else ``None`` will be returned.
+    """
+    if mineral_dict['type']:
+        if not mineral_dict['n_species_type_match']:
+            suffix = "-derived"
+        elif mineral_dict['distance'] >= 0:
+            suffix = "-like"
+        else:
+            suffix = ""
+
+        return "{}{}".format(mineral_dict['type'], suffix)
+
+    else:
+        return None
+
