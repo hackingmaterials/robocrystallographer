@@ -305,7 +305,7 @@ class StructureDescriber(object):
                     use_sym_label=False,
                     fmt=self.fmt)
 
-                s_there = "there" if first_group else "There"
+                s_there = "There" if first_group else "there"
                 s_count = en.number_to_words(len(site_group.sites))
 
                 desc.append("{} are {} inequivalent {} sites.".format(
