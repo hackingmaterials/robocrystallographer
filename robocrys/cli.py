@@ -41,10 +41,9 @@ def robocrystallographer(structure: Structure,
     describer = StructureDescriber(**describer_kwargs)
 
     try:
-        print("Adding oxidation states...")
         structure.add_oxidation_state_by_guess(max_sites=-80)
     except ValueError:
-        print("Could not add oxidation states!")
+        warnings.warn("Could not add oxidation states!")
 
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
