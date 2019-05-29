@@ -126,9 +126,9 @@ def _get_parser():
                         dest="only_describe_bonds_once",
                         action="store_false",
                         help="describe bond lengths for each site")
-    parser.add_argument('--latexify',
-                        action="store_true",
-                        help="format the description for use in LaTeX")
+    parser.add_argument('--format', dest="fmt", default="unicode",
+                        help="how to format the description (unicode [default],"
+                             " html, latex, raw)")
     return parser
 
 
@@ -143,7 +143,7 @@ def main():
                       "describe_oxidation_states", "describe_bond_lengths",
                       "bond_length_decimal_places", "distorted_tol",
                       "only_describe_cation_polyhedra_connectivity",
-                      "only_describe_bonds_once", "latexify"]
+                      "only_describe_bonds_once", "fmt"]
 
     condenser_kwargs = {key: args_dict[key] for key in condenser_keys}
     describer_kwargs = {key: args_dict[key] for key in describer_keys}
