@@ -3,7 +3,8 @@ import unittest
 
 from pymatgen.core.periodic_table import get_el_sp
 from robocrys.util import get_el, get_formatted_el, \
-    load_condensed_structure_json
+    load_condensed_structure_json, superscript_number, unicodeify_spacegroup, \
+    htmlify_spacegroup
 
 test_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -32,6 +33,9 @@ class TestDescriptionMethods(unittest.TestCase):
         from robocrys.util import dimensionality_to_shape
         self.assertEqual(dimensionality_to_shape[3], "framework")
 
+    def test_superscript_number(self):
+        self.assertEqual(superscript_number("+23"), "⁺²³")
+
     def test_get_al(self):
         """Test getting element names"""
         specie = get_el_sp("Sn2+")
@@ -56,24 +60,40 @@ class TestDescriptionMethods(unittest.TestCase):
         self.assertEqual(form_el, "Sn")
 
         form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=True,
-                                   use_sym_label=True, latexify=False)
+                                   use_sym_label=True, fmt="raw")
         self.assertEqual(form_el, "Sn(1,2)2+")
 
         form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=False,
-                                   use_sym_label=True, latexify=False)
+                                   use_sym_label=True, fmt="raw")
         self.assertEqual(form_el, "Sn(1,2)")
 
         form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=True,
-                                   use_sym_label=False, latexify=False)
+                                   use_sym_label=False, fmt="raw")
         self.assertEqual(form_el, "Sn2+")
 
         form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=False,
-                                   use_sym_label=False, latexify=False)
+                                   use_sym_label=False, fmt="raw")
         self.assertEqual(form_el, "Sn")
 
         form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=True,
-                                   use_sym_label=True, latexify=True)
+                                   use_sym_label=True, fmt="latex")
         self.assertEqual(form_el, "Sn(1,2)^{2+}")
+
+        form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=True,
+                                   use_sym_label=True, fmt="html")
+        self.assertEqual(form_el, "Sn(1,2)<sup>2+</sup>")
+
+        form_el = get_formatted_el("Sn2+", "(1,2)", use_oxi_state=True,
+                                   use_sym_label=True, fmt="unicode")
+        self.assertEqual(form_el, "Sn(1,2)²⁺")
+
+    def test_unicodeify_spacegroup(self):
+        spg_symbol = unicodeify_spacegroup("P-42_1m")
+        self.assertEqual(spg_symbol, "P̅42₁m")
+
+    def test_htmlify_spacegroup(self):
+        spg_symbol = htmlify_spacegroup("P-42_1m")
+        self.assertEqual(spg_symbol, "P̅42<sub>1</sub>m")
 
     def test_load_condense_structure_json(self):
         condensed_structure = load_condensed_structure_json(

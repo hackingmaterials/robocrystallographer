@@ -9,11 +9,12 @@ TODO:
 
 from typing import Dict, Any, Tuple, List, Union
 
-from pymatgen.util.string import latexify as latexify_formula
+from pymatgen.util.string import latexify, unicodeify, htmlify
 from pymatgen.util.string import latexify_spacegroup
 from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.util import (geometry_to_polyhedra, dimensionality_to_shape,
-                           get_el, polyhedra_plurals, get_formatted_el)
+                           get_el, polyhedra_plurals, get_formatted_el,
+                           unicodeify_spacegroup, htmlify_spacegroup)
 import inflect
 
 en = inflect.engine()
@@ -32,7 +33,7 @@ class StructureDescriber(object):
                  distorted_tol: float = 0.6,
                  only_describe_cation_polyhedra_connectivity: bool = True,
                  only_describe_bonds_once: bool = True,
-                 latexify: bool = False,
+                 fmt: str = "raw",
                  return_parts: bool = False):
         """A class to convert condensed structure data into text descriptions.
 
@@ -56,7 +57,15 @@ class StructureDescriber(object):
             only_describe_bonds_once: Whether only describe bond lengths once.
                 For example, don't describe the bond lengths from Pb to I and
                 also from I to Pb.
-            latexify: Whether to latexify the description.
+            fmt: How to format element strings, formulas and spacegroups.
+                Options are:
+
+                - "raw" (default): Don't apply special formatting (e.g. "SnO2").
+                - "unicode": Format super/subscripts using unicode characters
+                  (e.g. SnO₂).
+                - "latex": Use LaTeX markup for formatting (e.g. "SnO$_2$").
+                - "html": Use html markup for formatting
+                  (e.g. "SnO<sub>2</sub>").
             return_parts: Whether to return the individual parts of the
                 description as a :obj:`dict`, or the whole description as a
                 :obj:`str`.
@@ -72,7 +81,7 @@ class StructureDescriber(object):
         self.cation_polyhedra_only = \
             only_describe_cation_polyhedra_connectivity
         self.only_describe_bonds_once = only_describe_bonds_once
-        self.latexify = latexify
+        self.fmt = fmt
         self.return_parts = return_parts
         self.angle_decimal_places = 0
 
@@ -133,9 +142,17 @@ class StructureDescriber(object):
         """
         spg_symbol = self._da.spg_symbol
         formula = self._da.formula
-        if self.latexify:
+        if self.fmt == "latex":
             spg_symbol = latexify_spacegroup(self._da.spg_symbol)
-            formula = latexify_formula(formula)
+            formula = latexify(formula)
+
+        elif self.fmt == "unicode":
+            spg_symbol = unicodeify_spacegroup(self._da.spg_symbol)
+            formula = unicodeify(formula)
+
+        elif self.fmt == "html":
+            spg_symbol = htmlify_spacegroup(self._da.spg_symbol)
+            formula = htmlify(formula)
 
         mineral_name = get_mineral_name(self._da.mineral)
 
@@ -178,8 +195,12 @@ class StructureDescriber(object):
                                       s_count)
                     formula = component_group.formula
 
-                if self.latexify:
-                    formula = latexify_formula(formula)
+                if self.fmt == "latex":
+                    formula = latexify(formula)
+                elif self.fmt == "unciode":
+                    formula = unicodeify(formula)
+                elif self.fmt == "html":
+                    formula = htmlify(formula)
 
                 comp_desc = "{} {} {}".format(s_count, formula, shape)
 
@@ -221,8 +242,12 @@ class StructureDescriber(object):
                     component_count = component.count
                     shape = dimensionality_to_shape[group.dimensionality]
 
-                    if self.latexify:
-                        formula = latexify_formula(formula)
+                    if self.fmt == "latex":
+                        formula = latexify(formula)
+                    elif self.fmt == "unciode":
+                        formula = unicodeify(formula)
+                    elif self.fmt == "html":
+                        formula = htmlify(formula)
 
                     if group_count == component_count:
                         s_filler = "the" if group_count == 1 else "each"
@@ -259,7 +284,7 @@ class StructureDescriber(object):
                     site_group.element, "",
                     use_oxi_state=self.describe_oxidation_state,
                     use_sym_label=False,
-                    latexify=self.latexify)
+                    fmt=self.fmt)
 
                 s_there = "there" if first_group else "There"
                 s_count = en.number_to_words(len(site_group.sites))
@@ -301,7 +326,7 @@ class StructureDescriber(object):
                 site['element'], self._da.sym_labels[site_index],
                 use_oxi_state=self.describe_oxidation_state,
                 use_sym_label=self.describe_symmetry_labels,
-                latexify=self.latexify)
+                fmt=self.fmt)
 
             if site['geometry']['likeness'] < self.distorted_tol:
                 s_geometry = "distorted "
@@ -342,11 +367,16 @@ class StructureDescriber(object):
             site['element'], self._da.sym_labels[site_index],
             use_oxi_state=self.describe_oxidation_state,
             use_sym_label=self.describe_symmetry_labels,
-            latexify=self.latexify)
+            fmt=self.fmt)
 
         from_poly_formula = site['poly_formula']
-        if self.latexify:
-            from_poly_formula = latexify_formula(from_poly_formula)
+        if self.fmt == "latex":
+            from_poly_formula = latexify(from_poly_formula)
+        elif self.fmt == "unicode":
+            from_poly_formula = unicodeify(from_poly_formula)
+        elif self.fmt == "html":
+            from_poly_formula = htmlify(from_poly_formula)
+
         s_from_poly_formula = get_el(site['element']) + from_poly_formula
 
         if site['geometry']['likeness'] < self.distorted_tol:
@@ -384,8 +414,13 @@ class StructureDescriber(object):
                 use_sym_label=self.describe_symmetry_labels)
 
             to_poly_formula = nnn_site.poly_formula
-            if self.latexify:
-                to_poly_formula = latexify_formula(to_poly_formula)
+            if self.fmt == "latex":
+                to_poly_formula = latexify(to_poly_formula)
+            elif self.fmt == "unicode":
+                to_poly_formula = unicodeify(to_poly_formula)
+            elif self.fmt == "html":
+                to_poly_formula = htmlify(to_poly_formula)
+
             to_poly_formula = to_element + to_poly_formula
             to_shape = geometry_to_polyhedra[nnn_site.geometry]
 
@@ -430,7 +465,7 @@ class StructureDescriber(object):
                 nn_site.element, nn_site.sym_label,
                 use_oxi_state=self.describe_oxidation_state,
                 use_sym_label=self.describe_symmetry_labels,
-                latexify=self.latexify)
+                fmt=self.fmt)
 
             if len(nn_site.sites) == 1 and nn_site.count != 1:
                 s_equivalent = " equivalent "
@@ -653,4 +688,3 @@ def get_mineral_name(mineral_dict: Dict[str, Any]) -> Union[str, None]:
 
     else:
         return None
-
