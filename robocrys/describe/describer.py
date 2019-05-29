@@ -243,7 +243,8 @@ class StructureDescriber(object):
         """
         if len(self._da.components) == 1:
             return self._get_component_description(
-                self._da.get_component_groups()[0].components[0].index)
+                self._da.get_component_groups()[0].components[0].index,
+                single_component=True)
 
         else:
             component_groups = self._da.get_component_groups()
@@ -282,11 +283,14 @@ class StructureDescriber(object):
 
             return " ".join(component_descriptions)
 
-    def _get_component_description(self, component_index: int) -> str:
+    def _get_component_description(self, component_index: int,
+                                   single_component: bool = False) -> str:
         """Gets the descriptions of all sites in a component.
 
         Args:
             component_index: The index of the component
+            single_component: Whether the structure contains only a single
+                component.
 
         Returns:
             The description for all sites in the components.
@@ -305,7 +309,11 @@ class StructureDescriber(object):
                     use_sym_label=False,
                     fmt=self.fmt)
 
-                s_there = "There" if first_group else "there"
+                if first_group and not single_component:
+                    s_there = "there"
+                else:
+                    s_there = "There"
+
                 s_count = en.number_to_words(len(site_group.sites))
 
                 desc.append("{} are {} inequivalent {} sites.".format(
@@ -577,11 +585,11 @@ class StructureDescriber(object):
             big = max(discrete_bond_lengths)
             s_big_count = en.number_to_words(discrete_bond_lengths.count(big))
 
-            s_length = en.plural('length', small)
+            s_length = en.plural('length', s_big_count)
 
             return ("There {} {} shorter ({}) and {} "
                     "longer ({}) {}–{} bond {}.").format(
-                en.plural_verb('is', small), s_small_count,
+                en.plural_verb('is', s_small_count), s_small_count,
                 self._distance_to_string(small), s_big_count,
                 self._distance_to_string(big), from_element, to_element,
                 s_length)
