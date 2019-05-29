@@ -3,12 +3,12 @@ This module contains a script for using robocrys from the command line.
 """
 
 import argparse
-import logging
 import sys
 import warnings
 from typing import Optional
 
 from pymatgen.core.structure import Structure
+from pymatgen.ext.matproj import MPRestError
 from robocrys import StructureCondenser, StructureDescriber
 from robocrys import __version__
 
@@ -41,14 +41,14 @@ def robocrystallographer(structure: Structure,
     describer = StructureDescriber(**describer_kwargs)
 
     try:
-        logging.info("Adding oxidation states...")
+        print("Adding oxidation states...")
         structure.add_oxidation_state_by_guess(max_sites=-80)
     except ValueError:
-        logging.warning("Could not add oxidation states!")
+        print("Could not add oxidation states!")
 
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
-    logging.info(description)
+    print(description)
     return description
 
 
@@ -129,6 +129,9 @@ def _get_parser():
     parser.add_argument('--format', dest="fmt", default="unicode",
                         help="how to format the description (unicode [default],"
                              " html, latex, raw)")
+    parser.add_argument('--api-key',
+                        help="set the materials project API key. See: "
+                             "https://materialsproject.org/docs/api")
     return parser
 
 
@@ -148,12 +151,6 @@ def main():
     condenser_kwargs = {key: args_dict[key] for key in condenser_keys}
     describer_kwargs = {key: args_dict[key] for key in describer_keys}
 
-    logging.basicConfig(filename='robocrys.log', level=logging.INFO,
-                        filemode='w', format='%(message)s')
-    console = logging.StreamHandler()
-    logging.info(" ".join(sys.argv[:]))
-    logging.getLogger('').addHandler(console)
-
     warnings.filterwarnings("ignore", category=UserWarning,
                             module="pymatgen")
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -164,14 +161,21 @@ def main():
     except FileNotFoundError:
         from pymatgen.ext.matproj import MPRester
 
-        mpr = MPRester()
+        mpr = MPRester(args_dict["api_key"])
 
         try:
             structure = mpr.get_entry_by_material_id(
                 args.filename, inc_structure='final').structure
         except IndexError:
-            logging.error("filename or mp-id not found.")
+            print("filename or mp-id not found.")
             sys.exit()
+        except MPRestError as e:
+            if "API_KEY is not supplied" in str(e):
+                print("Materials project API key not set. Use the the "
+                      "--api-key option.\nSee robocrys -h for more details.")
+                sys.exit()
+            else:
+                raise e
 
     robocrystallographer(structure, condenser_kwargs=condenser_kwargs,
                          describer_kwargs=describer_kwargs)
