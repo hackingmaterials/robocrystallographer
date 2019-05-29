@@ -48,7 +48,7 @@ def get_site_fingerprints(structure: IStructure,
 def get_structure_fingerprint(structure: IStructure,
                               preset: str = 'CrystalNNFingerprint_ops',
                               stats: Optional[Tuple[str]] = ('mean', 'std_dev'),
-                              use_distance_cutoffs: bool = True
+                              prototype_match: bool = False
                               ) -> np.ndarray:
     """Gets the fingerprint for a structure.
 
@@ -60,8 +60,8 @@ def get_structure_fingerprint(structure: IStructure,
         stats: The stats to include in fingerprint. See
             :class:`matminer.featurizers.structure.SiteStatsFingerprint``
             for more details.
-        use_distance_cutoffs: Whether to use distance cutoffs when calculating
-            the structure fingerprint.
+        prototype_match: Whether to use distance cutoffs and electron negativity
+            differences when calculating the structure fingerprint.
 
     Returns:
         The structure fingerprint as a :class:`numpy.ndarray`.
@@ -69,14 +69,17 @@ def get_structure_fingerprint(structure: IStructure,
     # TODO: Add distance_cutoff option to matminer so we can user preset arg
     # currently don't use SiteStatsFingerprint.from_preset as we need to pass in
     # distance_cutoffs param
-    if use_distance_cutoffs:
+    if prototype_match:
         ssf = SiteStatsFingerprint(
-            CrystalNNFingerprint.from_preset("ops", cation_anion=False),
-            stats=stats)
+            CrystalNNFingerprint.from_preset(
+                "ops", cation_anion=False, distance_cutoffs=None,
+                x_diff_weight=None
+            ),
+            stats=stats
+        )
     else:
         ssf = SiteStatsFingerprint(
-            CrystalNNFingerprint.from_preset("ops", cation_anion=False,
-                                             distance_cutoffs=None),
+            CrystalNNFingerprint.from_preset("ops", cation_anion=False),
             stats=stats)
     return np.array(ssf.featurize(structure))
 

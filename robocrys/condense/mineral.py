@@ -237,7 +237,7 @@ class MineralMatcher(object):
             # fingerprint is too small for a reasonable match, indicates very
             # little bonding or small order parameter matches
             fingerprint = get_structure_fingerprint(
-                structure, use_distance_cutoffs=False)
+                structure, prototype_match=False)
 
         data['distance'] = data['fingerprint'].apply(
             lambda x: get_fingerprint_distance(x, fingerprint))
