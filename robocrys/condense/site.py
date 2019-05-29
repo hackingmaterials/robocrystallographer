@@ -447,10 +447,10 @@ class SiteAnalyzer(object):
             sites where the first two are equivalent and the last two are
             inequivalent. If  ``site_indices=[0, 1, 2, 3]`` the output will be::
 
-                [0, 2, 3]
+                [0, 0, 2, 3]
 
         """
-        return list(set(self.equivalent_sites[i] for i in site_indices))
+        return list(self.equivalent_sites[i] for i in site_indices)
 
     def _calculate_equivalent_sites(self,
                                     likeness_tol: float = 0.001,

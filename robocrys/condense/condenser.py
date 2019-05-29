@@ -37,6 +37,7 @@ class StructureCondenser(object):
             :class:`pymatgen.analysis.local_env.CrystalNN` will be used.
         mineral_matcher: A ``MineralMatcher`` instance. Defaults to ``None``
             in which case the default ``MineralMatcher`` settings will be used.
+            If set to ``False``, no mineral matching will occur.
         use_symmetry: Whether to use symmetry to determine if structure
             compoents and sites are equivalent. If ``False``, the site geometry
             and bonding graph information will be used.
@@ -68,7 +69,7 @@ class StructureCondenser(object):
         if not near_neighbors:
             near_neighbors = CrystalNN()
 
-        if not mineral_matcher:
+        if mineral_matcher is None:
             mineral_matcher = MineralMatcher()
 
         self.use_conventional_cell = use_conventional_cell
@@ -231,6 +232,10 @@ class StructureCondenser(object):
             will be ``None``. If an exact mineral match is found the distance
             will be set to ``-1``.
         """
+
+        if not self.mineral_matcher:
+            return {'type': None, 'distance': -1, 'n_species_type_match': True,
+                    'simplified': False}
 
         mineral = self.mineral_matcher.get_best_mineral_name(structure)
 
