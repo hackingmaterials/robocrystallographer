@@ -4,11 +4,15 @@ Change Log
 [Unreleased]
 ------------
 
+- Add robocrystallographer featurizer.
+- Various grammar/typographical bug fixes
+- Add html and unicode formatting options.
+- Add api-key option to command line interface.
+
 v0.1.3
 ------
 
 Fix Pypi installation.
-
 
 v0.1.2
 ------
