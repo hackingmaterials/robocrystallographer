@@ -183,12 +183,22 @@ class StructureDescriber(object):
                 en.number_to_words(self._da.dimensionality))
 
             component_makeup_summaries = []
+            nframeworks = len([c for g in component_groups
+                               for c in g.components if c.dimensionality == 3])
             for component_group in component_groups:
-                s_count = en.number_to_words(component_group.count)
+                if nframeworks == 1 and component_group.dimensionality == 3:
+                    s_count = "a"
+                else:
+                    s_count = en.number_to_words(component_group.count)
+
                 dimensionality = component_group.dimensionality
 
                 if component_group.molecule_name:
-                    shape = en.plural("molecule", s_count)
+                    if component_group.nsites == 1:
+                        shape = "atom"
+                    else:
+                        shape = "molecule"
+                    shape = en.plural(shape, s_count)
                     formula = component_group.molecule_name
                 else:
                     shape = en.plural(dimensionality_to_shape[dimensionality],
@@ -213,7 +223,16 @@ class StructureDescriber(object):
 
                 component_makeup_summaries.append(comp_desc)
 
-            desc += en.join(component_makeup_summaries) + "."
+            if nframeworks == 1 and len(component_makeup_summaries) > 1:
+                # when there is a single framework, make the description read
+                # "... and 8 Sn atoms inside a SnO2 framework" instead of
+                # "..., 8 Sn atoms and one SnO2 framework"
+                # This works because the component summaries are sorted by
+                # dimensionality
+                desc += en.join(component_makeup_summaries[:-1])
+                desc += " inside {}.".format(component_makeup_summaries[-1])
+            else:
+                desc += en.join(component_makeup_summaries) + "."
         return desc
 
     def _get_all_component_descriptions(self) -> str:

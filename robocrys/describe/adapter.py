@@ -12,11 +12,12 @@ from robocrys.adapter import BaseAdapter
 
 ComponentDetails = namedtuple('ComponentDetails',
                               ['formula', 'count', 'dimensionality',
-                               'molecule_name', 'orientation', 'index'])
+                               'molecule_name', 'orientation', 'nsites',
+                               'index'])
 
 ComponentGroup = namedtuple('ComponentGroup',
                             ['formula', 'dimensionality', 'count', 'components',
-                             'molecule_name'])
+                             'molecule_name', "nsites"])
 
 SiteGroup = namedtuple('SiteGroup', ['element', 'count', 'sites'])
 
@@ -199,6 +200,7 @@ class DescriptionAdapter(BaseAdapter):
                 dimensionality=self.components[index]['dimensionality'],
                 molecule_name=self.components[index]['molecule_name'],
                 orientation=self.components[index]['orientation'],
+                nsites=len(self.components[index]["sites"]),
                 index=index))
 
         return sorted(component_details, key=_component_order)
@@ -235,7 +237,8 @@ class DescriptionAdapter(BaseAdapter):
                 dimensionality=identity[0],
                 formula=identity[1],
                 molecule_name=identity[2],
-                components=sorted(group, key=_component_order)))
+                components=sorted(group, key=_component_order),
+                nsites=group[0].nsites))
 
         return sorted(component_group_details, key=_component_order)
 
