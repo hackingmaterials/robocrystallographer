@@ -8,6 +8,8 @@ Change Log
 - Various grammar/typographical bug fixes
 - Add html and unicode formatting options.
 - Add api-key option to command line interface.
+- Don't use electronegativity differences when prototype matching.
+- Improve descriptions for systems with a intercalants and a single framework.
 
 v0.1.3
 ------
