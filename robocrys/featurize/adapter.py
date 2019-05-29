@@ -230,3 +230,9 @@ class FeaturizerAdapter(BaseAdapter):
         """
         return sum(len(self.sites[site]['nn']) == num_neighbors for site in
                    self._all_sites) / len(self._all_sites)
+
+    def all_bond_lengths(self):
+        return [d for site_b in self.distances.values()
+                for site_dists in site_b.values() for d in site_dists]
+
+

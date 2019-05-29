@@ -5,6 +5,8 @@ This module contains a class to obtain robocrystallographer ML features.
 from itertools import product
 from typing import Union, List, Optional
 
+from numpy import mean
+
 from matminer.featurizers.base import BaseFeaturizer
 
 from pymatgen import Structure
@@ -92,6 +94,11 @@ class RobocrysFeaturizer(BaseFeaturizer):
         features += [fa.frac_site_geometry(g) for g in _geometries]
         features += [fa.frac_sites_n_coordinate(n) for n in _cns]
 
+        all_distances = fa.all_bond_lengths()
+        # add bond length features
+        features += [max(all_distances), min(all_distances),
+                     mean(all_distances)]
+
         return features
 
     def feature_labels(self):
@@ -130,6 +137,9 @@ class RobocrysFeaturizer(BaseFeaturizer):
         labels += ['frac_site_polyhedra']
         labels += ['frac_sites_{}'.format(g) for g in _geometries]
         labels += ['frac_sites_{}_coordinate'.format(n) for n in _cns]
+
+        # bond length features
+        labels += ["max_bond_length", "min_bond_length", "average_bond_length"]
 
         return labels
 
