@@ -28,11 +28,11 @@ class MineralMatcher(object):
                S1-S828. doi: 10.1016/j.commatsci.2017.01.017
 
     Args:
-        aflow_initial_ltol: The fractional length tolerance used in the AFLOW
+        initial_ltol: The fractional length tolerance used in the AFLOW
             structure matching.
-        aflow_initial_stol : The site coordinate tolerance used in the AFLOW
+        initial_stol : The site coordinate tolerance used in the AFLOW
             structure matching.
-        aflow_initial_angle_tol: The angle tolerance used in the AFLOW structure
+        initial_angle_tol: The angle tolerance used in the AFLOW structure
             matching.
         use_fingerprint_matching: Whether to use the fingerprint distance to
             match minerals.
@@ -42,16 +42,16 @@ class MineralMatcher(object):
     """
 
     def __init__(self,
-                 aflow_initial_ltol: float = 0.2,
-                 aflow_initial_stol: float = 0.3,
-                 aflow_initial_angle_tol: float = 5.,
+                 initial_ltol: float = 0.2,
+                 initial_stol: float = 0.3,
+                 initial_angle_tol: float = 5.,
                  use_fingerprint_matching: bool = True,
                  fingerprint_distance_cutoff: float = 0.4):
         db_file = resource_filename('robocrys.condense', 'mineral_db.json.gz')
         self.mineral_db = load_dataframe_from_json(db_file)
-        self.aflow_initial_ltol = aflow_initial_ltol
-        self.aflow_initial_stol = aflow_initial_stol
-        self.aflow_initial_angle_tol = aflow_initial_angle_tol
+        self.initial_ltol = initial_ltol
+        self.initial_stol = initial_stol
+        self.initial_angle_tol = initial_angle_tol
         self.fingerprint_distance_cutoff = fingerprint_distance_cutoff
         self.use_fingerprint_matching = use_fingerprint_matching
         self._structure = None
@@ -161,9 +161,9 @@ class MineralMatcher(object):
             return tags
 
         matcher = AflowPrototypeMatcher(
-            initial_ltol=self.aflow_initial_ltol,
-            initial_stol=self.aflow_initial_stol,
-            initial_angle_tol=self.aflow_initial_angle_tol)
+            initial_ltol=self.initial_ltol,
+            initial_stol=self.initial_stol,
+            initial_angle_tol=self.initial_angle_tol)
         matcher._match_prototype = _match_prototype
 
         return matcher.get_prototypes(structure)
