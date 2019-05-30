@@ -182,5 +182,10 @@ def main():
             print("structure file '{}' not found.".format(args.filename))
             sys.exit()
 
+    if not structure.is_ordered:
+        print("disordered structures are not currently supported by "
+              "robocrystallographer... exiting")
+        sys.exit()
+
     robocrystallographer(structure, condenser_kwargs=condenser_kwargs,
                          describer_kwargs=describer_kwargs)
