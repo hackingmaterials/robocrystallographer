@@ -217,8 +217,9 @@ class StructureDescriber(object):
 
                 if self.fmt == "latex":
                     formula = latexify(formula)
-                elif self.fmt == "unciode":
+                elif self.fmt == "unicode":
                     formula = unicodeify(formula)
+                    print(formula)
                 elif self.fmt == "html":
                     formula = htmlify(formula)
 
@@ -274,7 +275,7 @@ class StructureDescriber(object):
 
                     if self.fmt == "latex":
                         formula = latexify(formula)
-                    elif self.fmt == "unciode":
+                    elif self.fmt == "unicode":
                         formula = unicodeify(formula)
                     elif self.fmt == "html":
                         formula = htmlify(formula)
