@@ -20,7 +20,6 @@ class TestCommandLineInterface(RobocrysTest):
         self.assertTrue("SnO2" in description)
         self.assertTrue("tetragonal" in description)
         self.assertTrue("P4_2/mnm" in description)
-        self.assertTrue("three-dimensional" in description)
         self.assertTrue("Sn(1)4+" in description)
         self.assertTrue("equivalent" in description)
         self.assertTrue("corner" in description)

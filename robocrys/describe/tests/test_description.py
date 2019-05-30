@@ -16,13 +16,12 @@ class TestDescriptionMethods(RobocrysTest):
                                describe_symmetry_labels=True,
                                return_parts=False,
                                bond_length_decimal_places=2,
-                               latexify=False)
+                               fmt="raw")
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Rutile" in description)
         self.assertTrue("SnO2" in description)
         self.assertTrue("tetragonal" in description)
         self.assertTrue("P4_2/mnm" in description)
-        self.assertTrue("three-dimensional" in description)
         self.assertTrue("Sn(1)4+" in description)
         self.assertTrue("equivalent" in description)
         self.assertTrue("corner" in description)
@@ -35,7 +34,7 @@ class TestDescriptionMethods(RobocrysTest):
                                describe_symmetry_labels=True,
                                return_parts=False,
                                bond_length_decimal_places=4,
-                               latexify=False)
+                               fmt="raw")
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Sn(1)" in description)
         self.assertTrue("Sn(1)–O(1)" in description)
@@ -46,7 +45,7 @@ class TestDescriptionMethods(RobocrysTest):
                                describe_symmetry_labels=False,
                                return_parts=False,
                                bond_length_decimal_places=2,
-                               latexify=True)
+                               fmt="latex")
         description = d.describe(self.tin_dioxide)
         self.assertTrue(r"Sn^{4+}" in description)
         self.assertTrue("Sn–O" in description)
@@ -56,14 +55,14 @@ class TestDescriptionMethods(RobocrysTest):
                                describe_symmetry_labels=True,
                                return_parts=True,
                                bond_length_decimal_places=2,
-                               latexify=False)
+                               fmt="raw")
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Rutile" in description['mineral'])
         self.assertTrue("SnO2" in description['mineral'])
         self.assertTrue("tetragonal" in description['mineral'])
         self.assertTrue("P4_2/mnm" in description['mineral'])
 
-        self.assertTrue("three-dimensional" in description['component_makeup'])
+        self.assertTrue("" == description['component_makeup'])
         self.assertTrue("Sn(1)4+" in description['components'])
         self.assertTrue("equivalent" in description['components'])
         self.assertTrue("corner" in description['components'])
