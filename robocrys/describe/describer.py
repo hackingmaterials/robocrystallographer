@@ -640,11 +640,15 @@ class StructureDescriber(object):
 
         # if only one bond length
         if len(tilts) == 1:
-            return "The corner-sharing octahedral tilt angles are {}".format(
-                self._angle_to_string(tilts[0]))
+            if tilts[0] == 0:
+                return "The corner-sharing octahedra are not tilted"
+
+            else:
+                return ("The corner-sharing octahedral tilt angles "
+                        "are {}".format(self._angle_to_string(tilts[0])))
 
         # otherwise just detail the spread of bond lengths
-        return "The corner-sharing octahedra tilt angles range from {}".format(
+        return "The corner-sharing octahedral tilt angles range from {}".format(
             self._angle_range_to_string(min(tilts), max(tilts)))
 
     def _filter_seen_bonds(self, from_site: int, to_sites: List[int]
