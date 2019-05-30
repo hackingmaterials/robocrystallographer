@@ -142,14 +142,14 @@
         <span class="n">description</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe_mineral</span><span class="p">:</span>
-            <span class="n">description</span><span class="p">[</span><span class="s1">&#39;mineral&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mineral_description</span><span class="p">()</span>
+            <span class="n">description</span><span class="p">[</span><span class="s1">&#39;mineral&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mineral_description</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe_component_makeup</span><span class="p">:</span>
             <span class="n">description</span><span class="p">[</span><span class="s1">&#39;component_makeup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_get_component_makeup_summary</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_component_makeup_summary</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe_components</span><span class="p">:</span>
-            <span class="n">description</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_component_descriptions</span><span class="p">()</span>
+            <span class="n">description</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_component_descriptions</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_parts</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">description</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span>
@@ -157,7 +157,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">description</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_mineral_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_mineral_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets the mineral name and space group description.</span>
 
 <span class="sd">        If the structure is a perfect match for a known prototype (e.g.</span>
@@ -194,7 +194,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">crystal_system</span><span class="p">,</span> <span class="n">spg_symbol</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">desc</span>
 
-    <span class="k">def</span> <span class="nf">_get_component_makeup_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_component_makeup_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets a summary of the makeup of components in a structure.</span>
 
 <span class="sd">        Returns:</span>
@@ -242,14 +242,14 @@
             <span class="n">desc</span> <span class="o">+=</span> <span class="n">en</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">component_makeup_summaries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
         <span class="k">return</span> <span class="n">desc</span>
 
-    <span class="k">def</span> <span class="nf">_get_all_component_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_all_component_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets the descriptions of all components in the structure.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A description of all components in the structure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_component_description</span><span class="p">(</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component_description</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">get_component_groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -279,13 +279,13 @@
                         <span class="n">shape</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
                     <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;In </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s_filler</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-                    <span class="n">desc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_component_description</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="n">desc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component_description</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
                     <span class="n">component_descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">component_descriptions</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_component_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_component_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets the descriptions of all sites in a component.</span>
 
 <span class="sd">        Args:</span>
@@ -299,7 +299,7 @@
         <span class="k">for</span> <span class="n">site_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">get_component_site_groups</span><span class="p">(</span><span class="n">component_index</span><span class="p">):</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_site_description</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_site_description</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">element</span> <span class="o">=</span> <span class="n">get_formatted_el</span><span class="p">(</span>
@@ -318,12 +318,12 @@
                     <span class="n">s_ordinal</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">en</span><span class="o">.</span><span class="n">ordinal</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
                     <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;In the </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> site,&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">s_ordinal</span><span class="p">,</span> <span class="n">element</span><span class="p">))</span>
-                    <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_site_description</span><span class="p">(</span><span class="n">site</span><span class="p">))</span>
+                    <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_site_description</span><span class="p">(</span><span class="n">site</span><span class="p">))</span>
 
             <span class="n">first_group</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets a description of the geometry and bonding of a site.</span>
 
 <span class="sd">        If the site likeness (order parameter) is less than ``distorted_tol``,</span>
@@ -340,7 +340,7 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">site</span><span class="p">[</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="ow">and</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cation_polyhedra_only</span> <span class="ow">or</span> <span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">])):</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_poly_site_description</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span>
-            <span class="n">tilt_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_octahedral_tilt_description</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span>
+            <span class="n">tilt_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_octahedral_tilt_description</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tilt_desc</span><span class="p">:</span>
                 <span class="n">desc</span> <span class="o">+=</span> <span class="s2">&quot;. &quot;</span> <span class="o">+</span> <span class="n">tilt_desc</span>
         <span class="k">else</span><span class="p">:</span>
@@ -509,13 +509,13 @@
 
         <span class="n">bond_descriptions</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">nn_site</span> <span class="ow">in</span> <span class="n">nn_details</span><span class="p">:</span>
-            <span class="n">bond_descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_bond_length_description</span><span class="p">(</span>
+            <span class="n">bond_descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_bond_length_description</span><span class="p">(</span>
                 <span class="n">site_index</span><span class="p">,</span> <span class="n">nn_site</span><span class="o">.</span><span class="n">sites</span><span class="p">))</span>
 
         <span class="c1"># filter empty bond length description strings</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">bond_descriptions</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                      <span class="n">to_sites</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets a description of the bond lengths between two sets of sites.</span>
 
@@ -588,7 +588,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_distance_range_to_string</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">),</span>
                                            <span class="nb">max</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_get_octahedral_tilt_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">get_octahedral_tilt_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets a description of octahedral tilting angles between two sites.</span>
 

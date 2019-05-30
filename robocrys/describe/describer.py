@@ -117,14 +117,14 @@ class StructureDescriber(object):
         description = {}
 
         if self.describe_mineral:
-            description['mineral'] = self._get_mineral_description()
+            description['mineral'] = self.get_mineral_description()
 
         if self.describe_component_makeup:
             description['component_makeup'] = (
-                self._get_component_makeup_summary())
+                self.get_component_makeup_summary())
 
         if self.describe_components:
-            description['components'] = self._get_all_component_descriptions()
+            description['components'] = self.get_all_component_descriptions()
 
         if not self.return_parts:
             return " ".join(
@@ -134,7 +134,7 @@ class StructureDescriber(object):
         else:
             return description
 
-    def _get_mineral_description(self) -> str:
+    def get_mineral_description(self) -> str:
         """Gets the mineral name and space group description.
 
         If the structure is a perfect match for a known prototype (e.g.
@@ -172,7 +172,7 @@ class StructureDescriber(object):
             self._da.crystal_system, spg_symbol)
         return desc
 
-    def _get_component_makeup_summary(self) -> str:
+    def get_component_makeup_summary(self) -> str:
         """Gets a summary of the makeup of components in a structure.
 
         Returns:
@@ -246,14 +246,14 @@ class StructureDescriber(object):
                 desc += en.join(component_makeup_summaries) + "."
         return desc
 
-    def _get_all_component_descriptions(self) -> str:
+    def get_all_component_descriptions(self) -> str:
         """Gets the descriptions of all components in the structure.
 
         Returns:
             A description of all components in the structure.
         """
         if len(self._da.components) == 1:
-            return self._get_component_description(
+            return self.get_component_description(
                 self._da.get_component_groups()[0].components[0].index,
                 single_component=True)
 
@@ -288,14 +288,14 @@ class StructureDescriber(object):
                         shape = en.plural(shape)
 
                     desc = "In {} {} {}, ".format(s_filler, formula, shape)
-                    desc += self._get_component_description(component.index)
+                    desc += self.get_component_description(component.index)
 
                     component_descriptions.append(desc)
 
             return " ".join(component_descriptions)
 
-    def _get_component_description(self, component_index: int,
-                                   single_component: bool = False) -> str:
+    def get_component_description(self, component_index: int,
+                                  single_component: bool = False) -> str:
         """Gets the descriptions of all sites in a component.
 
         Args:
@@ -311,7 +311,7 @@ class StructureDescriber(object):
         for site_group in self._da.get_component_site_groups(component_index):
 
             if len(site_group.sites) == 1:
-                desc.append(self._get_site_description(site_group.sites[0]))
+                desc.append(self.get_site_description(site_group.sites[0]))
 
             else:
                 element = get_formatted_el(
@@ -334,12 +334,12 @@ class StructureDescriber(object):
                     s_ordinal = en.number_to_words(en.ordinal(i + 1))
                     desc.append("In the {} {} site,".format(
                         s_ordinal, element))
-                    desc.append(self._get_site_description(site))
+                    desc.append(self.get_site_description(site))
 
             first_group = False
         return " ".join(desc)
 
-    def _get_site_description(self, site_index: int) -> str:
+    def get_site_description(self, site_index: int) -> str:
         """Gets a description of the geometry and bonding of a site.
 
         If the site likeness (order parameter) is less than ``distorted_tol``,
@@ -356,7 +356,7 @@ class StructureDescriber(object):
         if (site['poly_formula'] and
                 (self.cation_polyhedra_only or '+' in site['element'])):
             desc = self._get_poly_site_description(site_index)
-            tilt_desc = self._get_octahedral_tilt_description(site_index)
+            tilt_desc = self.get_octahedral_tilt_description(site_index)
             if tilt_desc:
                 desc += ". " + tilt_desc
         else:
@@ -535,14 +535,14 @@ class StructureDescriber(object):
 
         bond_descriptions = []
         for nn_site in nn_details:
-            bond_descriptions.append(self._get_bond_length_description(
+            bond_descriptions.append(self.get_bond_length_description(
                 site_index, nn_site.sites))
 
         # filter empty bond length description strings
         return " ".join(filter(lambda x: x, bond_descriptions))
 
-    def _get_bond_length_description(self, from_site: int,
-                                     to_sites: List[int]) -> str:
+    def get_bond_length_description(self, from_site: int,
+                                    to_sites: List[int]) -> str:
         """Gets a description of the bond lengths between two sets of sites.
 
         Args:
@@ -612,8 +612,8 @@ class StructureDescriber(object):
             self._distance_range_to_string(min(discrete_bond_lengths),
                                            max(discrete_bond_lengths)))
 
-    def _get_octahedral_tilt_description(self, site_index: int,
-                                         ) -> str:
+    def get_octahedral_tilt_description(self, site_index: int,
+                                        ) -> str:
         """Gets a description of octahedral tilting angles between two sites.
 
         Currently only implemented for corner-sharing octahedra.
