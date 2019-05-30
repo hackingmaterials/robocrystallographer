@@ -63,7 +63,7 @@ class TestStructureCondenser(RobocrysTest):
 
     def test_condense_structure_sym(self):
         """Test nothing changes when we use symmetry to reduce components."""
-        sc = StructureCondenser(use_symmetry=True)
+        sc = StructureCondenser(use_symmetry_equivalent_sites=True)
         data = sc.condense_structure(self.tin_dioxide)
 
         # check the right number of sites and that the site data is correct

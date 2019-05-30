@@ -38,13 +38,13 @@ class StructureCondenser(object):
         mineral_matcher: A ``MineralMatcher`` instance. Defaults to ``None``
             in which case the default ``MineralMatcher`` settings will be used.
             If set to ``False``, no mineral matching will occur.
-        use_symmetry: Whether to use symmetry to determine if structure
-            compoents and sites are equivalent. If ``False``, the site geometry
-            and bonding graph information will be used.
+        use_symmetry_equivalent_sites: Whether to use symmetry to determine if
+            sites are inequivalent. If ``False``, the site geometry and (next)
+            nearest neighbor information will be used.
         symprec: The tolerance used when determining the symmetry of
-            the structure. The symmetry is used to determine if multiple
-            sites are symmetrically equivalent. If ``use_symmetry=False`` this
-            option will be ignored.
+            the structure. The symmetry can used both to determine if multiple
+            sites are symmetrically equivalent (if use_symmetry_equivalent_sites
+            is ``True``) and to obtain the symmetry labels for each site.
         use_iupac_formula (bool, optional): Whether to order formulas
             by the iupac "electronegativity" series, defined in
             Table VI of "Nomenclature of Inorganic Chemistry (IUPAC
@@ -61,7 +61,7 @@ class StructureCondenser(object):
                  use_conventional_cell: bool = True,
                  near_neighbors: Optional[NearNeighbors] = None,
                  mineral_matcher: Optional[MineralMatcher] = None,
-                 use_symmetry: bool = False,
+                 use_symmetry_equivalent_sites: bool = False,
                  symprec: float = 0.01,
                  simplify_molecules: bool = True,
                  use_iupac_formula: bool = True,
@@ -75,7 +75,7 @@ class StructureCondenser(object):
         self.use_conventional_cell = use_conventional_cell
         self.near_neighbors = near_neighbors
         self.mineral_matcher = mineral_matcher
-        self.use_symmetry = use_symmetry
+        self.use_symmetry_equivalent_sites = use_symmetry_equivalent_sites
         self.symprec = symprec
         self.simplify_molecules = simplify_molecules
         self.use_common_formulas = use_common_formulas
@@ -89,56 +89,10 @@ class StructureCondenser(object):
 
         Returns:
             The condensed structure information. The data is formatted as a
-            :obj:`dict` with a fixed set of keys. For example, the condensed
-            representation of MoS2 is shown below::
-
-                {'mineral': {'type': 'Molybdenite',
-                             'distance': -1,
-                             'n_species_type_match': True,
-                             'simplified': False},
-                 'formula': 'MoS2',
-                 'spg_symbol': 'P6_3/mmc',
-                 'crystal_system': 'hexagonal',
-                 'dimensionality': 2,
-                 'sites': {0: {'element': 'Mo4+',
-                               'geometry': {'likeness': 0.5566,
-                                            'type': 'pentagonal pyramidal'},
-                               'nn': [2, 2, 2, 2, 2, 2],
-                               'nnn': {'edge': [0, 0, 0, 0, 0, 0]},
-                               'poly_formula': 'S6',
-                               'sym_labels': (1,)},
-                           2: {'element': 'S2-',
-                               'geometry': {'likeness': 0.8888,
-                                   'type': '3-coordinate'},
-                               'nn': [0, 0, 0],
-                               'nnn': {'corner': [2, 2, 2, ...],
-                                       'face': [2]},
-                               'poly_formula': None,
-                               'sym_labels': (1,)}},
-                 'distances': {0: {2: [2.42, 2.42, 2.42, ...]},
-                               2: {0: [2.42, 2.42, 2.42]}},
-                 'angles': {0: {0: {'edge': [82.60, 82.60, 82.60, ...]}},
-                            2: {2: {'corner': [135.20, 82.60, 135.20, ...],
-                                    'face': [80.70, 80.70, 80.70]}}},
-                 'components': {0: {'formula':
-                                    'MoS2',
-                                    'sites': [0, 2]
-                                    'dimensionality': 2,
-                                    'molecule_name': None,
-                                    'orientation': (0, 0, 1)}},
-                 'component_makeup': [0, 0],
-                 'vdw_heterostructure_info': {'intercalant_formulas': [],
-                                              'num_repetitions': 2,
-                                              'repeating_unit': ['MoS2']}}
-
-            For more information on the ``mineral`` key, see
-            :meth:`StructureCondenser._condense_mineral`. For more information
-            on the ``site`` key see :meth:`SiteAnalyzer.get_all_site_summaries`.
-            For more information on the ``distance`` and ``angles`` keys, see
-            :meth:`SiteAnalyzer.get_all_bond_distance_summaries` and
-            :meth:`SiteAnalyzer.get_all_connectivity_angle_summaries`. For more
-            information on the ``components`` and ``components_makeup`` keys,
-            see :meth:`StructureCondenser._condense_components`.
+            :obj:`dict` with a fixed set of keys. An up-to-date example of the,
+            the condensed representation of MoS2 given in the documentation.
+            See: ``robocrystallographer/docs_rst/source/format.rst`` or
+            https://hackingmaterials.lbl.gov/robocrystallographer/format.html
         """
         # sort so we can give proper symmetry labels
         structure = structure.get_sorted_structure()
@@ -171,8 +125,8 @@ class StructureCondenser(object):
         }
 
         site_analyzer = SiteAnalyzer(
-            bonded_structure, use_symmetry_equivalent_sites=self.use_symmetry,
-            symprec=self.symprec)
+            bonded_structure, symprec=self.symprec,
+            use_symmetry_equivalent_sites=self.use_symmetry_equivalent_sites)
         structure_data['sites'] = site_analyzer.get_all_site_summaries()
         structure_data['distances'] = site_analyzer. \
             get_all_bond_distance_summaries()
@@ -315,7 +269,7 @@ class StructureCondenser(object):
             index (for two-dimensional components) or direction of propagation
             (for one-dimensional components).
         """
-        if self.use_symmetry:
+        if self.use_symmetry_equivalent_sites:
             inequiv_components = get_sym_inequiv_components(
                 components, spacegroup_analyzer)
         else:

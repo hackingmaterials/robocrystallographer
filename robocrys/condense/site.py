@@ -144,7 +144,7 @@ class SiteAnalyzer(object):
             If ``inc_inequivalent_site_index=True``, the data will have an
             additional key ``'inequiv_index'`` corresponding to the inequivalent
             site index. E.g. if two sites are structurally/symmetrically
-            equivalent (depending on the value of ``self.use_symmetry`` then
+            equivalent (depending on the value of ``self.use_symmetry_equivalent_sites`` then
             they will have the same ``inequiv_index``.
         """
 
@@ -187,7 +187,7 @@ class SiteAnalyzer(object):
             If ``inc_inequivalent_site_index=True``, the data will have an
             additional key ``'inequiv_index'`` corresponding to the inequivalent
             site index. E.g. if two sites are structurally/symmetrically
-            equivalent (depending on the value of ``self.use_symmetry`` then
+            equivalent (depending on the value of ``self.use_symmetry_equivalent_sites`` then
             they will have the same ``inequiv_index``.
         """
 

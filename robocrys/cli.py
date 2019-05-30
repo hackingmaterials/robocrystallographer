@@ -66,7 +66,7 @@ def _get_parser():
                         help="use the convention cell")
     parser.add_argument('-s', '--symmetry',
                         action='store_true',
-                        dest="use_symmetry",
+                        dest="use_symmetry_equivalent_sites",
                         help="use symmetry to determine inequivalent sites")
     parser.add_argument('--symprec',
                         default=0.01,
@@ -138,7 +138,7 @@ def main():
     args = _get_parser().parse_args()
     args_dict = vars(args)
 
-    condenser_keys = ['use_conventional_cell', "use_symmetry", "symprec",
+    condenser_keys = ['use_conventional_cell', "use_symmetry_equivalent_sites", "symprec",
                       "use_iupac_formula", "use_common_formulas"]
     describer_keys = ['describe_mineral', "describe_component_makeup",
                       "describe_components", "describe_symmetry_labels",
