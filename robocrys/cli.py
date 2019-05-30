@@ -138,8 +138,8 @@ def main():
     args = _get_parser().parse_args()
     args_dict = vars(args)
 
-    condenser_keys = ['use_conventional_cell', "use_symmetry_equivalent_sites", "symprec",
-                      "use_iupac_formula", "use_common_formulas"]
+    condenser_keys = ['use_conventional_cell', "use_symmetry_equivalent_sites",
+                      "symprec", "use_iupac_formula", "use_common_formulas"]
     describer_keys = ['describe_mineral', "describe_component_makeup",
                       "describe_components", "describe_symmetry_labels",
                       "describe_oxidation_states", "describe_bond_lengths",
@@ -158,23 +158,27 @@ def main():
         structure = Structure.from_file(args.filename)
 
     except FileNotFoundError:
-        from pymatgen.ext.matproj import MPRester
+        if args.filename[:3] in ["mp-", "mvc"]:
+            from pymatgen.ext.matproj import MPRester
 
-        mpr = MPRester(args_dict["api_key"])
+            mpr = MPRester(args.api_key)
 
-        try:
-            structure = mpr.get_entry_by_material_id(
-                args.filename, inc_structure='final').structure
-        except IndexError:
-            print("filename or mp-id not found.")
-            sys.exit()
-        except MPRestError as e:
-            if "API_KEY is not supplied" in str(e):
-                print("Materials project API key not set. Use the the "
-                      "--api-key option.\nSee robocrys -h for more details.")
+            try:
+                structure = mpr.get_entry_by_material_id(
+                    args.filename, inc_structure='final').structure
+            except IndexError:
+                print("filename or mp-id not found.")
                 sys.exit()
-            else:
-                raise e
+            except MPRestError as e:
+                if "API_KEY is not supplied" in str(e):
+                    print("Materials project API key not set. Use the the "
+                          "--api-key option.\nSee robocrys -h for more details")
+                    sys.exit()
+                else:
+                    raise e
+        else:
+            print("structure file '{}' not found.".format(args.filename))
+            sys.exit()
 
     robocrystallographer(structure, condenser_kwargs=condenser_kwargs,
                          describer_kwargs=describer_kwargs)
