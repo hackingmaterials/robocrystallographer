@@ -7,7 +7,10 @@ It uses multiprocessing to process many files simultaneously.
 WARNING: While in progress the disk usage maybe fairly large (~100 GB).
 
 Writes to MongograntStore. The data will be inserted into the "collection"
-collection in the "mp_pubchem" database in the mongo database.
+collection in the "mp_pubchem" database in the mongo database. Contact
+Shyam D for access to this collection. Alternatively, the script can easily be
+reconfigured using alternative maggma stores. E.g. to write to a local MongoDB
+database.
 """
 
 import ftplib
@@ -83,7 +86,7 @@ def task_done(future):
 
 
 def download_done(future):
-    result = future.result()
+    future.result()
     download_pbar.update()
 
 
@@ -116,7 +119,8 @@ if not os.path.exists(tmp_dir):
 with pebble.ProcessPool(max_workers=10) as pool:
     for remote_file in files:
         if (not os.path.exists(os.path.join(tmp_dir, remote_file)) and
-            not os.path.exists(os.path.join(tmp_dir, remote_file + ".processed"))):
+            not os.path.exists(os.path.join(tmp_dir, remote_file +
+                                            ".processed"))):
             f = pool.schedule(download_file, args=(remote_file, ))
             f.add_done_callback(download_done)
         else:

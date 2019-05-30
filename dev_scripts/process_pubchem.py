@@ -2,11 +2,21 @@
 This script processes the Pubchem entries stored in a mongodb database for use
 in robocrystallographer.
 
+Please contact Shyam D for access to the mp_pubchem database. Alternatively, you
+can reconfigure both this and the download_pubchem.py scripts to point to a
+local MongoDB instance.
+
 The aim to to produce a dictionary mapping SMILES string to compound name.
 
 The size of the dataset is tuned by the max_atoms parameter.
 
 - max_atoms=60 gives a 2.1 GB gzipped dataset.
+
+To avoid distributing a large file with robocrystallographer, we set max_atoms
+to 12. The smiles_to_names.json file is then distributed with
+robocrystallographer. When using robocrystallographer to describe structures
+containing molecules with > 12 atoms, an internet connection is required to
+search Pubchem using the pubchempy python package.
 """
 
 from maggma.advanced_stores import MongograntStore
@@ -14,6 +24,7 @@ from monty.serialization import dumpfn
 import pebble
 from tqdm import tqdm
 import bson
+
 
 def process_batch(batch):
     batch = bson.decode_all(batch)
