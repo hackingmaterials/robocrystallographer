@@ -10,6 +10,7 @@ Change Log
 - Add api-key option to command line interface.
 - Don't use electronegativity differences when prototype matching.
 - Improve descriptions for systems with a intercalants and a single framework.
+- Fix LaTeX formatting of Angstrom and degree symbols.
 
 v0.1.3
 ------

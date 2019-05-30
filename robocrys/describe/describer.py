@@ -85,6 +85,13 @@ class StructureDescriber(object):
         self.return_parts = return_parts
         self.angle_decimal_places = 0
 
+        if fmt == "latex":
+            self.angstrom = r"$\AA$"
+            self.degree = r"$^{\circ}$"
+        else:
+            self.angstrom = "Å"
+            self.degree = "°"
+
         self._da: DescriptionAdapter = None
         self._seen_bonds: set = None
 
@@ -673,13 +680,14 @@ class StructureDescriber(object):
 
     def _distance_to_string(self, distance: float) -> str:
         """Utility function to round a distance and add an Angstrom symbol."""
-        return "{:.{}f} Å".format(distance, self.bond_length_decimal_places)
+        return "{:.{}f} {}".format(distance, self.bond_length_decimal_places,
+                                   self.angstrom)
 
     def _distance_range_to_string(self, dist_a: float, dist_b: float) -> str:
         """Utility function to format a range of distances."""
-        return "{:.{}f}–{:.{}f} Å".format(
+        return "{:.{}f}–{:.{}f} {}".format(
             dist_a, self.bond_length_decimal_places,
-            dist_b, self.bond_length_decimal_places)
+            dist_b, self.bond_length_decimal_places, self.angstrom)
 
     def _rounded_angles(self, data: List[float]) -> Tuple[float]:
         """Function to round angles to a number of decimal places."""
@@ -688,12 +696,14 @@ class StructureDescriber(object):
 
     def _angle_to_string(self, angle: float) -> str:
         """Utility function to round a distance and add an Angstrom symbol."""
-        return "{:.{}f}°".format(angle, self.angle_decimal_places)
+        return "{:.{}f}{}".format(angle, self.angle_decimal_places,
+                                  self.degree)
 
     def _angle_range_to_string(self, angle_a: float, angle_b: float) -> str:
         """Utility function to format a range of distances."""
-        return "{:.{}f}–{:.{}f}°".format(angle_a, self.angle_decimal_places,
-                                         angle_b, self.angle_decimal_places)
+        return "{:.{}f}–{:.{}f}{}".format(angle_a, self.angle_decimal_places,
+                                          angle_b, self.angle_decimal_places,
+                                          self.degree)
 
 
 def get_mineral_name(mineral_dict: Dict[str, Any]) -> Union[str, None]:
