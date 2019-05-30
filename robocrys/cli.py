@@ -40,10 +40,12 @@ def robocrystallographer(structure: Structure,
     sc = StructureCondenser(**condenser_kwargs)
     describer = StructureDescriber(**describer_kwargs)
 
-    try:
-        structure.add_oxidation_state_by_guess(max_sites=-80)
-    except ValueError:
-        warnings.warn("Could not add oxidation states!")
+    if not any([hasattr(s, "oxi_state") for s in
+                structure.composition.elements]):
+        try:
+            structure.add_oxidation_state_by_guess(max_sites=-80)
+        except ValueError:
+            warnings.warn("Could not add oxidation states!")
 
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
