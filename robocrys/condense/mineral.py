@@ -9,7 +9,7 @@ import numpy as np
 from matminer.utils.io import load_dataframe_from_json
 from pkg_resources import resource_filename
 
-from pymatgen.analysis.aflow_prototypes import AflowPrototypeMatcher
+from pymatgen.analysis.prototypes import AflowPrototypeMatcher
 from pymatgen.core.structure import IStructure
 from robocrys.condense.fingerprint import (get_structure_fingerprint,
                                            get_fingerprint_distance)
