@@ -4,6 +4,10 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.1
+------
+- setup.py bug fixes.
+
 v0.2.0
 ------
 
