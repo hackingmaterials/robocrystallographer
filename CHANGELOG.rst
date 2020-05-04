@@ -4,6 +4,9 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.0
+------
+
 - Add robocrystallographer featurizer.
 - Various grammar/typographical bug fixes
 - Add html and unicode formatting options.
