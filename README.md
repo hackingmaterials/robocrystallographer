@@ -116,7 +116,7 @@ results. If you are using the [Conda](https://conda.io/) package management
 system, OpenBabel can be installed using:
 
 ```
-conda install -c openbabel openbabel
+conda install -c conda-forge openbabel
 ```
 
 ## What’s new?

@@ -15,7 +15,6 @@ jobs:
             conda create --quiet --yes --name test_env python=3.7
             source activate test_env
             conda install --quiet --yes -c conda-forge openbabel
-            conda install --quiet --yes scipy matplotlib sympy pandas
             # Add executables and path.
             for EXEPATH in `pwd`/cmd_line/*/Linux_64bit; do export PATH=$PATH:$EXEPATH; done
             pip install -q -e .
