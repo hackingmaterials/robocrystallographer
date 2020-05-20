@@ -173,7 +173,7 @@ class SiteAnalyzer(object):
             nearest neighbor site, returns a :obj:`dict` with the format::
 
                 {'element': el, 'connectivity': con, 'geometry': geom,
-                 'angles': angles}
+                 'angles': angles, 'distance': distance}
 
             The ``connectivity`` property is the connectivity type to the
             next nearest neighbor, e.g. "face", "corner", or
@@ -183,7 +183,8 @@ class SiteAnalyzer(object):
             angles between the site and the next nearest neighbour. Returned as
             a :obj:`list` of :obj:`int`. Multiple bond angles are given when
             the two sites share more than nearest neighbor (e.g. if they are
-            face-sharing or edge-sharing).
+            face-sharing or edge-sharing). The ``distance`` property gives the
+            distance between the site and the next nearest neighbor.
             If ``inc_inequivalent_site_index=True``, the data will have an
             additional key ``'inequiv_index'`` corresponding to the inequivalent
             site index. E.g. if two sites are structurally/symmetrically
@@ -237,12 +238,15 @@ class SiteAnalyzer(object):
             angles = [get_angle(site_coords - x, nnn_site_coords - x)
                       for x in nn_site_coords]
 
+            distance = np.linalg.norm(site_coords - nnn_site_coords)
+
             geometry = self.get_site_geometry(nnn_site.index)
 
             summary = {'element': str(nnn_site.site.specie),
                        'connectivity': connectivity,
                        'geometry': geometry,
-                       'angles': angles}
+                       'angles': angles,
+                       'distance': distance}
 
             if inc_inequivalent_site_index:
                 summary['inequiv_index'] = self.equivalent_sites[nnn_site.index]
@@ -374,6 +378,39 @@ class SiteAnalyzer(object):
 
         return defaultdict_to_dict(connectivities)
 
+    def get_nnn_distance_summary(self, site_index: int
+                                      ) -> Dict[int, Dict[str, List[float]]]:
+        """Gets the next nearest neighbor distance summary for a site.
+
+        Args:
+            site_index: The site index (zero based).
+
+        Returns:
+            The connectivity distance data for the site, formatted as::
+
+                {
+                    to_site: {
+                        connectivity_a: [distance_1, distance_2, ...]
+                        connectivity_b: [distance_1, distance_2, ...]
+                    }
+                }
+
+            Where ``to_site`` is the index of a next nearest neighbor site,
+            ``connectivity_a`` etc are the bonding connectivity type, e.g.
+            ``'edge'`` or ``'corner'`` (for edge-sharing and corner-sharing
+            connectivity), and ``distance_1`` etc are the bond angles as
+            :obj:`float`.
+        """
+        connectivities = defaultdict(lambda: defaultdict(list))
+
+        for nnn_site in self.get_next_nearest_neighbors(
+                site_index, inc_inequivalent_site_index=True):
+            to_site = nnn_site['inequiv_index']
+            connectivity = nnn_site['connectivity']
+            connectivities[to_site][connectivity].append(nnn_site['distance'])
+
+        return defaultdict_to_dict(connectivities)
+
     def get_all_site_summaries(self):
         """Gets the site summaries for all sites.
 
@@ -433,6 +470,31 @@ class SiteAnalyzer(object):
             :obj:`float` of connectivity angles.
         """
         return {from_site: self.get_connectivity_angle_summary(from_site)
+                for from_site in set(self.equivalent_sites)}
+
+    def get_all_nnn_distance_summaries(
+            self
+    ) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
+        """Gets the next nearest neighbor distance summaries for all sites.
+
+        Returns:
+            The next nearest neighbor distance summaries for all sites,
+            formatted as::
+
+                {
+                    from_site: {
+                        to_site: {
+                            connectivity: distances
+                        }
+                    }
+                }
+
+            Where ``from_site`` and ``to_site`` are the site indices of
+            two sites, ``connectivity`` is the connectivity type (e.g.
+            ``'edge'`` or ``'face'``) and ``distances`` is a :obj:`list` of
+            :obj:`float` of distances.
+        """
+        return {from_site: self.get_nnn_distance_summary(from_site)
                 for from_site in set(self.equivalent_sites)}
 
     def get_inequivalent_site_indices(self, site_indices: List[int]
