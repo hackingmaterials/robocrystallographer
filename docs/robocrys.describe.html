@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>robocrys.describe package &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <title>robocrys.describe package &#8212; Robocrystallographer 0.2.1 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,7 +15,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contributing to robocrystallographer" href="contributing.html" />
+    <link rel="next" title="robocrys.featurize package" href="robocrys.featurize.html" />
     <link rel="prev" title="robocrys.condense package" href="robocrys.condense.html" />
  
 <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
@@ -31,12 +31,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="contributing.html" title="Contributing to robocrystallographer"
+          <a href="robocrys.featurize.html" title="robocrys.featurize package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="robocrys.condense.html" title="robocrys.condense package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >robocrys</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="robocrys.html" accesskey="U">robocrys package</a> &#187;</li> 
       </ul>
@@ -58,7 +58,7 @@
 structure data.</p>
 <dl class="class">
 <dt id="robocrys.describe.adapter.ComponentDetails">
-<em class="property">class </em><code class="descclassname">robocrys.describe.adapter.</code><code class="descname">ComponentDetails</code><span class="sig-paren">(</span><em>formula</em>, <em>count</em>, <em>dimensionality</em>, <em>molecule_name</em>, <em>orientation</em>, <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#robocrys.describe.adapter.ComponentDetails" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">robocrys.describe.adapter.</code><code class="descname">ComponentDetails</code><span class="sig-paren">(</span><em>formula</em>, <em>count</em>, <em>dimensionality</em>, <em>molecule_name</em>, <em>orientation</em>, <em>nsites</em>, <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#robocrys.describe.adapter.ComponentDetails" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 <dl class="attribute">
 <dt id="robocrys.describe.adapter.ComponentDetails.count">
@@ -81,13 +81,19 @@ structure data.</p>
 <dl class="attribute">
 <dt id="robocrys.describe.adapter.ComponentDetails.index">
 <code class="descname">index</code><a class="headerlink" href="#robocrys.describe.adapter.ComponentDetails.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
+<dd><p>Alias for field number 6</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="robocrys.describe.adapter.ComponentDetails.molecule_name">
 <code class="descname">molecule_name</code><a class="headerlink" href="#robocrys.describe.adapter.ComponentDetails.molecule_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robocrys.describe.adapter.ComponentDetails.nsites">
+<code class="descname">nsites</code><a class="headerlink" href="#robocrys.describe.adapter.ComponentDetails.nsites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -100,7 +106,7 @@ structure data.</p>
 
 <dl class="class">
 <dt id="robocrys.describe.adapter.ComponentGroup">
-<em class="property">class </em><code class="descclassname">robocrys.describe.adapter.</code><code class="descname">ComponentGroup</code><span class="sig-paren">(</span><em>formula</em>, <em>dimensionality</em>, <em>count</em>, <em>components</em>, <em>molecule_name</em><span class="sig-paren">)</span><a class="headerlink" href="#robocrys.describe.adapter.ComponentGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">robocrys.describe.adapter.</code><code class="descname">ComponentGroup</code><span class="sig-paren">(</span><em>formula</em>, <em>dimensionality</em>, <em>count</em>, <em>components</em>, <em>molecule_name</em>, <em>nsites</em><span class="sig-paren">)</span><a class="headerlink" href="#robocrys.describe.adapter.ComponentGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 <dl class="attribute">
 <dt id="robocrys.describe.adapter.ComponentGroup.components">
@@ -132,19 +138,19 @@ structure data.</p>
 <dd><p>Alias for field number 4</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="robocrys.describe.adapter.ComponentGroup.nsites">
+<code class="descname">nsites</code><a class="headerlink" href="#robocrys.describe.adapter.ComponentGroup.nsites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="robocrys.describe.adapter.DescriptionAdapter">
 <em class="property">class </em><code class="descclassname">robocrys.describe.adapter.</code><code class="descname">DescriptionAdapter</code><span class="sig-paren">(</span><em>condensed_structure</em>, <em>use_iupac_ordering=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="robocrys.html#robocrys.adapter.BaseAdapter" title="robocrys.adapter.BaseAdapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">robocrys.adapter.BaseAdapter</span></code></a></p>
 <p>Class to facilitate pulling data from the condensed structure dictionary.</p>
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.elements">
-<code class="descname">elements</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.elements" title="Permalink to this definition">¶</a></dt>
-<dd><p>The site elements.</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="robocrys.describe.adapter.DescriptionAdapter.sym_labels">
 <code class="descname">sym_labels</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.sym_labels" title="Permalink to this definition">¶</a></dt>
@@ -180,144 +186,6 @@ by <code class="xref py py-meth docutils literal notranslate"><span class="pre">
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.angles">
-<code class="descname">angles</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>The angle data.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.component_makeup">
-<code class="descname">component_makeup</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.component_makeup" title="Permalink to this definition">¶</a></dt>
-<dd><p>The component makeup of the structure.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.components">
-<code class="descname">components</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.components" title="Permalink to this definition">¶</a></dt>
-<dd><p>The component data.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.crystal_system">
-<code class="descname">crystal_system</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.crystal_system" title="Permalink to this definition">¶</a></dt>
-<dd><p>The crystal system.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.dimensionality">
-<code class="descname">dimensionality</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.dimensionality" title="Permalink to this definition">¶</a></dt>
-<dd><p>The overall dimensionality.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.distances">
-<code class="descname">distances</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.distances" title="Permalink to this definition">¶</a></dt>
-<dd><p>The distance data.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.formula">
-<code class="descname">formula</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.formula" title="Permalink to this definition">¶</a></dt>
-<dd><p>The structure formula.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.get_angle_details">
-<code class="descname">get_angle_details</code><span class="sig-paren">(</span><em>from_site</em>, <em>to_sites</em>, <em>connectivity</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter.get_angle_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.get_angle_details" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the connectivity angles between two sets of sites.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>from_site</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</li>
-<li><strong>to_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – One ore more inequivalent site indices.</li>
-<li><strong>connectivity</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The site connectivity type. I.e. “corner”, “edge”, or
-“face”.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The distances between the sites.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="robocrys.describe.adapter.DescriptionAdapter.get_component_details">
 <code class="descname">get_component_details</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter.get_component_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.get_component_details" title="Permalink to this definition">¶</a></dt>
@@ -389,30 +257,6 @@ as a <a class="reference external" href="https://docs.python.org/3.6/library/std
 <li><code class="docutils literal notranslate"><span class="pre">element</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The site element.</li>
 <li><code class="docutils literal notranslate"><span class="pre">sites</span></code> (<code class="docutils literal notranslate"><span class="pre">list[int]</span></code>): A list of site indices in this group.</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.get_distance_details">
-<code class="descname">get_distance_details</code><span class="sig-paren">(</span><em>from_site</em>, <em>to_sites</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter.get_distance_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.get_distance_details" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the bond lengths between two sets of sites.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>from_site</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</li>
-<li><strong>to_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – One ore more inequivalent site indices.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The distances between the sites.</p>
 </td>
 </tr>
 </tbody>
@@ -513,54 +357,6 @@ next nearest neighbor. Can be more than one site if
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The formatted symmetry label. E.g., if the set of symmetry labels
 for the sites looks like <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">2)</span></code>, the symmetry label will be
 <code class="docutils literal notranslate"><span class="pre">(1,2)</span></code>.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.mineral">
-<code class="descname">mineral</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.mineral" title="Permalink to this definition">¶</a></dt>
-<dd><p>The mineral data.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.sites">
-<code class="descname">sites</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.sites" title="Permalink to this definition">¶</a></dt>
-<dd><p>The site data.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="robocrys.describe.adapter.DescriptionAdapter.spg_symbol">
-<code class="descname">spg_symbol</code><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.spg_symbol" title="Permalink to this definition">¶</a></dt>
-<dd><p>The space group symbol.</p>
-<p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code> for
-more details.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -671,17 +467,17 @@ more details.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-robocrys.describe.structure">
-<span id="robocrys-describe-structure-module"></span><h2>robocrys.describe.structure module<a class="headerlink" href="#module-robocrys.describe.structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-robocrys.describe.describer">
+<span id="robocrys-describe-describer-module"></span><h2>robocrys.describe.describer module<a class="headerlink" href="#module-robocrys.describe.describer" title="Permalink to this headline">¶</a></h2>
 <p>This module provides a class for generating descriptions of condensed structure
 data.</p>
 <dl class="class">
-<dt id="robocrys.describe.structure.StructureDescriber">
-<em class="property">class </em><code class="descclassname">robocrys.describe.structure.</code><code class="descname">StructureDescriber</code><span class="sig-paren">(</span><em>describe_mineral=True</em>, <em>describe_component_makeup=True</em>, <em>describe_components=True</em>, <em>describe_symmetry_labels=True</em>, <em>describe_oxidation_states=True</em>, <em>describe_bond_lengths=True</em>, <em>bond_length_decimal_places=2</em>, <em>distorted_tol=0.6</em>, <em>only_describe_cation_polyhedra_connectivity=True</em>, <em>only_describe_bonds_once=True</em>, <em>latexify=False</em>, <em>return_parts=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/structure.html#StructureDescriber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.structure.StructureDescriber" title="Permalink to this definition">¶</a></dt>
+<dt id="robocrys.describe.describer.StructureDescriber">
+<em class="property">class </em><code class="descclassname">robocrys.describe.describer.</code><code class="descname">StructureDescriber</code><span class="sig-paren">(</span><em>describe_mineral=True</em>, <em>describe_component_makeup=True</em>, <em>describe_components=True</em>, <em>describe_symmetry_labels=True</em>, <em>describe_oxidation_states=True</em>, <em>describe_bond_lengths=True</em>, <em>bond_length_decimal_places=2</em>, <em>distorted_tol=0.6</em>, <em>only_describe_cation_polyhedra_connectivity=True</em>, <em>only_describe_bonds_once=True</em>, <em>fmt='raw'</em>, <em>return_parts=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="method">
-<dt id="robocrys.describe.structure.StructureDescriber.describe">
-<code class="descname">describe</code><span class="sig-paren">(</span><em>condensed_structure</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/structure.html#StructureDescriber.describe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.structure.StructureDescriber.describe" title="Permalink to this definition">¶</a></dt>
+<dt id="robocrys.describe.describer.StructureDescriber.describe">
+<code class="descname">describe</code><span class="sig-paren">(</span><em>condensed_structure</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.describe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.describe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a condensed structure into a text description.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -703,6 +499,172 @@ the relevant part of the description.</td>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_all_component_descriptions">
+<code class="descname">get_all_component_descriptions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_all_component_descriptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_all_component_descriptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the descriptions of all components in the structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A description of all components in the structure.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_bond_length_description">
+<code class="descname">get_bond_length_description</code><span class="sig-paren">(</span><em>from_site</em>, <em>to_sites</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_bond_length_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_bond_length_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a description of the bond lengths between two sets of sites.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>from_site</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</li>
+<li><strong>to_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of site indices. The site indices should
+all be for the same element.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A description of the bond lengths or an empty string if
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">StructureDescriber.only_describe_bonds_once</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and
+all all bond lengths have already been described.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_component_description">
+<code class="descname">get_component_description</code><span class="sig-paren">(</span><em>component_index</em>, <em>single_component=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_component_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_component_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the descriptions of all sites in a component.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>component_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The index of the component</li>
+<li><strong>single_component</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether the structure contains only a single
+component.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The description for all sites in the components.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_component_makeup_summary">
+<code class="descname">get_component_makeup_summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_component_makeup_summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_component_makeup_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a summary of the makeup of components in a structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A description of the number of components and their dimensionalities
+and orientations.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_mineral_description">
+<code class="descname">get_mineral_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_mineral_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_mineral_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the mineral name and space group description.</p>
+<p>If the structure is a perfect match for a known prototype (e.g.
+the distance parameter is -1, the mineral name is the prototype name.
+If a structure is not a perfect match but similar to a known mineral,
+“-like” will be added to the mineral name. If the structure is a good
+match to a mineral but contains a different number of element types than
+the mineral prototype, “-derived” will be added to the mineral name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The description of the mineral name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_octahedral_tilt_description">
+<code class="descname">get_octahedral_tilt_description</code><span class="sig-paren">(</span><em>site_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_octahedral_tilt_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_octahedral_tilt_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a description of octahedral tilting angles between two sites.</p>
+<p>Currently only implemented for corner-sharing octahedra.
+Will throw an error if the two sites are not next nearest neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A description of the octahedral tilting angles.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="robocrys.describe.describer.StructureDescriber.get_site_description">
+<code class="descname">get_site_description</code><span class="sig-paren">(</span><em>site_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_site_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.StructureDescriber.get_site_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a description of the geometry and bonding of a site.</p>
+<p>If the site likeness (order parameter) is less than <code class="docutils literal notranslate"><span class="pre">distorted_tol</span></code>,
+“distorted” will be added to the geometry description.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A description of the geometry and bonding of a site.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="robocrys.describe.describer.get_mineral_name">
+<code class="descclassname">robocrys.describe.describer.</code><code class="descname">get_mineral_name</code><span class="sig-paren">(</span><em>mineral_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#get_mineral_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.describe.describer.get_mineral_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the mineral name from a mineral dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mineral_dict</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The mineral dictionary from the condensed description.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">mineral_dict[&quot;type&quot;]</span></code> is set, the mineral name will be returned as
+a string, else <code class="docutils literal notranslate"><span class="pre">None</span></code> will be returned.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -722,7 +684,7 @@ the relevant part of the description.</td>
 <li><a class="reference internal" href="#">robocrys.describe package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-robocrys.describe.adapter">robocrys.describe.adapter module</a></li>
-<li><a class="reference internal" href="#module-robocrys.describe.structure">robocrys.describe.structure module</a></li>
+<li><a class="reference internal" href="#module-robocrys.describe.describer">robocrys.describe.describer module</a></li>
 <li><a class="reference internal" href="#module-robocrys.describe">Module contents</a></li>
 </ul>
 </li>
@@ -732,8 +694,8 @@ the relevant part of the description.</td>
   <p class="topless"><a href="robocrys.condense.html"
                         title="previous chapter">robocrys.condense package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="contributing.html"
-                        title="next chapter">Contributing to robocrystallographer</a></p>
+  <p class="topless"><a href="robocrys.featurize.html"
+                        title="next chapter">robocrys.featurize package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -767,12 +729,12 @@ the relevant part of the description.</td>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="contributing.html" title="Contributing to robocrystallographer"
+          <a href="robocrys.featurize.html" title="robocrys.featurize package"
              >next</a> |</li>
         <li class="right" >
           <a href="robocrys.condense.html" title="robocrys.condense package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >robocrys</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="robocrys.html" >robocrys package</a> &#187;</li> 
       </ul>

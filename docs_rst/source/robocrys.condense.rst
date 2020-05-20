@@ -12,6 +12,14 @@ robocrys.condense.component module
     :undoc-members:
     :show-inheritance:
 
+robocrys.condense.condenser module
+----------------------------------
+
+.. automodule:: robocrys.condense.condenser
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 robocrys.condense.fingerprint module
 ------------------------------------
 
@@ -40,14 +48,6 @@ robocrys.condense.site module
 -----------------------------
 
 .. automodule:: robocrys.condense.site
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-robocrys.condense.structure module
-----------------------------------
-
-.. automodule:: robocrys.condense.structure
     :members:
     :undoc-members:
     :show-inheritance:

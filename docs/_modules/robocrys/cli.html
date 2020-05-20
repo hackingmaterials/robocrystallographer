@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>robocrys.cli &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <title>robocrys.cli &#8212; Robocrystallographer 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,14 +44,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="k">import</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">robocrys</span> <span class="k">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span>
-<span class="kn">from</span> <span class="nn">robocrys</span> <span class="k">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">pymatgen.ext.matproj</span> <span class="kn">import</span> <span class="n">MPRestError</span>
+<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span>
+<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">__version__</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Alex Ganose&quot;</span>
 <span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Alex Ganose&quot;</span>
@@ -81,15 +81,16 @@
     <span class="n">sc</span> <span class="o">=</span> <span class="n">StructureCondenser</span><span class="p">(</span><span class="o">**</span><span class="n">condenser_kwargs</span><span class="p">)</span>
     <span class="n">describer</span> <span class="o">=</span> <span class="n">StructureDescriber</span><span class="p">(</span><span class="o">**</span><span class="n">describer_kwargs</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding oxidation states...&quot;</span><span class="p">)</span>
-        <span class="n">structure</span><span class="o">.</span><span class="n">add_oxidation_state_by_guess</span><span class="p">(</span><span class="n">max_sites</span><span class="o">=-</span><span class="mi">80</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not add oxidation states!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;oxi_state&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span>
+                <span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">elements</span><span class="p">]):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">structure</span><span class="o">.</span><span class="n">add_oxidation_state_by_guess</span><span class="p">(</span><span class="n">max_sites</span><span class="o">=-</span><span class="mi">80</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Could not add oxidation states!&quot;</span><span class="p">)</span>
 
     <span class="n">condensed_structure</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">condense_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
     <span class="n">description</span> <span class="o">=</span> <span class="n">describer</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">condensed_structure</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">description</span></div>
 
 
@@ -108,7 +109,7 @@
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;use the convention cell&quot;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--symmetry&#39;</span><span class="p">,</span>
                         <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-                        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;use_symmetry&quot;</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;use_symmetry_equivalent_sites&quot;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;use symmetry to determine inequivalent sites&quot;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--symprec&#39;</span><span class="p">,</span>
                         <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
@@ -161,15 +162,18 @@
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;order parameter below which sites are distorted&quot;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--anion-polyhedra&#39;</span><span class="p">,</span>
                         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;only_describe_cation_polyhedra_connectivity&quot;</span><span class="p">,</span>
-                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;describe anion polyhedra connectivity&quot;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--verbose-bonds&#39;</span><span class="p">,</span>
                         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;only_describe_bonds_once&quot;</span><span class="p">,</span>
                         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_false&quot;</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;describe bond lengths for each site&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--latexify&#39;</span><span class="p">,</span>
-                        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;format the description for use in LaTeX&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--format&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;fmt&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;unicode&quot;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;how to format the description (unicode [default],&quot;</span>
+                             <span class="s2">&quot; html, latex, raw)&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--api-key&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;set the materials project API key. See: &quot;</span>
+                             <span class="s2">&quot;https://materialsproject.org/docs/api&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parser</span>
 
 
@@ -177,23 +181,17 @@
     <span class="n">args</span> <span class="o">=</span> <span class="n">_get_parser</span><span class="p">()</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
     <span class="n">args_dict</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-    <span class="n">condenser_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;use_conventional_cell&#39;</span><span class="p">,</span> <span class="s2">&quot;use_symmetry&quot;</span><span class="p">,</span> <span class="s2">&quot;symprec&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;use_iupac_formula&quot;</span><span class="p">,</span> <span class="s2">&quot;use_common_formulas&quot;</span><span class="p">]</span>
+    <span class="n">condenser_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;use_conventional_cell&#39;</span><span class="p">,</span> <span class="s2">&quot;use_symmetry_equivalent_sites&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;symprec&quot;</span><span class="p">,</span> <span class="s2">&quot;use_iupac_formula&quot;</span><span class="p">,</span> <span class="s2">&quot;use_common_formulas&quot;</span><span class="p">]</span>
     <span class="n">describer_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;describe_mineral&#39;</span><span class="p">,</span> <span class="s2">&quot;describe_component_makeup&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;describe_components&quot;</span><span class="p">,</span> <span class="s2">&quot;describe_symmetry_labels&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;describe_oxidation_states&quot;</span><span class="p">,</span> <span class="s2">&quot;describe_bond_lengths&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;bond_length_decimal_places&quot;</span><span class="p">,</span> <span class="s2">&quot;distorted_tol&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;only_describe_cation_polyhedra_connectivity&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;only_describe_bonds_once&quot;</span><span class="p">,</span> <span class="s2">&quot;latexify&quot;</span><span class="p">]</span>
+                      <span class="s2">&quot;only_describe_bonds_once&quot;</span><span class="p">,</span> <span class="s2">&quot;fmt&quot;</span><span class="p">]</span>
 
     <span class="n">condenser_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">args_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">condenser_keys</span><span class="p">}</span>
     <span class="n">describer_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">args_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">describer_keys</span><span class="p">}</span>
-
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;robocrys.log&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-                        <span class="n">filemode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">console</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[:]))</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console</span><span class="p">)</span>
 
     <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">,</span>
                             <span class="n">module</span><span class="o">=</span><span class="s2">&quot;pymatgen&quot;</span><span class="p">)</span>
@@ -203,16 +201,32 @@
         <span class="n">structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">pymatgen.ext.matproj</span> <span class="k">import</span> <span class="n">MPRester</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mp-&quot;</span><span class="p">,</span> <span class="s2">&quot;mvc&quot;</span><span class="p">]:</span>
+            <span class="kn">from</span> <span class="nn">pymatgen.ext.matproj</span> <span class="kn">import</span> <span class="n">MPRester</span>
 
-        <span class="n">mpr</span> <span class="o">=</span> <span class="n">MPRester</span><span class="p">()</span>
+            <span class="n">mpr</span> <span class="o">=</span> <span class="n">MPRester</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">structure</span> <span class="o">=</span> <span class="n">mpr</span><span class="o">.</span><span class="n">get_entry_by_material_id</span><span class="p">(</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">inc_structure</span><span class="o">=</span><span class="s1">&#39;final&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">structure</span>
-        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;filename or mp-id not found.&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">structure</span> <span class="o">=</span> <span class="n">mpr</span><span class="o">.</span><span class="n">get_entry_by_material_id</span><span class="p">(</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">inc_structure</span><span class="o">=</span><span class="s1">&#39;final&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">structure</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filename or mp-id not found.&quot;</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">MPRestError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;API_KEY is not supplied&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Materials project API key not set. Use the the &quot;</span>
+                          <span class="s2">&quot;--api-key option.</span><span class="se">\n</span><span class="s2">See robocrys -h for more details&quot;</span><span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;structure file &#39;</span><span class="si">{}</span><span class="s2">&#39; not found.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">structure</span><span class="o">.</span><span class="n">is_ordered</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;disordered structures are not currently supported by &quot;</span>
+              <span class="s2">&quot;robocrystallographer... exiting&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="n">robocrystallographer</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">condenser_kwargs</span><span class="o">=</span><span class="n">condenser_kwargs</span><span class="p">,</span>
                          <span class="n">describer_kwargs</span><span class="o">=</span><span class="n">describer_kwargs</span><span class="p">)</span></div>
@@ -248,7 +262,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

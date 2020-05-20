@@ -8,9 +8,18 @@ Subpackages
 
     robocrys.condense
     robocrys.describe
+    robocrys.featurize
 
 Submodules
 ----------
+
+robocrys.adapter module
+-----------------------
+
+.. automodule:: robocrys.adapter
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 robocrys.cli module
 -------------------

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>robocrys program &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <title>robocrys program &#8212; Robocrystallographer 0.2.1 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Change Log" href="changelog.html" />
-    <link rel="prev" title="Robocrystallographer" href="index.html" />
+    <link rel="prev" title="Usage" href="index.html" />
  
 <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 
@@ -34,9 +34,9 @@
           <a href="changelog.html" title="Change Log"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Robocrystallographer"
+          <a href="index.html" title="Usage"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -137,7 +137,8 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
                 <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">iupac</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">common</span><span class="o">-</span><span class="n">formulas</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">mineral</span><span class="p">]</span>
                 <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">makeup</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">components</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">symmetry</span><span class="o">-</span><span class="n">labels</span><span class="p">]</span>
                 <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">oxi</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">bond</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">precision</span> <span class="n">P</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">distorted</span><span class="o">-</span><span class="n">tol</span> <span class="n">T</span><span class="p">]</span>
-                <span class="p">[</span><span class="o">--</span><span class="n">anion</span><span class="o">-</span><span class="n">polyhedra</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">verbose</span><span class="o">-</span><span class="n">bonds</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">latexify</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">anion</span><span class="o">-</span><span class="n">polyhedra</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">verbose</span><span class="o">-</span><span class="n">bonds</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">format</span> <span class="n">FMT</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">api</span><span class="o">-</span><span class="n">key</span> <span class="n">API_KEY</span><span class="p">]</span>
                 <span class="n">filename</span>
 </pre></div>
 </div>
@@ -238,7 +239,7 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
 <kbd>--anion-polyhedra</kbd></td>
 </tr>
 <tr><td>&#160;</td><td><p class="first">describe anion polyhedra connectivity</p>
-<p class="last">Default: True</p>
+<p class="last">Default: False</p>
 </td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd>--verbose-bonds</kbd></td>
@@ -247,14 +248,17 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
 <p class="last">Default: True</p>
 </td></tr>
 <tr><td class="option-group">
-<kbd>--latexify</kbd></td>
-<td><p class="first">format the description for use in LaTeX</p>
-<p class="last">Default: False</p>
+<kbd>--format</kbd></td>
+<td><p class="first">how to format the description (unicode [default], html, latex, raw)</p>
+<p class="last">Default: “unicode”</p>
 </td></tr>
+<tr><td class="option-group">
+<kbd>--api-key</kbd></td>
+<td>set the materials project API key. See: <a class="reference external" href="https://materialsproject.org/docs/api">https://materialsproject.org/docs/api</a></td></tr>
 </tbody>
 </table>
 </div>
-<p>Author: Alex Ganose, Version: 0.1.2, Last updated: December 17, 2018</p>
+<p>Author: Alex Ganose, Version: 0.2.1, Last updated: December 17, 2018</p>
 </div>
 </div>
 
@@ -284,7 +288,7 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">Robocrystallographer</a></p>
+                        title="previous chapter">Usage</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="changelog.html"
                         title="next chapter">Change Log</a></p>
@@ -324,9 +328,9 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
           <a href="changelog.html" title="Change Log"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Robocrystallographer"
+          <a href="index.html" title="Usage"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li> 
       </ul>
     </div>
 

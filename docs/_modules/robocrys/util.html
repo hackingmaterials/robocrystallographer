@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>robocrys.util &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <title>robocrys.util &#8212; Robocrystallographer 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,18 +53,17 @@
 <span class="sd">    dimensionality_to_shape: A mapping from dimensionality to the component</span>
 <span class="sd">        shape.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">monty.json</span> <span class="kn">import</span> <span class="n">MontyDecoder</span>
+<span class="kn">from</span> <span class="nn">monty.serialization</span> <span class="kn">import</span> <span class="n">loadfn</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
 
-<span class="kn">from</span> <span class="nn">monty.json</span> <span class="k">import</span> <span class="n">MontyDecoder</span>
-<span class="kn">from</span> <span class="nn">monty.serialization</span> <span class="k">import</span> <span class="n">loadfn</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span>
-
-<span class="kn">from</span> <span class="nn">pymatgen</span> <span class="k">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Specie</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="k">import</span> <span class="n">get_el_sp</span>
+<span class="kn">from</span> <span class="nn">pymatgen</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Specie</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">get_el_sp</span>
+<span class="kn">from</span> <span class="nn">pymatgen.util.string</span> <span class="kn">import</span> <span class="n">latexify_spacegroup</span>
 
 <span class="n">common_formulas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">loadfn</span><span class="p">(</span>
     <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;robocrys.condense&#39;</span><span class="p">,</span> <span class="s1">&#39;formula_db.json.gz&#39;</span><span class="p">))</span>
@@ -132,7 +131,7 @@
                      <span class="n">sym_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                      <span class="n">use_oxi_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                      <span class="n">use_sym_label</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                     <span class="n">latexify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                     <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Formats an element string.</span>
 
 <span class="sd">    Performs a variety of functions, including:</span>
@@ -142,6 +141,8 @@
 <span class="sd">        required.</span>
 <span class="sd">    - Removing the oxidation state if required.</span>
 <span class="sd">    - Latexifying the element and oxidation state.</span>
+<span class="sd">    - Unicodeifying the element and oxidation state.</span>
+<span class="sd">    - Converting the element and oxidation state to html.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        element: The element string (possibly including the oxidation state.</span>
@@ -149,7 +150,13 @@
 <span class="sd">        sym_label: The symmetry label. E.g. &quot;(1)&quot;</span>
 <span class="sd">        use_oxi_state: Whether to include the oxidation state, if present.</span>
 <span class="sd">        use_sym_label: Whether to use the symmetry label.</span>
-<span class="sd">        latexify: Whether to convert the string for use in latex.</span>
+<span class="sd">        fmt: How to format the element strings. Options are:</span>
+
+<span class="sd">            - &quot;raw&quot; (default): Don&#39;t apply special formatting (e.g. &quot;SnO2&quot;).</span>
+<span class="sd">            - &quot;unicode&quot;: Format super/subscripts using unicode characters</span>
+<span class="sd">              (e.g. SnO₂).</span>
+<span class="sd">            - &quot;latex&quot;: Use LaTeX markup for formatting (e.g. &quot;SnO$_2$&quot;).</span>
+<span class="sd">            - &quot;html&quot;: Use html markup for formatting (e.g. &quot;SnO&lt;sub&gt;2&lt;/sub&gt;&quot;).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The formatted element string.</span>
@@ -174,12 +181,89 @@
         <span class="n">formatted_element</span> <span class="o">+=</span> <span class="n">sym_label</span>
 
     <span class="k">if</span> <span class="n">use_oxi_state</span> <span class="ow">and</span> <span class="n">oxi_state</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">latexify</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;latex&quot;</span><span class="p">:</span>
             <span class="n">oxi_state</span> <span class="o">=</span> <span class="s2">&quot;^{{</span><span class="si">{}</span><span class="s2">}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;unicode&quot;</span><span class="p">:</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="n">superscript_number</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="s2">&quot;&lt;sup&gt;</span><span class="si">{}</span><span class="s2">&lt;/sup&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span>
 
         <span class="n">formatted_element</span> <span class="o">+=</span> <span class="n">oxi_state</span>
 
     <span class="k">return</span> <span class="n">formatted_element</span></div>
+
+
+<div class="viewcode-block" id="superscript_number"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.superscript_number">[docs]</a><span class="k">def</span> <span class="nf">superscript_number</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a string containing numbers to superscript.</span>
+
+<span class="sd">    Will only convert the numbers 0-9, and the + and - characters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string: A string containing the numbers 0-9 or +/- characters.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The superscript string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+        <span class="c1"># no unicode period exists</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+    <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;⁰&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;¹&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;²&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;³&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;⁴&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;⁵&#39;</span><span class="p">,</span>
+                             <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;⁶&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;⁷&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;⁸&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;⁹&#39;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span> <span class="s2">&quot;⁻&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span> <span class="s2">&quot;⁺&quot;</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">original_subscript</span><span class="p">,</span> <span class="n">subscript_unicode</span> <span class="ow">in</span> <span class="n">subscript_unicode_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">original_subscript</span><span class="p">),</span> <span class="n">subscript_unicode</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">string</span></div>
+
+
+<div class="viewcode-block" id="unicodeify_spacegroup"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.unicodeify_spacegroup">[docs]</a><span class="k">def</span> <span class="nf">unicodeify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
+
+<span class="sd">    E.g. Fd-3m -&gt; Fd̅3m</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spacegroup_symbol: A spacegroup symbol.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The unicode formatted spacegroup symbol.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;₀&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;₁&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;₂&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;₃&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;₄&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;₅&quot;</span><span class="p">,</span>
+                             <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;₆&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;₇&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;₈&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;₉&quot;</span><span class="p">}</span>
+
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">latexify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">unicode_number</span> <span class="ow">in</span> <span class="n">subscript_unicode_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$_{&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}$&quot;</span><span class="p">,</span> <span class="n">unicode_number</span><span class="p">)</span>
+
+    <span class="n">overline</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u0305</span><span class="s2">&quot;</span>  <span class="c1"># u&quot;\u0304&quot; (macron) is also an option</span>
+
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline{&quot;</span><span class="p">,</span> <span class="n">overline</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">symbol</span></div>
+
+
+<div class="viewcode-block" id="htmlify_spacegroup"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.htmlify_spacegroup">[docs]</a><span class="k">def</span> <span class="nf">htmlify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
+
+<span class="sd">    E.g. P-42_1m -&gt; P̅42&lt;sub&gt;1&lt;/sub&gt;m</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spacegroup_symbol: A spacegroup symbol.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The html formatted spacegroup symbol.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">overline</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u0305</span><span class="s2">&quot;</span>  <span class="c1"># u&quot;\u0304&quot; (macron) is also an option</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_(\d+)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;&lt;sub&gt;\1&lt;/sub&gt;&quot;</span><span class="p">,</span> <span class="n">spacegroup_symbol</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-(\d)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">\1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">overline</span><span class="p">),</span> <span class="n">symbol</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">symbol</span></div>
 
 
 <div class="viewcode-block" id="defaultdict_to_dict"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.defaultdict_to_dict">[docs]</a><span class="k">def</span> <span class="nf">defaultdict_to_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
@@ -213,36 +297,6 @@
             <span class="k">return</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="k">return</span> <span class="n">loadfn</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MontyDecoder</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="n">json_keys_to_int</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="RobocrysTest"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.RobocrysTest">[docs]</a><span class="k">class</span> <span class="nc">RobocrysTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base test class providing access to common test data. &quot;&quot;&quot;</span>
-
-    <span class="n">_module_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-    <span class="n">_structures_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_module_dir</span><span class="p">,</span> <span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;structures&quot;</span><span class="p">)</span>
-    <span class="n">_condensed_structures_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="n">_module_dir</span><span class="p">,</span> <span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;condensed_structures&quot;</span><span class="p">)</span>
-
-    <span class="n">_test_structures</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">_fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">_structures_dir</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s2">&quot;.json.gz&quot;</span> <span class="ow">in</span> <span class="n">_fn</span><span class="p">:</span>
-            <span class="n">_test_structures</span><span class="p">[</span><span class="n">_fn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">loadfn</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="n">_structures_dir</span><span class="p">,</span> <span class="n">_fn</span><span class="p">),</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MontyDecoder</span><span class="p">)</span>
-
-    <span class="n">_test_condensed_structures</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">_fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">_condensed_structures_dir</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s2">&quot;.json.gz&quot;</span> <span class="ow">in</span> <span class="n">_fn</span><span class="p">:</span>
-            <span class="n">_test_condensed_structures</span><span class="p">[</span><span class="n">_fn</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> \
-                <span class="n">load_condensed_structure_json</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="n">_condensed_structures_dir</span><span class="p">,</span> <span class="n">_fn</span><span class="p">))</span>
-
-<div class="viewcode-block" id="RobocrysTest.get_structure"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.RobocrysTest.get_structure">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_structure</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_test_structures</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="RobocrysTest.get_condensed_structure"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.RobocrysTest.get_condensed_structure">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_condensed_structure</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_test_condensed_structures</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>
@@ -275,7 +329,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

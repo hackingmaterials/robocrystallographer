@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>robocrys.condense.mineral &#8212; Robocrystallographer 0.1.2 documentation</title>
+    <title>robocrys.condense.mineral &#8212; Robocrystallographer 0.2.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -43,16 +43,16 @@
 <span class="sd">This module provides tools for matching structures to known mineral class.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">islice</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matminer.utils.io</span> <span class="k">import</span> <span class="n">load_dataframe_from_json</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span>
+<span class="kn">from</span> <span class="nn">matminer.utils.io</span> <span class="kn">import</span> <span class="n">load_dataframe_from_json</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
 
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.aflow_prototypes</span> <span class="k">import</span> <span class="n">AflowPrototypeMatcher</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="k">import</span> <span class="n">IStructure</span>
-<span class="kn">from</span> <span class="nn">robocrys.condense.fingerprint</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_structure_fingerprint</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.prototypes</span> <span class="kn">import</span> <span class="n">AflowPrototypeMatcher</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.fingerprint</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_structure_fingerprint</span><span class="p">,</span>
                                            <span class="n">get_fingerprint_distance</span><span class="p">)</span>
 
 
@@ -69,11 +69,11 @@
 <span class="sd">               S1-S828. doi: 10.1016/j.commatsci.2017.01.017</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        aflow_initial_ltol: The fractional length tolerance used in the AFLOW</span>
+<span class="sd">        initial_ltol: The fractional length tolerance used in the AFLOW</span>
 <span class="sd">            structure matching.</span>
-<span class="sd">        aflow_initial_stol : The site coordinate tolerance used in the AFLOW</span>
+<span class="sd">        initial_stol : The site coordinate tolerance used in the AFLOW</span>
 <span class="sd">            structure matching.</span>
-<span class="sd">        aflow_initial_angle_tol: The angle tolerance used in the AFLOW structure</span>
+<span class="sd">        initial_angle_tol: The angle tolerance used in the AFLOW structure</span>
 <span class="sd">            matching.</span>
 <span class="sd">        use_fingerprint_matching: Whether to use the fingerprint distance to</span>
 <span class="sd">            match minerals.</span>
@@ -82,17 +82,17 @@
 <span class="sd">            structural fingerprints in euclidean space.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">aflow_initial_ltol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
-                 <span class="n">aflow_initial_stol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
-                 <span class="n">aflow_initial_angle_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">initial_ltol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                 <span class="n">initial_stol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+                 <span class="n">initial_angle_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">,</span>
                  <span class="n">use_fingerprint_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">fingerprint_distance_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">):</span>
         <span class="n">db_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;robocrys.condense&#39;</span><span class="p">,</span> <span class="s1">&#39;mineral_db.json.gz&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span> <span class="o">=</span> <span class="n">load_dataframe_from_json</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aflow_initial_ltol</span> <span class="o">=</span> <span class="n">aflow_initial_ltol</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aflow_initial_stol</span> <span class="o">=</span> <span class="n">aflow_initial_stol</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aflow_initial_angle_tol</span> <span class="o">=</span> <span class="n">aflow_initial_angle_tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_ltol</span> <span class="o">=</span> <span class="n">initial_ltol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_stol</span> <span class="o">=</span> <span class="n">initial_stol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_angle_tol</span> <span class="o">=</span> <span class="n">initial_angle_tol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_distance_cutoff</span> <span class="o">=</span> <span class="n">fingerprint_distance_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_fingerprint_matching</span> <span class="o">=</span> <span class="n">use_fingerprint_matching</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_structure</span> <span class="o">=</span> <span class="kc">None</span>
@@ -202,9 +202,9 @@
             <span class="k">return</span> <span class="n">tags</span>
 
         <span class="n">matcher</span> <span class="o">=</span> <span class="n">AflowPrototypeMatcher</span><span class="p">(</span>
-            <span class="n">initial_ltol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">aflow_initial_ltol</span><span class="p">,</span>
-            <span class="n">initial_stol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">aflow_initial_stol</span><span class="p">,</span>
-            <span class="n">initial_angle_tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">aflow_initial_angle_tol</span><span class="p">)</span>
+            <span class="n">initial_ltol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_ltol</span><span class="p">,</span>
+            <span class="n">initial_stol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_stol</span><span class="p">,</span>
+            <span class="n">initial_angle_tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_angle_tol</span><span class="p">)</span>
         <span class="n">matcher</span><span class="o">.</span><span class="n">_match_prototype</span> <span class="o">=</span> <span class="n">_match_prototype</span>
 
         <span class="k">return</span> <span class="n">matcher</span><span class="o">.</span><span class="n">get_prototypes</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span></div>
@@ -212,7 +212,8 @@
 <div class="viewcode-block" id="MineralMatcher.get_fingerprint_matches"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.mineral.MineralMatcher.get_fingerprint_matches">[docs]</a>    <span class="k">def</span> <span class="nf">get_fingerprint_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                 <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
                                 <span class="n">max_n_matches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                <span class="n">match_n_sp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="n">match_n_sp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">mineral_name_constraint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
         <span class="sd">&quot;&quot;&quot;Gets minerals for a structure by matching to AFLOW fingerprints.</span>
 
@@ -225,6 +226,8 @@
 <span class="sd">                to return all matches within the cutoff.</span>
 <span class="sd">            match_n_sp: Whether the structure and mineral must have the same</span>
 <span class="sd">                number of species. Defaults to True.</span>
+<span class="sd">            mineral_name_constraint: Whether to limit the matching to a specific</span>
+<span class="sd">                mineral name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A :obj:`list` of :obj:`dict`, sorted by how close the match is, with</span>
@@ -236,6 +239,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_distance_matrix</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
 
         <span class="n">mineral_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mineral_db</span>
+
+        <span class="k">if</span> <span class="n">mineral_name_constraint</span><span class="p">:</span>
+            <span class="n">mineral_db</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="p">[</span><span class="n">mineral_db</span><span class="p">[</span><span class="s2">&quot;mineral&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span>
+                                    <span class="n">mineral_name_constraint</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">match_n_sp</span><span class="p">:</span>
             <span class="n">ntypesp</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">ntypesp</span>
@@ -271,7 +278,7 @@
             <span class="c1"># fingerprint is too small for a reasonable match, indicates very</span>
             <span class="c1"># little bonding or small order parameter matches</span>
             <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">get_structure_fingerprint</span><span class="p">(</span>
-                <span class="n">structure</span><span class="p">,</span> <span class="n">use_distance_cutoffs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">structure</span><span class="p">,</span> <span class="n">prototype_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;fingerprint&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_fingerprint_distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fingerprint</span><span class="p">))</span>
@@ -316,7 +323,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Robocrystallographer 0.2.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

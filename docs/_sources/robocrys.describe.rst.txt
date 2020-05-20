@@ -12,10 +12,10 @@ robocrys.describe.adapter module
     :undoc-members:
     :show-inheritance:
 
-robocrys.describe.structure module
+robocrys.describe.describer module
 ----------------------------------
 
-.. automodule:: robocrys.describe.structure
+.. automodule:: robocrys.describe.describer
     :members:
     :undoc-members:
     :show-inheritance:
