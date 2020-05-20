@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img alt="robocrystallographer logo" src="docs_rst/source/_static/logo-01.png" height="200px">
+  <img alt="robocrystallographer logo" src="https://raw.githubusercontent.com/hackingmaterials/robocrystallographer/master/docs_rst/source/_static/logo-01.png" height="200px">
 </p>
 
 <p align="center">
