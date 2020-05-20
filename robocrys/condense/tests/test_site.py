@@ -91,10 +91,11 @@ class TestSiteAnalyzer(RobocrysTest):
         info = sa.get_next_nearest_neighbors(5)
 
         self.assertEqual(len(info), 14)
-        self.assertEqual(info[0]["element"], "O2-")
-        self.assertEqual(info[0]["connectivity"], "edge")
-        self.assertEqual(info[0]["geometry"]["type"], "trigonal planar")
-        self.assertEqual(info[0]["inequiv_index"], 2)
+        idx = [i for i, s in enumerate(info) if s["connectivity"] == "edge"][0]
+        self.assertEqual(info[idx]["element"], "O2-")
+        self.assertEqual(info[idx]["connectivity"], "edge")
+        self.assertEqual(info[idx]["geometry"]["type"], "trigonal planar")
+        self.assertEqual(info[idx]["inequiv_index"], 2)
 
         info = sa.get_next_nearest_neighbors(
             0, inc_inequivalent_site_index=False)
@@ -105,7 +106,8 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(info[0]["connectivity"], "edge")
         self.assertEqual(info[0]["geometry"]["type"], "octahedral")
         self.assertEqual(len(info[0]['angles']), 2)
-        self.assertAlmostEqual(info[0]['angles'][0], 101.62287790513848 )
+        self.assertAlmostEqual(info[0]['angles'][0], 101.62287790513848)
+        self.assertAlmostEqual(info[0]['distance'], 3.24322132)
 
         # check different structure without oxi state
         sa = SiteAnalyzer(self.ba_n)
@@ -116,6 +118,7 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(info[5]["geometry"]["type"], "6-coordinate")
         self.assertEqual(len(info[5]['angles']), 2)
         self.assertAlmostEqual(info[5]['angles'][0], 83.91397867959587)
+        self.assertAlmostEqual(info[5]['distance'], 3.549136232944574)
 
     def test_get_site_summary(self):
         """Test getting the site summary"""
@@ -148,6 +151,15 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(len(data[0]['edge']), 4)
         self.assertAlmostEqual(data[0]['edge'][0], 101.62287790513848)
 
+    def test_nnn_distance_summary(self):
+        """Test getting the nnn distance summary"""
+        sa = SiteAnalyzer(self.tin_dioxide)
+        data = sa.get_nnn_distance_summary(0)
+
+        self.assertEqual(len(data[0]['corner']), 8)
+        self.assertEqual(len(data[0]['edge']), 2)
+        self.assertAlmostEqual(data[0]['edge'][0], 3.24322132)
+
     def test_get_all_site_summaries(self):
         """Test getting all the site summaries."""
         sa = SiteAnalyzer(self.tin_dioxide)
@@ -176,6 +188,13 @@ class TestSiteAnalyzer(RobocrysTest):
         self.assertEqual(len(data[0][0]['corner']), 8)
         self.assertEqual(len(data[0][0]['edge']), 4)
         self.assertAlmostEqual(data[0][0]['edge'][0], 101.62287790513848)
+
+    def test_get_all_nnn_distance_summaries(self):
+        sa = SiteAnalyzer(self.tin_dioxide)
+        data = sa.get_all_nnn_distance_summaries()
+        self.assertEqual(len(data[0][0]['corner']), 8)
+        self.assertEqual(len(data[0][0]['edge']), 2)
+        self.assertAlmostEqual(data[0][0]['edge'][0], 3.24322132)
 
     def test_get_inequivalent_site_indices(self):
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
