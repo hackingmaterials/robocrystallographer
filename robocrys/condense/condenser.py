@@ -132,6 +132,8 @@ class StructureCondenser(object):
             get_all_bond_distance_summaries()
         structure_data['angles'] = site_analyzer. \
             get_all_connectivity_angle_summaries()
+        structure_data['nnn_distances'] = site_analyzer. \
+            get_all_nnn_distance_summaries()
 
         component_summary, component_makeup = self._condense_components(
             components, sga, site_analyzer)
