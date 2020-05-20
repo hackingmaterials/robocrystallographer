@@ -38,7 +38,7 @@ setup(
     install_requires=['spglib', 'numpy', 'scipy', 'pymatgen>=2017.12.30',
                       'inflect', 'networkx', 'matminer>=0.6.3', 'monty', 'pubchempy',
                       'pybtex'],
-    extras_require={'docs': ['sphinx', 'sphinx-argparse',
+    extras_require={'docs': ['sphinx', 'sphinx-argparse', 'sphinx_rtd_theme',
                              'sphinx-autodoc-typehints', 'm2r'],
                     'dev': ['tqdm', 'pybel', 'pebble', 'maggma'],
                     'tests': ['nose', 'coverage', 'coveralls']},

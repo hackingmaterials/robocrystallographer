@@ -1,22 +1,21 @@
 .. mdinclude:: ../../README.md
 
-
-Code documentation
-------------------
-
-* `Python API <modules>`_
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
 .. toctree::
+   :caption: Usage Guide
    :hidden:
-   :maxdepth: 1
 
-   cli
-   changelog
+   Command-line interface <cli>
    format
+   changelog
    contributors
-   modules
    contributing
    license
+
+
+.. toctree::
+   :caption: Function Reference
+   :hidden:
+
+   API reference <modules>
+   genindex
+

@@ -25,7 +25,7 @@ copyright = '2018, Alex Ganose'
 author = 'Alex Ganose'
 
 # The short X.Y version
-version = ''
+version = __version__
 # The full version, including alpha/beta/rc tags
 release = __version__
 
@@ -85,7 +85,7 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'nature'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -113,6 +113,20 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Robocrysdoc'
+
+html_theme_options = {
+    'canonical_url': 'https://hackingmaterials.lbl.gov/robocrystallographer/',
+    'logo_only': False,
+    'display_version': True,
+    'prev_next_buttons_location': None,
+    'style_external_links': True,
+    # 'style_nav_header_background': 'linear-gradient(0deg, rgba(23,63,162,1) 0%, rgba(0,70,192,1) 100%)',
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}
 
 
 # -- Options for LaTeX output ------------------------------------------------
