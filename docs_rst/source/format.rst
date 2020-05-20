@@ -45,6 +45,10 @@ An example of the condensed structure JSON format is given below::
             0: {0: {'edge': [82.60, 82.60, 82.60, ...]}},
             2: {2: {'corner': [135.20, 82.60, 135.20, ...],
                     'face': [80.70, 80.70, 80.70]}}},
+        'nnn_distances': {
+            0: {0: {'edge': [3.19, 3.19, 3.19, ...]}},
+            2: {2: {'face': [3.13],
+                    'corner': [3.19, 4.47, 3.19, ...]}}},
         'components': {
             0: {'formula':
                 'MoS2',
