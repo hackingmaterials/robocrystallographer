@@ -15,7 +15,7 @@
   
   
   
-    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/index.html"/>
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/introduction.html"/>
   
 
   
@@ -36,7 +36,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="introduction.html" /> 
+    <link rel="next" title="robocrys program" href="cli.html" />
+    <link rel="prev" title="Introduction" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +51,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> Robocrystallographer
+            <a href="index.html" class="icon icon-home"> Robocrystallographer
           
 
           
@@ -88,18 +89,28 @@
             
             
               <p class="caption"><span class="caption-text">Usage Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-interface">Python interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intermediate-json-format">Intermediate JSON format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-output">Example output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-cite-robocrystallographer">How to cite robocrystallographer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#whats-new">What’s new?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="format.html">Condensed structure format</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Information</span></p>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributors.html">Contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to robocrystallographer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Function Reference</span></p>
 <ul>
@@ -119,7 +130,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Robocrystallographer</a>
+          <a href="index.html">Robocrystallographer</a>
         
       </nav>
 
@@ -148,7 +159,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>Introduction</li>
     
@@ -157,7 +168,7 @@
         
             
             
-              <a href="https://github.com/hackingmaterials/robocrystallographer/blob/master/docs_rst/index.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/hackingmaterials/robocrystallographer/blob/master/docs_rst/introduction.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -171,13 +182,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="section" id="introduction">
+  <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>Robocrystallographer is a tool to generate text descriptions of crystal
 structures. Similar to how a real-life crystallographer would analyse a

@@ -128,6 +128,16 @@ html_theme_options = {
     'titles_only': False
 }
 
+html_logo = "_static/logo_icon-01.png"
+
+html_context = {
+    "display_github": True,
+    "github_user": "hackingmaterials",
+    "github_repo": "robocrystallographer",
+    "github_version": "master",
+    "conf_py_path": "/docs_rst/",
+}
+
 
 # -- Options for LaTeX output ------------------------------------------------
 
