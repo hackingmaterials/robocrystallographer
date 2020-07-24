@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.1 documentation</title>
+  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.2.1
+                0.2.3
               </div>
             
           
@@ -299,7 +299,7 @@
             <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">description</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span>
                 <span class="p">[</span><span class="s1">&#39;mineral&#39;</span><span class="p">,</span> <span class="s1">&#39;component_makeup&#39;</span><span class="p">,</span> <span class="s1">&#39;components&#39;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">description</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">description</span> <span class="ow">and</span> <span class="n">description</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">description</span></div>
 
