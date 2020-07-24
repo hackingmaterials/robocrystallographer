@@ -5,13 +5,15 @@ robocrystallographer: Automatic generation of crystal structure descriptions.
 from setuptools import setup, find_packages
 from os.path import join as path_join
 
+from robocrys import __version__
+
 
 with open('README.md', 'r') as file:
     long_description = file.read()
 
 setup(
     name='robocrys',
-    version="0.2.1",
+    version=__version__,
     description='Automatic generation of crystal structure descriptions',
     url='https://github.com/hackingmaterials/robocrystallographer',
     author='Alex Ganose',
