@@ -4,6 +4,10 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.3
+------
+- Fix version bug.
+
 v0.2.2
 ------
 - Fixed command line symprec bug (#31).
