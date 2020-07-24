@@ -130,7 +130,7 @@ class StructureDescriber(object):
             return " ".join(
                 description[part] for part in
                 ['mineral', 'component_makeup', 'components']
-                if description[part] is not "")
+                if part in description and description[part] != "")
         else:
             return description
 
