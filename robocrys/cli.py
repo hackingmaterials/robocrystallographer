@@ -72,6 +72,7 @@ def _get_parser():
                         help="use symmetry to determine inequivalent sites")
     parser.add_argument('--symprec',
                         default=0.01,
+                        type=float,
                         help="symmetry tolerance")
     parser.add_argument('--no-simplify',
                         action='store_false',
