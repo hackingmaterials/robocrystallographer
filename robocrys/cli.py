@@ -72,6 +72,7 @@ def _get_parser():
                         help="use symmetry to determine inequivalent sites")
     parser.add_argument('--symprec',
                         default=0.01,
+                        type=float,
                         help="symmetry tolerance")
     parser.add_argument('--no-simplify',
                         action='store_false',
@@ -117,6 +118,7 @@ def _get_parser():
     parser.add_argument('--distorted-tol',
                         metavar="T",
                         dest="distorted_tol",
+                        type = float,
                         default=0.6,
                         help="order parameter below which sites are distorted")
     parser.add_argument('--anion-polyhedra',
