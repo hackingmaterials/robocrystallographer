@@ -114,11 +114,13 @@ def _get_parser():
                         metavar="P",
                         dest="bond_length_decimal_places",
                         default=2,
+                        type=int,
                         help="decimal places for bond lengths")
     parser.add_argument('--distorted-tol',
                         metavar="T",
                         dest="distorted_tol",
                         default=0.6,
+                        type=float,
                         help="order parameter below which sites are distorted")
     parser.add_argument('--anion-polyhedra',
                         dest="only_describe_cation_polyhedra_connectivity",
