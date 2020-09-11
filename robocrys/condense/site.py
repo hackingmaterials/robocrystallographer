@@ -111,6 +111,12 @@ class SiteAnalyzer(object):
                         key=lambda x: x[1] if "wt" not in x[0] else 0)
 
         if parameter[1] < self.minimum_geometry_op:
+            # the largest filtered weight is less than the tolerance for determining the
+            # coordination geometry (i.e., we can no longer say the site is octahedral
+            # or tetrahedral etc). Now we don't care about the actual geometry, we just
+            # want the most likely coordination number; take this from the largest
+            # of all weights
+            parameter = max(site_fingerprint, key=lambda x: x[1])
             cn = parameter[0].split()[-1].split('_')[-1]
             geometry = "{}-coordinate".format(cn)
             likeness = 1.
