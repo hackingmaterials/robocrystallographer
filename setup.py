@@ -51,11 +51,11 @@ setup(
     ],
     extras_require={
         "docs": [
-            "sphinx",
-            "sphinx-argparse",
-            "sphinx_rtd_theme",
-            "sphinx-autodoc-typehints",
-            "m2r",
+            "sphinx==3.2.1",
+            "sphinx-argparse==0.2.5",
+            "sphinx_rtd_theme==0.5.0",
+            "sphinx-autodoc-typehints==1.11.1",
+            "m2r2==0.2.5",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
         "tests": ["pytest==6.1.1", "pytest-cov==2.10.1"],

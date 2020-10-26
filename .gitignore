@@ -108,3 +108,5 @@ venv.bak/
 
 # datafiles
 relevant_formulae.json
+
+docs_build
