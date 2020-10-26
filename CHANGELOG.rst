@@ -4,6 +4,12 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.5
+------
+
+- Fix compatibility with pymatgen==2020.10.20.
+- Updated package management.
+
 v0.2.4
 ------
 

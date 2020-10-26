@@ -41,7 +41,7 @@ setup(
         "spglib==1.16.0",
         "numpy==1.19.2",
         "scipy==1.5.3",
-        "pymatgen==2020.9.14",
+        "pymatgen==2020.10.20",
         "inflect==4.1.0",
         "networkx==2.5",
         "matminer==0.6.3",

@@ -38,8 +38,8 @@ class TestDescriptionMethods(unittest.TestCase):
 
     def test_get_al(self):
         """Test getting element names"""
-        specie = get_el_sp("Sn2+")
-        self.assertEqual(get_el(specie), "Sn")
+        species = get_el_sp("Sn2+")
+        self.assertEqual(get_el(species), "Sn")
 
         element = get_el_sp("Sn")
         self.assertEqual(get_el(element), "Sn")
@@ -48,8 +48,8 @@ class TestDescriptionMethods(unittest.TestCase):
 
     def test_get_formatted_el(self):
         """Test getting formatted element strings."""
-        specie = get_el_sp("Sn2+")
-        form_el = get_formatted_el(specie, "")
+        species = get_el_sp("Sn2+")
+        form_el = get_formatted_el(species, "")
         self.assertEqual(form_el, "Sn2+")
 
         element = get_el_sp("Sn")

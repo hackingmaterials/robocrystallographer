@@ -20,8 +20,8 @@ from monty.json import MontyDecoder
 from monty.serialization import loadfn
 from pkg_resources import resource_filename
 
-from pymatgen import Element, Specie
-from pymatgen.core.periodic_table import get_el_sp
+from pymatgen import Element
+from pymatgen.core.periodic_table import get_el_sp, Species
 from pymatgen.util.string import latexify_spacegroup
 
 common_formulas: Dict[str, str] = loadfn(
@@ -62,11 +62,11 @@ dimensionality_to_shape: Dict[int, str] = {
     3: 'framework', 2: 'sheet', 1: 'ribbon', 0: 'cluster'}
 
 
-def get_el(obj: Union[Element, Specie, str, int]) -> str:
+def get_el(obj: Union[Element, Species, str, int]) -> str:
     """Utility method to get an element str from a symbol, Element, or Specie.
 
     Args:
-        obj: An arbitrary object. Spported objects are Element/Specie objects,
+        obj: An arbitrary object. Supported objects are Element/Species objects,
             integers (representing atomic numbers), or strings (element
             symbols or species strings).
 
@@ -78,7 +78,7 @@ def get_el(obj: Union[Element, Specie, str, int]) -> str:
 
     if isinstance(obj, Element):
         return obj.name
-    elif isinstance(obj, Specie):
+    elif isinstance(obj, Species):
         return obj.element.name
     elif isinstance(obj, int):
         return Element.from_Z(obj).name
@@ -122,7 +122,7 @@ def get_formatted_el(element: str,
     """
     specie = get_el_sp(element)
 
-    if isinstance(specie, Specie):
+    if isinstance(specie, Species):
         oxi_state = specie.oxi_state
         sign = '+' if oxi_state > 0 else '-'
         if oxi_state == 0:
