@@ -1,0 +1,474 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>robocrys.condense.mineral &mdash; Robocrystallographer 0.2.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/mineral.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Robocrystallographer
+          
+
+          
+            
+            <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../format.html">Condensed structure format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to robocrystallographer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Function Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Robocrystallographer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>robocrys.condense.mineral</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for robocrys.condense.mineral</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides tools for matching structures to known mineral class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matminer.utils.io</span> <span class="kn">import</span> <span class="n">load_dataframe_from_json</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.prototypes</span> <span class="kn">import</span> <span class="n">AflowPrototypeMatcher</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.fingerprint</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_structure_fingerprint</span><span class="p">,</span>
+                                           <span class="n">get_fingerprint_distance</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MineralMatcher"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.mineral.MineralMatcher">[docs]</a><span class="k">class</span> <span class="nc">MineralMatcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to match a structure to a mineral name.</span>
+
+<span class="sd">    Uses a precomputed database of minerals and their fingerprints, extracted</span>
+<span class="sd">    from the AFLOW prototype database. For more information on this database</span>
+<span class="sd">    see reference [aflow]_:</span>
+
+<span class="sd">    .. [aflow] Mehl, M. J., Hicks, D., Toher, C., Levy, O., Hanson, R. M., Hart,</span>
+<span class="sd">               G., &amp; Curtarolo, S. (2017), The AFLOW library of crystallographic</span>
+<span class="sd">               prototypes: part 1. Computational Materials Science, 136,</span>
+<span class="sd">               S1-S828. doi: 10.1016/j.commatsci.2017.01.017</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        initial_ltol: The fractional length tolerance used in the AFLOW</span>
+<span class="sd">            structure matching.</span>
+<span class="sd">        initial_stol : The site coordinate tolerance used in the AFLOW</span>
+<span class="sd">            structure matching.</span>
+<span class="sd">        initial_angle_tol: The angle tolerance used in the AFLOW structure</span>
+<span class="sd">            matching.</span>
+<span class="sd">        use_fingerprint_matching: Whether to use the fingerprint distance to</span>
+<span class="sd">            match minerals.</span>
+<span class="sd">        fingerprint_distance_cutoff: Cutoff to determine how similar a match</span>
+<span class="sd">            must be to be returned. The distance is measured between the</span>
+<span class="sd">            structural fingerprints in euclidean space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">initial_ltol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                 <span class="n">initial_stol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+                 <span class="n">initial_angle_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">,</span>
+                 <span class="n">use_fingerprint_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">fingerprint_distance_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">):</span>
+        <span class="n">db_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;robocrys.condense&#39;</span><span class="p">,</span> <span class="s1">&#39;mineral_db.json.gz&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span> <span class="o">=</span> <span class="n">load_dataframe_from_json</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_ltol</span> <span class="o">=</span> <span class="n">initial_ltol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_stol</span> <span class="o">=</span> <span class="n">initial_stol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_angle_tol</span> <span class="o">=</span> <span class="n">initial_angle_tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_distance_cutoff</span> <span class="o">=</span> <span class="n">fingerprint_distance_cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_fingerprint_matching</span> <span class="o">=</span> <span class="n">use_fingerprint_matching</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mineral_db</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MineralMatcher.get_best_mineral_name"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.mineral.MineralMatcher.get_best_mineral_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_best_mineral_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets the &quot;best&quot; mineral name for a structure.</span>
+
+<span class="sd">        Uses a combination of AFLOW prototype matching and fingerprinting to</span>
+<span class="sd">        get the best mineral name.</span>
+
+<span class="sd">        The AFLOW structure prototypes are detailed in reference [aflow]_.</span>
+
+<span class="sd">        The algorithm works as follows:</span>
+
+<span class="sd">        1. Check for AFLOW match. If single match return mineral name.</span>
+<span class="sd">        2. If multiple matches, return the one with the smallest fingerprint</span>
+<span class="sd">           distance.</span>
+<span class="sd">        3. If no AFLOW match, get fingerprints within tolerance. If there are</span>
+<span class="sd">           any matches, take the one with the smallest distance.</span>
+<span class="sd">        4. If no fingerprints within tolerance, check get fingerprints without</span>
+<span class="sd">           constraining the number of species types. If any matches, take the</span>
+<span class="sd">           best one.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure (Structure): A pymatgen ``Structure`` object to match.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            (dict): The mineral name information. Stored as a dict with the keys</span>
+<span class="sd">            &quot;type&quot;, &quot;distance&quot;, &quot;n_species_types_match&quot;, corresponding to the</span>
+<span class="sd">            mineral name, the fingerprint distance between the prototype and</span>
+<span class="sd">            known mineral, and whether the number of species types in the</span>
+<span class="sd">            structure matches the number in the known prototype, respectively.</span>
+<span class="sd">            If no mineral match is determined, the mineral type will be</span>
+<span class="sd">            ``None``. If an AFLOW match is found, the distance will be set to</span>
+<span class="sd">            -1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_distance_matrix</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>  <span class="c1"># pre-calculate distance matrix</span>
+
+        <span class="n">aflow_matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_aflow_matches</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+
+        <span class="n">fingerprint_matches</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fingerprint_matches</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+        <span class="n">fingerprint_derived</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fingerprint_matches</span><span class="p">(</span>
+            <span class="n">structure</span><span class="p">,</span> <span class="n">match_n_sp</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">distance</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">n_species_types_match</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">aflow_matches</span><span class="p">:</span>
+            <span class="c1"># mineral db sorted by fingerprint distance so first result always</span>
+            <span class="c1"># has a smaller distance</span>
+            <span class="n">mineral</span> <span class="o">=</span> <span class="n">aflow_matches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">fingerprint_matches</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_fingerprint_matching</span><span class="p">:</span>
+            <span class="n">mineral</span> <span class="o">=</span> <span class="n">fingerprint_matches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">fingerprint_matches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">fingerprint_derived</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_fingerprint_matching</span><span class="p">:</span>
+            <span class="n">mineral</span> <span class="o">=</span> <span class="n">fingerprint_derived</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">fingerprint_derived</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span>
+            <span class="n">n_species_types_match</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mineral</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">mineral</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="n">distance</span><span class="p">,</span>
+                <span class="s1">&#39;n_species_type_match&#39;</span><span class="p">:</span> <span class="n">n_species_types_match</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="MineralMatcher.get_aflow_matches"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.mineral.MineralMatcher.get_aflow_matches">[docs]</a>    <span class="k">def</span> <span class="nf">get_aflow_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets minerals for a structure by matching to AFLOW prototypes.</span>
+
+<span class="sd">        Overrides</span>
+<span class="sd">        :class:`pymatgen.analysis.aflow_prototypes.AflowPrototypeMatcher` to</span>
+<span class="sd">        only return matches to prototypes with known mineral names.</span>
+
+<span class="sd">        The AFLOW tolerance parameters (defined in the init method) are passed</span>
+<span class="sd">        to a :class:`pymatgen.analysis.structure_matcher.StructureMatcher`</span>
+<span class="sd">        object. The tolerances are gradually decreased until only a single match</span>
+<span class="sd">        is found (if possible).</span>
+
+<span class="sd">        The AFLOW structure prototypes are detailed in reference [aflow]_.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure: A pymatgen structure to match.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :obj:`list` of :obj:`dict`, sorted by how close the match is, with</span>
+<span class="sd">            the keys &#39;type&#39;, &#39;distance&#39;, &#39;structure&#39;. Distance is the</span>
+<span class="sd">            euclidean distance between the structure and prototype fingerprints.</span>
+<span class="sd">            If no match was found within the tolerances, ``None`` will be</span>
+<span class="sd">            returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_distance_matrix</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+
+        <span class="c1"># redefine AflowPrototypeMatcher._match_prototype function to run over</span>
+        <span class="c1"># our custom pandas DataFrame of AFLOW prototypes. This DataFrame only</span>
+        <span class="c1"># contains entries from the AFLOW database with mineral names. We</span>
+        <span class="c1"># have also pre-calculated the fingerprints and distances to make this</span>
+        <span class="c1"># quicker.</span>
+        <span class="k">def</span> <span class="nf">_match_prototype</span><span class="p">(</span><span class="n">structure_matcher</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mineral_db</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;structure&#39;</span><span class="p">]</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">structure_matcher</span><span class="o">.</span><span class="n">fit_anonymous</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_get_row_data</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">tags</span>
+
+        <span class="n">matcher</span> <span class="o">=</span> <span class="n">AflowPrototypeMatcher</span><span class="p">(</span>
+            <span class="n">initial_ltol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_ltol</span><span class="p">,</span>
+            <span class="n">initial_stol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_stol</span><span class="p">,</span>
+            <span class="n">initial_angle_tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_angle_tol</span><span class="p">)</span>
+        <span class="n">matcher</span><span class="o">.</span><span class="n">_match_prototype</span> <span class="o">=</span> <span class="n">_match_prototype</span>
+
+        <span class="k">return</span> <span class="n">matcher</span><span class="o">.</span><span class="n">get_prototypes</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MineralMatcher.get_fingerprint_matches"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.mineral.MineralMatcher.get_fingerprint_matches">[docs]</a>    <span class="k">def</span> <span class="nf">get_fingerprint_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
+                                <span class="n">max_n_matches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="n">match_n_sp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">mineral_name_constraint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;Gets minerals for a structure by matching to AFLOW fingerprints.</span>
+
+<span class="sd">        Only AFLOW prototypes with mineral names are considered. The AFLOW</span>
+<span class="sd">        structure prototypes are detailed in reference [aflow]_.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure: A structure to match.</span>
+<span class="sd">            max_n_matches: Maximum number of matches to return. Set to ``None``</span>
+<span class="sd">                to return all matches within the cutoff.</span>
+<span class="sd">            match_n_sp: Whether the structure and mineral must have the same</span>
+<span class="sd">                number of species. Defaults to True.</span>
+<span class="sd">            mineral_name_constraint: Whether to limit the matching to a specific</span>
+<span class="sd">                mineral name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A :obj:`list` of :obj:`dict`, sorted by how close the match is, with</span>
+<span class="sd">            the keys &#39;type&#39;, &#39;distance&#39;, &#39;structure&#39;. Distance is the</span>
+<span class="sd">            euclidean distance between the structure and prototype fingerprints.</span>
+<span class="sd">            If no match was found within the tolerances, ``None`` will be</span>
+<span class="sd">            returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_distance_matrix</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+
+        <span class="n">mineral_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mineral_db</span>
+
+        <span class="k">if</span> <span class="n">mineral_name_constraint</span><span class="p">:</span>
+            <span class="n">mineral_db</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="p">[</span><span class="n">mineral_db</span><span class="p">[</span><span class="s2">&quot;mineral&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span>
+                                    <span class="n">mineral_name_constraint</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">match_n_sp</span><span class="p">:</span>
+            <span class="n">ntypesp</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">ntypesp</span>
+            <span class="n">mineral_db</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="p">[</span><span class="n">mineral_db</span><span class="p">[</span><span class="s1">&#39;ntypesp&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ntypesp</span><span class="p">]</span>
+
+        <span class="n">num_rows</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">max_n_matches</span> <span class="o">=</span> <span class="n">max_n_matches</span> <span class="k">if</span> <span class="n">max_n_matches</span> <span class="k">else</span> <span class="n">num_rows</span>
+        <span class="n">max_n_matches</span> <span class="o">=</span> <span class="n">num_rows</span> <span class="k">if</span> <span class="n">max_n_matches</span> <span class="o">&gt;</span> <span class="n">num_rows</span> <span class="k">else</span> <span class="n">max_n_matches</span>
+
+        <span class="n">minerals</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_row_data</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">islice</span><span class="p">(</span><span class="n">mineral_db</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">max_n_matches</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_distance_cutoff</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">minerals</span> <span class="k">if</span> <span class="n">minerals</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_distance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Utility func to calculate distance between structure and minerals.</span>
+
+<span class="sd">        First checks to see if the distances have already been calculated for</span>
+<span class="sd">        the structure. If not, the distances are stored in a class variable</span>
+<span class="sd">        for use by other class methods.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            structure: A structure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structure</span> <span class="o">==</span> <span class="n">structure</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mineral_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">get_structure_fingerprint</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.4</span><span class="p">:</span>
+            <span class="c1"># fingerprint is too small for a reasonable match, indicates very</span>
+            <span class="c1"># little bonding or small order parameter matches</span>
+            <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">get_structure_fingerprint</span><span class="p">(</span>
+                <span class="n">structure</span><span class="p">,</span> <span class="n">prototype_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;fingerprint&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_fingerprint_distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fingerprint</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mineral_db</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;distance&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure</span> <span class="o">=</span> <span class="n">structure</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_row_data</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Text</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Utility function to extract mineral data from pandas `DataFrame` row.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;mineral&#39;</span><span class="p">],</span> <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;structure&#39;</span><span class="p">]}</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Alex Ganose
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>robocrys.condense.component &mdash; Robocrystallographer 0.2.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/component.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Robocrystallographer
+          
+
+          
+            
+            <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../format.html">Condensed structure format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to robocrystallographer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Function Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Robocrystallographer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>robocrys.condense.component</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for robocrys.condense.component</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module implements functions for handling structure components.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">monty.fractions</span> <span class="kn">import</span> <span class="n">gcd</span>
+
+<span class="kn">from</span> <span class="nn">pymatgen.analysis.structure_matcher</span> <span class="kn">import</span> <span class="n">StructureMatcher</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.composition</span> <span class="kn">import</span> <span class="n">Composition</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">get_el_sp</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">PeriodicSite</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span> <span class="nn">pymatgen.util.string</span> <span class="kn">import</span> <span class="n">formula_double_format</span>
+<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">common_formulas</span>
+<span class="kn">from</span> <span class="nn">robocrys.condense.fingerprint</span> <span class="kn">import</span> <span class="n">get_structure_fingerprint</span>
+
+<span class="n">Component</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_structure_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_structure_inequiv_components">[docs]</a><span class="k">def</span> <span class="nf">get_structure_inequiv_components</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                                     <span class="n">use_structure_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">fingerprint_tol</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">0.01</span>
+                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Gets and counts the structurally inequivalent components.</span>
+
+<span class="sd">    Supports matching through StructureMatcher or by a combined structure graph/</span>
+<span class="sd">    site fingerprint approach. For the latter method, the component data has to</span>
+<span class="sd">    have been generated with ``inc_graph=True``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.</span>
+<span class="sd">            If ``use_structure_graph=True``, the components should be generated</span>
+<span class="sd">            with ``inc_graph=True``.</span>
+<span class="sd">        use_structure_graph: Whether to use the bonding graph and site</span>
+<span class="sd">            fingerprints to determine if components are structurally equivalent.</span>
+<span class="sd">            If ``False``,</span>
+<span class="sd">            :obj:`pymatgen.analysis.structure_matcher.StructureMatcher` will be</span>
+<span class="sd">            used to compare the components.</span>
+<span class="sd">        fingerprint_tol: The fingerprint tolerance to determine whether two</span>
+<span class="sd">            components have a matching fingerprint. This option is ignored if</span>
+<span class="sd">            ``use_structure_graph=False``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of the structurally inequivalent components. Any duplicate</span>
+<span class="sd">        components will only be returned once. The component objects are in the</span>
+<span class="sd">        same format is given by</span>
+<span class="sd">        :obj:`pymatgen.analysis.dimensionality.get_structure_components` but</span>
+<span class="sd">        have an additional field:</span>
+
+<span class="sd">        - ``&quot;count&quot;`` (:obj:`int`): The number of times this component appears</span>
+<span class="sd">          in the structure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="n">component</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">use_structure_graph</span><span class="p">:</span>
+        <span class="c1"># check fingerprints match and components are isomorphic.</span>
+        <span class="n">fingerprints</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">get_structure_fingerprint</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span><span class="p">]</span>
+
+        <span class="n">seen_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">seen_fingers</span> <span class="o">=</span> <span class="p">[</span><span class="n">fingerprints</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">component</span><span class="p">,</span> <span class="n">fingerprint</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">fingerprints</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="n">graph_match</span> <span class="o">=</span> <span class="p">[</span><span class="n">components_are_isomorphic</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">seen_components</span><span class="p">]</span>
+            <span class="n">finger_match</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">fingerprint</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">fingerprint_tol</span>
+                            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">seen_fingers</span><span class="p">]</span>
+            <span class="n">structure_match</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="ow">and</span> <span class="n">f</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span>
+                               <span class="nb">zip</span><span class="p">(</span><span class="n">graph_match</span><span class="p">,</span> <span class="n">finger_match</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">structure_match</span><span class="p">):</span>
+                <span class="c1"># there should only ever be a single match so we take index of</span>
+                <span class="c1"># the first match and increment the component count</span>
+                <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">structure_match</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">seen_components</span><span class="p">[</span><span class="n">loc</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">seen_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+                <span class="n">seen_fingers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">StructureMatcher</span><span class="p">()</span>
+        <span class="n">seen_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">structure_match</span> <span class="o">=</span> <span class="p">[</span><span class="n">sm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">component</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span>
+                                      <span class="n">c</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">seen_components</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">structure_match</span><span class="p">):</span>
+                <span class="c1"># there should only ever be a single match so we take index of</span>
+                <span class="c1"># the first match and increment the component count</span>
+                <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">structure_match</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">seen_components</span><span class="p">[</span><span class="n">loc</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">seen_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">seen_components</span></div>
+
+
+<div class="viewcode-block" id="components_are_isomorphic"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.components_are_isomorphic">[docs]</a><span class="k">def</span> <span class="nf">components_are_isomorphic</span><span class="p">(</span><span class="n">component_a</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
+                              <span class="n">component_b</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
+                              <span class="n">use_weights</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determines whether the graphs of two components are isomorphic.</span>
+
+<span class="sd">    Only takes into account graph connectivity and not local geometry (e.g. bond</span>
+<span class="sd">    angles and distances).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        component_a: The first component.</span>
+<span class="sd">        component_b: The second component.</span>
+<span class="sd">        use_weights: Whether to use the graph edge weights in comparing graphs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Whether the components are isomorphic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">node_match</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">n1</span><span class="p">[</span><span class="s1">&#39;specie&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">n2</span><span class="p">[</span><span class="s1">&#39;specie&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">edge_match</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">use_weights</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">e1</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e2</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">graph_a</span> <span class="o">=</span> <span class="n">component_a</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">graph</span>
+    <span class="n">graph_b</span> <span class="o">=</span> <span class="n">component_b</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">graph</span>
+
+    <span class="n">species_a</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;specie&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">component_a</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="p">)}</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">graph_a</span><span class="p">}</span>
+    <span class="n">species_b</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">n</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;specie&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">component_b</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="p">)}</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">graph_b</span><span class="p">}</span>
+
+    <span class="n">nx</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="n">graph_a</span><span class="p">,</span> <span class="n">species_a</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="n">graph_b</span><span class="p">,</span> <span class="n">species_b</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_isomorphic</span><span class="p">(</span><span class="n">graph_a</span><span class="p">,</span> <span class="n">graph_b</span><span class="p">,</span> <span class="n">node_match</span><span class="o">=</span><span class="n">node_match</span><span class="p">,</span>
+                            <span class="n">edge_match</span><span class="o">=</span><span class="n">edge_match</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_sym_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_sym_inequiv_components">[docs]</a><span class="k">def</span> <span class="nf">get_sym_inequiv_components</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                               <span class="n">spg_analyzer</span><span class="p">:</span> <span class="n">SpacegroupAnalyzer</span>
+                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Gets and counts the symmetrically inequivalent components.</span>
+
+<span class="sd">    Component data has to have been generated with ``inc_site_ids=True``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`,</span>
+<span class="sd">            with ``inc_site_ids=True``.</span>
+<span class="sd">        spg_analyzer: A `pymatgen.symmetry.analyzer.SpacegroupAnalyzer` analyzer</span>
+<span class="sd">            object for the structure containing the components.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of the symmetrically inequivalent components. Any duplicate</span>
+<span class="sd">        components will only be returned once. The component objects are in the</span>
+<span class="sd">        same format is given by</span>
+<span class="sd">        :obj:`pymatgen.analysis.dimensionality.get_structure_components` but</span>
+<span class="sd">        the additional property:</span>
+
+<span class="sd">        - ``&quot;count&quot;`` (:obj:`int`): The number of times this component appears</span>
+<span class="sd">          in the structure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+    <span class="n">sym_inequiv_components</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">equivalent_atoms</span> <span class="o">=</span> <span class="n">spg_analyzer</span><span class="o">.</span><span class="n">get_symmetry_dataset</span><span class="p">()[</span><span class="s1">&#39;equivalent_atoms&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="n">sym_indices</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+            <span class="n">equivalent_atoms</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">])</span>
+
+        <span class="c1"># if two components are composed of atoms that are symmetrically</span>
+        <span class="c1"># equivalent they are the same.</span>
+        <span class="k">if</span> <span class="n">sym_indices</span> <span class="ow">in</span> <span class="n">sym_inequiv_components</span><span class="p">:</span>
+            <span class="n">sym_inequiv_components</span><span class="p">[</span><span class="n">sym_indices</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+
+        <span class="n">component</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">sym_inequiv_components</span><span class="p">[</span><span class="n">sym_indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">sym_inequiv_components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="get_formula_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_formula_inequiv_components">[docs]</a><span class="k">def</span> <span class="nf">get_formula_inequiv_components</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                                   <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Gets and counts the inequivalent components based on their formuula.</span>
+
+<span class="sd">    Note that the counting of compounds is different to in</span>
+<span class="sd">    ``get_sym_inequiv_equivalent``. I.e. the count is not the number of</span>
+<span class="sd">    components with the same formula. For example, the count of the formula</span>
+<span class="sd">    &quot;GaAs&quot; in a system with two Ga2As2 components would be 4.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`,</span>
+<span class="sd">            with ``inc_site_ids=True``.</span>
+<span class="sd">        use_iupac_formula (bool, optional): Whether to order formulas by the</span>
+<span class="sd">            iupac &quot;electronegativity&quot; series, defined in Table VI of</span>
+<span class="sd">            &quot;Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)&quot;.</span>
+<span class="sd">            This ordering effectively follows the groups and rows of the</span>
+<span class="sd">            periodic table, except the Lanthanides, Actanides and hydrogen. If</span>
+<span class="sd">            set to ``False``, the elements will be ordered according to the</span>
+<span class="sd">            electronegativity values.</span>
+<span class="sd">        use_common_formulas: Whether to use the database of common formulas.</span>
+<span class="sd">            The common formula will be used preferentially to the iupac or</span>
+<span class="sd">            reduced formula.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A list of the compositionally inequivalent components. Any duplicate</span>
+<span class="sd">        components will only be returned once. The component objects are in the</span>
+<span class="sd">        same format is given by</span>
+<span class="sd">        :obj:`pymatgen.analysis.dimensionality.get_structure_components` but</span>
+<span class="sd">        have two additional fields:</span>
+
+<span class="sd">        - ``&quot;count&quot;`` (:obj:`int`): The number of formula units of this</span>
+<span class="sd">          component. Note, this is not the number of components with the same</span>
+<span class="sd">          formula. For example, the count of the formula &quot;GaAs&quot; in a system</span>
+<span class="sd">          with two Ga2As2 components would be 4.</span>
+<span class="sd">        - ``&quot;formula&quot;`` (``list[int]``): The reduced formula of the component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+    <span class="n">inequiv_components</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+        <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">get_component_formula_and_factor</span><span class="p">(</span>
+            <span class="n">component</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="n">use_iupac_formula</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="n">use_common_formulas</span><span class="p">)</span>
+
+        <span class="c1"># if two components have the same composition we treat them as the same</span>
+        <span class="k">if</span> <span class="n">formula</span> <span class="ow">in</span> <span class="n">inequiv_components</span><span class="p">:</span>
+            <span class="n">inequiv_components</span><span class="p">[</span><span class="n">formula</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">factor</span>
+            <span class="k">continue</span>
+
+        <span class="n">component</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+        <span class="n">component</span><span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">formula</span>
+
+        <span class="n">inequiv_components</span><span class="p">[</span><span class="n">formula</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">inequiv_components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="filter_molecular_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.filter_molecular_components">[docs]</a><span class="k">def</span> <span class="nf">filter_molecular_components</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
+                                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Separate list of components into molecular and non-molecular components.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The filtered components as a tuple of ``(molecular_components,</span>
+<span class="sd">        other_components)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">molecular_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">other_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">molecular_components</span><span class="p">,</span> <span class="n">other_components</span></div>
+
+
+<div class="viewcode-block" id="get_reconstructed_structure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_reconstructed_structure">[docs]</a><span class="k">def</span> <span class="nf">get_reconstructed_structure</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                                <span class="n">simplify_molecules</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Structure</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reconstructs a structure from a list of components.</span>
+
+<span class="sd">    Has the option to simplify molecular components into a single site</span>
+<span class="sd">    positioned at the centre of mass of the molecular. If using this option,</span>
+<span class="sd">    the components must have been generated with ``inc_molecule_graph=True``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`,</span>
+<span class="sd">            with ``inc_molecule_graph=True``.</span>
+<span class="sd">        simplify_molecules: Whether to simplify the molecular components into</span>
+<span class="sd">            a single site positioned at the centre of mass of the molecule.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The reconstructed structure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mol_sites</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">other_sites</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="n">simplify_molecules</span><span class="p">:</span>
+        <span class="n">mol_components</span><span class="p">,</span> <span class="n">components</span> <span class="o">=</span> <span class="n">filter_molecular_components</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mol_components</span><span class="p">:</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">mol_components</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">lattice</span>
+
+            <span class="n">mol_sites</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">PeriodicSite</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="p">,</span>
+                             <span class="n">c</span><span class="p">[</span><span class="s1">&#39;molecule_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">molecule</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">,</span>
+                             <span class="n">lattice</span><span class="p">,</span> <span class="n">coords_are_cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mol_components</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">components</span><span class="p">:</span>
+        <span class="n">other_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span>
+                       <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_sites</span><span class="p">(</span><span class="n">other_sites</span> <span class="o">+</span> <span class="n">mol_sites</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_component_formula_and_factor"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_component_formula_and_factor">[docs]</a><span class="k">def</span> <span class="nf">get_component_formula_and_factor</span><span class="p">(</span><span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
+                                     <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the reduced formula and factor of a single component.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        component: A structure component, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.</span>
+<span class="sd">        use_iupac_formula (bool, optional): Whether to order formulas by the</span>
+<span class="sd">            iupac &quot;electronegativity&quot; series, defined in Table VI of</span>
+<span class="sd">            &quot;Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)&quot;.</span>
+<span class="sd">            This ordering effectively follows the groups and rows of the</span>
+<span class="sd">            periodic table, except the Lanthanides, Actanides and hydrogen. If</span>
+<span class="sd">            set to ``False``, the elements will be ordered according to the</span>
+<span class="sd">            electronegativity values.</span>
+<span class="sd">        use_common_formulas: Whether to use the database of common formulas.</span>
+<span class="sd">            The common formula will be used preferentially to the iupac or</span>
+<span class="sd">            reduced formula.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The formula and factor of the component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span> \
+        <span class="n">get_reduced_formula_and_factor</span><span class="p">(</span><span class="n">iupac_ordering</span><span class="o">=</span><span class="n">use_iupac_formula</span><span class="p">)</span>
+
+    <span class="n">reduced_formula</span> <span class="o">=</span> <span class="n">component</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span> \
+        <span class="n">reduced_formula</span>
+    <span class="k">if</span> <span class="n">use_common_formulas</span> <span class="ow">and</span> <span class="n">reduced_formula</span> <span class="ow">in</span> <span class="n">common_formulas</span><span class="p">:</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">common_formulas</span><span class="p">[</span><span class="n">reduced_formula</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span></div>
+
+
+<div class="viewcode-block" id="get_component_formula"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_component_formula">[docs]</a><span class="k">def</span> <span class="nf">get_component_formula</span><span class="p">(</span><span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
+                          <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the reduced formula of a single component.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        component: A structure component, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.</span>
+<span class="sd">        use_iupac_formula (bool, optional): Whether to order formulas by the</span>
+<span class="sd">            iupac &quot;electronegativity&quot; series, defined in Table VI of</span>
+<span class="sd">            &quot;Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)&quot;.</span>
+<span class="sd">            This ordering effectively follows the groups and rows of the</span>
+<span class="sd">            periodic table, except the Lanthanides, Actanides and hydrogen. If</span>
+<span class="sd">            set to ``False``, the elements will be ordered according to the</span>
+<span class="sd">            electronegativity values.</span>
+<span class="sd">        use_common_formulas: Whether to use the database of common formulas.</span>
+<span class="sd">            The common formula will be used preferentially to the iupac or</span>
+<span class="sd">            reduced formula.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The formula and factor of the component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_component_formula_and_factor</span><span class="p">(</span>
+        <span class="n">component</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="n">use_iupac_formula</span><span class="p">,</span>
+        <span class="n">use_common_formulas</span><span class="o">=</span><span class="n">use_common_formulas</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_formula_from_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_formula_from_components">[docs]</a><span class="k">def</span> <span class="nf">get_formula_from_components</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                                <span class="n">molecules_first</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Reconstructs a chemical formula from structure components.</span>
+
+<span class="sd">    The chemical formulas for the individual components will be grouped</span>
+<span class="sd">    together. If two components share the same composition, they will be</span>
+<span class="sd">    treated as equivalent.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.</span>
+<span class="sd">        molecules_first: Whether to put any molecules (zero-dimensional</span>
+<span class="sd">            components) at the beginning of the formula.</span>
+<span class="sd">        use_iupac_formula (bool, optional): Whether to order formulas by the</span>
+<span class="sd">            iupac &quot;electronegativity&quot; series, defined in Table VI of</span>
+<span class="sd">            &quot;Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)&quot;.</span>
+<span class="sd">            This ordering effectively follows the groups and rows of the</span>
+<span class="sd">            periodic table, except the Lanthanides, Actanides and hydrogen. If</span>
+<span class="sd">            set to ``False``, the elements will be ordered according to the</span>
+<span class="sd">            electronegativity values.</span>
+<span class="sd">        use_common_formulas: Whether to use the database of common formulas.</span>
+<span class="sd">            The common formula will be used preferentially to the iupac or</span>
+<span class="sd">            reduced formula.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The chemical formula.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="n">comp_formula</span><span class="p">):</span>
+        <span class="n">composition</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="n">comp_formula</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">use_iupac_formula</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">get_el_sp</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">iupac_ordering</span>
+                         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">composition</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span> <span class="o">/</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">composition</span><span class="o">.</span><span class="n">elements</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">composition</span><span class="o">.</span><span class="n">average_electroneg</span>
+
+    <span class="n">components</span> <span class="o">=</span> <span class="n">get_formula_inequiv_components</span><span class="p">(</span>
+        <span class="n">components</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="n">use_iupac_formula</span><span class="p">,</span>
+        <span class="n">use_common_formulas</span><span class="o">=</span><span class="n">use_common_formulas</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">molecules_first</span><span class="p">:</span>
+        <span class="n">mol_comps</span><span class="p">,</span> <span class="n">other_comps</span> <span class="o">=</span> <span class="n">filter_molecular_components</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mol_comps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">other_comps</span> <span class="o">=</span> <span class="n">components</span>
+
+    <span class="n">formulas</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mol_comps</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="o">+</span>
+                <span class="nb">sorted</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">other_comps</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">order</span><span class="p">))</span>
+
+    <span class="c1"># if components include special formulas, then the count can be 0.5</span>
+    <span class="c1"># therefore if any non integer amounts we can just use a factor of 2</span>
+    <span class="n">all_int</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">components</span><span class="p">)</span>
+    <span class="n">prefactor</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">all_int</span> <span class="k">else</span> <span class="mi">2</span>
+    <span class="n">form_count_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;formula&#39;</span><span class="p">]:</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">prefactor</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span><span class="p">}</span>
+
+    <span class="c1"># the following is based on ``pymatgen.core.composition.reduce_formula``</span>
+    <span class="n">num_comps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">formulas</span><span class="p">)</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">gcd</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">form_count_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+
+    <span class="n">reduced_form</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_comps</span><span class="p">):</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">formulas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">normamt</span> <span class="o">=</span> <span class="n">form_count_dict</span><span class="p">[</span><span class="n">formula</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">factor</span>
+        <span class="n">formatted_formula</span> <span class="o">=</span> <span class="n">formula</span> <span class="k">if</span> <span class="n">normamt</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
+        <span class="n">reduced_form</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formatted_formula</span><span class="p">)</span>
+        <span class="n">reduced_form</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formula_double_format</span><span class="p">(</span><span class="n">normamt</span><span class="p">))</span>
+
+    <span class="n">reduced_form</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reduced_form</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reduced_form</span></div>
+
+
+<div class="viewcode-block" id="components_are_vdw_heterostructure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.components_are_vdw_heterostructure">[docs]</a><span class="k">def</span> <span class="nf">components_are_vdw_heterostructure</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
+                                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Whether a list of components form a van der Waals heterostructure.</span>
+
+<span class="sd">    A heterostructure is defined here as a structure with more than one</span>
+<span class="sd">    formula inequivalent 2D component.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Whether the list of components from a heterostructure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">get_formula_inequiv_components</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="get_vdw_heterostructure_information"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_vdw_heterostructure_information">[docs]</a><span class="k">def</span> <span class="nf">get_vdw_heterostructure_information</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+                                        <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">inc_ordered_components</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                        <span class="n">inc_intercalants</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+                                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Gets information about ordering of components in a vdw heterostructure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        components: A list of structure components, generated using</span>
+<span class="sd">            :obj:`pymatgen.analysis.dimensionality.get_structure_components`</span>
+<span class="sd">            with ``inc_orientation=True``.</span>
+<span class="sd">        use_iupac_formula (bool, optional): Whether to order formulas by the</span>
+<span class="sd">            iupac &quot;electronegativity&quot; series, defined in Table VI of</span>
+<span class="sd">            &quot;Nomenclature of Inorganic Chemistry (IUPAC Recommendations 2005)&quot;.</span>
+<span class="sd">            This ordering effectively follows the groups and rows of the</span>
+<span class="sd">            periodic table, except the Lanthanides, Actanides and hydrogen. If</span>
+<span class="sd">            set to ``False``, the elements will be ordered according to the</span>
+<span class="sd">            electronegativity values.</span>
+<span class="sd">        use_common_formulas: Whether to use the database of common formulas.</span>
+<span class="sd">            The common formula will be used preferentially to the iupac or</span>
+<span class="sd">            reduced formula.</span>
+<span class="sd">        inc_ordered_components: Whether to return a list of the ordered</span>
+<span class="sd">            components. If False, just the component formulas will be returned.</span>
+<span class="sd">        inc_intercalants: Whether to return a list of the intercalants. If</span>
+<span class="sd">            False, just the intercalant formulas will be returned.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Information on the heterostructure, as an :obj:`dict` with they keys:</span>
+
+<span class="sd">        - ``&quot;repeating_unit&quot;`` (``list[str]``): A :obj:`List` of formulas of the</span>
+<span class="sd">          smallest repeating series of components. For example. if the</span>
+<span class="sd">          structure consists of A and B components ordered as &quot;A B A B A B&quot;,</span>
+<span class="sd">          the repeating unit is &quot;A B&quot;.</span>
+<span class="sd">        - ``&quot;num_repetitions&quot;`` (:obj:`int`): The number of repetitions of the</span>
+<span class="sd">          repeating unit that forms the overall structure. For example. if</span>
+<span class="sd">          the structure consists of A and B components ordered as</span>
+<span class="sd">          &quot;A B A B A B&quot;, the number of repetitions is 3.</span>
+<span class="sd">        - ``&quot;intercalant_formulas&quot;`` (:obj:`list[str]`): The formulas of the</span>
+<span class="sd">          intercalated compounds.</span>
+<span class="sd">        - ``&quot;ordered_components&quot;`` (``list[component]``): If</span>
+<span class="sd">          ``inc_ordered_components``, a :obj:`List` of components, ordered as</span>
+<span class="sd">          they appear in the heteostructure stacking direction.</span>
+<span class="sd">        - ``&quot;intercalants&quot;`` (``list[component]``: If ``inc_intercalants``, a</span>
+<span class="sd">          :obj:`List` of intercalated components.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">components_are_vdw_heterostructure</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Components do not form a heterostructure.&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">millers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span>
+                       <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;orientation&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Components not generated with inc_orientation=True&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">millers</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;2D components don&#39;t all have the same orientation.&quot;</span><span class="p">)</span>
+
+    <span class="n">cart_miller</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span>\
+        <span class="n">get_cartesian_coords</span><span class="p">(</span><span class="n">millers</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># plane is used to find the distances of all components along a certain axis</span>
+    <span class="c1"># should use normal vector of plane to get exact distances but we just care</span>
+    <span class="c1"># about relative distances.</span>
+    <span class="k">def</span> <span class="nf">distances_to_plane</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cart_miller</span><span class="p">,</span> <span class="n">pp</span><span class="p">)</span> <span class="k">for</span> <span class="n">pp</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+    <span class="n">min_distances</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">min</span><span class="p">(</span><span class="n">distances_to_plane</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;structure_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">cart_coords</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span><span class="p">]</span>
+
+    <span class="c1"># sort the components by distance to plane</span>
+    <span class="n">ordering</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">min_distances</span><span class="p">)</span>
+    <span class="n">ordered_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">components</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ordering</span><span class="p">]</span>
+
+    <span class="c1"># only consider the layered components formulae</span>
+    <span class="n">ordered_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ordered_components</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">ordered_layers_formula</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">get_component_formula</span><span class="p">(</span>
+            <span class="n">c</span><span class="p">,</span> <span class="n">use_iupac_formula</span><span class="o">=</span><span class="n">use_iupac_formula</span><span class="p">,</span>
+            <span class="n">use_common_formulas</span><span class="o">=</span><span class="n">use_common_formulas</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ordered_layers</span><span class="p">]</span>
+    <span class="n">num_layer_formulas</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ordered_layers_formula</span><span class="p">))</span>
+
+    <span class="n">repeating_formula</span> <span class="o">=</span> <span class="n">ordered_layers_formula</span>
+    <span class="n">num_repetitions</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># depending on the number of inequivalent formulae, there is a maximum</span>
+    <span class="c1"># number of repetitions that can occur. To avoid unnecessary work we start</span>
+    <span class="c1"># from this number of repetitions and move to 1 repetition (e.g. no</span>
+    <span class="c1"># repetition)</span>
+    <span class="n">max_repetitions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ordered_layers</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_layer_formulas</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_repetitions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">all</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ordered_layers_formula</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">num_layer_formulas</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span>
+                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered_layers</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">repeating_formula</span> <span class="o">=</span> <span class="n">ordered_layers_formula</span><span class="p">[</span>
+                                <span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ordered_layers</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)]</span>
+            <span class="n">num_repetitions</span> <span class="o">=</span> <span class="n">n</span>
+            <span class="k">break</span>
+
+    <span class="n">intercalants</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">intercalant_formulas</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_component_formula</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">intercalants</span><span class="p">]</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;repeating_unit&#39;</span><span class="p">:</span> <span class="n">repeating_formula</span><span class="p">,</span>
+            <span class="s1">&#39;num_repetitions&#39;</span><span class="p">:</span> <span class="n">num_repetitions</span><span class="p">,</span>
+            <span class="s1">&#39;intercalant_formulas&#39;</span><span class="p">:</span> <span class="n">intercalant_formulas</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">inc_intercalants</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;intercalants&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">intercalants</span>
+
+    <span class="k">if</span> <span class="n">inc_ordered_components</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ordered_components&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ordered_components</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Alex Ganose
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

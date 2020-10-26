@@ -1,0 +1,598 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>robocrys.featurize package &mdash; Robocrystallographer 0.2.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/robocrys.featurize.html"/>
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Index" href="genindex.html" />
+    <link rel="prev" title="robocrys.describe package" href="robocrys.describe.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Robocrystallographer
+          
+
+          
+            
+            <img src="_static/logo_icon-01.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format.html">Condensed structure format</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to robocrystallographer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Function Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="robocrys.html">robocrys package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="robocrys.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="robocrys.condense.html">robocrys.condense package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="robocrys.describe.html">robocrys.describe package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">robocrys.featurize package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="robocrys.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robocrys.html#module-robocrys.adapter">robocrys.adapter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robocrys.html#module-robocrys.cli">robocrys.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robocrys.html#module-robocrys.util">robocrys.util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="robocrys.html#module-robocrys">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Robocrystallographer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">robocrys</a> &raquo;</li>
+        
+          <li><a href="robocrys.html">robocrys package</a> &raquo;</li>
+        
+      <li>robocrys.featurize package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/hackingmaterials/robocrystallographer/blob/master/docs_rst/robocrys.featurize.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="robocrys-featurize-package">
+<h1>robocrys.featurize package<a class="headerlink" href="#robocrys-featurize-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-robocrys.featurize.adapter">
+<span id="robocrys-featurize-adapter-module"></span><h2>robocrys.featurize.adapter module<a class="headerlink" href="#module-robocrys.featurize.adapter" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a class to resolve the symbolic references in condensed
+structure data.</p>
+<dl class="py class">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter">
+<em class="property">class </em><code class="sig-prename descclassname">robocrys.featurize.adapter.</code><code class="sig-name descname">FeaturizerAdapter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condensed_structure</span></em>, <em class="sig-param"><span class="n">distorted_tol</span><span class="o">=</span><span class="default_value">0.6</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="robocrys.html#robocrys.adapter.BaseAdapter" title="robocrys.adapter.BaseAdapter"><code class="xref py py-class docutils literal notranslate"><span class="pre">robocrys.adapter.BaseAdapter</span></code></a></p>
+<p>Class to facilitate featurizing condensed structure data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>condensed_structure</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The condensed structure data, formatted as produced
+by <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.all_bond_lengths">
+<code class="sig-name descname">all_bond_lengths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.all_bond_lengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.all_bond_lengths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.average_anion_coordination_number">
+<em class="property">property </em><code class="sig-name descname">average_anion_coordination_number</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.average_anion_coordination_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The average coordination number across anion sites.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.average_cation_coordination_number">
+<em class="property">property </em><code class="sig-name descname">average_cation_coordination_number</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.average_cation_coordination_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The average coordination number across cation sites.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.average_coordination_number">
+<em class="property">property </em><code class="sig-name descname">average_coordination_number</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.average_coordination_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The average coordination number across all sites.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.average_corner_sharing_octahedral_tilt_angle">
+<em class="property">property </em><code class="sig-name descname">average_corner_sharing_octahedral_tilt_angle</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.average_corner_sharing_octahedral_tilt_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The average corner-sharing octahedral tilt angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.component_dimensionalities">
+<em class="property">property </em><code class="sig-name descname">component_dimensionalities</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.component_dimensionalities" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dimensionalities of all components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_connected_geometry">
+<code class="sig-name descname">contains_connected_geometry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">connectivity</span></em>, <em class="sig-param"><span class="n">geometry</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.contains_connected_geometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_connected_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains the specified connected geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connectivity</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The connectivity (corner, edge, face)</p></li>
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The geometry.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the structure contains the specified connected geometry.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_corner_sharing_polyhedra">
+<em class="property">property </em><code class="sig-name descname">contains_corner_sharing_polyhedra</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_corner_sharing_polyhedra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains corner-sharing polyhedra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_edge_sharing_polyhedra">
+<em class="property">property </em><code class="sig-name descname">contains_edge_sharing_polyhedra</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_edge_sharing_polyhedra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains edge-sharing polyhedra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_face_sharing_polyhedra">
+<em class="property">property </em><code class="sig-name descname">contains_face_sharing_polyhedra</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_face_sharing_polyhedra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains face-sharing polyhedra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_geometry_type">
+<code class="sig-name descname">contains_geometry_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">geometry</span></em>, <em class="sig-param"><span class="n">distorted</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.contains_geometry_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_geometry_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains a specific site geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The site geometry.</p></li>
+<li><p><strong>distorted</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>]) – Whether the geometry is distorted or not. If set to
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, then the matching does not take into account the
+geometry likeness.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the structure contains a specific geometry.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_molecule">
+<code class="sig-name descname">contains_molecule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecule_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.contains_molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains a specific molecule name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecule_name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – A molecule name.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the structure contains the molecule.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_named_molecule">
+<em class="property">property </em><code class="sig-name descname">contains_named_molecule</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_named_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains any named molecules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.contains_polyhedra">
+<em class="property">property </em><code class="sig-name descname">contains_polyhedra</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.contains_polyhedra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure contains any connected polyhedra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.frac_site_geometry">
+<code class="sig-name descname">frac_site_geometry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">geometry</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.frac_site_geometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.frac_site_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fraction of sites with a specific geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The geometry.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The fraction of sites with the specified geometry.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.frac_sites_n_coordinate">
+<code class="sig-name descname">frac_sites_n_coordinate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_neighbors</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.frac_sites_n_coordinate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.frac_sites_n_coordinate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fraction of sites with a specific coordination number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num_neighbors</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The number of nearest neighbors.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The fraction of sites with the specified coordination number.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.frac_sites_polyhedra">
+<em class="property">property </em><code class="sig-name descname">frac_sites_polyhedra</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.frac_sites_polyhedra" title="Permalink to this definition">¶</a></dt>
+<dd><p>The percentage of sites that are connected polyhedra.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.is_dimensionality">
+<code class="sig-name descname">is_dimensionality</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimensionalities</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/adapter.html#FeaturizerAdapter.is_dimensionality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.is_dimensionality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure only contains the specified dimensionalities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dimensionalities</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Set" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – One or more dimensionalities.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the structure only contains the specified dimensionalities.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.is_intercalated">
+<em class="property">property </em><code class="sig-name descname">is_intercalated</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.is_intercalated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure is intercalated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.adapter.FeaturizerAdapter.is_interpenetrated">
+<em class="property">property </em><code class="sig-name descname">is_interpenetrated</code><a class="headerlink" href="#robocrys.featurize.adapter.FeaturizerAdapter.is_interpenetrated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the structure is interpenetrated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.featurize.featurizer">
+<span id="robocrys-featurize-featurizer-module"></span><h2>robocrys.featurize.featurizer module<a class="headerlink" href="#module-robocrys.featurize.featurizer" title="Permalink to this headline">¶</a></h2>
+<p>This module contains a class to obtain robocrystallographer ML features.</p>
+<dl class="py class">
+<dt id="robocrys.featurize.featurizer.RobocrysFeaturizer">
+<em class="property">class </em><code class="sig-prename descclassname">robocrys.featurize.featurizer.</code><code class="sig-name descname">RobocrysFeaturizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condenser_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">distorted_tol</span><span class="o">=</span><span class="default_value">0.6</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/featurizer.html#RobocrysFeaturizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.featurizer.RobocrysFeaturizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matminer.featurizers.base.BaseFeaturizer</span></code></p>
+<p>Class to generate structure features from robocrystallographer output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>condenser_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – Keyword arguments that will be passed to
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser</span></code>.</p></li>
+<li><p><strong>distorted_tol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The value under which the site geometry will be
+classified as distorted.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="robocrys.featurize.featurizer.RobocrysFeaturizer.citations">
+<code class="sig-name descname">citations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/featurizer.html#RobocrysFeaturizer.citations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.featurizer.RobocrysFeaturizer.citations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Citation(s) and reference(s) for this feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>(list) each element should be a string citation,</dt><dd><p>ideally in BibTeX format.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.featurizer.RobocrysFeaturizer.feature_labels">
+<code class="sig-name descname">feature_labels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/featurizer.html#RobocrysFeaturizer.feature_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.featurizer.RobocrysFeaturizer.feature_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate attribute names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>([str]) attribute labels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.featurizer.RobocrysFeaturizer.featurize">
+<code class="sig-name descname">featurize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/featurizer.html#RobocrysFeaturizer.featurize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.featurizer.RobocrysFeaturizer.featurize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Featurizes a structure using robocrystallographer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="https://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.Structure" title="(in pymatgen v2020.10.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code></a>) – A structure.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The robocrystallographer features.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.featurize.featurizer.RobocrysFeaturizer.implementors">
+<code class="sig-name descname">implementors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/featurize/featurizer.html#RobocrysFeaturizer.implementors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#robocrys.featurize.featurizer.RobocrysFeaturizer.implementors" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of implementors of the feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>(list) each element should either be a string with author name (e.g.,</dt><dd><p>”Anubhav Jain”) or a dictionary  with required key “name” and other
+keys like “email” or “institution” (e.g., {“name”: “Anubhav
+Jain”, “email”: “<a class="reference external" href="mailto:ajain&#37;&#52;&#48;lbl&#46;gov">ajain<span>&#64;</span>lbl<span>&#46;</span>gov</a>”, “institution”: “LBNL”}).</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-robocrys.featurize">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-robocrys.featurize" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Alex Ganose
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
