@@ -6,19 +6,23 @@ Change Log
 
 v0.2.4
 ------
+
 - Setup.py fixes.
 
 v0.2.3
 ------
+
 - Fix version bug.
 
 v0.2.2
 ------
+
 - Fixed command line symprec bug (#31).
 - Fixed ``--no-makeup``, ``--no-mineral`` and ``--no-components`` bugs (#32).
 
 v0.2.1
 ------
+
 - setup.py bug fixes.
 
 v0.2.0
