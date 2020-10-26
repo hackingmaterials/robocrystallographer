@@ -23,7 +23,7 @@ jobs:
         run: |
           conda install --quiet --yes -c conda-forge openbabel pip
           pip install numpy
-          pip install -e .
+          pip install -r requirements.txt
           pip install -e .[tests]
 
       - name: Test
