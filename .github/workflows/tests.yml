@@ -37,4 +37,4 @@ jobs:
         pip install -e .[tests]
 
     - name: Test
-      run: pytest --cov=amset --cov-report=xml --cov-config=.coveragerc
+      run: pytest --cov=robocrys --cov-report=xml --cov-config=.coveragerc
