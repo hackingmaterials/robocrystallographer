@@ -53,7 +53,7 @@ setup(
         "docs": [
             "sphinx==3.4.2",
             "sphinx-argparse==0.2.5",
-            "sphinx_rtd_theme==0.5.0",
+            "sphinx_rtd_theme==0.5.1",
             "sphinx-autodoc-typehints==1.11.1",
             "m2r2==0.2.7",
         ],
