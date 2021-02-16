@@ -8,4 +8,3 @@ matminer==0.6.4
 monty==4.0.2
 pubchempy==1.0.4
 pybtex==0.24.0
-ruamel.yaml==0.16.12
