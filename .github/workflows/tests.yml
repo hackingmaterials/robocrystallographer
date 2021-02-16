@@ -7,11 +7,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9']
-    name: Python ${{ matrix.python-version }}
-
     steps:
     - uses: actions/checkout@v2
 
@@ -19,15 +14,15 @@ jobs:
       uses: s-weigand/setup-conda@v1
       with:
         update-conda: true
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.8
         conda-channels: anaconda, conda-forge
 
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+#     - uses: actions/cache@v2
+#       with:
+#         path: ~/.cache/pip
+#         key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+#         restore-keys: |
+#           ${{ runner.os }}-pip-
 
     - name: Install dependencies
       run: |
