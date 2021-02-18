@@ -4,7 +4,7 @@ scipy==1.5.4
 pymatgen==2021.2.16
 inflect==5.0.2
 networkx==2.5
-matminer==0.6.4
+matminer==0.6.5
 monty==4.0.2
 pubchempy==1.0.4
 pybtex==0.24.0
