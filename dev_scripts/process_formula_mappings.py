@@ -15,8 +15,7 @@ import os
 
 from monty.serialization import loadfn, dumpfn
 
-from pymatgen import Composition
-from pymatgen.core.composition import CompositionError
+from pymatgen.core.composition import Composition, CompositionError
 
 cwd = os.path.join(os.path.dirname(__file__))
 formulas = loadfn(os.path.join(cwd, "relevant_formulae.json"))
