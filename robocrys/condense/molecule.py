@@ -10,7 +10,7 @@ from typing import Optional, Tuple
 from pkg_resources import resource_filename
 from pubchempy import get_compounds, BadRequestError
 
-from pymatgen import loadfn
+from monty.serialization import loadfn
 from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.io.babel import BabelMolAdaptor
 
