@@ -20,8 +20,7 @@ from monty.json import MontyDecoder
 from monty.serialization import loadfn
 from pkg_resources import resource_filename
 
-from pymatgen.core.periodic_table import Element
-from pymatgen.core.periodic_table import get_el_sp, Species
+from pymatgen.core.periodic_table import get_el_sp, Species, Element
 from pymatgen.util.string import latexify_spacegroup
 
 common_formulas: Dict[str, str] = loadfn(
