@@ -10,7 +10,7 @@ from typing import Dict, Any, List, Union, Tuple, Optional
 
 import numpy as np
 
-from pymatgen import Composition
+from pymatgen.core.composition import Composition
 from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
