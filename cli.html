@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>robocrys program &mdash; Robocrystallographer 0.2.6 documentation</title>
@@ -93,7 +94,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+              <p><span class="caption-text">Usage Guide</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line interface</a><ul>
@@ -112,7 +113,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="format.html">Condensed structure format</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Information</span></p>
+<p><span class="caption-text">Information</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributors.html">Contributors</a></li>
@@ -120,7 +121,7 @@
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Function Reference</span></p>
+<p><span class="caption-text">Function Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
@@ -193,7 +194,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="robocrys-program">
+  <section id="robocrys-program">
 <h1><code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program<a class="headerlink" href="#robocrys-program" title="Permalink to this headline">¶</a></h1>
 <p>Robocrystallographer can be used on the command-line through the <code class="docutils literal notranslate"><span class="pre">robocrys</span></code>
 command. Most of the options provided in the Python API are also accessible
@@ -216,7 +217,7 @@ on the command-line. This page details the basic usage of the program.</p>
 </li>
 </ul>
 </div>
-<div class="section" id="usage">
+<section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The full range of options supported by <code class="docutils literal notranslate"><span class="pre">robocrys</span></code> are detailed in the
 <a class="reference internal" href="#command-line-interface">Command-line interface</a> section, and be can be listed using:</p>
@@ -238,14 +239,14 @@ also supported. For example, to generate the description of a CIF file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="n">MyStructure</span><span class="o">.</span><span class="n">cif</span>
 </pre></div>
 </div>
-<div class="section" id="basic-options">
+<section id="basic-options">
 <h3>Basic options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h3>
 <p>Generating a structure description is split into two steps, the first is to
 condense the structure into an intermediate JSON representation, the second is
 to generate a description from the intermediate representation. The <code class="docutils literal notranslate"><span class="pre">robocrys</span></code>
 program contains options for controlling both steps of this process.</p>
-</div>
-<div class="section" id="condenser-options">
+</section>
+<section id="condenser-options">
 <h3>Condenser options<a class="headerlink" href="#condenser-options" title="Permalink to this headline">¶</a></h3>
 <p>By default, robocrystallographer determines whether sites are equivalent using
 the site information (element, geometry, order parameter), nearest neighbor
@@ -266,8 +267,8 @@ symmetry used to determine site inequivalence, and a symmetry tolerance of
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="n">MyStructure</span><span class="o">.</span><span class="n">cif</span> <span class="o">--</span><span class="n">conventional</span> <span class="o">--</span><span class="n">symmetry</span> <span class="o">--</span><span class="n">symprec</span> <span class="mf">0.001</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="describer-options">
+</section>
+<section id="describer-options">
 <h3>Describer options<a class="headerlink" href="#describer-options" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program has many options to control the verbosity of the
 description. By default, oxidation states and symmetry labels
@@ -278,9 +279,9 @@ describe the connectivity anion polyhedra, the <code class="docutils literal not
 can be used.</p>
 <p>Robocrystallographer also supports generating LaTeX ready descriptions through
 the <code class="docutils literal notranslate"><span class="pre">--latexify</span></code> option.</p>
-</div>
-</div>
-<div class="section" id="command-line-interface">
+</section>
+</section>
+<section id="command-line-interface">
 <h2>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h2>
 <p><p>robocrystallographer is a tool to generate crystal structure descriptions</p>
 </p>
@@ -293,15 +294,15 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
                 <span class="n">filename</span>
 </pre></div>
 </div>
-<div class="section" id="Positional Arguments">
+<section id="Positional Arguments">
 <h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
 <dl class="option-list">
 <dt><kbd>filename</kbd></dt>
 <dd><p>structure file or mpid</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="Named Arguments">
+</section>
+<section id="Named Arguments">
 <h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
 <dl class="option-list">
 <dt><kbd>-c, --conventional</kbd></dt>
@@ -376,11 +377,11 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
 <dd><p>set the materials project API key. See: <a class="reference external" href="https://materialsproject.org/docs/api">https://materialsproject.org/docs/api</a></p>
 </dd>
 </dl>
-</div>
+</section>
 <p><p>Author: Alex Ganose, Version: 0.2.6, Last updated: December 17, 2018</p>
 </p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
