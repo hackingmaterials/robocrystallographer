@@ -106,7 +106,7 @@ Robocrystallographer can be installed using pip:
 pip install robocrys
 ```
 
-Robocrystallographer requires Python 3.6+. The
+Robocrystallographer requires Python 3.7+. The
 [OpenBabel](http://openbabel.org/wiki/Python)
 package is required to determine molecule names. This is an optional
 requirement but its use is recommended for best
