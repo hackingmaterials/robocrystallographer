@@ -180,7 +180,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">statistics</span> <span class="kn">import</span> <span class="n">mean</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">robocrys.adapter</span> <span class="kn">import</span> <span class="n">BaseAdapter</span>
 
@@ -193,28 +193,29 @@
 <span class="sd">            by :meth:`robocrys.condense.StructureCondenser.condense_structure`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-                 <span class="n">distorted_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">distorted_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">condensed_structure</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">][</span><span class="s1">&#39;sites&#39;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">site</span>
+            <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span> <span class="o">=</span> <span class="n">distorted_tol</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">component_dimensionalities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;The dimensionalities of all components.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;dimensionality&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_named_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains any named molecules.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;molecule_name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;molecule_name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains any connected polyhedra.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_intercalated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -230,50 +231,85 @@
     <span class="k">def</span> <span class="nf">contains_corner_sharing_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains corner-sharing polyhedra.&quot;&quot;&quot;</span>
         <span class="c1"># criteria: original site poly, nnn site poly and sites corner-sharing</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;corner&#39;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span>
-                            <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">][</span><span class="s1">&#39;corner&#39;</span><span class="p">])])</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">site</span>
+                <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="s2">&quot;corner&quot;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">][</span><span class="s2">&quot;corner&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_edge_sharing_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains edge-sharing polyhedra.&quot;&quot;&quot;</span>
         <span class="c1"># criteria: original site poly, nnn site poly and sites edge-sharing</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;edge&#39;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span>
-                            <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">][</span><span class="s1">&#39;edge&#39;</span><span class="p">])])</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">site</span>
+                <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="s2">&quot;edge&quot;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">][</span><span class="s2">&quot;edge&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_face_sharing_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains face-sharing polyhedra.&quot;&quot;&quot;</span>
         <span class="c1"># criteria: original site poly, nnn site poly and sites face-sharing</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">([</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;face&#39;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">]</span>
-                    <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span>
-                            <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">][</span><span class="s1">&#39;face&#39;</span><span class="p">])])</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">site</span>
+                <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="s2">&quot;face&quot;</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">][</span><span class="s2">&quot;face&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">frac_sites_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The percentage of sites that are connected polyhedra.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_corner_sharing_octahedral_tilt_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The average corner-sharing octahedral tilt angle.&quot;&quot;&quot;</span>
-        <span class="n">oct_sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span>
-                     <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">][</span><span class="s1">&#39;sites&#39;</span><span class="p">]</span>
-                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;octahedral&#39;</span> <span class="ow">and</span>
-                     <span class="s1">&#39;corner&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;nnn&#39;</span><span class="p">]]</span>
+        <span class="n">oct_sites</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">site</span>
+            <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">component_index</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;octahedral&quot;</span>
+            <span class="ow">and</span> <span class="s2">&quot;corner&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nnn&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
 
         <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">oct_sites</span><span class="p">:</span>
             <span class="n">nnn_sites</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">nnn_site</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;nnn&#39;</span><span class="p">][</span><span class="s1">&#39;corner&#39;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;octahedral&#39;</span><span class="p">]</span>
-            <span class="n">angles</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">angle</span><span class="p">)</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">nnn_sites</span> <span class="k">for</span>
-                           <span class="n">angle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;corner&#39;</span><span class="p">]])</span>
+                <span class="n">nnn_site</span>
+                <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nnn&quot;</span><span class="p">][</span><span class="s2">&quot;corner&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;octahedral&quot;</span>
+            <span class="p">]</span>
+            <span class="n">angles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">abs</span><span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">angle</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">nnn_sites</span>
+                    <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;corner&quot;</span><span class="p">]</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">angles</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
@@ -283,13 +319,16 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_coordination_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The average coordination number across all sites.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">mean</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;nn&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">mean</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_cation_coordination_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The average coordination number across cation sites.&quot;&quot;&quot;</span>
-        <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;nn&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
-               <span class="k">if</span> <span class="s1">&#39;+&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;element&#39;</span><span class="p">]]</span>
+        <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
+            <span class="k">if</span> <span class="s2">&quot;+&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;element&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
         <span class="k">if</span> <span class="n">cns</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">cns</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -299,8 +338,11 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_anion_coordination_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The average coordination number across anion sites.&quot;&quot;&quot;</span>
-        <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;nn&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
-               <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;element&#39;</span><span class="p">]]</span>
+        <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
+            <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;element&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
         <span class="k">if</span> <span class="n">cns</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">cns</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -316,12 +358,13 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Whether the structure contains the molecule.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;molecule_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">molecule_name</span>
-                   <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">c</span><span class="p">[</span><span class="s2">&quot;molecule_name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">molecule_name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="FeaturizerAdapter.is_dimensionality"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.is_dimensionality">[docs]</a>    <span class="k">def</span> <span class="nf">is_dimensionality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                          <span class="n">dimensionalities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="FeaturizerAdapter.is_dimensionality"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.is_dimensionality">[docs]</a>    <span class="k">def</span> <span class="nf">is_dimensionality</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dimensionalities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure only contains the specified dimensionalities.</span>
 
 <span class="sd">        Args:</span>
@@ -339,8 +382,9 @@
             <span class="n">set_dimensionalities</span> <span class="o">=</span> <span class="p">{</span><span class="n">dimensionalities</span><span class="p">}</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component_dimensionalities</span><span class="p">)</span> <span class="o">==</span> <span class="n">set_dimensionalities</span></div>
 
-<div class="viewcode-block" id="FeaturizerAdapter.contains_geometry_type"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_geometry_type">[docs]</a>    <span class="k">def</span> <span class="nf">contains_geometry_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                               <span class="n">distorted</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="FeaturizerAdapter.contains_geometry_type"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_geometry_type">[docs]</a>    <span class="k">def</span> <span class="nf">contains_geometry_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">distorted</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains a specific site geometry.</span>
 
 <span class="sd">        Args:</span>
@@ -353,19 +397,21 @@
 <span class="sd">            Whether the structure contains a specific geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">distorted</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span>
-                       <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">distorted</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span> <span class="ow">and</span>
-                       <span class="n">s</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;likeness&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span>
-                       <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">s</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span>
+                <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;likeness&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span> <span class="ow">and</span>
-                       <span class="n">s</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;likeness&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span>
-                       <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">s</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span>
+                <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;likeness&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span></div>
 
-<div class="viewcode-block" id="FeaturizerAdapter.contains_connected_geometry"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_connected_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">contains_connected_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span>
-                                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="FeaturizerAdapter.contains_connected_geometry"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_connected_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">contains_connected_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the structure contains the specified connected geometry.</span>
 
 <span class="sd">        Args:</span>
@@ -376,12 +422,19 @@
 <span class="sd">            Whether the structure contains the specified connected geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-             <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span>
-             <span class="ow">and</span> <span class="n">connectivity</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">]</span>
-             <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;poly_formula&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span>
-                     <span class="n">site</span><span class="p">[</span><span class="s1">&#39;nnn&#39;</span><span class="p">][</span><span class="n">connectivity</span><span class="p">]</span> <span class="k">if</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span><span class="p">)])</span></div>
+            <span class="p">[</span>
+                <span class="n">site</span>
+                <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span>
+                <span class="ow">and</span> <span class="n">connectivity</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">nnn_site</span> <span class="ow">in</span> <span class="n">site</span><span class="p">[</span><span class="s2">&quot;nnn&quot;</span><span class="p">][</span><span class="n">connectivity</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeaturizerAdapter.frac_site_geometry"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.frac_site_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">frac_site_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The fraction of sites with a specific geometry.</span>
@@ -392,8 +445,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The fraction of sites with the specified geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geometry</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeaturizerAdapter.frac_sites_n_coordinate"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.frac_sites_n_coordinate">[docs]</a>    <span class="k">def</span> <span class="nf">frac_sites_n_coordinate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The fraction of sites with a specific coordination number.</span>
@@ -404,14 +458,17 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The fraction of sites with the specified coordination number.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s1">&#39;nn&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">num_neighbors</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">num_neighbors</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeaturizerAdapter.all_bond_lengths"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.all_bond_lengths">[docs]</a>    <span class="k">def</span> <span class="nf">all_bond_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">site_b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">site_dists</span> <span class="ow">in</span> <span class="n">site_b</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">site_dists</span><span class="p">]</span></div></div>
-
-
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">d</span>
+            <span class="k">for</span> <span class="n">site_b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">site_dists</span> <span class="ow">in</span> <span class="n">site_b</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">site_dists</span>
+        <span class="p">]</span></div></div>
 </pre></div>
 
            </div>

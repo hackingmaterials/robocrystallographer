@@ -174,19 +174,19 @@
            <div itemprop="articleBody">
             
   <h1>Source code for robocrys.condense.fingerprint</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matminer.featurizers.site</span> <span class="kn">import</span> <span class="n">CrystalNNFingerprint</span>
 <span class="kn">from</span> <span class="nn">matminer.featurizers.structure</span> <span class="kn">import</span> <span class="n">SiteStatsFingerprint</span>
-
 <span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
 
 
-<div class="viewcode-block" id="get_site_fingerprints"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_site_fingerprints">[docs]</a><span class="k">def</span> <span class="nf">get_site_fingerprints</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
-                          <span class="n">as_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                          <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;CrystalNNFingerprint_ops&#39;</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_site_fingerprints"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_site_fingerprints">[docs]</a><span class="k">def</span> <span class="nf">get_site_fingerprints</span><span class="p">(</span>
+    <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
+    <span class="n">as_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CrystalNNFingerprint_ops&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Gets the fingerprint for all sites in a structure.</span>
 
 <span class="sd">    Args:</span>
@@ -221,11 +221,12 @@
     <span class="k">return</span> <span class="n">site_fingerprints</span></div>
 
 
-<div class="viewcode-block" id="get_structure_fingerprint"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_structure_fingerprint">[docs]</a><span class="k">def</span> <span class="nf">get_structure_fingerprint</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
-                              <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;CrystalNNFingerprint_ops&#39;</span><span class="p">,</span>
-                              <span class="n">stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std_dev&#39;</span><span class="p">),</span>
-                              <span class="n">prototype_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-                              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="get_structure_fingerprint"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_structure_fingerprint">[docs]</a><span class="k">def</span> <span class="nf">get_structure_fingerprint</span><span class="p">(</span>
+    <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
+    <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CrystalNNFingerprint_ops&quot;</span><span class="p">,</span>
+    <span class="n">stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std_dev&quot;</span><span class="p">),</span>
+    <span class="n">prototype_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Gets the fingerprint for a structure.</span>
 
 <span class="sd">    Args:</span>
@@ -248,21 +249,20 @@
     <span class="k">if</span> <span class="n">prototype_match</span><span class="p">:</span>
         <span class="n">ssf</span> <span class="o">=</span> <span class="n">SiteStatsFingerprint</span><span class="p">(</span>
             <span class="n">CrystalNNFingerprint</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
-                <span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="n">cation_anion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">distance_cutoffs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">x_diff_weight</span><span class="o">=</span><span class="kc">None</span>
+                <span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="n">cation_anion</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">distance_cutoffs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_diff_weight</span><span class="o">=</span><span class="kc">None</span>
             <span class="p">),</span>
-            <span class="n">stats</span><span class="o">=</span><span class="n">stats</span>
+            <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ssf</span> <span class="o">=</span> <span class="n">SiteStatsFingerprint</span><span class="p">(</span>
-            <span class="n">CrystalNNFingerprint</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="n">cation_anion</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-            <span class="n">stats</span><span class="o">=</span><span class="n">stats</span><span class="p">)</span>
+            <span class="n">CrystalNNFingerprint</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span><span class="s2">&quot;ops&quot;</span><span class="p">,</span> <span class="n">cation_anion</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">stats</span><span class="o">=</span><span class="n">stats</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ssf</span><span class="o">.</span><span class="n">featurize</span><span class="p">(</span><span class="n">structure</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_fingerprint_distance"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_fingerprint_distance">[docs]</a><span class="k">def</span> <span class="nf">get_fingerprint_distance</span><span class="p">(</span><span class="n">structure_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span>
-                             <span class="n">structure_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span>
-                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="get_fingerprint_distance"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_fingerprint_distance">[docs]</a><span class="k">def</span> <span class="nf">get_fingerprint_distance</span><span class="p">(</span>
+    <span class="n">structure_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">structure_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Gets the euclidean distance between the fingerprints of two structures.</span>
 
 <span class="sd">    Args:</span>

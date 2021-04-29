@@ -676,6 +676,230 @@ E.g. “Sn” or “Sn2+”.</p></li>
 </div>
 <div class="section" id="module-robocrys">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-robocrys" title="Permalink to this headline">¶</a></h2>
+<p>General imports.</p>
+<p>isort:skip_file</p>
+<dl class="py class">
+<dt id="robocrys.StructureCondenser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">robocrys.</span></code><code class="sig-name descname"><span class="pre">StructureCondenser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_conventional_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">near_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mineral_matcher</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_symmetry_equivalent_sites</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symprec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simplify_molecules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_iupac_formula</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_common_formulas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/condenser.html#StructureCondenser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureCondenser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class to transform a structure into an intermediate dict representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_conventional_cell</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to always use the convention cell
+representation of the structure.</p></li>
+<li><p><strong>near_neighbors</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.NearNeighbors" title="(in pymatgen v2022.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NearNeighbors</span></code></a>]) – A <code class="docutils literal notranslate"><span class="pre">NearNeighbors</span></code> instance used to calculate the
+bonding in the structure. For example, one of
+<a class="reference external" href="https://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.CrystalNN" title="(in pymatgen v2022.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.CrystalNN</span></code></a>,
+<a class="reference external" href="https://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.VoronoiNN" title="(in pymatgen v2022.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.VoronoiNN</span></code></a>, etc. Defaults to
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, in which case
+<a class="reference external" href="https://pymatgen.org/pymatgen.analysis.local_env.html#pymatgen.analysis.local_env.CrystalNN" title="(in pymatgen v2022.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pymatgen.analysis.local_env.CrystalNN</span></code></a> will be used.</p></li>
+<li><p><strong>mineral_matcher</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="robocrys.condense.html#robocrys.condense.mineral.MineralMatcher" title="robocrys.condense.mineral.MineralMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">MineralMatcher</span></code></a>]) – A <code class="docutils literal notranslate"><span class="pre">MineralMatcher</span></code> instance. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>
+in which case the default <code class="docutils literal notranslate"><span class="pre">MineralMatcher</span></code> settings will be used.
+If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, no mineral matching will occur.</p></li>
+<li><p><strong>use_symmetry_equivalent_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use symmetry to determine if
+sites are inequivalent. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the site geometry and (next)
+nearest neighbor information will be used.</p></li>
+<li><p><strong>symprec</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The tolerance used when determining the symmetry of
+the structure. The symmetry can used both to determine if multiple
+sites are symmetrically equivalent (if use_symmetry_equivalent_sites
+is <code class="docutils literal notranslate"><span class="pre">True</span></code>) and to obtain the symmetry labels for each site.</p></li>
+<li><p><strong>use_iupac_formula</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to order formulas
+by the iupac “electronegativity” series, defined in
+Table VI of “Nomenclature of Inorganic Chemistry (IUPAC
+Recommendations 2005)”. This ordering effectively follows
+the groups and rows of the periodic table, except the
+Lanthanides, Actanides and hydrogen. If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
+elements will be ordered according to the electronegativity values.</p></li>
+<li><p><strong>use_common_formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to use the database of common formulas.
+The common formula will be used preferentially to the iupac or
+reduced formula.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="robocrys.StructureCondenser.condense_structure">
+<code class="sig-name descname"><span class="pre">condense_structure</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/condense/condenser.html#StructureCondenser.condense_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureCondenser.condense_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Condenses the structure into an intermediate dict representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>structure</strong> (<a class="reference external" href="https://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.Structure" title="(in pymatgen v2022.0.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code></a>) – A pymatgen structure object.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The condensed structure information. The data is formatted as a
+<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> with a fixed set of keys. An up-to-date example of the,
+the condensed representation of MoS2 given in the documentation.
+See: <code class="docutils literal notranslate"><span class="pre">robocrystallographer/docs_rst/source/format.rst</span></code> or
+<a class="reference external" href="https://hackingmaterials.lbl.gov/robocrystallographer/format.html">https://hackingmaterials.lbl.gov/robocrystallographer/format.html</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="robocrys.StructureDescriber">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">robocrys.</span></code><code class="sig-name descname"><span class="pre">StructureDescriber</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">describe_mineral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">describe_component_makeup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">describe_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">describe_symmetry_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">describe_oxidation_states</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">describe_bond_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bond_length_decimal_places</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distorted_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_describe_cation_polyhedra_connectivity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_describe_bonds_once</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_parts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.describe">
+<code class="sig-name descname"><span class="pre">describe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condensed_structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.describe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.describe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a condensed structure into a text description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>condensed_structure</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The condensed structure data, formatted as
+produced by <a class="reference internal" href="#robocrys.StructureCondenser.condense_structure" title="robocrys.StructureCondenser.condense_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">StructureCondenser.condense_structure()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A description of the structure. If
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">StructureDescriber.return_parts</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
+description will be returned as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>. If it is equal to
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, the description will be returned as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> with the
+keys ‘mineral’, ‘component_makeup’ and ‘components’, each containing
+the relevant part of the description.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_all_component_descriptions">
+<code class="sig-name descname"><span class="pre">get_all_component_descriptions</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_all_component_descriptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_all_component_descriptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the descriptions of all components in the structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A description of all components in the structure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_bond_length_description">
+<code class="sig-name descname"><span class="pre">get_bond_length_description</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_sites</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_bond_length_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_bond_length_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a description of the bond lengths between two sets of sites.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_site</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</p></li>
+<li><p><strong>to_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of site indices. The site indices should
+all be for the same element.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A description of the bond lengths or an empty string if
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">StructureDescriber.only_describe_bonds_once</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and
+all all bond lengths have already been described.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_component_description">
+<code class="sig-name descname"><span class="pre">get_component_description</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">single_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_component_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_component_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the descriptions of all sites in a component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The index of the component</p></li>
+<li><p><strong>single_component</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether the structure contains only a single
+component.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The description for all sites in the components.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_component_makeup_summary">
+<code class="sig-name descname"><span class="pre">get_component_makeup_summary</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_component_makeup_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_component_makeup_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a summary of the makeup of components in a structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A description of the number of components and their dimensionalities
+and orientations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_mineral_description">
+<code class="sig-name descname"><span class="pre">get_mineral_description</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_mineral_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_mineral_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the mineral name and space group description.</p>
+<p>If the structure is a perfect match for a known prototype (e.g.
+the distance parameter is -1, the mineral name is the prototype name.
+If a structure is not a perfect match but similar to a known mineral,
+“-like” will be added to the mineral name. If the structure is a good
+match to a mineral but contains a different number of element types than
+the mineral prototype, “-derived” will be added to the mineral name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The description of the mineral name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_octahedral_tilt_description">
+<code class="sig-name descname"><span class="pre">get_octahedral_tilt_description</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_octahedral_tilt_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_octahedral_tilt_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a description of octahedral tilting angles between two sites.</p>
+<p>Currently only implemented for corner-sharing octahedra.
+Will throw an error if the two sites are not next nearest neighbors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A description of the octahedral tilting angles.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="robocrys.StructureDescriber.get_site_description">
+<code class="sig-name descname"><span class="pre">get_site_description</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/describer.html#StructureDescriber.get_site_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.StructureDescriber.get_site_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a description of the geometry and bonding of a site.</p>
+<p>If the site likeness (order parameter) is less than <code class="docutils literal notranslate"><span class="pre">distorted_tol</span></code>,
+“distorted” will be added to the geometry description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A description of the geometry and bonding of a site.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 

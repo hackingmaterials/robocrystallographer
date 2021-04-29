@@ -179,27 +179,34 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">mean</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">matminer.featurizers.base</span> <span class="kn">import</span> <span class="n">BaseFeaturizer</span>
-
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">mean</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.local_env</span> <span class="kn">import</span> <span class="n">cn_opt_params</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+
 <span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">StructureCondenser</span>
 <span class="kn">from</span> <span class="nn">robocrys.featurize.adapter</span> <span class="kn">import</span> <span class="n">FeaturizerAdapter</span>
 <span class="kn">from</span> <span class="nn">robocrys.util</span> <span class="kn">import</span> <span class="n">connected_geometries</span>
 
-
-<span class="n">_geometries</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">cn_opt_params</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-               <span class="k">for</span> <span class="n">geometry</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">]</span>
+<span class="n">_geometries</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">cn_opt_params</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">geometry</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">]</span>
 <span class="n">_dimensionalities</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">_dimensionality_sets</span> <span class="o">=</span> <span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                        <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                        <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="n">_molecules</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;water&#39;</span><span class="p">,</span> <span class="s1">&#39;oxygen&#39;</span><span class="p">,</span> <span class="s1">&#39;ammonia&#39;</span><span class="p">,</span> <span class="s1">&#39;methane&#39;</span><span class="p">]</span>
-<span class="n">_connectivities</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;corner&#39;</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="s1">&#39;face&#39;</span><span class="p">]</span>
+<span class="n">_dimensionality_sets</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">_molecules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;water&quot;</span><span class="p">,</span> <span class="s2">&quot;oxygen&quot;</span><span class="p">,</span> <span class="s2">&quot;ammonia&quot;</span><span class="p">,</span> <span class="s2">&quot;methane&quot;</span><span class="p">]</span>
+<span class="n">_connectivities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;corner&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="s2">&quot;face&quot;</span><span class="p">]</span>
 <span class="n">_cns</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
 
 
@@ -213,8 +220,9 @@
 <span class="sd">            classified as distorted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condenser_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">distorted_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">condenser_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">distorted_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="p">):</span>
         <span class="n">condenser_kwargs</span> <span class="o">=</span> <span class="n">condenser_kwargs</span> <span class="k">if</span> <span class="n">condenser_kwargs</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span> <span class="o">=</span> <span class="n">StructureCondenser</span><span class="p">(</span><span class="o">**</span><span class="n">condenser_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span> <span class="o">=</span> <span class="n">distorted_tol</span>
@@ -228,19 +236,25 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The robocrystallographer features.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fa</span> <span class="o">=</span> <span class="n">FeaturizerAdapter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sc</span><span class="o">.</span><span class="n">condense_structure</span><span class="p">(</span><span class="n">s</span><span class="p">),</span>
-                               <span class="n">distorted_tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span><span class="p">)</span>
+        <span class="n">fa</span> <span class="o">=</span> <span class="n">FeaturizerAdapter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span><span class="o">.</span><span class="n">condense_structure</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">distorted_tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span>
+        <span class="p">)</span>
 
         <span class="c1"># add general structure features</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">mineral</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">],</span> <span class="n">fa</span><span class="o">.</span><span class="n">spg_symbol</span><span class="p">,</span> <span class="n">fa</span><span class="o">.</span><span class="n">crystal_system</span><span class="p">,</span>
-                    <span class="n">fa</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span> <span class="n">fa</span><span class="o">.</span><span class="n">is_vdw_heterostructure</span><span class="p">,</span>
-                    <span class="n">fa</span><span class="o">.</span><span class="n">is_interpenetrated</span><span class="p">,</span> <span class="n">fa</span><span class="o">.</span><span class="n">is_intercalated</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">mineral</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">spg_symbol</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">crystal_system</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">is_vdw_heterostructure</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">is_interpenetrated</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">is_intercalated</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="c1"># add dimensionality features</span>
         <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">is_dimensionality</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
         <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">is_dimensionality</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionality_sets</span><span class="p">]</span>
-        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">d</span> <span class="ow">in</span> <span class="n">fa</span><span class="o">.</span><span class="n">component_dimensionalities</span>
-                     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">d</span> <span class="ow">in</span> <span class="n">fa</span><span class="o">.</span><span class="n">component_dimensionalities</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
 
         <span class="c1"># add molecule features</span>
         <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">contains_named_molecule</span><span class="p">]</span>
@@ -248,21 +262,26 @@
 
         <span class="c1"># add geometry features</span>
         <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">contains_geometry_type</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
-        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">contains_geometry_type</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">distorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                     <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
-        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">average_coordination_number</span><span class="p">,</span>
-                     <span class="n">fa</span><span class="o">.</span><span class="n">average_cation_coordination_number</span><span class="p">,</span>
-                     <span class="n">fa</span><span class="o">.</span><span class="n">average_anion_coordination_number</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">contains_geometry_type</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">distorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">average_coordination_number</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">average_cation_coordination_number</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">average_anion_coordination_number</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="c1"># add polyhedral features</span>
-        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">contains_polyhedra</span><span class="p">,</span>
-                     <span class="n">fa</span><span class="o">.</span><span class="n">contains_corner_sharing_polyhedra</span><span class="p">,</span>
-                     <span class="n">fa</span><span class="o">.</span><span class="n">contains_edge_sharing_polyhedra</span><span class="p">,</span>
-                     <span class="n">fa</span><span class="o">.</span><span class="n">contains_face_sharing_polyhedra</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">contains_polyhedra</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">contains_corner_sharing_polyhedra</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">contains_edge_sharing_polyhedra</span><span class="p">,</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">contains_face_sharing_polyhedra</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="c1"># add connectivity features</span>
-        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">contains_connected_geometry</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span>
-                     <span class="n">product</span><span class="p">(</span><span class="n">_connectivities</span><span class="p">,</span> <span class="n">connected_geometries</span><span class="p">)]</span>
+        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">contains_connected_geometry</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">_connectivities</span><span class="p">,</span> <span class="n">connected_geometries</span><span class="p">)</span>
+        <span class="p">]</span>
         <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="n">fa</span><span class="o">.</span><span class="n">average_corner_sharing_octahedral_tilt_angle</span><span class="p">]</span>
 
         <span class="c1"># add fractional features</span>
@@ -272,47 +291,58 @@
 
         <span class="n">all_distances</span> <span class="o">=</span> <span class="n">fa</span><span class="o">.</span><span class="n">all_bond_lengths</span><span class="p">()</span>
         <span class="c1"># add bond length features</span>
-        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">all_distances</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">all_distances</span><span class="p">),</span>
-                     <span class="n">mean</span><span class="p">(</span><span class="n">all_distances</span><span class="p">)]</span>
+        <span class="n">features</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">all_distances</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">all_distances</span><span class="p">),</span> <span class="n">mean</span><span class="p">(</span><span class="n">all_distances</span><span class="p">)]</span>
 
         <span class="k">return</span> <span class="n">features</span></div>
 
 <div class="viewcode-block" id="RobocrysFeaturizer.feature_labels"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.feature_labels">[docs]</a>    <span class="k">def</span> <span class="nf">feature_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># general features</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mineral_prototype&#39;</span><span class="p">,</span> <span class="s1">&#39;spg_symbol&#39;</span><span class="p">,</span> <span class="s1">&#39;crystal_system&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;dimensionality&#39;</span><span class="p">,</span> <span class="s1">&#39;is_vdw_heterostructure&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;is_interpenetrated&#39;</span><span class="p">,</span> <span class="s1">&#39;is_intercalated&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;mineral_prototype&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;spg_symbol&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;crystal_system&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dimensionality&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;is_vdw_heterostructure&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;is_interpenetrated&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;is_intercalated&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="c1"># dimensionality features</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;is_only_</span><span class="si">{}</span><span class="s1">d&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;is_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">d&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">]))</span>
-                   <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">_dimensionality_sets</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_</span><span class="si">{}</span><span class="s1">d_component&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                   <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;is_only_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">d&quot;</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="s2">&quot;is_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">d&quot;</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">]))</span>
+            <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">_dimensionality_sets</span>
+        <span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;contains_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">d_component&quot;</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_dimensionalities</span><span class="p">]</span>
 
         <span class="c1"># molecule features</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_named_molecule&#39;</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_molecules</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;contains_named_molecule&quot;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;contains_</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_molecules</span><span class="p">]</span>
 
         <span class="c1"># geometry features</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_distorted_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;average_site_cn&#39;</span><span class="p">,</span> <span class="s1">&#39;average_cation_cn&#39;</span><span class="p">,</span> <span class="s1">&#39;average_anion_cn&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;contains_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;contains_distorted_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;average_site_cn&quot;</span><span class="p">,</span> <span class="s2">&quot;average_cation_cn&quot;</span><span class="p">,</span> <span class="s2">&quot;average_anion_cn&quot;</span><span class="p">]</span>
 
         <span class="c1"># polyhedral features</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_polyhedra&#39;</span><span class="p">,</span> <span class="s1">&#39;contains_corner_sharing_polyhedra&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;contains_edge_sharing_polyhedra&#39;</span><span class="p">,</span>
-                   <span class="s1">&#39;contains_face_sharing_polyhedra&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="s2">&quot;contains_polyhedra&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains_corner_sharing_polyhedra&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains_edge_sharing_polyhedra&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;contains_face_sharing_polyhedra&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
 
         <span class="c1"># connectivity features</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;contains_</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span>
-                   <span class="n">product</span><span class="p">(</span><span class="n">_connectivities</span><span class="p">,</span> <span class="n">connected_geometries</span><span class="p">)]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;corner_sharing_octahedral_tilt_angle&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;contains_</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">_connectivities</span><span class="p">,</span> <span class="n">connected_geometries</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;corner_sharing_octahedral_tilt_angle&quot;</span><span class="p">]</span>
 
         <span class="c1"># fractional features</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;frac_site_polyhedra&#39;</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;frac_sites_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;frac_sites_</span><span class="si">{}</span><span class="s1">_coordinate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_cns</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;frac_site_polyhedra&quot;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;frac_sites_</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_geometries</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;frac_sites_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_coordinate&quot;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_cns</span><span class="p">]</span>
 
         <span class="c1"># bond length features</span>
         <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;max_bond_length&quot;</span><span class="p">,</span> <span class="s2">&quot;min_bond_length&quot;</span><span class="p">,</span> <span class="s2">&quot;average_bond_length&quot;</span><span class="p">]</span>

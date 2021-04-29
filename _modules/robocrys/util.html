@@ -190,51 +190,63 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">monty.json</span> <span class="kn">import</span> <span class="n">MontyDecoder</span>
 <span class="kn">from</span> <span class="nn">monty.serialization</span> <span class="kn">import</span> <span class="n">loadfn</span>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
-
-<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">get_el_sp</span><span class="p">,</span> <span class="n">Species</span><span class="p">,</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Species</span><span class="p">,</span> <span class="n">get_el_sp</span>
 <span class="kn">from</span> <span class="nn">pymatgen.util.string</span> <span class="kn">import</span> <span class="n">latexify_spacegroup</span>
 
 <span class="n">common_formulas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">loadfn</span><span class="p">(</span>
-    <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;robocrys.condense&#39;</span><span class="p">,</span> <span class="s1">&#39;formula_db.json.gz&#39;</span><span class="p">))</span>
+    <span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;robocrys.condense&quot;</span><span class="p">,</span> <span class="s2">&quot;formula_db.json.gz&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 
 <span class="n">connected_geometries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;tetrahedral&#39;</span><span class="p">,</span> <span class="s1">&#39;octahedral&#39;</span><span class="p">,</span> <span class="s1">&#39;trigonal pyramidal&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;square pyramidal&#39;</span><span class="p">,</span> <span class="s1">&#39;trigonal bipyramidal&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pentagonal pyramidal&#39;</span><span class="p">,</span> <span class="s1">&#39;hexagonal pyramidal&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pentagonal bipyramidal&#39;</span><span class="p">,</span> <span class="s1">&#39;hexagonal bipyramidal&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;cuboctahedral&#39;</span><span class="p">]</span>
+    <span class="s2">&quot;tetrahedral&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;octahedral&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigonal pyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;square pyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigonal bipyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagonal pyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagonal pyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagonal bipyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagonal bipyramidal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cuboctahedral&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="n">geometry_to_polyhedra</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;octahedral&#39;</span><span class="p">:</span> <span class="s1">&#39;octahedra&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tetrahedral&#39;</span><span class="p">:</span> <span class="s1">&#39;tetrahedra&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;trigonal pyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;trigonal pyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;square pyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;square pyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;trigonal bipyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;trigonal bipyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pentagonal pyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal pyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;hexagonal pyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagonal pyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pentagonal bipyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal bipyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;hexagonal bipyramidal&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagonal bipyramid&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;cuboctahedral&#39;</span><span class="p">:</span> <span class="s1">&#39;cuboctahedra&#39;</span><span class="p">}</span>
+    <span class="s2">&quot;octahedral&quot;</span><span class="p">:</span> <span class="s2">&quot;octahedra&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tetrahedral&quot;</span><span class="p">:</span> <span class="s2">&quot;tetrahedra&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigonal pyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;trigonal pyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;square pyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;square pyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigonal bipyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;trigonal bipyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagonal pyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;pentagonal pyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagonal pyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;hexagonal pyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagonal bipyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;pentagonal bipyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagonal bipyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;hexagonal bipyramid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cuboctahedral&quot;</span><span class="p">:</span> <span class="s2">&quot;cuboctahedra&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="n">polyhedra_plurals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;octahedra&#39;</span><span class="p">:</span> <span class="s1">&#39;octahedra&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tetrahedra&#39;</span><span class="p">:</span> <span class="s1">&#39;tetrahedra&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;trigonal pyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;trigonal pyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;square pyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;square pyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;trigonal bipyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;trigonal bipyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pentagonal pyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal pyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;hexagonal pyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagonal pyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pentagonal bipyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;pentagonal bipyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;hexagonal bipyramid&#39;</span><span class="p">:</span> <span class="s1">&#39;hexagonal bipyramids&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;cuboctahedra&#39;</span><span class="p">:</span> <span class="s1">&#39;cuboctahedra&#39;</span><span class="p">}</span>
+    <span class="s2">&quot;octahedra&quot;</span><span class="p">:</span> <span class="s2">&quot;octahedra&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tetrahedra&quot;</span><span class="p">:</span> <span class="s2">&quot;tetrahedra&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigonal pyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;trigonal pyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;square pyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;square pyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigonal bipyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;trigonal bipyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagonal pyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;pentagonal pyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagonal pyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;hexagonal pyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pentagonal bipyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;pentagonal bipyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hexagonal bipyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;hexagonal bipyramids&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cuboctahedra&quot;</span><span class="p">:</span> <span class="s2">&quot;cuboctahedra&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 <span class="n">dimensionality_to_shape</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;framework&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;sheet&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;ribbon&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;cluster&#39;</span><span class="p">}</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;framework&quot;</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;sheet&quot;</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;ribbon&quot;</span><span class="p">,</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;cluster&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="get_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_el">[docs]</a><span class="k">def</span> <span class="nf">get_el</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Species</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -258,14 +270,16 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">from_Z</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported element type: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported element type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_formatted_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_formatted_el">[docs]</a><span class="k">def</span> <span class="nf">get_formatted_el</span><span class="p">(</span><span class="n">element</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                     <span class="n">sym_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                     <span class="n">use_oxi_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                     <span class="n">use_sym_label</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                     <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_formatted_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_formatted_el">[docs]</a><span class="k">def</span> <span class="nf">get_formatted_el</span><span class="p">(</span>
+    <span class="n">element</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">sym_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">use_oxi_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">use_sym_label</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Formats an element string.</span>
 
 <span class="sd">    Performs a variety of functions, including:</span>
@@ -299,13 +313,13 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">Species</span><span class="p">):</span>
         <span class="n">oxi_state</span> <span class="o">=</span> <span class="n">specie</span><span class="o">.</span><span class="n">oxi_state</span>
-        <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span> <span class="k">if</span> <span class="n">oxi_state</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;-&#39;</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span> <span class="k">if</span> <span class="n">oxi_state</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;-&quot;</span>
         <span class="k">if</span> <span class="n">oxi_state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">oxi_state</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="n">oxi_state</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">oxi_state</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:d}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)),</span> <span class="n">sign</span><span class="p">)</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">))</span><span class="si">:</span><span class="s2">d</span><span class="si">}{</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">oxi_state</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:+.2f}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">),</span> <span class="n">sign</span><span class="p">)</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}{</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">oxi_state</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -316,13 +330,13 @@
 
     <span class="k">if</span> <span class="n">use_oxi_state</span> <span class="ow">and</span> <span class="n">oxi_state</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;latex&quot;</span><span class="p">:</span>
-            <span class="n">oxi_state</span> <span class="o">=</span> <span class="s2">&quot;^{{</span><span class="si">{}</span><span class="s2">}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;^</span><span class="se">{{</span><span class="si">{</span><span class="n">oxi_state</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;unicode&quot;</span><span class="p">:</span>
             <span class="n">oxi_state</span> <span class="o">=</span> <span class="n">superscript_number</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
-            <span class="n">oxi_state</span> <span class="o">=</span> <span class="s2">&quot;&lt;sup&gt;</span><span class="si">{}</span><span class="s2">&lt;/sup&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oxi_state</span><span class="p">)</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;sup&gt;</span><span class="si">{</span><span class="n">oxi_state</span><span class="si">}</span><span class="s2">&lt;/sup&gt;&quot;</span>
 
         <span class="n">formatted_element</span> <span class="o">+=</span> <span class="n">oxi_state</span>
 
@@ -341,12 +355,24 @@
 <span class="sd">        The superscript string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
         <span class="c1"># no unicode period exists</span>
         <span class="k">return</span> <span class="n">string</span>
 
-    <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;⁰&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;¹&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;²&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;³&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;⁴&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;⁵&#39;</span><span class="p">,</span>
-                             <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;⁶&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;⁷&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;⁸&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;⁹&#39;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span> <span class="s2">&quot;⁻&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span> <span class="s2">&quot;⁺&quot;</span><span class="p">}</span>
+    <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;⁰&quot;</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;¹&quot;</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;²&quot;</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;³&quot;</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;⁴&quot;</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;⁵&quot;</span><span class="p">,</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;⁶&quot;</span><span class="p">,</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;⁷&quot;</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;⁸&quot;</span><span class="p">,</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;⁹&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-&quot;</span><span class="p">:</span> <span class="s2">&quot;⁻&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;+&quot;</span><span class="p">:</span> <span class="s2">&quot;⁺&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
 
     <span class="k">for</span> <span class="n">original_subscript</span><span class="p">,</span> <span class="n">subscript_unicode</span> <span class="ow">in</span> <span class="n">subscript_unicode_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">original_subscript</span><span class="p">),</span> <span class="n">subscript_unicode</span><span class="p">)</span>
@@ -365,8 +391,18 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        The unicode formatted spacegroup symbol.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;₀&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;₁&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;₂&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;₃&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;₄&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;₅&quot;</span><span class="p">,</span>
-                             <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;₆&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;₇&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;₈&quot;</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;₉&quot;</span><span class="p">}</span>
+    <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;₀&quot;</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;₁&quot;</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;₂&quot;</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;₃&quot;</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;₄&quot;</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;₅&quot;</span><span class="p">,</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;₆&quot;</span><span class="p">,</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;₇&quot;</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;₈&quot;</span><span class="p">,</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;₉&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
 
     <span class="n">symbol</span> <span class="o">=</span> <span class="n">latexify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">)</span>
 
@@ -396,7 +432,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">overline</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u0305</span><span class="s2">&quot;</span>  <span class="c1"># u&quot;\u0304&quot; (macron) is also an option</span>
     <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_(\d+)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;&lt;sub&gt;\1&lt;/sub&gt;&quot;</span><span class="p">,</span> <span class="n">spacegroup_symbol</span><span class="p">)</span>
-    <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-(\d)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">\1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">overline</span><span class="p">),</span> <span class="n">symbol</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-(\d)&quot;</span><span class="p">,</span> <span class="sa">fr</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">overline</span><span class="si">}</span><span class="s2">\1&quot;</span><span class="p">,</span> <span class="n">symbol</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">symbol</span></div>
 
 
