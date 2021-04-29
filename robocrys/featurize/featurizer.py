@@ -9,7 +9,7 @@ from numpy import mean
 
 from matminer.featurizers.base import BaseFeaturizer
 
-from pymatgen import Structure
+from pymatgen.core.structure import Structure
 from pymatgen.analysis.local_env import cn_opt_params
 from robocrys import StructureCondenser
 from robocrys.featurize.adapter import FeaturizerAdapter
