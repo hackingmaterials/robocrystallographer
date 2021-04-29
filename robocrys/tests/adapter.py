@@ -13,9 +13,8 @@ class TestDescriptionAdapter(RobocrysTest):
         self.mapi_ba = BaseAdapter(mapi)
 
     def test_attributes(self):
-        self.assertEqual(self.mapi_ba.mineral['type'],
-                         "Orthorhombic Perovskite")
-        self.assertEqual(self.mapi_ba.mineral['distance'], -1)
+        self.assertEqual(self.mapi_ba.mineral["type"], "Orthorhombic Perovskite")
+        self.assertEqual(self.mapi_ba.mineral["distance"], -1)
         self.assertEqual(self.mapi_ba.formula, "CH3NH3PbI3")
         self.assertEqual(self.mapi_ba.spg_symbol, "Pnma")
         self.assertEqual(self.mapi_ba.crystal_system, "orthorhombic")
@@ -25,7 +24,7 @@ class TestDescriptionAdapter(RobocrysTest):
         self.assertTrue(self.mapi_ba.angles)
         self.assertTrue(self.mapi_ba.components)
         self.assertTrue(self.mapi_ba.component_makeup)
-        self.assertEqual(self.mapi_ba.elements[0], 'H+')
+        self.assertEqual(self.mapi_ba.elements[0], "H+")
 
     def test_get_distance_details(self):
         # test get distance using int works
@@ -45,11 +44,11 @@ class TestDescriptionAdapter(RobocrysTest):
 
     def test_get_angle_details(self):
         # test get angles using int works
-        distances = self.tin_dioxide_ba.get_angle_details(0, 0, 'corner')
+        distances = self.tin_dioxide_ba.get_angle_details(0, 0, "corner")
         self.assertTrue(len(distances), 8)
         self.assertAlmostEqual(distances[0], 129.18849530149342)
 
         # test get angles using list works
-        distances = self.tin_dioxide_ba.get_angle_details(0, [0], 'corner')
+        distances = self.tin_dioxide_ba.get_angle_details(0, [0], "corner")
         self.assertTrue(len(distances), 8)
         self.assertAlmostEqual(distances[0], 129.18849530149342)

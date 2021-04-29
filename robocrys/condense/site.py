@@ -6,22 +6,21 @@ TODO:
 """
 
 from collections import defaultdict
-from typing import Dict, Any, List, Union, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
-
-from pymatgen.core.composition import Composition
 from pymatgen.analysis.graphs import StructureGraph
+from pymatgen.core.composition import Composition
 from pymatgen.core.periodic_table import get_el_sp
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.coord import get_angle
 from pymatgen.util.string import formula_double_format
 
 from robocrys.condense.fingerprint import get_site_fingerprints
-from robocrys.util import connected_geometries, get_el, defaultdict_to_dict
+from robocrys.util import connected_geometries, defaultdict_to_dict, get_el
 
 
-class SiteAnalyzer(object):
+class SiteAnalyzer:
     """Class to extract information on site geometry and bonding.
 
     Attributes:
@@ -56,22 +55,22 @@ class SiteAnalyzer(object):
             elements will be ordered according to the electronegativity values.
     """
 
-    def __init__(self,
-                 bonded_structure: StructureGraph,
-                 use_symmetry_equivalent_sites: bool = False,
-                 symprec: float = 0.01,
-                 minimum_geometry_op: float = 0.4,
-                 use_iupac_formula: bool = True):
+    def __init__(
+        self,
+        bonded_structure: StructureGraph,
+        use_symmetry_equivalent_sites: bool = False,
+        symprec: float = 0.01,
+        minimum_geometry_op: float = 0.4,
+        use_iupac_formula: bool = True,
+    ):
         self.bonded_structure = bonded_structure
         self.use_iupac_formula = use_iupac_formula
         self.minimum_geometry_op = minimum_geometry_op
 
-        self.site_fingerprints = get_site_fingerprints(
-            bonded_structure.structure)
+        self.site_fingerprints = get_site_fingerprints(bonded_structure.structure)
 
-        sga = SpacegroupAnalyzer(bonded_structure.structure,
-                                 symprec=symprec)
-        equivalent_sites = sga.get_symmetry_dataset()['equivalent_atoms']
+        sga = SpacegroupAnalyzer(bonded_structure.structure, symprec=symprec)
+        equivalent_sites = sga.get_symmetry_dataset()["equivalent_atoms"]
         if use_symmetry_equivalent_sites:
             self.equivalent_sites = list(equivalent_sites)
         else:
@@ -79,8 +78,7 @@ class SiteAnalyzer(object):
 
         self.symmetry_labels = self._calculate_symmetry_labels(equivalent_sites)
 
-    def get_site_geometry(self, site_index: int
-                          ) -> Dict[str, Union[str, float]]:
+    def get_site_geometry(self, site_index: int) -> Dict[str, Union[str, float]]:
         """Gets the bonding geometry of a site.
 
         For example, "octahedral" or "square-planar".
@@ -103,12 +101,12 @@ class SiteAnalyzer(object):
         """
         # get fingerprint as a list of tuples, e.g. [("op name", val), ...]
         site_fingerprint: List[Tuple[str, int]] = list(
-            self.site_fingerprints[site_index].items())
+            self.site_fingerprints[site_index].items()
+        )
 
         # get coordination number with largest weight, ignore op names with
         # just the coordination number weight (e.g. containing "wt")
-        parameter = max(site_fingerprint,
-                        key=lambda x: x[1] if "wt" not in x[0] else 0)
+        parameter = max(site_fingerprint, key=lambda x: x[1] if "wt" not in x[0] else 0)
 
         if parameter[1] < self.minimum_geometry_op:
             # the largest filtered weight is less than the tolerance for determining the
@@ -117,9 +115,9 @@ class SiteAnalyzer(object):
             # want the most likely coordination number; take this from the largest
             # of all weights
             parameter = max(site_fingerprint, key=lambda x: x[1])
-            cn = parameter[0].split()[-1].split('_')[-1]
-            geometry = "{}-coordinate".format(cn)
-            likeness = 1.
+            cn = parameter[0].split()[-1].split("_")[-1]
+            geometry = f"{cn}-coordinate"
+            likeness = 1.0
 
         else:
             # return the geometry type without the CN at the end, e.g.
@@ -128,11 +126,11 @@ class SiteAnalyzer(object):
             geometry = "single-bond" if geometry == "sgl_bd" else geometry
             likeness = parameter[1]
 
-        return {'type': geometry, 'likeness': likeness}
+        return {"type": geometry, "likeness": likeness}
 
-    def get_nearest_neighbors(self, site_index: int,
-                              inc_inequivalent_site_index: bool = True
-                              ) -> List[Dict[str, Any]]:
+    def get_nearest_neighbors(
+        self, site_index: int, inc_inequivalent_site_index: bool = True
+    ) -> List[Dict[str, Any]]:
         """Gets information about the bonded nearest neighbors.
 
         Args:
@@ -157,16 +155,23 @@ class SiteAnalyzer(object):
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
 
         if inc_inequivalent_site_index:
-            return [{'element': str(site.site.specie),
-                     'inequiv_index': self.equivalent_sites[site.index],
-                     'dist': site.dist} for site in nn_sites]
+            return [
+                {
+                    "element": str(site.site.specie),
+                    "inequiv_index": self.equivalent_sites[site.index],
+                    "dist": site.dist,
+                }
+                for site in nn_sites
+            ]
         else:
-            return [{'element': str(site.site.specie),
-                     'dist': site.dist} for site in nn_sites]
+            return [
+                {"element": str(site.site.specie), "dist": site.dist}
+                for site in nn_sites
+            ]
 
-    def get_next_nearest_neighbors(self, site_index: int,
-                                   inc_inequivalent_site_index: bool = True
-                                   ) -> List[Dict[str, Any]]:
+    def get_next_nearest_neighbors(
+        self, site_index: int, inc_inequivalent_site_index: bool = True
+    ) -> List[Dict[str, Any]]:
         """Gets information about the bonded next nearest neighbors.
 
         Args:
@@ -201,61 +206,78 @@ class SiteAnalyzer(object):
         def get_coords(a_site_index, a_site_image):
             return np.asarray(
                 self.bonded_structure.structure.lattice.get_cartesian_coords(
-                    self.bonded_structure.structure.frac_coords[a_site_index] +
-                    a_site_image))
+                    self.bonded_structure.structure.frac_coords[a_site_index]
+                    + a_site_image
+                )
+            )
 
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
-        next_nn_sites = [site for nn_site in nn_sites for site in
-                         self.bonded_structure.get_connected_sites(
-                             nn_site.index, jimage=nn_site.jimage)]
+        next_nn_sites = [
+            site
+            for nn_site in nn_sites
+            for site in self.bonded_structure.get_connected_sites(
+                nn_site.index, jimage=nn_site.jimage
+            )
+        ]
 
-        nn_sites_set = set((site.index, site.jimage) for site in nn_sites)
+        nn_sites_set = {(site.index, site.jimage) for site in nn_sites}
 
         seen_nnn_sites = set()
         next_nn_summary = []
         for nnn_site in next_nn_sites:
-            if (nnn_site.index == site_index and nnn_site.jimage == (0, 0, 0)
-                    or (nnn_site.index, nnn_site.jimage) in seen_nnn_sites):
+            if (
+                nnn_site.index == site_index
+                and nnn_site.jimage == (0, 0, 0)
+                or (nnn_site.index, nnn_site.jimage) in seen_nnn_sites
+            ):
                 # skip the nnn site if it is the original atom of interest
                 continue
 
             seen_nnn_sites.add((nnn_site.index, nnn_site.jimage))
 
-            sites = set((site.index, site.jimage) for site in
-                        self.bonded_structure.get_connected_sites(
-                            nnn_site.index, jimage=nnn_site.jimage))
+            sites = {
+                (site.index, site.jimage)
+                for site in self.bonded_structure.get_connected_sites(
+                    nnn_site.index, jimage=nnn_site.jimage
+                )
+            }
             shared_sites = nn_sites_set.intersection(sites)
             n_shared_atoms = len(shared_sites)
 
             if n_shared_atoms == 1:
-                connectivity = 'corner'
+                connectivity = "corner"
             elif n_shared_atoms == 2:
-                connectivity = 'edge'
+                connectivity = "edge"
             else:
-                connectivity = 'face'
+                connectivity = "face"
 
             site_coords = get_coords(site_index, (0, 0, 0))
             nnn_site_coords = get_coords(nnn_site.index, nnn_site.jimage)
-            nn_site_coords = [get_coords(nn_site_index, nn_site_image)
-                              for nn_site_index, nn_site_image in shared_sites]
+            nn_site_coords = [
+                get_coords(nn_site_index, nn_site_image)
+                for nn_site_index, nn_site_image in shared_sites
+            ]
 
             # can't just use Structure.get_angles to calculate angles as it
             # doesn't take into account the site image
-            angles = [get_angle(site_coords - x, nnn_site_coords - x)
-                      for x in nn_site_coords]
+            angles = [
+                get_angle(site_coords - x, nnn_site_coords - x) for x in nn_site_coords
+            ]
 
             distance = np.linalg.norm(site_coords - nnn_site_coords)
 
             geometry = self.get_site_geometry(nnn_site.index)
 
-            summary = {'element': str(nnn_site.site.specie),
-                       'connectivity': connectivity,
-                       'geometry': geometry,
-                       'angles': angles,
-                       'distance': distance}
+            summary = {
+                "element": str(nnn_site.site.specie),
+                "connectivity": connectivity,
+                "geometry": geometry,
+                "angles": angles,
+                "distance": distance,
+            }
 
             if inc_inequivalent_site_index:
-                summary['inequiv_index'] = self.equivalent_sites[nnn_site.index]
+                summary["inequiv_index"] = self.equivalent_sites[nnn_site.index]
 
             next_nn_summary.append(summary)
 
@@ -305,29 +327,37 @@ class SiteAnalyzer(object):
         geometry = self.get_site_geometry(site_index)
 
         nn_sites = self.get_nearest_neighbors(
-            site_index, inc_inequivalent_site_index=True)
-        nn_indices = [nn_site['inequiv_index'] for nn_site in nn_sites]
+            site_index, inc_inequivalent_site_index=True
+        )
+        nn_indices = [nn_site["inequiv_index"] for nn_site in nn_sites]
 
         nnn_sites = self.get_next_nearest_neighbors(
-            site_index, inc_inequivalent_site_index=True)
+            site_index, inc_inequivalent_site_index=True
+        )
         nnn = defaultdict(list)
         for nnn_site in nnn_sites:
-            nnn[nnn_site['connectivity']].append(nnn_site['inequiv_index'])
+            nnn[nnn_site["connectivity"]].append(nnn_site["inequiv_index"])
         nnn = dict(nnn)
 
-        equiv_sites = [i for i in range(len(self.equivalent_sites))
-                       if self.equivalent_sites[i] == self.equivalent_sites[
-                           site_index]]
-        sym_labels = tuple(set([self.symmetry_labels[x] for x in equiv_sites]))
+        equiv_sites = [
+            i
+            for i in range(len(self.equivalent_sites))
+            if self.equivalent_sites[i] == self.equivalent_sites[site_index]
+        ]
+        sym_labels = tuple({self.symmetry_labels[x] for x in equiv_sites})
 
         poly_formula = self._get_poly_formula(geometry, nn_sites, nnn_sites)
 
-        return {'element': element, 'geometry': geometry, 'nn': nn_indices,
-                'nnn': nnn, 'poly_formula': poly_formula,
-                'sym_labels': sym_labels}
+        return {
+            "element": element,
+            "geometry": geometry,
+            "nn": nn_indices,
+            "nnn": nnn,
+            "poly_formula": poly_formula,
+            "sym_labels": sym_labels,
+        }
 
-    def get_bond_distance_summary(self, site_index: int
-                                  ) -> Dict[int, List[float]]:
+    def get_bond_distance_summary(self, site_index: int) -> Dict[int, List[float]]:
         """Gets the bond distance summary for a site.
 
         Args:
@@ -343,13 +373,14 @@ class SiteAnalyzer(object):
         """
         bonds = defaultdict(list)
         for nn_site in self.get_nearest_neighbors(site_index):
-            to_site = nn_site['inequiv_index']
-            bonds[to_site].append(nn_site['dist'])
+            to_site = nn_site["inequiv_index"]
+            bonds[to_site].append(nn_site["dist"])
 
         return defaultdict_to_dict(bonds)
 
-    def get_connectivity_angle_summary(self, site_index: int
-                                       ) -> Dict[int, Dict[str, List[float]]]:
+    def get_connectivity_angle_summary(
+        self, site_index: int
+    ) -> Dict[int, Dict[str, List[float]]]:
         """Gets the connectivity angle summary for a site.
 
         The connectivity angles are the angles between a site and its
@@ -377,15 +408,17 @@ class SiteAnalyzer(object):
         connectivities = defaultdict(lambda: defaultdict(list))
 
         for nnn_site in self.get_next_nearest_neighbors(
-                site_index, inc_inequivalent_site_index=True):
-            to_site = nnn_site['inequiv_index']
-            connectivity = nnn_site['connectivity']
-            connectivities[to_site][connectivity].extend(nnn_site['angles'])
+            site_index, inc_inequivalent_site_index=True
+        ):
+            to_site = nnn_site["inequiv_index"]
+            connectivity = nnn_site["connectivity"]
+            connectivities[to_site][connectivity].extend(nnn_site["angles"])
 
         return defaultdict_to_dict(connectivities)
 
-    def get_nnn_distance_summary(self, site_index: int
-                                      ) -> Dict[int, Dict[str, List[float]]]:
+    def get_nnn_distance_summary(
+        self, site_index: int
+    ) -> Dict[int, Dict[str, List[float]]]:
         """Gets the next nearest neighbor distance summary for a site.
 
         Args:
@@ -410,10 +443,11 @@ class SiteAnalyzer(object):
         connectivities = defaultdict(lambda: defaultdict(list))
 
         for nnn_site in self.get_next_nearest_neighbors(
-                site_index, inc_inequivalent_site_index=True):
-            to_site = nnn_site['inequiv_index']
-            connectivity = nnn_site['connectivity']
-            connectivities[to_site][connectivity].append(nnn_site['distance'])
+            site_index, inc_inequivalent_site_index=True
+        ):
+            to_site = nnn_site["inequiv_index"]
+            connectivity = nnn_site["connectivity"]
+            connectivities[to_site][connectivity].append(nnn_site["distance"])
 
         return defaultdict_to_dict(connectivities)
 
@@ -430,11 +464,11 @@ class SiteAnalyzer(object):
             Where ``site_summary`` has the same format as produced by
             :meth:`SiteAnalyzer.get_site_summary`.
         """
-        return {site: self.get_site_summary(site)
-                for site in set(self.equivalent_sites)}
+        return {
+            site: self.get_site_summary(site) for site in set(self.equivalent_sites)
+        }
 
-    def get_all_bond_distance_summaries(self
-                                        ) -> Dict[int, Dict[int, List[float]]]:
+    def get_all_bond_distance_summaries(self) -> Dict[int, Dict[int, List[float]]]:
         """Gets the bond distance summaries for all sites.
 
         Returns:
@@ -449,11 +483,14 @@ class SiteAnalyzer(object):
             Where ``from_site`` and ``to_site`` are site indices and
             ``distances`` is a :obj:`list` of :obj:`float` of bond distances.
         """
-        return {from_site: self.get_bond_distance_summary(from_site)
-                for from_site in set(self.equivalent_sites)}
+        return {
+            from_site: self.get_bond_distance_summary(from_site)
+            for from_site in set(self.equivalent_sites)
+        }
 
-    def get_all_connectivity_angle_summaries(self) -> Dict[
-            int, Dict[int, Dict[str, List[float]]]]:
+    def get_all_connectivity_angle_summaries(
+        self,
+    ) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
         """Gets the connectivity angle summaries for all sites.
 
         The connectivity angles are the angles between a site and its
@@ -475,11 +512,13 @@ class SiteAnalyzer(object):
             ``'edge'`` or ``'face'``) and ``angles`` is a :obj:`list` of
             :obj:`float` of connectivity angles.
         """
-        return {from_site: self.get_connectivity_angle_summary(from_site)
-                for from_site in set(self.equivalent_sites)}
+        return {
+            from_site: self.get_connectivity_angle_summary(from_site)
+            for from_site in set(self.equivalent_sites)
+        }
 
     def get_all_nnn_distance_summaries(
-            self
+        self,
     ) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
         """Gets the next nearest neighbor distance summaries for all sites.
 
@@ -500,11 +539,12 @@ class SiteAnalyzer(object):
             ``'edge'`` or ``'face'``) and ``distances`` is a :obj:`list` of
             :obj:`float` of distances.
         """
-        return {from_site: self.get_nnn_distance_summary(from_site)
-                for from_site in set(self.equivalent_sites)}
+        return {
+            from_site: self.get_nnn_distance_summary(from_site)
+            for from_site in set(self.equivalent_sites)
+        }
 
-    def get_inequivalent_site_indices(self, site_indices: List[int]
-                                      ) -> List[int]:
+    def get_inequivalent_site_indices(self, site_indices: List[int]) -> List[int]:
         """Gets the inequivalent site indices from a list of site indices.
 
         Args:
@@ -520,11 +560,12 @@ class SiteAnalyzer(object):
         """
         return list(self.equivalent_sites[i] for i in site_indices)
 
-    def _calculate_equivalent_sites(self,
-                                    likeness_tol: float = 0.001,
-                                    bond_dist_tol: float = 0.01,
-                                    bond_angle_tol: float = 0.1
-                                    ) -> List[int]:
+    def _calculate_equivalent_sites(
+        self,
+        likeness_tol: float = 0.001,
+        bond_dist_tol: float = 0.01,
+        bond_angle_tol: float = 0.1,
+    ) -> List[int]:
         """Determines the indices of the structurally inequivalent sites.
 
         Args:
@@ -555,22 +596,24 @@ class SiteAnalyzer(object):
             element = get_el_sp(site.specie)
             geometry = self.get_site_geometry(site_index)
             nn_sites = self.get_nearest_neighbors(
-                site_index, inc_inequivalent_site_index=False)
+                site_index, inc_inequivalent_site_index=False
+            )
             nnn_sites = self.get_next_nearest_neighbors(
-                site_index, inc_inequivalent_site_index=False)
+                site_index, inc_inequivalent_site_index=False
+            )
 
             matched = False
             for inequiv_index, inequiv_site in inequiv_sites.items():
-                elem_match = element == inequiv_site['element']
+                elem_match = element == inequiv_site["element"]
                 geom_match = geometries_match(
-                    geometry, inequiv_site['geometry'],
-                    likeness_tol=likeness_tol)
+                    geometry, inequiv_site["geometry"], likeness_tol=likeness_tol
+                )
                 nn_match = nn_summaries_match(
-                    nn_sites, inequiv_site['nn_sites'],
-                    bond_dist_tol=bond_dist_tol)
+                    nn_sites, inequiv_site["nn_sites"], bond_dist_tol=bond_dist_tol
+                )
                 nnn_match = nnn_summaries_match(
-                    nnn_sites, inequiv_site['nnn_sites'],
-                    bond_angle_tol=bond_angle_tol)
+                    nnn_sites, inequiv_site["nnn_sites"], bond_angle_tol=bond_angle_tol
+                )
 
                 if elem_match and geom_match and nn_match and nnn_match:
                     equivalent_sites.append(inequiv_index)
@@ -580,16 +623,17 @@ class SiteAnalyzer(object):
             if not matched:
                 # no matches therefore store original site index
                 equivalent_sites.append(site_index)
-                site_data = {'element': element,
-                             'geometry': geometry,
-                             'nn_sites': nn_sites,
-                             'nnn_sites': nnn_sites}
+                site_data = {
+                    "element": element,
+                    "geometry": geometry,
+                    "nn_sites": nn_sites,
+                    "nnn_sites": nnn_sites,
+                }
                 inequiv_sites[site_index] = site_data
 
         return equivalent_sites
 
-    def _calculate_symmetry_labels(self, sym_equivalent_atoms: List[int]
-                                   ) -> List[int]:
+    def _calculate_symmetry_labels(self, sym_equivalent_atoms: List[int]) -> List[int]:
         """Calculates the symmetry labels for all sites in the structure.
 
         The symmetry labels number the sites in the structure. If two sites
@@ -611,15 +655,15 @@ class SiteAnalyzer(object):
         # grouped together by element
         for specie in self.bonded_structure.structure.species:
             el_indices = self.bonded_structure.structure.indices_from_symbol(
-                get_el(specie))
+                get_el(specie)
+            )
             equiv_indices = [sym_equivalent_atoms[x] for x in el_indices]
 
             count = 1
             equiv_index_to_sym_label = {}
             for el_index, equiv_index in zip(el_indices, equiv_indices):
                 if equiv_index in equiv_index_to_sym_label:
-                    symmetry_labels[el_index] = (equiv_index_to_sym_label[
-                        equiv_index])
+                    symmetry_labels[el_index] = equiv_index_to_sym_label[equiv_index]
                 else:
                     equiv_index_to_sym_label[equiv_index] = count
                     symmetry_labels[el_index] = count
@@ -627,11 +671,12 @@ class SiteAnalyzer(object):
 
         return [symmetry_labels[i] for i in sorted(symmetry_labels.keys())]
 
-    def _get_poly_formula(self,
-                          geometry: Dict[str, Any],
-                          nn_sites: List[Dict[str, Any]],
-                          nnn_sites: List[Dict[str, Any]]
-                          ) -> Optional[str]:
+    def _get_poly_formula(
+        self,
+        geometry: Dict[str, Any],
+        nn_sites: List[Dict[str, Any]],
+        nnn_sites: List[Dict[str, Any]],
+    ) -> Optional[str]:
         """Gets the polyhedra formula of the nearest neighbor atoms.
 
         The polyhedral formula is effectively the sorted nearest neighbor
@@ -659,13 +704,16 @@ class SiteAnalyzer(object):
             else:
                 return [get_el_sp(el).iupac_ordering, el]
 
-        nnn_geometries = [nnn_site['geometry'] for nnn_site in nnn_sites]
+        nnn_geometries = [nnn_site["geometry"] for nnn_site in nnn_sites]
 
         poly_formula = None
-        if (geometry['type'] in connected_geometries and
-                any([nnn_geometry['type'] in connected_geometries
-                     for nnn_geometry in nnn_geometries])):
-            nn_els = [get_el(nn_site['element']) for nn_site in nn_sites]
+        if geometry["type"] in connected_geometries and any(
+            [
+                nnn_geometry["type"] in connected_geometries
+                for nnn_geometry in nnn_geometries
+            ]
+        ):
+            nn_els = [get_el(nn_site["element"]) for nn_site in nn_sites]
             comp = Composition("".join(nn_els))
             el_amt_dict = comp.get_el_amt_dict()
 
@@ -677,10 +725,9 @@ class SiteAnalyzer(object):
         return poly_formula
 
 
-def geometries_match(geometry_a: Dict[str, Any],
-                     geometry_b: Dict[str, Any],
-                     likeness_tol: float = 0.001
-                     ) -> bool:
+def geometries_match(
+    geometry_a: Dict[str, Any], geometry_b: Dict[str, Any], likeness_tol: float = 0.001
+) -> bool:
     """Determine whether two site geometries match.
 
     Geometry data should be formatted the same as produced by
@@ -695,14 +742,18 @@ def geometries_match(geometry_a: Dict[str, Any],
     Returns:
         Whether the two geometries are the same.
     """
-    return (geometry_a['type'] == geometry_b['type'] and
-            abs(geometry_a['likeness'] - geometry_b['likeness']) < likeness_tol)
+    return (
+        geometry_a["type"] == geometry_b["type"]
+        and abs(geometry_a["likeness"] - geometry_b["likeness"]) < likeness_tol
+    )
 
 
-def nn_summaries_match(nn_sites_a: List[Dict[str, Union[int, str]]],
-                       nn_sites_b: List[Dict[str, Union[int, str]]],
-                       bond_dist_tol: float = 0.01,
-                       match_bond_dists: bool = True) -> bool:
+def nn_summaries_match(
+    nn_sites_a: List[Dict[str, Union[int, str]]],
+    nn_sites_b: List[Dict[str, Union[int, str]]],
+    bond_dist_tol: float = 0.01,
+    match_bond_dists: bool = True,
+) -> bool:
     """Determine whether two sets of nearest neighbors match.
 
     Nearest neighbor data should be formatted the same as produced by
@@ -720,7 +771,7 @@ def nn_summaries_match(nn_sites_a: List[Dict[str, Union[int, str]]],
     """
 
     def nn_sites_order(nn_site):
-        return [nn_site['element'], nn_site['dist']]
+        return [nn_site["element"], nn_site["dist"]]
 
     if len(nn_sites_a) != len(nn_sites_b):
         return False
@@ -728,20 +779,27 @@ def nn_summaries_match(nn_sites_a: List[Dict[str, Union[int, str]]],
     nn_sites_a = sorted(nn_sites_a, key=nn_sites_order)
     nn_sites_b = sorted(nn_sites_b, key=nn_sites_order)
 
-    dists_match = [abs(site_a['dist'] - site_b['dist']) < bond_dist_tol
-                   if match_bond_dists else True
-                   for site_a, site_b in zip(nn_sites_a, nn_sites_b)]
-    elements_match = [site_a['element'] == site_b['element']
-                      for site_a, site_b in zip(nn_sites_a, nn_sites_b)]
+    dists_match = [
+        abs(site_a["dist"] - site_b["dist"]) < bond_dist_tol
+        if match_bond_dists
+        else True
+        for site_a, site_b in zip(nn_sites_a, nn_sites_b)
+    ]
+    elements_match = [
+        site_a["element"] == site_b["element"]
+        for site_a, site_b in zip(nn_sites_a, nn_sites_b)
+    ]
 
     return all(d and e for d, e in zip(dists_match, elements_match))
 
 
-def nnn_summaries_match(nnn_sites_a: List[Dict[str, Any]],
-                        nnn_sites_b: List[Dict[str, Any]],
-                        likeness_tol: float = 0.001,
-                        bond_angle_tol: float = 0.1,
-                        match_bond_angles: bool = True):
+def nnn_summaries_match(
+    nnn_sites_a: List[Dict[str, Any]],
+    nnn_sites_b: List[Dict[str, Any]],
+    likeness_tol: float = 0.001,
+    bond_angle_tol: float = 0.1,
+    match_bond_angles: bool = True,
+):
     """Determine whether two sets of next nearest neighbors match.
 
     Next nearest neighbor data should be formatted the same as produced by
@@ -761,8 +819,12 @@ def nnn_summaries_match(nnn_sites_a: List[Dict[str, Any]],
     """
 
     def nnn_sites_order(nnn_site):
-        return [nnn_site['element'], nnn_site['geometry']['type'],
-                nnn_site['connectivity'], sorted(nnn_site['angles'])]
+        return [
+            nnn_site["element"],
+            nnn_site["geometry"]["type"],
+            nnn_site["connectivity"],
+            sorted(nnn_site["angles"]),
+        ]
 
     if len(nnn_sites_a) != len(nnn_sites_b):
         return False
@@ -770,18 +832,33 @@ def nnn_summaries_match(nnn_sites_a: List[Dict[str, Any]],
     nnn_sites_a = sorted(nnn_sites_a, key=nnn_sites_order)
     nnn_sites_b = sorted(nnn_sites_b, key=nnn_sites_order)
 
-    elements_match = [site_a['element'] == site_b['element']
-                      for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
-    cons_match = [site_a['connectivity'] == site_b['connectivity']
-                  for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
-    geoms_match = [geometries_match(site_a['geometry'], site_b['geometry'],
-                                    likeness_tol=likeness_tol)
-                   for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
-    angles_match = [all([abs(a_a - a_b) < bond_angle_tol for a_a, a_b in
-                         zip(sorted(site_a['angles']),
-                             sorted(site_b['angles']))])
-                    if match_bond_angles else True
-                    for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)]
+    elements_match = [
+        site_a["element"] == site_b["element"]
+        for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)
+    ]
+    cons_match = [
+        site_a["connectivity"] == site_b["connectivity"]
+        for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)
+    ]
+    geoms_match = [
+        geometries_match(
+            site_a["geometry"], site_b["geometry"], likeness_tol=likeness_tol
+        )
+        for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)
+    ]
+    angles_match = [
+        all(
+            [
+                abs(a_a - a_b) < bond_angle_tol
+                for a_a, a_b in zip(sorted(site_a["angles"]), sorted(site_b["angles"]))
+            ]
+        )
+        if match_bond_angles
+        else True
+        for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)
+    ]
 
-    return all(e and c and g and a for e, c, g, a in
-               zip(elements_match, cons_match, geoms_match, angles_match))
+    return all(
+        e and c and g and a
+        for e, c, g, a in zip(elements_match, cons_match, geoms_match, angles_match)
+    )

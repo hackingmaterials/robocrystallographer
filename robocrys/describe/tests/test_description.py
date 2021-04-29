@@ -12,11 +12,13 @@ class TestDescriptionMethods(RobocrysTest):
     def test_describe(self):
         """Broad tests to check the right information is in the description."""
         # test general
-        d = StructureDescriber(describe_oxidation_states=True,
-                               describe_symmetry_labels=True,
-                               return_parts=False,
-                               bond_length_decimal_places=2,
-                               fmt="raw")
+        d = StructureDescriber(
+            describe_oxidation_states=True,
+            describe_symmetry_labels=True,
+            return_parts=False,
+            bond_length_decimal_places=2,
+            fmt="raw",
+        )
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Rutile" in description)
         self.assertTrue("SnO2" in description)
@@ -30,45 +32,51 @@ class TestDescriptionMethods(RobocrysTest):
         self.assertTrue("2.09" in description)
 
         # test different settings
-        d = StructureDescriber(describe_oxidation_states=False,
-                               describe_symmetry_labels=True,
-                               return_parts=False,
-                               bond_length_decimal_places=4,
-                               fmt="raw")
+        d = StructureDescriber(
+            describe_oxidation_states=False,
+            describe_symmetry_labels=True,
+            return_parts=False,
+            bond_length_decimal_places=4,
+            fmt="raw",
+        )
         description = d.describe(self.tin_dioxide)
         self.assertTrue("Sn(1)" in description)
         self.assertTrue("Sn(1)–O(1)" in description)
         self.assertTrue("2.0922" in description)
 
         # test different settings
-        d = StructureDescriber(describe_oxidation_states=True,
-                               describe_symmetry_labels=False,
-                               return_parts=False,
-                               bond_length_decimal_places=2,
-                               fmt="latex")
+        d = StructureDescriber(
+            describe_oxidation_states=True,
+            describe_symmetry_labels=False,
+            return_parts=False,
+            bond_length_decimal_places=2,
+            fmt="latex",
+        )
         description = d.describe(self.tin_dioxide)
         self.assertTrue(r"Sn^{4+}" in description)
         self.assertTrue("Sn–O" in description)
 
         # test return parts
-        d = StructureDescriber(describe_oxidation_states=True,
-                               describe_symmetry_labels=True,
-                               return_parts=True,
-                               bond_length_decimal_places=2,
-                               fmt="raw")
+        d = StructureDescriber(
+            describe_oxidation_states=True,
+            describe_symmetry_labels=True,
+            return_parts=True,
+            bond_length_decimal_places=2,
+            fmt="raw",
+        )
         description = d.describe(self.tin_dioxide)
-        self.assertTrue("Rutile" in description['mineral'])
-        self.assertTrue("SnO2" in description['mineral'])
-        self.assertTrue("tetragonal" in description['mineral'])
-        self.assertTrue("P4_2/mnm" in description['mineral'])
+        self.assertTrue("Rutile" in description["mineral"])
+        self.assertTrue("SnO2" in description["mineral"])
+        self.assertTrue("tetragonal" in description["mineral"])
+        self.assertTrue("P4_2/mnm" in description["mineral"])
 
-        self.assertTrue("" == description['component_makeup'])
-        self.assertTrue("Sn(1)4+" in description['components'])
-        self.assertTrue("equivalent" in description['components'])
-        self.assertTrue("corner" in description['components'])
-        self.assertTrue("edge" in description['components'])
-        self.assertTrue("Sn(1)–O(1)" in description['components'])
-        self.assertTrue("2.09" in description['components'])
+        self.assertTrue("" == description["component_makeup"])
+        self.assertTrue("Sn(1)4+" in description["components"])
+        self.assertTrue("equivalent" in description["components"])
+        self.assertTrue("corner" in description["components"])
+        self.assertTrue("edge" in description["components"])
+        self.assertTrue("Sn(1)–O(1)" in description["components"])
+        self.assertTrue("2.09" in description["components"])
 
     def test_grammar_and_punctuation(self):
         """Check common grammatical errors are not present"""

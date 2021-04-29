@@ -19,11 +19,11 @@ containing molecules with > 12 atoms, an internet connection is required to
 search Pubchem using the pubchempy python package.
 """
 
+import bson
+import pebble
 from maggma.advanced_stores import MongograntStore
 from monty.serialization import dumpfn
-import pebble
 from tqdm import tqdm
-import bson
 
 
 def process_batch(batch):
@@ -33,10 +33,10 @@ def process_batch(batch):
     for mol in batch:
         mol_dict = {}
         try:
-            smiles = mol['smiles_can']
+            smiles = mol["smiles_can"]
             names = {key: mol[key] for key in name_keys if key in mol}
 
-            if int(mol['xyz'].split('\n')[0]) > max_atoms:
+            if int(mol["xyz"].split("\n")[0]) > max_atoms:
                 # skip if too many atoms
                 raise KeyError("atoms")
 
@@ -58,22 +58,23 @@ def task_done(future):
 
 max_atoms = 12
 batch_size = 5000
-name_keys = ['name_iupac', 'name_traditional']
+name_keys = ["name_iupac", "name_traditional"]
 
-mp_pubchem = MongograntStore("rw:knowhere.lbl.gov/mp_pubchem", "mp_pubchem",
-                             key="pubchem_id")
+mp_pubchem = MongograntStore(
+    "rw:knowhere.lbl.gov/mp_pubchem", "mp_pubchem", key="pubchem_id"
+)
 mp_pubchem.connect()
 coll = mp_pubchem.collection
 
 total_mols = coll.count()
 batches = coll.find_raw_batches(batch_size=batch_size)
-pbar = tqdm(total=total_mols/batch_size, desc="process")
+pbar = tqdm(total=total_mols / batch_size, desc="process")
 
 results = []
 
 with pebble.ProcessPool() as pool:
     for batch in batches:
-        f = pool.schedule(process_batch, args=(batch, ))
+        f = pool.schedule(process_batch, args=(batch,))
         f.add_done_callback(task_done)
 
 pbar.close()

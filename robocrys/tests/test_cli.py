@@ -29,9 +29,13 @@ class TestCommandLineInterface(RobocrysTest):
 
         # check passing condense and describe kwargs
         description = robocrystallographer(
-            self.tin_dioxide, condenser_kwargs={'use_symmetry_equivalent_sites': True},
-            describer_kwargs={'describe_symmetry_labels': False,
-                              'bond_length_decimal_places': 4})
+            self.tin_dioxide,
+            condenser_kwargs={"use_symmetry_equivalent_sites": True},
+            describer_kwargs={
+                "describe_symmetry_labels": False,
+                "bond_length_decimal_places": 4,
+            },
+        )
         self.assertTrue("Sn4+" in description)
         self.assertTrue("Sn–O" in description)
         self.assertTrue("2.0922" in description)

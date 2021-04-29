@@ -3,19 +3,21 @@ This module provides tools for matching structures to known mineral class.
 """
 
 from itertools import islice
-from typing import List, Optional, Dict, Text, Any
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 from matminer.utils.io import load_dataframe_from_json
 from pkg_resources import resource_filename
-
 from pymatgen.analysis.prototypes import AflowPrototypeMatcher
 from pymatgen.core.structure import IStructure
-from robocrys.condense.fingerprint import (get_structure_fingerprint,
-                                           get_fingerprint_distance)
+
+from robocrys.condense.fingerprint import (
+    get_fingerprint_distance,
+    get_structure_fingerprint,
+)
 
 
-class MineralMatcher(object):
+class MineralMatcher:
     """Class to match a structure to a mineral name.
 
     Uses a precomputed database of minerals and their fingerprints, extracted
@@ -41,13 +43,15 @@ class MineralMatcher(object):
             structural fingerprints in euclidean space.
     """
 
-    def __init__(self,
-                 initial_ltol: float = 0.2,
-                 initial_stol: float = 0.3,
-                 initial_angle_tol: float = 5.,
-                 use_fingerprint_matching: bool = True,
-                 fingerprint_distance_cutoff: float = 0.4):
-        db_file = resource_filename('robocrys.condense', 'mineral_db.json.gz')
+    def __init__(
+        self,
+        initial_ltol: float = 0.2,
+        initial_stol: float = 0.3,
+        initial_angle_tol: float = 5.0,
+        use_fingerprint_matching: bool = True,
+        fingerprint_distance_cutoff: float = 0.4,
+    ):
+        db_file = resource_filename("robocrys.condense", "mineral_db.json.gz")
         self.mineral_db = load_dataframe_from_json(db_file)
         self.initial_ltol = initial_ltol
         self.initial_stol = initial_stol
@@ -57,7 +61,7 @@ class MineralMatcher(object):
         self._structure = None
         self._mineral_db = None
 
-    def get_best_mineral_name(self, structure: IStructure) -> Dict[Text, Any]:
+    def get_best_mineral_name(self, structure: IStructure) -> Dict[str, Any]:
         """Gets the "best" mineral name for a structure.
 
         Uses a combination of AFLOW prototype matching and fingerprinting to
@@ -94,33 +98,37 @@ class MineralMatcher(object):
         aflow_matches = self.get_aflow_matches(structure)
 
         fingerprint_matches = self.get_fingerprint_matches(structure)
-        fingerprint_derived = self.get_fingerprint_matches(
-            structure, match_n_sp=False)
+        fingerprint_derived = self.get_fingerprint_matches(structure, match_n_sp=False)
 
         distance = -1
         n_species_types_match = True
         if aflow_matches:
             # mineral db sorted by fingerprint distance so first result always
             # has a smaller distance
-            mineral = aflow_matches[0]['type']
+            mineral = aflow_matches[0]["type"]
 
         elif fingerprint_matches and self.use_fingerprint_matching:
-            mineral = fingerprint_matches[0]['type']
-            distance = fingerprint_matches[0]['distance']
+            mineral = fingerprint_matches[0]["type"]
+            distance = fingerprint_matches[0]["distance"]
 
         elif fingerprint_derived and self.use_fingerprint_matching:
-            mineral = fingerprint_derived[0]['type']
-            distance = fingerprint_derived[0]['distance']
+            mineral = fingerprint_derived[0]["type"]
+            distance = fingerprint_derived[0]["distance"]
             n_species_types_match = False
 
         else:
             mineral = None
 
-        return {'type': mineral, 'distance': distance,
-                'n_species_type_match': n_species_types_match}
+        return {
+            "type": mineral,
+            "distance": distance,
+            "n_species_type_match": n_species_types_match,
+        }
 
-    def get_aflow_matches(self, structure: IStructure,
-                          ) -> Optional[List[Dict[Text, Any]]]:
+    def get_aflow_matches(
+        self,
+        structure: IStructure,
+    ) -> Optional[List[Dict[str, Any]]]:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
         Overrides
@@ -154,7 +162,7 @@ class MineralMatcher(object):
         def _match_prototype(structure_matcher, s):
             tags = []
             for _, row in self._mineral_db.iterrows():
-                p = row['structure']
+                p = row["structure"]
                 m = structure_matcher.fit_anonymous(p, s)
                 if m:
                     tags.append(_get_row_data(row))
@@ -163,17 +171,19 @@ class MineralMatcher(object):
         matcher = AflowPrototypeMatcher(
             initial_ltol=self.initial_ltol,
             initial_stol=self.initial_stol,
-            initial_angle_tol=self.initial_angle_tol)
+            initial_angle_tol=self.initial_angle_tol,
+        )
         matcher._match_prototype = _match_prototype
 
         return matcher.get_prototypes(structure)
 
-    def get_fingerprint_matches(self,
-                                structure: IStructure,
-                                max_n_matches: Optional[int] = None,
-                                match_n_sp: bool = True,
-                                mineral_name_constraint: Optional[str] = None
-                                ) -> Optional[List[Dict[Text, Any]]]:
+    def get_fingerprint_matches(
+        self,
+        structure: IStructure,
+        max_n_matches: Optional[int] = None,
+        match_n_sp: bool = True,
+        mineral_name_constraint: Optional[str] = None,
+    ) -> Optional[List[Dict[str, Any]]]:
         """Gets minerals for a structure by matching to AFLOW fingerprints.
 
         Only AFLOW prototypes with mineral names are considered. The AFLOW
@@ -200,20 +210,23 @@ class MineralMatcher(object):
         mineral_db = self._mineral_db
 
         if mineral_name_constraint:
-            mineral_db = mineral_db[mineral_db["mineral"].str.lower() ==
-                                    mineral_name_constraint]
+            mineral_db = mineral_db[
+                mineral_db["mineral"].str.lower() == mineral_name_constraint
+            ]
 
         if match_n_sp:
             ntypesp = structure.ntypesp
-            mineral_db = mineral_db[mineral_db['ntypesp'] == ntypesp]
+            mineral_db = mineral_db[mineral_db["ntypesp"] == ntypesp]
 
         num_rows = mineral_db.shape[0]
         max_n_matches = max_n_matches if max_n_matches else num_rows
         max_n_matches = num_rows if max_n_matches > num_rows else max_n_matches
 
-        minerals = [_get_row_data(row)
-                    for i, row in islice(mineral_db.iterrows(), max_n_matches)
-                    if row['distance'] < self.fingerprint_distance_cutoff]
+        minerals = [
+            _get_row_data(row)
+            for i, row in islice(mineral_db.iterrows(), max_n_matches)
+            if row["distance"] < self.fingerprint_distance_cutoff
+        ]
 
         return minerals if minerals else None
 
@@ -236,17 +249,20 @@ class MineralMatcher(object):
         if np.linalg.norm(fingerprint) < 0.4:
             # fingerprint is too small for a reasonable match, indicates very
             # little bonding or small order parameter matches
-            fingerprint = get_structure_fingerprint(
-                structure, prototype_match=False)
+            fingerprint = get_structure_fingerprint(structure, prototype_match=False)
 
-        data['distance'] = data['fingerprint'].apply(
-            lambda x: get_fingerprint_distance(x, fingerprint))
+        data["distance"] = data["fingerprint"].apply(
+            lambda x: get_fingerprint_distance(x, fingerprint)
+        )
 
-        self._mineral_db = data.sort_values(by='distance')
+        self._mineral_db = data.sort_values(by="distance")
         self._structure = structure
 
 
-def _get_row_data(row: Dict) -> Dict[Text, Any]:
+def _get_row_data(row: Dict) -> Dict[str, Any]:
     """Utility function to extract mineral data from pandas `DataFrame` row."""
-    return {'type': row['mineral'], 'distance': row['distance'],
-            'structure': row['structure']}
+    return {
+        "type": row["mineral"],
+        "distance": row["distance"],
+        "structure": row["structure"],
+    }

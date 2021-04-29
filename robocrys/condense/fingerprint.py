@@ -1,16 +1,16 @@
-from typing import Union, List, Dict, Optional, Tuple, Iterable
+from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 from matminer.featurizers.site import CrystalNNFingerprint
 from matminer.featurizers.structure import SiteStatsFingerprint
-
 from pymatgen.core.structure import IStructure
 
 
-def get_site_fingerprints(structure: IStructure,
-                          as_dict: bool = True,
-                          preset: str = 'CrystalNNFingerprint_ops'
-                          ) -> Union[List[Dict[str, int]], np.ndarray]:
+def get_site_fingerprints(
+    structure: IStructure,
+    as_dict: bool = True,
+    preset: str = "CrystalNNFingerprint_ops",
+) -> Union[List[Dict[str, int]], np.ndarray]:
     """Gets the fingerprint for all sites in a structure.
 
     Args:
@@ -45,11 +45,12 @@ def get_site_fingerprints(structure: IStructure,
     return site_fingerprints
 
 
-def get_structure_fingerprint(structure: IStructure,
-                              preset: str = 'CrystalNNFingerprint_ops',
-                              stats: Optional[Tuple[str]] = ('mean', 'std_dev'),
-                              prototype_match: bool = False
-                              ) -> np.ndarray:
+def get_structure_fingerprint(
+    structure: IStructure,
+    preset: str = "CrystalNNFingerprint_ops",
+    stats: Optional[Tuple[str]] = ("mean", "std_dev"),
+    prototype_match: bool = False,
+) -> np.ndarray:
     """Gets the fingerprint for a structure.
 
     Args:
@@ -72,21 +73,20 @@ def get_structure_fingerprint(structure: IStructure,
     if prototype_match:
         ssf = SiteStatsFingerprint(
             CrystalNNFingerprint.from_preset(
-                "ops", cation_anion=False, distance_cutoffs=None,
-                x_diff_weight=None
+                "ops", cation_anion=False, distance_cutoffs=None, x_diff_weight=None
             ),
-            stats=stats
+            stats=stats,
         )
     else:
         ssf = SiteStatsFingerprint(
-            CrystalNNFingerprint.from_preset("ops", cation_anion=False),
-            stats=stats)
+            CrystalNNFingerprint.from_preset("ops", cation_anion=False), stats=stats
+        )
     return np.array(ssf.featurize(structure))
 
 
-def get_fingerprint_distance(structure_a: Union[IStructure, Iterable],
-                             structure_b: Union[IStructure, Iterable]
-                             ) -> float:
+def get_fingerprint_distance(
+    structure_a: Union[IStructure, Iterable], structure_b: Union[IStructure, Iterable]
+) -> float:
     """Gets the euclidean distance between the fingerprints of two structures.
 
     Args:

@@ -2,6 +2,7 @@ import os
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
+
 from robocrys.condense.component import filter_molecular_components
 from robocrys.condense.molecule import MoleculeNamer
 from robocrys.tests import RobocrysTest
@@ -16,10 +17,9 @@ class TestMoleculeMatcher(RobocrysTest):
         cnn = CrystalNN()
 
         mapi = cnn.get_bonded_structure(self.get_structure("mapi"))
-        mapi_components = get_structure_components(mapi,
-                                                   inc_molecule_graph=True)
+        mapi_components = get_structure_components(mapi, inc_molecule_graph=True)
         mol_components, _ = filter_molecular_components(mapi_components)
-        self.methylammonium = mol_components[0]['molecule_graph']
+        self.methylammonium = mol_components[0]["molecule_graph"]
 
     def test_init(self):
         """Test initialising MoleculeNamer."""

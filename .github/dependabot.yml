@@ -3,29 +3,8 @@ updates:
 - package-ecosystem: pip
   directory: "/"
   schedule:
-    interval: daily
-    time: "13:00"
+    interval: weekly
   open-pull-requests-limit: 10
   allow:
   - dependency-type: direct
   - dependency-type: indirect
-  ignore:
-  - dependency-name: black
-    versions:
-    - 21.4b0
-  - dependency-name: pymatgen
-    versions:
-    - 2021.2.14
-    - 2021.2.8.1
-    - 2021.3.3
-    - 2021.3.4
-    - 2022.0.3
-    - 2022.0.4
-    - 2022.0.5
-  - dependency-name: sphinx
-    versions:
-    - 3.5.0
-  - dependency-name: numpy
-    versions:
-    - 1.20.0
-    - 1.20.1

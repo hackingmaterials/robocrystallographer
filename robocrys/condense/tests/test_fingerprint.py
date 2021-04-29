@@ -1,6 +1,8 @@
-from robocrys.condense.fingerprint import (get_site_fingerprints,
-                                           get_structure_fingerprint,
-                                           get_fingerprint_distance)
+from robocrys.condense.fingerprint import (
+    get_fingerprint_distance,
+    get_site_fingerprints,
+    get_structure_fingerprint,
+)
 from robocrys.tests import RobocrysTest
 
 
@@ -13,7 +15,7 @@ class TestFingerprint(RobocrysTest):
     def test_get_site_fingerprints(self):
         """Test to check site fingerprinting."""
         finger = get_site_fingerprints(self.fe)[0]
-        self.assertAlmostEqual(finger['body-centered cubic CN_8'], 0.576950507)
+        self.assertAlmostEqual(finger["body-centered cubic CN_8"], 0.576950507)
 
         # check as_dict option
         finger = get_site_fingerprints(self.fe, as_dict=False)[0]
@@ -25,7 +27,7 @@ class TestFingerprint(RobocrysTest):
         self.assertAlmostEqual(fingerprint[4], 1.98432036e-03)
 
         # test stats option
-        fingerprint = get_structure_fingerprint(self.fe, stats=('mean',))
+        fingerprint = get_structure_fingerprint(self.fe, stats=("mean",))
         self.assertAlmostEqual(fingerprint[31], 2.51322893e-01)
 
         # test preset options – reenable once fixed
@@ -42,9 +44,9 @@ class TestFingerprint(RobocrysTest):
 
         # test automatic conversion from structure to fingerprint
         dist = get_fingerprint_distance(self.fe, self.fe)
-        self.assertAlmostEqual(dist, 0.)
+        self.assertAlmostEqual(dist, 0.0)
 
         # test one structure one fingerprint
         finger_1 = get_structure_fingerprint(self.fe)
         dist = get_fingerprint_distance(self.fe, finger_1)
-        self.assertAlmostEqual(dist, 0.)
+        self.assertAlmostEqual(dist, 0.0)

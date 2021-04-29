@@ -2,9 +2,9 @@
 robocrystallographer: Automatic generation of crystal structure descriptions.
 """
 
-from setuptools import setup, find_packages
 from os.path import join as path_join
 
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as file:
     long_description = file.read()

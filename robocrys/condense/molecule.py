@@ -7,19 +7,21 @@ Some functionality relies on having a working internet connection.
 import warnings
 from typing import Optional, Tuple
 
-from pkg_resources import resource_filename
-from pubchempy import get_compounds, BadRequestError
-
 from monty.serialization import loadfn
+from pkg_resources import resource_filename
+from pubchempy import BadRequestError, get_compounds
 from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.io.babel import BabelMolAdaptor
 
 
-class MoleculeNamer(object):
-    name_sources = ('traditional', 'iupac')
+class MoleculeNamer:
+    name_sources = ("traditional", "iupac")
 
-    def __init__(self, use_online_pubchem: bool = True,
-                 name_preference: Tuple[str] = name_sources):
+    def __init__(
+        self,
+        use_online_pubchem: bool = True,
+        name_preference: Tuple[str] = name_sources,
+    ):
         """Class to match molecule graphs to known molecule names.
 
         Args:
@@ -34,18 +36,19 @@ class MoleculeNamer(object):
                 to last.
         """
 
-        db_file = resource_filename('robocrys.condense', 'molecule_db.json.gz')
+        db_file = resource_filename("robocrys.condense", "molecule_db.json.gz")
         self.molecule_db = loadfn(db_file)
         self.matched_molecules = {}
         self.use_online_pubchem = use_online_pubchem
 
         # append the sources list to the end in case the user only supplies
         # a single preference
-        self.name_preference = tuple(list(name_preference) +
-                                     list(self.name_sources))
+        self.name_preference = tuple(list(name_preference) + list(self.name_sources))
 
-    def get_name_from_molecule_graph(self, molecule_graph: MoleculeGraph,
-                                     ) -> Optional[str]:
+    def get_name_from_molecule_graph(
+        self,
+        molecule_graph: MoleculeGraph,
+    ) -> Optional[str]:
         """Gets the name of a molecule from a molecule graph object.
 
         Args:
@@ -67,8 +70,10 @@ class MoleculeNamer(object):
 
             # we should use the first preference for which there is a match
             for source in self.name_preference:
-                if (source in self.molecule_db[smiles] and
-                        self.molecule_db[source][smiles]):
+                if (
+                    source in self.molecule_db[smiles]
+                    and self.molecule_db[source][smiles]
+                ):
                     match = self.molecule_db[smiles][source]
                     break
 
@@ -93,8 +98,7 @@ class MoleculeNamer(object):
             return None
 
         traditional = comp.synonyms[0] if comp.synonyms else None
-        names = {'traditional': traditional,
-                 'iupac': comp.iupac_name}
+        names = {"traditional": traditional, "iupac": comp.iupac_name}
 
         match = None
         for source in self.name_preference:
@@ -108,8 +112,7 @@ class MoleculeNamer(object):
         return self._process_match(smiles, match)
 
     @staticmethod
-    def molecule_graph_to_smiles(molecule_graph: MoleculeGraph
-                                 ) -> Optional[str]:
+    def molecule_graph_to_smiles(molecule_graph: MoleculeGraph) -> Optional[str]:
         """Converts a molecule graph to SMILES string.
 
         Args:
@@ -121,15 +124,16 @@ class MoleculeNamer(object):
         try:
             bma = BabelMolAdaptor.from_molecule_graph(molecule_graph)
             pbmol = bma.pybel_mol
-            return pbmol.write(str("smi")).split()[0]
+            return pbmol.write("smi").split()[0]
         except RuntimeError:
-            warnings.warn("Molecule naming requires openbabel to be installed "
-                          "with Python bindings. Please get it at "
-                          "http://openbabel.org.")
+            warnings.warn(
+                "Molecule naming requires openbabel to be installed "
+                "with Python bindings. Please get it at "
+                "http://openbabel.org."
+            )
             return None
 
-    def _process_match(self, smiles: str, match: Optional[str]
-                       ) -> Optional[str]:
+    def _process_match(self, smiles: str, match: Optional[str]) -> Optional[str]:
         """Utility function to store and process match."""
         if isinstance(match, str):
             match = match.lower()

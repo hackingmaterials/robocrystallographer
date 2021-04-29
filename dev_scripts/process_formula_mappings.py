@@ -13,8 +13,7 @@ See https://github.com/materialsintelligence/matscholar for more details.
 """
 import os
 
-from monty.serialization import loadfn, dumpfn
-
+from monty.serialization import dumpfn, loadfn
 from pymatgen import Composition
 from pymatgen.core.composition import CompositionError
 
@@ -52,7 +51,6 @@ for formula, mappings in formulas.items():
 
     except (ValueError, CompositionError):
         skipped += 1
-        pass
 
 dumpfn(new_formula_mapping, "formula_db.json.gz")
 

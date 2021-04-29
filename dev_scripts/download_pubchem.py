@@ -14,48 +14,54 @@ database.
 """
 
 import ftplib
-import pebble
 import glob
 import os
-
-import pybel
-from pebble import ProcessExpired
-
-from tqdm import tqdm
 from concurrent.futures import TimeoutError
+
+import pebble
+import pybel
 from maggma.advanced_stores import MongograntStore
+from pebble import ProcessExpired
+from tqdm import tqdm
 
 tmp_dir = "tmp"
 
-keys = ['PUBCHEM_OPENEYE_CAN_SMILES', 'PUBCHEM_OPENEYE_ISO_SMILES',
-        'PUBCHEM_IUPAC_CAS_NAME', 'PUBCHEM_IUPAC_NAME',
-        'PUBCHEM_IUPAC_TRADITIONAL_NAME', 'PUBCHEM_IUPAC_SYSTEMATIC_NAME',
-        'PUBCHEM_IUPAC_OPENEYE_NAME']
+keys = [
+    "PUBCHEM_OPENEYE_CAN_SMILES",
+    "PUBCHEM_OPENEYE_ISO_SMILES",
+    "PUBCHEM_IUPAC_CAS_NAME",
+    "PUBCHEM_IUPAC_NAME",
+    "PUBCHEM_IUPAC_TRADITIONAL_NAME",
+    "PUBCHEM_IUPAC_SYSTEMATIC_NAME",
+    "PUBCHEM_IUPAC_OPENEYE_NAME",
+]
 
-key_map = {'PUBCHEM_OPENEYE_CAN_SMILES': 'smiles_can',
-           'PUBCHEM_OPENEYE_ISO_SMILES': 'smiles_iso',
-           'PUBCHEM_IUPAC_CAS_NAME': 'name_cas',
-           'PUBCHEM_IUPAC_NAME': 'name_iupac',
-           'PUBCHEM_IUPAC_TRADITIONAL_NAME': 'name_traditional',
-           'PUBCHEM_IUPAC_SYSTEMATIC_NAME': 'name_systematic',
-           'PUBCHEM_IUPAC_OPENEYE_NAME': 'name_openeye'}
+key_map = {
+    "PUBCHEM_OPENEYE_CAN_SMILES": "smiles_can",
+    "PUBCHEM_OPENEYE_ISO_SMILES": "smiles_iso",
+    "PUBCHEM_IUPAC_CAS_NAME": "name_cas",
+    "PUBCHEM_IUPAC_NAME": "name_iupac",
+    "PUBCHEM_IUPAC_TRADITIONAL_NAME": "name_traditional",
+    "PUBCHEM_IUPAC_SYSTEMATIC_NAME": "name_systematic",
+    "PUBCHEM_IUPAC_OPENEYE_NAME": "name_openeye",
+}
 
 
 def process_sdf_file(filename):
-    mp_pubchem = MongograntStore("rw:knowhere.lbl.gov/mp_pubchem", "mp_pubchem",
-                                 key="pubchem_id")
+    mp_pubchem = MongograntStore(
+        "rw:knowhere.lbl.gov/mp_pubchem", "mp_pubchem", key="pubchem_id"
+    )
     mp_pubchem.connect()
     coll = mp_pubchem.collection
 
     skipped = 0
     pubchem_molecules = []
-    for i, mol in enumerate(pybel.readfile('sdf', filename)):
+    for i, mol in enumerate(pybel.readfile("sdf", filename)):
         try:
-            pubchem_id = int(mol.data['PUBCHEM_COMPOUND_CID'])
+            pubchem_id = int(mol.data["PUBCHEM_COMPOUND_CID"])
             xyz = mol.write(format="xyz")
 
-            data = {'pubchem_id': pubchem_id,
-                    'xyz': xyz}
+            data = {"pubchem_id": pubchem_id, "xyz": xyz}
             for key in keys:
                 if key in mol.data:
                     data[key_map[key]] = mol.data[key]
@@ -92,22 +98,26 @@ def download_done(future):
 
 def download_file(remote_file):
     """First downloads the file to filename.tmp then moves to filename after"""
-    ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
+    ftp = ftplib.FTP(
+        "ftp.ncbi.nlm.nih.gov",
+    )
     ftp.login()
 
     ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
     file_location = os.path.join(tmp_dir, remote_file)
-    ftp.retrbinary("RETR " + remote_file, open(file_location + ".tmp", 'wb').write)
+    ftp.retrbinary("RETR " + remote_file, open(file_location + ".tmp", "wb").write)
 
     os.rename(file_location + ".tmp", file_location)
     return True
 
 
-ftp = ftplib.FTP('ftp.ncbi.nlm.nih.gov',)
+ftp = ftplib.FTP(
+    "ftp.ncbi.nlm.nih.gov",
+)
 ftp.login()
 
 ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
-files = [f for f in ftp.nlst() if '.sdf.gz' in f]
+files = [f for f in ftp.nlst() if ".sdf.gz" in f]
 total_files = len(files)
 
 download_pbar = tqdm(total=total_files, desc="download")
@@ -118,10 +128,10 @@ if not os.path.exists(tmp_dir):
 # download files if not already present
 with pebble.ProcessPool(max_workers=10) as pool:
     for remote_file in files:
-        if (not os.path.exists(os.path.join(tmp_dir, remote_file)) and
-            not os.path.exists(os.path.join(tmp_dir, remote_file +
-                                            ".processed"))):
-            f = pool.schedule(download_file, args=(remote_file, ))
+        if not os.path.exists(
+            os.path.join(tmp_dir, remote_file)
+        ) and not os.path.exists(os.path.join(tmp_dir, remote_file + ".processed")):
+            f = pool.schedule(download_file, args=(remote_file,))
             f.add_done_callback(download_done)
         else:
             download_pbar.update()
@@ -133,14 +143,13 @@ files = glob.glob(os.path.join(tmp_dir, "*.sdf.gz"))
 total_files = len(files)
 
 # process the downloaded files
-pbar = tqdm(total=total_files, desc='processing')
+pbar = tqdm(total=total_files, desc="processing")
 total_completed = []
 total_skipped = []
 
 with pebble.ProcessPool() as pool:
     for downloaded_file in files:
-        f = pool.schedule(process_sdf_file, args=(downloaded_file, ),
-                          timeout=480)
+        f = pool.schedule(process_sdf_file, args=(downloaded_file,), timeout=480)
         f.add_done_callback(task_done)
 
 pbar.close()

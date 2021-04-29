@@ -3,10 +3,10 @@ This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
 
-from typing import Dict, Any, List, Union
+from typing import Any, Dict, List, Union
 
 
-class BaseAdapter(object):
+class BaseAdapter:
     """Base adapter class for facilitating access to condensed structure data.
 
     Attributes:
@@ -19,11 +19,14 @@ class BaseAdapter(object):
 
     def __init__(self, condensed_structure: Dict[str, Any]):
         self._condensed_structure = condensed_structure
-        self.elements = {site_index: site_data['element']
-                         for site_index, site_data in self.sites.items()}
+        self.elements = {
+            site_index: site_data["element"]
+            for site_index, site_data in self.sites.items()
+        }
 
-    def get_distance_details(self, from_site: int,
-                             to_sites: Union[int, List[int]]) -> List[float]:
+    def get_distance_details(
+        self, from_site: int, to_sites: Union[int, List[int]]
+    ) -> List[float]:
         """Gets the bond lengths between two sets of sites.
 
         Args:
@@ -37,11 +40,15 @@ class BaseAdapter(object):
             # If only one to_site is provided turn it into a list
             to_sites = [to_sites]
 
-        return [distance for to_site in to_sites
-                for distance in self.distances[from_site][to_site]]
+        return [
+            distance
+            for to_site in to_sites
+            for distance in self.distances[from_site][to_site]
+        ]
 
-    def get_angle_details(self, from_site: int, to_sites: Union[int, List[int]],
-                          connectivity: str) -> List[float]:
+    def get_angle_details(
+        self, from_site: int, to_sites: Union[int, List[int]], connectivity: str
+    ) -> List[float]:
         """Gets the connectivity angles between two sets of sites.
 
         Args:
@@ -57,8 +64,11 @@ class BaseAdapter(object):
             # If only one to_site is provided turn it into a list
             to_sites = [to_sites]
 
-        return [angle for to_site in to_sites
-                for angle in self.angles[from_site][to_site][connectivity]]
+        return [
+            angle
+            for to_site in to_sites
+            for angle in self.angles[from_site][to_site][connectivity]
+        ]
 
     @property
     def mineral(self) -> Dict[str, Union[str, int, bool]]:
@@ -67,7 +77,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['mineral']
+        return self._condensed_structure["mineral"]
 
     @property
     def formula(self) -> str:
@@ -76,7 +86,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['formula']
+        return self._condensed_structure["formula"]
 
     @property
     def spg_symbol(self) -> str:
@@ -85,7 +95,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['spg_symbol']
+        return self._condensed_structure["spg_symbol"]
 
     @property
     def crystal_system(self) -> str:
@@ -94,7 +104,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['crystal_system']
+        return self._condensed_structure["crystal_system"]
 
     @property
     def dimensionality(self) -> int:
@@ -103,7 +113,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['dimensionality']
+        return self._condensed_structure["dimensionality"]
 
     @property
     def sites(self) -> Dict[int, Dict[str, Any]]:
@@ -112,7 +122,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['sites']
+        return self._condensed_structure["sites"]
 
     @property
     def distances(self) -> Dict[int, Dict[int, List[float]]]:
@@ -121,7 +131,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['distances']
+        return self._condensed_structure["distances"]
 
     @property
     def angles(self) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
@@ -130,7 +140,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['angles']
+        return self._condensed_structure["angles"]
 
     @property
     def components(self) -> Dict[int, Dict[str, Any]]:
@@ -139,7 +149,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['components']
+        return self._condensed_structure["components"]
 
     @property
     def component_makeup(self) -> List[int]:
@@ -148,7 +158,7 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return self._condensed_structure['component_makeup']
+        return self._condensed_structure["component_makeup"]
 
     @property
     def is_vdw_heterostructure(self) -> bool:
@@ -157,4 +167,4 @@ class BaseAdapter(object):
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
         more details.
         """
-        return bool(self._condensed_structure['vdw_heterostructure_info'])
+        return bool(self._condensed_structure["vdw_heterostructure_info"])

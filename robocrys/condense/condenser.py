@@ -2,28 +2,30 @@
 This module defines a class for condensing structures into dict representations.
 """
 
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from pymatgen.analysis.dimensionality import get_structure_components
-from pymatgen.analysis.local_env import NearNeighbors, CrystalNN
+from pymatgen.analysis.local_env import CrystalNN, NearNeighbors
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from robocrys import common_formulas
-from robocrys.condense.component import (get_sym_inequiv_components,
-                                         get_reconstructed_structure,
-                                         get_formula_from_components,
-                                         get_component_formula,
-                                         components_are_vdw_heterostructure,
-                                         get_vdw_heterostructure_information,
-                                         get_structure_inequiv_components,
-                                         Component)
+from robocrys.condense.component import (
+    Component,
+    components_are_vdw_heterostructure,
+    get_component_formula,
+    get_formula_from_components,
+    get_reconstructed_structure,
+    get_structure_inequiv_components,
+    get_sym_inequiv_components,
+    get_vdw_heterostructure_information,
+)
 from robocrys.condense.mineral import MineralMatcher
 from robocrys.condense.molecule import MoleculeNamer
 from robocrys.condense.site import SiteAnalyzer
 
 
-class StructureCondenser(object):
+class StructureCondenser:
     """Class to transform a structure into an intermediate dict representation.
 
     Args:
@@ -57,15 +59,17 @@ class StructureCondenser(object):
             reduced formula.
     """
 
-    def __init__(self,
-                 use_conventional_cell: bool = True,
-                 near_neighbors: Optional[NearNeighbors] = None,
-                 mineral_matcher: Optional[MineralMatcher] = None,
-                 use_symmetry_equivalent_sites: bool = False,
-                 symprec: float = 0.01,
-                 simplify_molecules: bool = True,
-                 use_iupac_formula: bool = True,
-                 use_common_formulas: bool = True):
+    def __init__(
+        self,
+        use_conventional_cell: bool = True,
+        near_neighbors: Optional[NearNeighbors] = None,
+        mineral_matcher: Optional[MineralMatcher] = None,
+        use_symmetry_equivalent_sites: bool = False,
+        symprec: float = 0.01,
+        simplify_molecules: bool = True,
+        use_iupac_formula: bool = True,
+        use_common_formulas: bool = True,
+    ):
         if not near_neighbors:
             near_neighbors = CrystalNN()
 
@@ -109,52 +113,56 @@ class StructureCondenser(object):
         bonded_structure = self.near_neighbors.get_bonded_structure(structure)
 
         components = get_structure_components(
-            bonded_structure, inc_orientation=True, inc_site_ids=True,
-            inc_molecule_graph=True)
+            bonded_structure,
+            inc_orientation=True,
+            inc_site_ids=True,
+            inc_molecule_graph=True,
+        )
 
-        dimensionality = max(c['dimensionality'] for c in components)
+        dimensionality = max(c["dimensionality"] for c in components)
         mineral = self._condense_mineral(structure, components)
         formula = self._condense_formula(structure, components)
 
         structure_data = {
-            'formula': formula,
-            'spg_symbol': sga.get_space_group_symbol(),
-            'crystal_system': sga.get_crystal_system(),
-            'mineral': mineral,
-            'dimensionality': dimensionality,
+            "formula": formula,
+            "spg_symbol": sga.get_space_group_symbol(),
+            "crystal_system": sga.get_crystal_system(),
+            "mineral": mineral,
+            "dimensionality": dimensionality,
         }
 
         site_analyzer = SiteAnalyzer(
-            bonded_structure, symprec=self.symprec,
-            use_symmetry_equivalent_sites=self.use_symmetry_equivalent_sites)
-        structure_data['sites'] = site_analyzer.get_all_site_summaries()
-        structure_data['distances'] = site_analyzer. \
-            get_all_bond_distance_summaries()
-        structure_data['angles'] = site_analyzer. \
-            get_all_connectivity_angle_summaries()
-        structure_data['nnn_distances'] = site_analyzer. \
-            get_all_nnn_distance_summaries()
+            bonded_structure,
+            symprec=self.symprec,
+            use_symmetry_equivalent_sites=self.use_symmetry_equivalent_sites,
+        )
+        structure_data["sites"] = site_analyzer.get_all_site_summaries()
+        structure_data["distances"] = site_analyzer.get_all_bond_distance_summaries()
+        structure_data["angles"] = site_analyzer.get_all_connectivity_angle_summaries()
+        structure_data["nnn_distances"] = site_analyzer.get_all_nnn_distance_summaries()
 
         component_summary, component_makeup = self._condense_components(
-            components, sga, site_analyzer)
-        structure_data['components'] = component_summary
-        structure_data['component_makeup'] = component_makeup
+            components, sga, site_analyzer
+        )
+        structure_data["components"] = component_summary
+        structure_data["component_makeup"] = component_makeup
 
         if components_are_vdw_heterostructure(components):
             hs_info = get_vdw_heterostructure_information(
-                components, use_iupac_formula=self.use_iupac_formula,
-                use_common_formulas=self.use_common_formulas)
+                components,
+                use_iupac_formula=self.use_iupac_formula,
+                use_common_formulas=self.use_common_formulas,
+            )
         else:
             hs_info = None
 
-        structure_data['vdw_heterostructure_info'] = hs_info
+        structure_data["vdw_heterostructure_info"] = hs_info
 
         return structure_data
 
-    def _condense_mineral(self,
-                          structure: Structure,
-                          components: List[Component]
-                          ) -> Dict[str, Any]:
+    def _condense_mineral(
+        self, structure: Structure, components: List[Component]
+    ) -> Dict[str, Any]:
         """Condenses the mineral data.
 
         Initially the original structure will be matched against a library
@@ -190,26 +198,29 @@ class StructureCondenser(object):
         """
 
         if not self.mineral_matcher:
-            return {'type': None, 'distance': -1, 'n_species_type_match': True,
-                    'simplified': False}
+            return {
+                "type": None,
+                "distance": -1,
+                "n_species_type_match": True,
+                "simplified": False,
+            }
 
         mineral = self.mineral_matcher.get_best_mineral_name(structure)
 
-        if not mineral['type']:
+        if not mineral["type"]:
             mineral_structure = get_reconstructed_structure(
-                components, simplify_molecules=self.simplify_molecules)
-            mineral = self.mineral_matcher.get_best_mineral_name(
-                mineral_structure)
-            mineral['simplified'] = True
+                components, simplify_molecules=self.simplify_molecules
+            )
+            mineral = self.mineral_matcher.get_best_mineral_name(mineral_structure)
+            mineral["simplified"] = True
         else:
-            mineral['simplified'] = False
+            mineral["simplified"] = False
 
         return mineral
 
-    def _condense_formula(self,
-                          structure: Structure,
-                          components: List[Component]
-                          ) -> str:
+    def _condense_formula(
+        self, structure: Structure, components: List[Component]
+    ) -> str:
         """Condenses the structure formula.
 
         If :attr:`StructureCondenser.use_common_formulas` is ``True`` and the
@@ -231,14 +242,16 @@ class StructureCondenser(object):
             formula = common_formulas[reduced_formula]
         else:
             formula = get_formula_from_components(
-                components, use_common_formulas=self.use_common_formulas)
+                components, use_common_formulas=self.use_common_formulas
+            )
         return formula
 
-    def _condense_components(self,
-                             components: List[Component],
-                             spacegroup_analyzer: SpacegroupAnalyzer,
-                             site_analyzer: SiteAnalyzer
-                             ) -> Tuple[Dict[int, Any], List[int]]:
+    def _condense_components(
+        self,
+        components: List[Component],
+        spacegroup_analyzer: SpacegroupAnalyzer,
+        site_analyzer: SiteAnalyzer,
+    ) -> Tuple[Dict[int, Any], List[int]]:
         """Condenses the component data.
 
         Args:
@@ -273,7 +286,8 @@ class StructureCondenser(object):
         """
         if self.use_symmetry_equivalent_sites:
             inequiv_components = get_sym_inequiv_components(
-                components, spacegroup_analyzer)
+                components, spacegroup_analyzer
+            )
         else:
             inequiv_components = get_structure_inequiv_components(components)
 
@@ -283,23 +297,27 @@ class StructureCondenser(object):
         component_makeup = []
         for i, component in enumerate(inequiv_components):
             formula = get_component_formula(
-                component, use_iupac_formula=self.use_iupac_formula,
-                use_common_formulas=self.use_common_formulas)
+                component,
+                use_iupac_formula=self.use_iupac_formula,
+                use_common_formulas=self.use_common_formulas,
+            )
 
-            sites = site_analyzer.get_inequivalent_site_indices(
-                component['site_ids'])
+            sites = site_analyzer.get_inequivalent_site_indices(component["site_ids"])
 
-            if component['dimensionality'] == 0:
+            if component["dimensionality"] == 0:
                 molecule_name = molecule_namer.get_name_from_molecule_graph(
-                    component['molecule_graph'])
+                    component["molecule_graph"]
+                )
             else:
                 molecule_name = None
 
-            components[i] = {'formula': formula,
-                             'dimensionality': component['dimensionality'],
-                             'orientation': component['orientation'],
-                             'molecule_name': molecule_name,
-                             'sites': sites}
-            component_makeup.extend([i] * component['count'])
+            components[i] = {
+                "formula": formula,
+                "dimensionality": component["dimensionality"],
+                "orientation": component["orientation"],
+                "molecule_name": molecule_name,
+                "sites": sites,
+            }
+            component_makeup.extend([i] * component["count"])
 
         return components, component_makeup
