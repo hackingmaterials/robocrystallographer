@@ -14,7 +14,7 @@ See https://github.com/materialsintelligence/matscholar for more details.
 import os
 
 from monty.serialization import dumpfn, loadfn
-from pymatgen import Composition
+from pymatgen.core import Composition
 from pymatgen.core.composition import CompositionError
 
 cwd = os.path.join(os.path.dirname(__file__))
