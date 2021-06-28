@@ -1,5 +1,5 @@
 spglib==1.16.1
-numpy==1.20.3
+numpy==1.21.0
 scipy==1.6.3
 pymatgen==2022.0.8
 inflect==5.3.0
