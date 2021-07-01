@@ -28,6 +28,9 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering :: Chemistry",
         "Topic :: Scientific/Engineering :: Physics",
         "Topic :: Scientific/Engineering",
@@ -78,6 +81,7 @@ setup(
             path_join("condense", "formula_db.json.gz"),
         ]
     },
+    python_requires=">=3.7",
     data_files=["LICENSE", "CONTRIBUTING.rst"],
     entry_points={"console_scripts": ["robocrys = robocrys.cli:main"]},
 )
