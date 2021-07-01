@@ -1,10 +1,10 @@
 spglib==1.16.1
-numpy==1.20.3
-scipy==1.6.3
-pymatgen==2022.0.8
+numpy==1.21.0
+scipy==1.7.0
+pymatgen==2022.0.9
 inflect==5.3.0
 networkx==2.5.1
-matminer==0.7.2
+matminer==0.7.3
 monty==2021.6.10
 pubchempy==1.0.4
 pybtex==0.24.0
