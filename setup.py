@@ -69,7 +69,7 @@ setup(
             "pycodestyle==2.7.0",
             "mypy==0.910",
             "pydocstyle==6.1.1",
-            "flake8==3.9.2",
+            "flake8==4.0.1",
             "pylint==2.11.1",
             "black==21.9b0",
         ],
