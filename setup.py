@@ -66,7 +66,7 @@ setup(
         "lint": [
             "coverage==6.0.1",
             "codacy-coverage==1.3.11",
-            "pycodestyle==2.7.0",
+            "pycodestyle==2.8.0",
             "mypy==0.910",
             "pydocstyle==6.1.1",
             "flake8==4.0.1",
