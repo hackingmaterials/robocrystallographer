@@ -64,7 +64,7 @@ setup(
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
         "tests": ["pytest==6.2.5", "pytest-cov==3.0.0"],
         "lint": [
-            "coverage==6.1.1",
+            "coverage==6.1.2",
             "codacy-coverage==1.3.11",
             "pycodestyle==2.8.0",
             "mypy==0.910",
