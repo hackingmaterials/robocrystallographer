@@ -67,7 +67,7 @@ setup(
             "coverage==6.3",
             "codacy-coverage==1.3.11",
             "pycodestyle==2.8.0",
-            "mypy==0.930",
+            "mypy==0.931",
             "pydocstyle==6.1.1",
             "flake8==4.0.1",
             "pylint==2.12.2",
