@@ -62,7 +62,7 @@ setup(
             "m2r2==0.3.2",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
-        "tests": ["pytest==6.2.5", "pytest-cov==3.0.0"],
+        "tests": ["pytest==7.0.0", "pytest-cov==3.0.0"],
         "lint": [
             "coverage==6.3",
             "codacy-coverage==1.3.11",
