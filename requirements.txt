@@ -2,7 +2,7 @@ spglib==1.16.3
 numpy==1.22.3
 scipy==1.8.0
 pymatgen==2022.4.26
-inflect==5.5.2
+inflect==5.6.0
 networkx==2.8
 matminer==0.7.6
 monty==2022.1.19
