@@ -55,7 +55,7 @@ setup(
     ],
     extras_require={
         "docs": [
-            "sphinx==5.0.2",
+            "sphinx==5.1.1",
             "sphinx-argparse==0.3.1",
             "sphinx_rtd_theme==1.0.0",
             "sphinx-autodoc-typehints==1.19.1",
