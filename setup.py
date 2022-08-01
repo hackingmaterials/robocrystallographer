@@ -58,7 +58,7 @@ setup(
             "sphinx==5.0.2",
             "sphinx-argparse==0.3.1",
             "sphinx_rtd_theme==1.0.0",
-            "sphinx-autodoc-typehints==1.18.3",
+            "sphinx-autodoc-typehints==1.19.1",
             "m2r2==0.3.2",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
