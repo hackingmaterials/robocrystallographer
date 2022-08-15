@@ -59,7 +59,7 @@ setup(
             "sphinx-argparse==0.3.1",
             "sphinx_rtd_theme==1.0.0",
             "sphinx-autodoc-typehints==1.19.2",
-            "m2r2==0.3.2",
+            "m2r2==0.3.3",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
         "tests": ["pytest==7.1.2", "pytest-cov==3.0.0"],
