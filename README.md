@@ -4,10 +4,10 @@
 
 <p align="center">
   <a href="https://pypi.org/project/robocrys/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/robocrys.svg?colorB=blue"> </a>
-  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Grade" src="https://img.shields.io/codacy/grade/47f851408d364efa9a8cdf0ed844cd8b.svg"> </a>
-  <a href="https://www.codacy.com/app/utf/robocrystallographer"><img alt="Codacy Coverage" src="https://img.shields.io/codacy/coverage/47f851408d364efa9a8cdf0ed844cd8b.svg?colorB=brightgreen"> </a>
   <a href="https://github.com/hackingmaterials/robocrystallographer/actions?query=workflow%3A%22Run+tests%22"><img alt="CircleCI" src="https://img.shields.io/github/workflow/status/hackingmaterials/robocrystallographer/Run%20tests"> </a>
 </p>
+
+
 
 
 Robocrystallographer is a tool to generate text descriptions of crystal
