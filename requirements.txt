@@ -5,6 +5,6 @@ pymatgen==2022.9.21
 inflect==6.0.2
 networkx==2.8.7
 matminer==0.7.6
-monty==2022.1.19
+monty==2022.9.9
 pubchempy==1.0.4
 pybtex==0.24.0
