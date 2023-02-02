@@ -198,9 +198,14 @@ class FeaturizerAdapter(BaseAdapter):
             Whether the structure only contains the specified dimensionalities.
 
         """
+        try:
+            iterable = collections.Iterable
+        except:
+            iterable = collections.abc.Iterable
+            
         if isinstance(dimensionalities, set):
             set_dimensionalities = dimensionalities
-        elif isinstance(dimensionalities, collections.Iterable):
+        elif isinstance(dimensionalities, iterable):
             set_dimensionalities = set(dimensionalities)
         else:
             set_dimensionalities = {dimensionalities}
