@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://pypi.org/project/robocrys/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/robocrys.svg?colorB=blue"> </a>
-  <a href="https://github.com/hackingmaterials/robocrystallographer/actions?query=workflow%3A%22Run+tests%22"><img alt="CircleCI" src="https://img.shields.io/github/workflow/status/hackingmaterials/robocrystallographer/Run%20tests"> </a>
+  <a href="https://github.com/hackingmaterials/robocrystallographer/actions?query=workflow%3A%22Run+tests%22"><img alt="CircleCI" src="https://img.shields.io/github/actions/workflow/status/hackingmaterials/robocrystallographer/tests.yml?branch=main"> </a>
 </p>
 
 
