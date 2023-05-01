@@ -1,106 +1,57 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.7 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/describe/describer.html"/>
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../../index.html" class="icon icon-home"> Robocrystallographer
           
-
-          
-            
-            <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
-          
+          <a href="../../../index.html" class="icon icon-home">
+            Robocrystallographer
+              <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 0.2.7
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Usage Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../format.html">Condensed structure format</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Information</span></p>
+<p class="caption" role="heading"><span class="caption-text">Information</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Contributors</a></li>
@@ -108,75 +59,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Function Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Function Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Robocrystallographer</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content style-external-links">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>robocrys.describe.describer</li>
-    
-    
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">robocrys.describe.describer</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for robocrys.describe.describer</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module provides a class for generating descriptions of condensed structure</span>
@@ -222,7 +134,7 @@
         <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
         <span class="n">return_parts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A class to convert condensed structure data into text descriptions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A class to convert condensed structure data into text descriptions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            describe_mineral: Whether to describe the crystal mineral data.</span>
@@ -284,7 +196,7 @@
 <div class="viewcode-block" id="StructureDescriber.describe"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.describe">[docs]</a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Convert a condensed structure into a text description.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a condensed structure into a text description.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            condensed_structure: The condensed structure data, formatted as</span>
@@ -322,7 +234,7 @@
             <span class="k">return</span> <span class="n">description</span></div>
 
 <div class="viewcode-block" id="StructureDescriber.get_mineral_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_mineral_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_mineral_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets the mineral name and space group description.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the mineral name and space group description.</span>
 
 <span class="sd">        If the structure is a perfect match for a known prototype (e.g.</span>
 <span class="sd">        the distance parameter is -1, the mineral name is the prototype name.</span>
@@ -361,7 +273,7 @@
         <span class="k">return</span> <span class="n">desc</span></div>
 
 <div class="viewcode-block" id="StructureDescriber.get_component_makeup_summary"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_makeup_summary">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_makeup_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets a summary of the makeup of components in a structure.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of the makeup of components in a structure.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A description of the number of components and their dimensionalities</span>
@@ -446,7 +358,7 @@
         <span class="k">return</span> <span class="n">desc</span></div>
 
 <div class="viewcode-block" id="StructureDescriber.get_all_component_descriptions"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_all_component_descriptions">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_component_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets the descriptions of all components in the structure.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the descriptions of all components in the structure.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A description of all components in the structure.</span>
@@ -498,7 +410,7 @@
 <div class="viewcode-block" id="StructureDescriber.get_component_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_description</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">single_component</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets the descriptions of all sites in a component.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the descriptions of all sites in a component.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            component_index: The index of the component</span>
@@ -542,7 +454,7 @@
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructureDescriber.get_site_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_site_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets a description of the geometry and bonding of a site.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of the geometry and bonding of a site.</span>
 
 <span class="sd">        If the site likeness (order parameter) is less than ``distorted_tol``,</span>
 <span class="sd">        &quot;distorted&quot; will be added to the geometry description.</span>
@@ -591,7 +503,7 @@
         <span class="k">return</span> <span class="n">desc</span></div>
 
     <span class="k">def</span> <span class="nf">_get_poly_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets a description of a connected polyhedral site.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of a connected polyhedral site.</span>
 
 <span class="sd">        If the site likeness (order parameter) is less than ``distorted_tol``,</span>
 <span class="sd">        &quot;distorted&quot; will be added to the geometry description.</span>
@@ -704,7 +616,7 @@
         <span class="k">return</span> <span class="n">desc</span> <span class="o">+</span> <span class="n">en</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nnn_descriptions</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_nearest_neighbor_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets a description of a sites nearest neighbors.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of a sites nearest neighbors.</span>
 
 <span class="sd">        Note: This function is intended to be run directly after</span>
 <span class="sd">        :meth:`get_site_description`, as the output will not form a complete</span>
@@ -747,7 +659,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">en</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nn_descriptions</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">s_atoms</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">_get_nearest_neighbor_bond_length_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets the descriptions of the bond lengths for nearest neighbor sites.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the descriptions of the bond lengths for nearest neighbor sites.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            site_index: An inequivalent site index.</span>
@@ -772,7 +684,7 @@
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">bond_descriptions</span><span class="p">))</span>
 
 <div class="viewcode-block" id="StructureDescriber.get_bond_length_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_bond_length_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets a description of the bond lengths between two sets of sites.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of the bond lengths between two sets of sites.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            from_site: An inequivalent site index.</span>
@@ -857,7 +769,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets a description of octahedral tilting angles between two sites.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of octahedral tilting angles between two sites.</span>
 
 <span class="sd">        Currently only implemented for corner-sharing octahedra.</span>
 <span class="sd">        Will throw an error if the two sites are not next nearest neighbors.</span>
@@ -901,7 +813,7 @@
         <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_filter_seen_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Filter the list of to_sites to only include unseen bonds.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the list of to_sites to only include unseen bonds.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            from_site: An inequivalent site index.</span>
@@ -926,19 +838,19 @@
         <span class="k">return</span> <span class="n">not_seen_to_sites</span>
 
     <span class="k">def</span> <span class="nf">_rounded_bond_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Function to round bond lengths to a number of decimal places.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to round bond lengths to a number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_length_decimal_places</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_distance_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Utility function to round a distance and add an Angstrom symbol.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to round a distance and add an Angstrom symbol.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f} </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_length_decimal_places</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angstrom</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_distance_range_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist_a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dist_b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Utility function to format a range of distances.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to format a range of distances.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}–{:.</span><span class="si">{}</span><span class="s2">f} </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">dist_a</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bond_length_decimal_places</span><span class="p">,</span>
@@ -948,17 +860,17 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_rounded_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Function to round angles to a number of decimal places.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to round angles to a number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_decimal_places</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_angle_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Utility function to round a distance and add an Angstrom symbol.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to round a distance and add an Angstrom symbol.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_decimal_places</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_angle_range_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle_a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">angle_b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Utility function to format a range of distances.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to format a range of distances.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}–{:.</span><span class="si">{}</span><span class="s2">f}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">angle_a</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">angle_decimal_places</span><span class="p">,</span>
@@ -969,7 +881,7 @@
 
 
 <div class="viewcode-block" id="get_mineral_name"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.get_mineral_name">[docs]</a><span class="k">def</span> <span class="nf">get_mineral_name</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get the mineral name from a mineral dictionary.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the mineral name from a mineral dictionary.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        mineral_dict: The mineral dictionary from the condensed description.</span>
@@ -993,46 +905,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2018, Alex Ganose.
-
-    </p>
+    <p>&#169; Copyright 2018, Alex Ganose.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

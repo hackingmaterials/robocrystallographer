@@ -1,106 +1,57 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>robocrys.util &mdash; Robocrystallographer 0.2.7 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/util.html"/>
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> Robocrystallographer
           
-
-          
-            
-            <img src="../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
-          
+          <a href="../../index.html" class="icon icon-home">
+            Robocrystallographer
+              <img src="../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 0.2.7
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Usage Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cli.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../format.html">Condensed structure format</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Information</span></p>
+<p class="caption" role="heading"><span class="caption-text">Information</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributors.html">Contributors</a></li>
@@ -108,75 +59,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Function Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Function Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Robocrystallographer</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content style-external-links">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>robocrys.util</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">robocrys.util</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for robocrys.util</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Miscellaneous utility functions and common data.</span>
@@ -254,7 +166,7 @@
 
 
 <div class="viewcode-block" id="get_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_el">[docs]</a><span class="k">def</span> <span class="nf">get_el</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Species</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Utility method to get an element str from a symbol, Element, or Specie.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility method to get an element str from a symbol, Element, or Specie.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: An arbitrary object. Supported objects are Element/Species objects,</span>
@@ -284,7 +196,7 @@
     <span class="n">use_sym_label</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Formats an element string.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formats an element string.</span>
 
 <span class="sd">    Performs a variety of functions, including:</span>
 
@@ -348,7 +260,7 @@
 
 
 <div class="viewcode-block" id="superscript_number"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.superscript_number">[docs]</a><span class="k">def</span> <span class="nf">superscript_number</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts a string containing numbers to superscript.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a string containing numbers to superscript.</span>
 
 <span class="sd">    Will only convert the numbers 0-9, and the + and - characters.</span>
 
@@ -385,7 +297,7 @@
 
 
 <div class="viewcode-block" id="unicodeify_spacegroup"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.unicodeify_spacegroup">[docs]</a><span class="k">def</span> <span class="nf">unicodeify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
 
 <span class="sd">    E.g. Fd-3m -&gt; Fd̅3m</span>
 
@@ -424,7 +336,7 @@
 
 
 <div class="viewcode-block" id="htmlify_spacegroup"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.htmlify_spacegroup">[docs]</a><span class="k">def</span> <span class="nf">htmlify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
 
 <span class="sd">    E.g. P-42_1m -&gt; P̅42&lt;sub&gt;1&lt;/sub&gt;m</span>
 
@@ -441,7 +353,7 @@
 
 
 <div class="viewcode-block" id="defaultdict_to_dict"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.defaultdict_to_dict">[docs]</a><span class="k">def</span> <span class="nf">defaultdict_to_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Recursively convert nested :obj:`defaultdict` to :obj:`dict`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively convert nested :obj:`defaultdict` to :obj:`dict`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dictionary: A defaultdict.</span>
@@ -455,7 +367,7 @@
 
 
 <div class="viewcode-block" id="load_condensed_structure_json"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.load_condensed_structure_json">[docs]</a><span class="k">def</span> <span class="nf">load_condensed_structure_json</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Load condensed structure data from a file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load condensed structure data from a file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        filename: The filename.</span>
@@ -474,46 +386,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2018, Alex Ganose.
-
-    </p>
+    <p>&#169; Copyright 2018, Alex Ganose.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

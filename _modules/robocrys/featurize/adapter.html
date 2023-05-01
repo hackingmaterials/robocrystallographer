@@ -1,106 +1,57 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>robocrys.featurize.adapter &mdash; Robocrystallographer 0.2.7 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/featurize/adapter.html"/>
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../../index.html" class="icon icon-home"> Robocrystallographer
           
-
-          
-            
-            <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
-          
+          <a href="../../../index.html" class="icon icon-home">
+            Robocrystallographer
+              <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
                 0.2.7
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Usage Guide</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Usage Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../cli.html">Command-line interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../format.html">Condensed structure format</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Information</span></p>
+<p class="caption" role="heading"><span class="caption-text">Information</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Contributors</a></li>
@@ -108,75 +59,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/hackingmaterials/robocrystallographer">See project on GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Function Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Function Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Robocrystallographer</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content style-external-links">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>robocrys.featurize.adapter</li>
-    
-    
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">robocrys.featurize.adapter</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for robocrys.featurize.adapter</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module implements a class to resolve the symbolic references in condensed</span>
@@ -190,7 +102,7 @@
 
 
 <div class="viewcode-block" id="FeaturizerAdapter"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter">[docs]</a><span class="k">class</span> <span class="nc">FeaturizerAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class to facilitate featurizing condensed structure data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to facilitate featurizing condensed structure data.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        condensed_structure: The condensed structure data, formatted as produced</span>
@@ -208,32 +120,32 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">component_dimensionalities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;The dimensionalities of all components.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The dimensionalities of all components.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_named_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains any named molecules.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains any named molecules.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;molecule_name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains any connected polyhedra.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains any connected polyhedra.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_intercalated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure is intercalated.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure is intercalated.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">0</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_dimensionalities</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_interpenetrated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure is interpenetrated.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure is interpenetrated.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_dimensionalities</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_corner_sharing_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains corner-sharing polyhedra.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains corner-sharing polyhedra.&quot;&quot;&quot;</span>
         <span class="c1"># criteria: original site poly, nnn site poly and sites corner-sharing</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
             <span class="p">[</span>
@@ -250,7 +162,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_edge_sharing_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains edge-sharing polyhedra.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains edge-sharing polyhedra.&quot;&quot;&quot;</span>
         <span class="c1"># criteria: original site poly, nnn site poly and sites edge-sharing</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
             <span class="p">[</span>
@@ -267,7 +179,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contains_face_sharing_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains face-sharing polyhedra.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains face-sharing polyhedra.&quot;&quot;&quot;</span>
         <span class="c1"># criteria: original site poly, nnn site poly and sites face-sharing</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span>
             <span class="p">[</span>
@@ -284,14 +196,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">frac_sites_polyhedra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The percentage of sites that are connected polyhedra.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The percentage of sites that are connected polyhedra.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
             <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;poly_formula&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
         <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_corner_sharing_octahedral_tilt_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The average corner-sharing octahedral tilt angle.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The average corner-sharing octahedral tilt angle.&quot;&quot;&quot;</span>
         <span class="n">oct_sites</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">site</span>
             <span class="k">for</span> <span class="n">component_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_makeup</span>
@@ -322,12 +234,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_coordination_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The average coordination number across all sites.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The average coordination number across all sites.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">mean</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_cation_coordination_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The average coordination number across cation sites.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The average coordination number across cation sites.&quot;&quot;&quot;</span>
         <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
@@ -341,7 +253,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">average_anion_coordination_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The average coordination number across anion sites.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The average coordination number across anion sites.&quot;&quot;&quot;</span>
         <span class="n">cns</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">site</span><span class="p">][</span><span class="s2">&quot;nn&quot;</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span>
@@ -354,7 +266,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">average_coordination_number</span>
 
 <div class="viewcode-block" id="FeaturizerAdapter.contains_molecule"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_molecule">[docs]</a>    <span class="k">def</span> <span class="nf">contains_molecule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains a specific molecule name.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains a specific molecule name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            molecule_name: A molecule name.</span>
@@ -369,7 +281,7 @@
 <div class="viewcode-block" id="FeaturizerAdapter.is_dimensionality"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.is_dimensionality">[docs]</a>    <span class="k">def</span> <span class="nf">is_dimensionality</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">dimensionalities</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure only contains the specified dimensionalities.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure only contains the specified dimensionalities.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            dimensionalities: One or more dimensionalities.</span>
@@ -378,9 +290,14 @@
 <span class="sd">            Whether the structure only contains the specified dimensionalities.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">iterable</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">iterable</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span>
+            
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dimensionalities</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
             <span class="n">set_dimensionalities</span> <span class="o">=</span> <span class="n">dimensionalities</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dimensionalities</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dimensionalities</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
             <span class="n">set_dimensionalities</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dimensionalities</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">set_dimensionalities</span> <span class="o">=</span> <span class="p">{</span><span class="n">dimensionalities</span><span class="p">}</span>
@@ -389,7 +306,7 @@
 <div class="viewcode-block" id="FeaturizerAdapter.contains_geometry_type"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_geometry_type">[docs]</a>    <span class="k">def</span> <span class="nf">contains_geometry_type</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">distorted</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains a specific site geometry.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains a specific site geometry.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            geometry: The site geometry.</span>
@@ -416,7 +333,7 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeaturizerAdapter.contains_connected_geometry"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.contains_connected_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">contains_connected_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether the structure contains the specified connected geometry.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure contains the specified connected geometry.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            connectivity: The connectivity (corner, edge, face)</span>
@@ -441,7 +358,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeaturizerAdapter.frac_site_geometry"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.frac_site_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">frac_site_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The fraction of sites with a specific geometry.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The fraction of sites with a specific geometry.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            geometry: The geometry.</span>
@@ -454,7 +371,7 @@
         <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_sites</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FeaturizerAdapter.frac_sites_n_coordinate"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.adapter.FeaturizerAdapter.frac_sites_n_coordinate">[docs]</a>    <span class="k">def</span> <span class="nf">frac_sites_n_coordinate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The fraction of sites with a specific coordination number.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The fraction of sites with a specific coordination number.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            num_neighbors: The number of nearest neighbors.</span>
@@ -476,46 +393,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2018, Alex Ganose.
-
-    </p>
+    <p>&#169; Copyright 2018, Alex Ganose.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
