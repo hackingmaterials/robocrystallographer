@@ -465,10 +465,10 @@ def get_formula_from_components(
     reduced_form = []
     for i in range(0, num_comps):
         formula = formulas[i]
-        normamt = form_count_dict[formula] * 1.0 / factor
-        formatted_formula = formula if normamt == 1 else f"({formula})"
+        norm_amt = form_count_dict[formula] * 1.0 / factor
+        formatted_formula = formula if norm_amt == 1 else f"({formula})"
         reduced_form.append(formatted_formula)
-        reduced_form.append(formula_double_format(normamt))
+        reduced_form.append(str(formula_double_format(norm_amt)))
 
     reduced_form = "".join(reduced_form)
     return reduced_form

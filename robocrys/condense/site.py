@@ -708,10 +708,8 @@ class SiteAnalyzer:
 
         poly_formula = None
         if geometry["type"] in connected_geometries and any(
-            [
-                nnn_geometry["type"] in connected_geometries
-                for nnn_geometry in nnn_geometries
-            ]
+            nnn_geometry["type"] in connected_geometries
+            for nnn_geometry in nnn_geometries
         ):
             nn_els = [get_el(nn_site["element"]) for nn_site in nn_sites]
             comp = Composition("".join(nn_els))
@@ -720,7 +718,7 @@ class SiteAnalyzer:
             poly_formula = ""
             for e in sorted(el_amt_dict.keys(), key=order_elements):
                 poly_formula += e
-                poly_formula += formula_double_format(el_amt_dict[e])
+                poly_formula += str(formula_double_format(el_amt_dict[e]))
 
         return poly_formula
 
