@@ -1,7 +1,7 @@
 """This module defines a class for condensing structures into dict representations."""
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN, NearNeighbors
@@ -9,7 +9,6 @@ from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from robocrys.condense.component import (
-    Component,
     components_are_vdw_heterostructure,
     get_component_formula,
     get_formula_from_components,
@@ -22,6 +21,9 @@ from robocrys.condense.mineral import MineralMatcher
 from robocrys.condense.molecule import MoleculeNamer
 from robocrys.condense.site import SiteAnalyzer
 from robocrys.util import common_formulas
+
+if TYPE_CHECKING:
+    from robocrys.condense.component import Component
 
 
 class StructureCondenser:

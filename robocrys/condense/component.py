@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import networkx as nx
 import numpy as np
@@ -17,7 +17,8 @@ from pymatgen.util.string import formula_double_format
 from robocrys.condense.fingerprint import get_structure_fingerprint
 from robocrys.util import common_formulas
 
-Component = dict[str, Any]
+if TYPE_CHECKING:
+    Component = dict[str, Any]
 
 
 def get_structure_inequiv_components(
