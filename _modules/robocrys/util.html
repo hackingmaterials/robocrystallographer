@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.util &mdash; Robocrystallographer 0.2.7 documentation</title>
+  <title>robocrys.util &mdash; Robocrystallographer 0.2.8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/util.html"/>
@@ -35,7 +35,7 @@
               <img src="../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.7
+                0.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -90,8 +90,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for robocrys.util</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Miscellaneous utility functions and common data.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Miscellaneous utility functions and common data.</span>
 
 <span class="sd">Attributes:</span>
 <span class="sd">    common_formulas: A set of common formulas. The keys to the data are strings</span>
@@ -104,9 +103,11 @@
 <span class="sd">    dimensionality_to_shape: A mapping from dimensionality to the component</span>
 <span class="sd">        shape.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">monty.json</span> <span class="kn">import</span> <span class="n">MontyDecoder</span>
 <span class="kn">from</span> <span class="nn">monty.serialization</span> <span class="kn">import</span> <span class="n">loadfn</span>
@@ -114,11 +115,11 @@
 <span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">Species</span><span class="p">,</span> <span class="n">get_el_sp</span>
 <span class="kn">from</span> <span class="nn">pymatgen.util.string</span> <span class="kn">import</span> <span class="n">latexify_spacegroup</span>
 
-<span class="n">common_formulas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">loadfn</span><span class="p">(</span>
+<span class="n">common_formulas</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">loadfn</span><span class="p">(</span>
     <span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;robocrys.condense&quot;</span><span class="p">,</span> <span class="s2">&quot;formula_db.json.gz&quot;</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">connected_geometries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">connected_geometries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;tetrahedral&quot;</span><span class="p">,</span>
     <span class="s2">&quot;octahedral&quot;</span><span class="p">,</span>
     <span class="s2">&quot;trigonal pyramidal&quot;</span><span class="p">,</span>
@@ -131,7 +132,7 @@
     <span class="s2">&quot;cuboctahedral&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="n">geometry_to_polyhedra</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">geometry_to_polyhedra</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;octahedral&quot;</span><span class="p">:</span> <span class="s2">&quot;octahedra&quot;</span><span class="p">,</span>
     <span class="s2">&quot;tetrahedral&quot;</span><span class="p">:</span> <span class="s2">&quot;tetrahedra&quot;</span><span class="p">,</span>
     <span class="s2">&quot;trigonal pyramidal&quot;</span><span class="p">:</span> <span class="s2">&quot;trigonal pyramid&quot;</span><span class="p">,</span>
@@ -144,7 +145,7 @@
     <span class="s2">&quot;cuboctahedral&quot;</span><span class="p">:</span> <span class="s2">&quot;cuboctahedra&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">polyhedra_plurals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">polyhedra_plurals</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;octahedra&quot;</span><span class="p">:</span> <span class="s2">&quot;octahedra&quot;</span><span class="p">,</span>
     <span class="s2">&quot;tetrahedra&quot;</span><span class="p">:</span> <span class="s2">&quot;tetrahedra&quot;</span><span class="p">,</span>
     <span class="s2">&quot;trigonal pyramid&quot;</span><span class="p">:</span> <span class="s2">&quot;trigonal pyramids&quot;</span><span class="p">,</span>
@@ -157,7 +158,7 @@
     <span class="s2">&quot;cuboctahedra&quot;</span><span class="p">:</span> <span class="s2">&quot;cuboctahedra&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">dimensionality_to_shape</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">dimensionality_to_shape</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;framework&quot;</span><span class="p">,</span>
     <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;sheet&quot;</span><span class="p">,</span>
     <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;ribbon&quot;</span><span class="p">,</span>
@@ -165,7 +166,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="get_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_el">[docs]</a><span class="k">def</span> <span class="nf">get_el</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Element</span><span class="p">,</span> <span class="n">Species</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="get_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_el">[docs]</a><span class="k">def</span> <span class="nf">get_el</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="n">Species</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility method to get an element str from a symbol, Element, or Specie.</span>
 
 <span class="sd">    Args:</span>
@@ -181,12 +182,11 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">name</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Species</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Species</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">name</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">from_Z</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported element type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported element type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_formatted_el"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.get_formatted_el">[docs]</a><span class="k">def</span> <span class="nf">get_formatted_el</span><span class="p">(</span>
@@ -270,7 +270,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        The superscript string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
         <span class="c1"># no unicode period exists</span>
         <span class="k">return</span> <span class="n">string</span>
@@ -348,11 +347,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">overline</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u0305</span><span class="s2">&quot;</span>  <span class="c1"># u&quot;\u0304&quot; (macron) is also an option</span>
     <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_(\d+)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;&lt;sub&gt;\1&lt;/sub&gt;&quot;</span><span class="p">,</span> <span class="n">spacegroup_symbol</span><span class="p">)</span>
-    <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-(\d)&quot;</span><span class="p">,</span> <span class="sa">fr</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">overline</span><span class="si">}</span><span class="s2">\1&quot;</span><span class="p">,</span> <span class="n">symbol</span><span class="p">)</span>
+    <span class="n">symbol</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;-(\d)&quot;</span><span class="p">,</span> <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">overline</span><span class="si">}</span><span class="s2">\1&quot;</span><span class="p">,</span> <span class="n">symbol</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">symbol</span></div>
 
 
-<div class="viewcode-block" id="defaultdict_to_dict"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.defaultdict_to_dict">[docs]</a><span class="k">def</span> <span class="nf">defaultdict_to_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<div class="viewcode-block" id="defaultdict_to_dict"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.defaultdict_to_dict">[docs]</a><span class="k">def</span> <span class="nf">defaultdict_to_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively convert nested :obj:`defaultdict` to :obj:`dict`.</span>
 
 <span class="sd">    Args:</span>
@@ -362,11 +361,11 @@
 <span class="sd">        The defaultdict as a :obj:`dict`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">defaultdict</span><span class="p">):</span>
-        <span class="n">dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">defaultdict_to_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">defaultdict_to_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">return</span> <span class="n">dictionary</span></div>
 
 
-<div class="viewcode-block" id="load_condensed_structure_json"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.load_condensed_structure_json">[docs]</a><span class="k">def</span> <span class="nf">load_condensed_structure_json</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="load_condensed_structure_json"><a class="viewcode-back" href="../../robocrys.html#robocrys.util.load_condensed_structure_json">[docs]</a><span class="k">def</span> <span class="nf">load_condensed_structure_json</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load condensed structure data from a file.</span>
 
 <span class="sd">    Args:</span>
@@ -376,11 +375,12 @@
 <span class="sd">        The condensed structure data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Json does not support using integeras a dictionary keys, therefore</span>
+    <span class="c1"># JSON does not support using integers a dictionary keys, therefore</span>
     <span class="c1"># manually convert dictionary keys from str to int if possible.</span>
     <span class="k">def</span> <span class="nf">json_keys_to_int</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">return</span> <span class="n">loadfn</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MontyDecoder</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="n">json_keys_to_int</span><span class="p">)</span></div>
 </pre></div>

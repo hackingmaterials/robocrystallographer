@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.7 documentation</title>
+  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/describe/describer.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.7
+                0.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -90,16 +90,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for robocrys.describe.describer</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module provides a class for generating descriptions of condensed structure</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides a class for generating descriptions of condensed structure</span>
 <span class="sd">data.</span>
 
-<span class="sd">TODO:</span>
+<span class="sd">Todo:</span>
 <span class="sd">    * Indicate when molecules have been simplified in the mineral description.</span>
 <span class="sd">    * Handle distortion in connected polyhedra description.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span> <span class="nn">inflect</span>
 <span class="kn">from</span> <span class="nn">pymatgen.util.string</span> <span class="kn">import</span> <span class="n">htmlify</span><span class="p">,</span> <span class="n">latexify</span><span class="p">,</span> <span class="n">latexify_spacegroup</span><span class="p">,</span> <span class="n">unicodeify</span>
@@ -194,8 +194,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_seen_bonds</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="StructureDescriber.describe"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.describe">[docs]</a>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a condensed structure into a text description.</span>
 
 <span class="sd">        Args:</span>
@@ -230,8 +230,7 @@
                 <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mineral&quot;</span><span class="p">,</span> <span class="s2">&quot;component_makeup&quot;</span><span class="p">,</span> <span class="s2">&quot;components&quot;</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">description</span> <span class="ow">and</span> <span class="n">description</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
             <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">description</span></div>
+        <span class="k">return</span> <span class="n">description</span></div>
 
 <div class="viewcode-block" id="StructureDescriber.get_mineral_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_mineral_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_mineral_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the mineral name and space group description.</span>
@@ -292,7 +291,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">dimensionality</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;The structure consists of &quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;The structure is </span><span class="si">{}</span><span class="s2">-dimensional and consists of &quot;</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;The structure is </span><span class="si">{}</span><span class="s2">-dimensional and consists of &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">)</span>
                 <span class="p">)</span>
 
@@ -314,10 +313,7 @@
                 <span class="n">dimensionality</span> <span class="o">=</span> <span class="n">component_group</span><span class="o">.</span><span class="n">dimensionality</span>
 
                 <span class="k">if</span> <span class="n">component_group</span><span class="o">.</span><span class="n">molecule_name</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">component_group</span><span class="o">.</span><span class="n">nsites</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">shape</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">shape</span> <span class="o">=</span> <span class="s2">&quot;molecule&quot;</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span> <span class="k">if</span> <span class="n">component_group</span><span class="o">.</span><span class="n">nsites</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;molecule&quot;</span>
                     <span class="n">shape</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">s_count</span><span class="p">)</span>
                     <span class="n">formula</span> <span class="o">=</span> <span class="n">component_group</span><span class="o">.</span><span class="n">molecule_name</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -369,43 +365,39 @@
                 <span class="n">single_component</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">component_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">get_component_groups</span><span class="p">()</span>
+        <span class="n">component_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">get_component_groups</span><span class="p">()</span>
 
-            <span class="n">component_descriptions</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">component_groups</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="n">component_descriptions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">component_groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">molecule_name</span><span class="p">:</span>
+                    <span class="c1"># don&#39;t describe known molecules</span>
+                    <span class="k">continue</span>
 
-                    <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">molecule_name</span><span class="p">:</span>
-                        <span class="c1"># don&#39;t describe known molecules</span>
-                        <span class="k">continue</span>
+                <span class="n">formula</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">formula</span>
+                <span class="n">group_count</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">count</span>
+                <span class="n">component_count</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">count</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">dimensionality_to_shape</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">]</span>
 
-                    <span class="n">formula</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">formula</span>
-                    <span class="n">group_count</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">count</span>
-                    <span class="n">component_count</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">count</span>
-                    <span class="n">shape</span> <span class="o">=</span> <span class="n">dimensionality_to_shape</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;latex&quot;</span><span class="p">:</span>
+                    <span class="n">formula</span> <span class="o">=</span> <span class="n">latexify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;unicode&quot;</span><span class="p">:</span>
+                    <span class="n">formula</span> <span class="o">=</span> <span class="n">unicodeify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
+                    <span class="n">formula</span> <span class="o">=</span> <span class="n">htmlify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;latex&quot;</span><span class="p">:</span>
-                        <span class="n">formula</span> <span class="o">=</span> <span class="n">latexify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;unicode&quot;</span><span class="p">:</span>
-                        <span class="n">formula</span> <span class="o">=</span> <span class="n">unicodeify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
-                        <span class="n">formula</span> <span class="o">=</span> <span class="n">htmlify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">group_count</span> <span class="o">==</span> <span class="n">component_count</span><span class="p">:</span>
+                    <span class="n">s_filler</span> <span class="o">=</span> <span class="s2">&quot;the&quot;</span> <span class="k">if</span> <span class="n">group_count</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;each&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">s_filler</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">component_count</span><span class="p">)</span><span class="si">}</span><span class="s2"> of the&quot;</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="n">group_count</span> <span class="o">==</span> <span class="n">component_count</span><span class="p">:</span>
-                        <span class="n">s_filler</span> <span class="o">=</span> <span class="s2">&quot;the&quot;</span> <span class="k">if</span> <span class="n">group_count</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;each&quot;</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">s_filler</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> of the&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">component_count</span><span class="p">)</span>
-                        <span class="p">)</span>
-                        <span class="n">shape</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="n">s_filler</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="n">desc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component_description</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
-                    <span class="n">desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="n">s_filler</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2">, &quot;</span>
-                    <span class="n">desc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component_description</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">component_descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
 
-                    <span class="n">component_descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">component_descriptions</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">component_descriptions</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StructureDescriber.get_component_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_description</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">single_component</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -423,7 +415,6 @@
         <span class="n">desc</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">first_group</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">site_group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">get_component_site_groups</span><span class="p">(</span><span class="n">component_index</span><span class="p">):</span>
-
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_site_description</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
@@ -436,10 +427,7 @@
                     <span class="n">fmt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">,</span>
                 <span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">first_group</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">single_component</span><span class="p">:</span>
-                    <span class="n">s_there</span> <span class="o">=</span> <span class="s2">&quot;there&quot;</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">s_there</span> <span class="o">=</span> <span class="s2">&quot;There&quot;</span>
+                <span class="n">s_there</span> <span class="o">=</span> <span class="s2">&quot;there&quot;</span> <span class="k">if</span> <span class="n">first_group</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">single_component</span> <span class="k">else</span> <span class="s2">&quot;There&quot;</span>
 
                 <span class="n">s_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">))</span>
 
@@ -683,7 +671,7 @@
         <span class="c1"># filter empty bond length description strings</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">bond_descriptions</span><span class="p">))</span>
 
-<div class="viewcode-block" id="StructureDescriber.get_bond_length_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_bond_length_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="StructureDescriber.get_bond_length_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_bond_length_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of the bond lengths between two sets of sites.</span>
 
 <span class="sd">        Args:</span>
@@ -719,7 +707,7 @@
 
         <span class="c1"># if only one bond length</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;The </span><span class="si">{}</span><span class="s2">–</span><span class="si">{}</span><span class="s2"> bond length is </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">return</span> <span class="s2">&quot;The </span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2"> bond length is </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">from_element</span><span class="p">,</span> <span class="n">to_element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_to_string</span><span class="p">(</span><span class="n">dists</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="p">)</span>
 
@@ -728,7 +716,7 @@
         <span class="c1"># if multiple bond lengths but they are all the same</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">s_intro</span> <span class="o">=</span> <span class="s2">&quot;Both&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="s2">&quot;All&quot;</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">–</span><span class="si">{}</span><span class="s2"> bond lengths are </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2"> bond lengths are </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">s_intro</span><span class="p">,</span> <span class="n">from_element</span><span class="p">,</span> <span class="n">to_element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance_to_string</span><span class="p">(</span><span class="n">dists</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="p">)</span>
 
@@ -742,7 +730,7 @@
             <span class="n">s_length</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">s_big_count</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="p">(</span>
-                <span class="s2">&quot;There </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> shorter (</span><span class="si">{}</span><span class="s2">) and </span><span class="si">{}</span><span class="s2"> &quot;</span> <span class="s2">&quot;longer (</span><span class="si">{}</span><span class="s2">) </span><span class="si">{}</span><span class="s2">–</span><span class="si">{}</span><span class="s2"> bond </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                <span class="s2">&quot;There </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> shorter (</span><span class="si">{}</span><span class="s2">) and </span><span class="si">{}</span><span class="s2"> longer (</span><span class="si">{}</span><span class="s2">) </span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2"> bond </span><span class="si">{}</span><span class="s2">.&quot;</span>
             <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">en</span><span class="o">.</span><span class="n">plural_verb</span><span class="p">(</span><span class="s2">&quot;is&quot;</span><span class="p">,</span> <span class="n">s_small_count</span><span class="p">),</span>
                 <span class="n">s_small_count</span><span class="p">,</span>
@@ -755,9 +743,7 @@
             <span class="p">)</span>
 
         <span class="c1"># otherwise just detail the spread of bond lengths</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;There are a spread of </span><span class="si">{}</span><span class="s2">–</span><span class="si">{}</span><span class="s2"> bond distances ranging from &quot;</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.&quot;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;There are a spread of </span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2"> bond distances ranging from </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">from_element</span><span class="p">,</span>
             <span class="n">to_element</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_distance_range_to_string</span><span class="p">(</span>
@@ -802,17 +788,16 @@
             <span class="k">if</span> <span class="n">tilts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="s2">&quot;The corner-sharing octahedra are not tilted&quot;</span>
 
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;The corner-sharing octahedral tilt angles &quot;</span> <span class="s2">&quot;are </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_angle_to_string</span><span class="p">(</span><span class="n">tilts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;The corner-sharing octahedral tilt angles are </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_angle_to_string</span><span class="p">(</span><span class="n">tilts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="p">)</span>
 
         <span class="c1"># otherwise just detail the spread of bond lengths</span>
         <span class="k">return</span> <span class="s2">&quot;The corner-sharing octahedral tilt angles range from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_angle_range_to_string</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">tilts</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">tilts</span><span class="p">))</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_filter_seen_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_filter_seen_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the list of to_sites to only include unseen bonds.</span>
 
 <span class="sd">        Args:</span>
@@ -837,7 +822,7 @@
 
         <span class="k">return</span> <span class="n">not_seen_to_sites</span>
 
-    <span class="k">def</span> <span class="nf">_rounded_bond_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_rounded_bond_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to round bond lengths to a number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_length_decimal_places</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span>
@@ -851,7 +836,7 @@
 
     <span class="k">def</span> <span class="nf">_distance_range_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist_a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dist_b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to format a range of distances.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}–{:.</span><span class="si">{}</span><span class="s2">f} </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}-{:.</span><span class="si">{}</span><span class="s2">f} </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">dist_a</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bond_length_decimal_places</span><span class="p">,</span>
             <span class="n">dist_b</span><span class="p">,</span>
@@ -859,7 +844,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_rounded_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_rounded_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to round angles to a number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_decimal_places</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span>
@@ -871,7 +856,7 @@
 
     <span class="k">def</span> <span class="nf">_angle_range_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle_a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">angle_b</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to format a range of distances.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}–{:.</span><span class="si">{}</span><span class="s2">f}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}-{:.</span><span class="si">{}</span><span class="s2">f}</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">angle_a</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">angle_decimal_places</span><span class="p">,</span>
             <span class="n">angle_b</span><span class="p">,</span>
@@ -880,7 +865,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_mineral_name"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.get_mineral_name">[docs]</a><span class="k">def</span> <span class="nf">get_mineral_name</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<div class="viewcode-block" id="get_mineral_name"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.get_mineral_name">[docs]</a><span class="k">def</span> <span class="nf">get_mineral_name</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the mineral name from a mineral dictionary.</span>
 
 <span class="sd">    Args:</span>
@@ -900,8 +885,7 @@
 
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">suffix</span><span class="p">)</span>
 
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="k">return</span> <span class="kc">None</span></div>
 </pre></div>
 
            </div>

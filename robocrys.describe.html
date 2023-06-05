@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.describe package &mdash; Robocrystallographer 0.2.7 documentation</title>
+  <title>robocrys.describe package &mdash; Robocrystallographer 0.2.8 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/robocrys.describe.html"/>
@@ -38,7 +38,7 @@
               <img src="_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.7
+                0.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -239,7 +239,7 @@ elements will be ordered according to the electronegativity values.</p>
 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>condensed_structure</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The condensed structure data, formatted as produced
+<dd class="field-odd"><p><strong>condensed_structure</strong> – The condensed structure data, formatted as produced
 by <code class="xref py py-meth docutils literal notranslate"><span class="pre">robocrys.condense.StructureCondenser.condense_structure()</span></code>.</p>
 </dd>
 </dl>
@@ -248,11 +248,8 @@ by <code class="xref py py-meth docutils literal notranslate"><span class="pre">
 <span class="sig-name descname"><span class="pre">get_component_details</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter.get_component_details"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.get_component_details" title="Permalink to this definition"></a></dt>
 <dd><p>Gets a summary of all components.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#robocrys.describe.adapter.ComponentDetails" title="robocrys.describe.adapter.ComponentDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentDetails</span></code></a>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">ComponentDetails</span></code> objects, each with the
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">ComponentDetails</span></code> objects, each with the
 attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The number of these components in the
@@ -274,11 +271,8 @@ applicable, else <code class="docutils literal notranslate"><span class="pre">No
 <span class="sig-name descname"><span class="pre">get_component_groups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter.get_component_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.get_component_groups" title="Permalink to this definition"></a></dt>
 <dd><p>Gets a summary of all components groups.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#robocrys.describe.adapter.ComponentGroup" title="robocrys.describe.adapter.ComponentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentGroup</span></code></a>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>The components, grouped together by formula, dimensionality and
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>The components, grouped together by formula, dimensionality and
 molecule name. The data will be returned as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of
 <code class="docutils literal notranslate"><span class="pre">ComponentGroup</span></code> objects, each with the attributes:</p>
 <ul class="simple">
@@ -301,11 +295,8 @@ in the group.</p></li>
 <span class="sig-name descname"><span class="pre">get_component_site_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/describe/adapter.html#DescriptionAdapter.get_component_site_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.describe.adapter.DescriptionAdapter.get_component_site_groups" title="Permalink to this definition"></a></dt>
 <dd><p>Gets a summary of the sites in a component.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#robocrys.describe.adapter.SiteGroup" title="robocrys.describe.adapter.SiteGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SiteGroup</span></code></a>]</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>The sites, grouped together by element. The data will be returned
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>The sites, grouped together by element. The data will be returned
 as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">SiteGroup</span></code> objects, each with the attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (<code class="docutils literal notranslate"><span class="pre">int</span></code>): The total number of sites in this group.</p></li>
@@ -324,16 +315,13 @@ as a <a class="reference external" href="https://docs.python.org/3.6/library/std
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</p></li>
-<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to group all nearest neighbor sites
+<li><p><strong>site_index</strong> – An inequivalent site index.</p></li>
+<li><p><strong>group</strong> – Whether to group all nearest neighbor sites
 with the same element together.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#robocrys.describe.adapter.NeighborSiteDetails" title="robocrys.describe.adapter.NeighborSiteDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">NeighborSiteDetails</span></code></a>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">NeighborSiteDetails</span></code> objects, each with the
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">NeighborSiteDetails</span></code> objects, each with the
 attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">element</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The element of the nearest neighbor site.</p></li>
@@ -358,17 +346,14 @@ have a <code class="docutils literal notranslate"><span class="pre">poly_formula
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>site_index</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</p></li>
-<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to group together all next nearest neighbor sites
+<li><p><strong>site_index</strong> – An inequivalent site index.</p></li>
+<li><p><strong>group</strong> – Whether to group together all next nearest neighbor sites
 with the same element, connectivity and geometry but different
 symmetry labels.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="#robocrys.describe.adapter.NextNeighborSiteDetails" title="robocrys.describe.adapter.NextNeighborSiteDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">NextNeighborSiteDetails</span></code></a>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">NextNeighborSiteDetails</span></code> objects, each with the
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <code class="docutils literal notranslate"><span class="pre">NextNeighborSiteDetails</span></code> objects, each with the
 attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">element</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The element of the next nearest neighbor
@@ -394,13 +379,10 @@ next nearest neighbor. Can be more than one site if
 <dd><p>Convert site indices into a formatted symmetry label.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>site_indices</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]) – THe site indices.</p>
+<dd class="field-odd"><p><strong>site_indices</strong> – THe site indices.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The formatted symmetry label. E.g., if the set of symmetry labels
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The formatted symmetry label. E.g., if the set of symmetry labels
 for the sites looks like <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">2)</span></code>, the symmetry label will be
 <code class="docutils literal notranslate"><span class="pre">(1,2)</span></code>.</p>
 </dd>
@@ -526,14 +508,11 @@ data.</p>
 <dd><p>Convert a condensed structure into a text description.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>condensed_structure</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The condensed structure data, formatted as
+<dd class="field-odd"><p><strong>condensed_structure</strong> – The condensed structure data, formatted as
 produced by <code class="xref py py-meth docutils literal notranslate"><span class="pre">StructureCondenser.condense_structure()</span></code>.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A description of the structure. If
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A description of the structure. If
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">StructureDescriber.return_parts</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
 description will be returned as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>. If it is equal to
 <code class="docutils literal notranslate"><span class="pre">True</span></code>, the description will be returned as a <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a> with the
@@ -564,16 +543,13 @@ the relevant part of the description.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>from_site</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – An inequivalent site index.</p></li>
-<li><p><strong>to_sites</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of site indices. The site indices should
+<li><p><strong>from_site</strong> – An inequivalent site index.</p></li>
+<li><p><strong>to_sites</strong> – A <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of site indices. The site indices should
 all be for the same element.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A description of the bond lengths or an empty string if
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A description of the bond lengths or an empty string if
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">StructureDescriber.only_describe_bonds_once</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and
 all all bond lengths have already been described.</p>
 </dd>
@@ -682,13 +658,10 @@ Will throw an error if the two sites are not next nearest neighbors.</p>
 <dd><p>Get the mineral name from a mineral dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>mineral_dict</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]) – The mineral dictionary from the condensed description.</p>
+<dd class="field-odd"><p><strong>mineral_dict</strong> – The mineral dictionary from the condensed description.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">mineral_dict[&quot;type&quot;]</span></code> is set, the mineral name will be returned as
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">mineral_dict[&quot;type&quot;]</span></code> is set, the mineral name will be returned as
 a string, else <code class="docutils literal notranslate"><span class="pre">None</span></code> will be returned.</p>
 </dd>
 </dl>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.condense.condenser &mdash; Robocrystallographer 0.2.7 documentation</title>
+  <title>robocrys.condense.condenser &mdash; Robocrystallographer 0.2.8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/condenser.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.7
+                0.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -90,20 +90,17 @@
            <div itemprop="articleBody">
              
   <h1>Source code for robocrys.condense.condenser</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module defines a class for condensing structures into dict representations.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module defines a class for condensing structures into dict representations.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.dimensionality</span> <span class="kn">import</span> <span class="n">get_structure_components</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.local_env</span> <span class="kn">import</span> <span class="n">CrystalNN</span><span class="p">,</span> <span class="n">NearNeighbors</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
 <span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
 
-<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">common_formulas</span>
 <span class="kn">from</span> <span class="nn">robocrys.condense.component</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Component</span><span class="p">,</span>
     <span class="n">components_are_vdw_heterostructure</span><span class="p">,</span>
     <span class="n">get_component_formula</span><span class="p">,</span>
     <span class="n">get_formula_from_components</span><span class="p">,</span>
@@ -115,6 +112,10 @@
 <span class="kn">from</span> <span class="nn">robocrys.condense.mineral</span> <span class="kn">import</span> <span class="n">MineralMatcher</span>
 <span class="kn">from</span> <span class="nn">robocrys.condense.molecule</span> <span class="kn">import</span> <span class="n">MoleculeNamer</span>
 <span class="kn">from</span> <span class="nn">robocrys.condense.site</span> <span class="kn">import</span> <span class="n">SiteAnalyzer</span>
+<span class="kn">from</span> <span class="nn">robocrys.util</span> <span class="kn">import</span> <span class="n">common_formulas</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">robocrys.condense.component</span> <span class="kn">import</span> <span class="n">Component</span>
 
 
 <div class="viewcode-block" id="StructureCondenser"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.StructureCondenser">[docs]</a><span class="k">class</span> <span class="nc">StructureCondenser</span><span class="p">:</span>
@@ -154,8 +155,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">use_conventional_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">near_neighbors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NearNeighbors</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mineral_matcher</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MineralMatcher</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">near_neighbors</span><span class="p">:</span> <span class="n">NearNeighbors</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mineral_matcher</span><span class="p">:</span> <span class="n">MineralMatcher</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_symmetry_equivalent_sites</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">symprec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
         <span class="n">simplify_molecules</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -177,7 +178,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">use_common_formulas</span> <span class="o">=</span> <span class="n">use_common_formulas</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_formula</span> <span class="o">=</span> <span class="n">use_iupac_formula</span>
 
-<div class="viewcode-block" id="StructureCondenser.condense_structure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.StructureCondenser.condense_structure">[docs]</a>    <span class="k">def</span> <span class="nf">condense_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="StructureCondenser.condense_structure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.StructureCondenser.condense_structure">[docs]</a>    <span class="k">def</span> <span class="nf">condense_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Condenses the structure into an intermediate dict representation.</span>
 
 <span class="sd">        Args:</span>
@@ -253,8 +254,8 @@
         <span class="k">return</span> <span class="n">structure_data</span></div>
 
     <span class="k">def</span> <span class="nf">_condense_mineral</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Condenses the mineral data.</span>
 
 <span class="sd">        Initially the original structure will be matched against a library</span>
@@ -288,7 +289,6 @@
 <span class="sd">            will be ``None``. If an exact mineral match is found the distance</span>
 <span class="sd">            will be set to ``-1``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mineral_matcher</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
                 <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -311,7 +311,7 @@
         <span class="k">return</span> <span class="n">mineral</span>
 
     <span class="k">def</span> <span class="nf">_condense_formula</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Condenses the structure formula.</span>
 
@@ -340,10 +340,10 @@
 
     <span class="k">def</span> <span class="nf">_condense_components</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
         <span class="n">spacegroup_analyzer</span><span class="p">:</span> <span class="n">SpacegroupAnalyzer</span><span class="p">,</span>
         <span class="n">site_analyzer</span><span class="p">:</span> <span class="n">SiteAnalyzer</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Condenses the component data.</span>
 
 <span class="sd">        Args:</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.condense.fingerprint &mdash; Robocrystallographer 0.2.7 documentation</title>
+  <title>robocrys.condense.fingerprint &mdash; Robocrystallographer 0.2.8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/fingerprint.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.7
+                0.2.8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -90,7 +90,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for robocrys.condense.fingerprint</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matminer.featurizers.site</span> <span class="kn">import</span> <span class="n">CrystalNNFingerprint</span>
@@ -102,7 +104,7 @@
     <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
     <span class="n">as_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CrystalNNFingerprint_ops&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the fingerprint for all sites in a structure.</span>
 
 <span class="sd">    Args:</span>
@@ -140,7 +142,7 @@
 <div class="viewcode-block" id="get_structure_fingerprint"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_structure_fingerprint">[docs]</a><span class="k">def</span> <span class="nf">get_structure_fingerprint</span><span class="p">(</span>
     <span class="n">structure</span><span class="p">:</span> <span class="n">IStructure</span><span class="p">,</span>
     <span class="n">preset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CrystalNNFingerprint_ops&quot;</span><span class="p">,</span>
-    <span class="n">stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std_dev&quot;</span><span class="p">),</span>
+    <span class="n">stats</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std_dev&quot;</span><span class="p">),</span>
     <span class="n">prototype_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the fingerprint for a structure.</span>
@@ -177,7 +179,7 @@
 
 
 <div class="viewcode-block" id="get_fingerprint_distance"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.fingerprint.get_fingerprint_distance">[docs]</a><span class="k">def</span> <span class="nf">get_fingerprint_distance</span><span class="p">(</span>
-    <span class="n">structure_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">structure_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">IStructure</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">]</span>
+    <span class="n">structure_a</span><span class="p">:</span> <span class="n">IStructure</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">structure_b</span><span class="p">:</span> <span class="n">IStructure</span> <span class="o">|</span> <span class="n">Iterable</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the euclidean distance between the fingerprints of two structures.</span>
 
@@ -206,8 +208,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fingerprint_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">structure_b</span><span class="p">)</span>
 
-    <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">fingerprint_a</span> <span class="o">-</span> <span class="n">fingerprint_b</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dist</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">fingerprint_a</span> <span class="o">-</span> <span class="n">fingerprint_b</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
