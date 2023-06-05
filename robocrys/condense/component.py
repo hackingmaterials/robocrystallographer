@@ -131,8 +131,7 @@ def components_are_isomorphic(
     def edge_match(e1, e2):
         if use_weights:
             return e1["weight"] == e2["weight"]
-        else:
-            return True
+        return True
 
     graph_a = component_a["structure_graph"].graph
     graph_b = component_b["structure_graph"].graph
@@ -431,8 +430,7 @@ def get_formula_from_components(
             return sum(
                 [get_el_sp(s).iupac_ordering for s in composition.elements]
             ) / len(composition.elements)
-        else:
-            return composition.average_electroneg
+        return composition.average_electroneg
 
     components = get_formula_inequiv_components(
         components,
@@ -542,11 +540,12 @@ def get_vdw_heterostructure_information(
 
     try:
         millers = {c["orientation"] for c in components if c["dimensionality"] == 2}
-    except KeyError as e:
-        if "orientation" in str(e):
-            raise KeyError("Components not generated with inc_orientation=True")
-        else:
-            raise e
+    except KeyError as exc:
+        if "orientation" in str(exc):
+            raise KeyError(
+                "Components not generated with inc_orientation=True"
+            ) from exc
+        raise exc
 
     if len(millers) != 1:
         raise ValueError("2D components don't all have the same orientation.")
@@ -596,7 +595,7 @@ def get_vdw_heterostructure_information(
         if (
             all(
                 len(set(ordered_layers_formula[i::num_layer_formulas])) == 1
-                    for i in range(n)
+                for i in range(n)
             )
             and len(ordered_layers) % n == 0
         ):

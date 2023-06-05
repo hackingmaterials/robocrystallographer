@@ -88,12 +88,11 @@ def get_el(obj: Union[Element, Species, str, int]) -> str:
 
     if isinstance(obj, Element):
         return obj.name
-    elif isinstance(obj, Species):
+    if isinstance(obj, Species):
         return obj.element.name
-    elif isinstance(obj, int):
+    if isinstance(obj, int):
         return Element.from_Z(obj).name
-    else:
-        raise ValueError(f"Unsupported element type: {type(obj)}.")
+    raise ValueError(f"Unsupported element type: {type(obj)}.")
 
 
 def get_formatted_el(
@@ -254,7 +253,7 @@ def htmlify_spacegroup(spacegroup_symbol: str) -> str:
     """
     overline = "\u0305"  # u"\u0304" (macron) is also an option
     symbol = re.sub(r"_(\d+)", r"<sub>\1</sub>", spacegroup_symbol)
-    symbol = re.sub(r"-(\d)", fr"{overline}\1", symbol)
+    symbol = re.sub(r"-(\d)", rf"{overline}\1", symbol)
     return symbol
 
 
@@ -268,7 +267,7 @@ def defaultdict_to_dict(dictionary: defaultdict) -> dict:
         The defaultdict as a :obj:`dict`.
     """
     if isinstance(dictionary, defaultdict):
-        dictionary = {k: defaultdict_to_dict(v) for k, v in dictionary.items()}
+        return {k: defaultdict_to_dict(v) for k, v in dictionary.items()}
     return dictionary
 
 
@@ -282,7 +281,7 @@ def load_condensed_structure_json(filename: str) -> dict[str, Any]:
         The condensed structure data.
     """
 
-    # Json does not support using integeras a dictionary keys, therefore
+    # JSON does not support using integers a dictionary keys, therefore
     # manually convert dictionary keys from str to int if possible.
     def json_keys_to_int(x):
         if isinstance(x, dict):

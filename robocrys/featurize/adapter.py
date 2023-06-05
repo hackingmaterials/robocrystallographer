@@ -56,13 +56,13 @@ class FeaturizerAdapter(BaseAdapter):
         # criteria: original site poly, nnn site poly and sites corner-sharing
         return any(
             site
-                for site in self.sites.values()
-                if site["poly_formula"]
-                and "corner" in site["nnn"]
-                and any(
-                    self.sites[nnn_site]["poly_formula"]
-                    for nnn_site in site["nnn"]["corner"]
-                )
+            for site in self.sites.values()
+            if site["poly_formula"]
+            and "corner" in site["nnn"]
+            and any(
+                self.sites[nnn_site]["poly_formula"]
+                for nnn_site in site["nnn"]["corner"]
+            )
         )
 
     @property
@@ -71,13 +71,12 @@ class FeaturizerAdapter(BaseAdapter):
         # criteria: original site poly, nnn site poly and sites edge-sharing
         return any(
             site
-                for site in self.sites.values()
-                if site["poly_formula"]
-                and "edge" in site["nnn"]
-                and any(
-                    self.sites[nnn_site]["poly_formula"]
-                    for nnn_site in site["nnn"]["edge"]
-                )
+            for site in self.sites.values()
+            if site["poly_formula"]
+            and "edge" in site["nnn"]
+            and any(
+                self.sites[nnn_site]["poly_formula"] for nnn_site in site["nnn"]["edge"]
+            )
         )
 
     @property
@@ -86,13 +85,12 @@ class FeaturizerAdapter(BaseAdapter):
         # criteria: original site poly, nnn site poly and sites face-sharing
         return any(
             site
-                for site in self.sites.values()
-                if site["poly_formula"]
-                and "face" in site["nnn"]
-                and any(
-                    self.sites[nnn_site]["poly_formula"]
-                    for nnn_site in site["nnn"]["face"]
-                )
+            for site in self.sites.values()
+            if site["poly_formula"]
+            and "face" in site["nnn"]
+            and any(
+                self.sites[nnn_site]["poly_formula"] for nnn_site in site["nnn"]["face"]
+            )
         )
 
     @property
@@ -130,8 +128,7 @@ class FeaturizerAdapter(BaseAdapter):
 
         if angles:
             return mean(angles)
-        else:
-            return None
+        return None
 
     @property
     def average_coordination_number(self):
@@ -148,9 +145,8 @@ class FeaturizerAdapter(BaseAdapter):
         ]
         if cns:
             return mean(cns)
-        else:
-            # structure doesn't have oxidation states
-            return self.average_coordination_number
+        # structure doesn't have oxidation states
+        return self.average_coordination_number
 
     @property
     def average_anion_coordination_number(self):
@@ -162,9 +158,8 @@ class FeaturizerAdapter(BaseAdapter):
         ]
         if cns:
             return mean(cns)
-        else:
-            # structure doesn't have oxidation states
-            return self.average_coordination_number
+        # structure doesn't have oxidation states
+        return self.average_coordination_number
 
     def contains_molecule(self, molecule_name: str) -> bool:
         """Whether the structure contains a specific molecule name.
@@ -220,18 +215,17 @@ class FeaturizerAdapter(BaseAdapter):
         """
         if distorted is None:
             return any(s["geometry"]["type"] == geometry for s in self.sites.values())
-        elif distorted:
+        if distorted:
             return any(
                 s["geometry"]["type"] == geometry
                 and s["geometry"]["likeness"] < self._distorted_tol
                 for s in self.sites.values()
             )
-        else:
-            return any(
-                s["geometry"]["type"] == geometry
-                and s["geometry"]["likeness"] > self._distorted_tol
-                for s in self.sites.values()
-            )
+        return any(
+            s["geometry"]["type"] == geometry
+            and s["geometry"]["likeness"] > self._distorted_tol
+            for s in self.sites.values()
+        )
 
     def contains_connected_geometry(self, connectivity: str, geometry: str) -> bool:
         """Whether the structure contains the specified connected geometry.
@@ -245,15 +239,15 @@ class FeaturizerAdapter(BaseAdapter):
         """
         return any(
             site
-                for site in self.sites.values()
-                if site["poly_formula"]
-                and site["geometry"]["type"] == geometry
-                and connectivity in site["nnn"]
-                and any(
-                    self.sites[nnn_site]["poly_formula"]
-                    for nnn_site in site["nnn"][connectivity]
-                    if self.sites[nnn_site]["geometry"]["type"] == geometry
-                )
+            for site in self.sites.values()
+            if site["poly_formula"]
+            and site["geometry"]["type"] == geometry
+            and connectivity in site["nnn"]
+            and any(
+                self.sites[nnn_site]["poly_formula"]
+                for nnn_site in site["nnn"][connectivity]
+                if self.sites[nnn_site]["geometry"]["type"] == geometry
+            )
         )
 
     def frac_site_geometry(self, geometry: str) -> float:

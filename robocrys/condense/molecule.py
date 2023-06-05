@@ -65,7 +65,6 @@ class MoleculeNamer:
             match = self.matched_molecules[smiles]
 
         elif smiles in self.molecule_db:
-
             # we should use the first preference for which there is a match
             for source in self.name_preference:
                 if (
@@ -126,8 +125,8 @@ class MoleculeNamer:
         except RuntimeError:
             warnings.warn(
                 "Molecule naming requires openbabel to be installed "
-                "with Python bindings. Please get it at "
-                "http://openbabel.org."
+                "with Python bindings. Please get it at http://openbabel.org.",
+                RuntimeWarning,
             )
             return None
 
@@ -137,5 +136,4 @@ class MoleculeNamer:
             match = match.lower()
             self.matched_molecules[smiles] = match
             return self.matched_molecules[smiles]
-        else:
-            return match
+        return match

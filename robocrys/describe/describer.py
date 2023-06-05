@@ -137,8 +137,7 @@ class StructureDescriber:
                 for part in ["mineral", "component_makeup", "components"]
                 if part in description and description[part] != ""
             )
-        else:
-            return description
+        return description
 
     def get_mineral_description(self) -> str:
         """Gets the mineral name and space group description.
@@ -273,43 +272,39 @@ class StructureDescriber:
                 single_component=True,
             )
 
-        else:
-            component_groups = self._da.get_component_groups()
+        component_groups = self._da.get_component_groups()
 
-            component_descriptions = []
-            for group in component_groups:
-                for component in group.components:
+        component_descriptions = []
+        for group in component_groups:
+            for component in group.components:
+                if group.molecule_name:
+                    # don't describe known molecules
+                    continue
 
-                    if group.molecule_name:
-                        # don't describe known molecules
-                        continue
+                formula = group.formula
+                group_count = group.count
+                component_count = component.count
+                shape = dimensionality_to_shape[group.dimensionality]
 
-                    formula = group.formula
-                    group_count = group.count
-                    component_count = component.count
-                    shape = dimensionality_to_shape[group.dimensionality]
+                if self.fmt == "latex":
+                    formula = latexify(formula)
+                elif self.fmt == "unicode":
+                    formula = unicodeify(formula)
+                elif self.fmt == "html":
+                    formula = htmlify(formula)
 
-                    if self.fmt == "latex":
-                        formula = latexify(formula)
-                    elif self.fmt == "unicode":
-                        formula = unicodeify(formula)
-                    elif self.fmt == "html":
-                        formula = htmlify(formula)
+                if group_count == component_count:
+                    s_filler = "the" if group_count == 1 else "each"
+                else:
+                    s_filler = f"{en.number_to_words(component_count)} of the"
+                    shape = en.plural(shape)
 
-                    if group_count == component_count:
-                        s_filler = "the" if group_count == 1 else "each"
-                    else:
-                        s_filler = "{} of the".format(
-                            en.number_to_words(component_count)
-                        )
-                        shape = en.plural(shape)
+                desc = f"In {s_filler} {formula} {shape}, "
+                desc += self.get_component_description(component.index)
 
-                    desc = f"In {s_filler} {formula} {shape}, "
-                    desc += self.get_component_description(component.index)
+                component_descriptions.append(desc)
 
-                    component_descriptions.append(desc)
-
-            return " ".join(component_descriptions)
+        return " ".join(component_descriptions)
 
     def get_component_description(
         self, component_index: int, single_component: bool = False
@@ -327,7 +322,6 @@ class StructureDescriber:
         desc = []
         first_group = True
         for site_group in self._da.get_component_site_groups(component_index):
-
             if len(site_group.sites) == 1:
                 desc.append(self.get_site_description(site_group.sites[0]))
 
@@ -703,10 +697,9 @@ class StructureDescriber:
             if tilts[0] == 0:
                 return "The corner-sharing octahedra are not tilted"
 
-            else:
-                return "The corner-sharing octahedral tilt angles " "are {}".format(
-                    self._angle_to_string(tilts[0])
-                )
+            return "The corner-sharing octahedral tilt angles are {}".format(
+                self._angle_to_string(tilts[0])
+            )
 
         # otherwise just detail the spread of bond lengths
         return "The corner-sharing octahedral tilt angles range from {}".format(
@@ -801,5 +794,4 @@ def get_mineral_name(mineral_dict: dict[str, Any]) -> Union[str, None]:
 
         return "{}{}".format(mineral_dict["type"], suffix)
 
-    else:
-        return None
+    return None

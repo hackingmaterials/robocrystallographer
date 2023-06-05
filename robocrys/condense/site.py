@@ -160,11 +160,9 @@ class SiteAnalyzer:
                 }
                 for site in nn_sites
             ]
-        else:
-            return [
-                {"element": str(site.site.specie), "dist": site.dist}
-                for site in nn_sites
-            ]
+        return [
+            {"element": str(site.site.specie), "dist": site.dist} for site in nn_sites
+        ]
 
     def get_next_nearest_neighbors(
         self, site_index: int, inc_inequivalent_site_index: bool = True
@@ -698,8 +696,7 @@ class SiteAnalyzer:
         def order_elements(el):
             if self.use_iupac_formula:
                 return [get_el_sp(el).X, el]
-            else:
-                return [get_el_sp(el).iupac_ordering, el]
+            return [get_el_sp(el).iupac_ordering, el]
 
         nnn_geometries = [nnn_site["geometry"] for nnn_site in nnn_sites]
 
@@ -844,7 +841,7 @@ def nnn_summaries_match(
     angles_match = [
         all(
             abs(a_a - a_b) < bond_angle_tol
-                for a_a, a_b in zip(sorted(site_a["angles"]), sorted(site_b["angles"]))
+            for a_a, a_b in zip(sorted(site_a["angles"]), sorted(site_b["angles"]))
         )
         if match_bond_angles
         else True

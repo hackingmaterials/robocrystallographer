@@ -115,5 +115,4 @@ def get_fingerprint_distance(
     else:
         fingerprint_b = np.array(structure_b)
 
-    dist = np.linalg.norm(fingerprint_a - fingerprint_b)
-    return dist
+    return np.linalg.norm(fingerprint_a - fingerprint_b)

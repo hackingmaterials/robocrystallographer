@@ -73,8 +73,7 @@ class DescriptionAdapter(BaseAdapter):
 
         self.use_iupac_ordering = use_iupac_ordering
         self.sym_labels = {
-            site_index: self.get_sym_label(site_index)
-            for site_index in self.sites
+            site_index: self.get_sym_label(site_index) for site_index in self.sites
         }
 
     def get_nearest_neighbor_details(
@@ -345,7 +344,7 @@ class DescriptionAdapter(BaseAdapter):
 
         if isinstance(s, NeighborSiteDetails):
             return [x, s.count, s.sym_label, s.sites]
-        elif isinstance(s, NextNeighborSiteDetails):
+        if isinstance(s, NextNeighborSiteDetails):
             return [
                 s.connectivity,
                 s.geometry,
@@ -355,8 +354,7 @@ class DescriptionAdapter(BaseAdapter):
                 s.sym_label,
                 s.sites,
             ]
-        else:
-            return [x, s.count, s.sites]
+        return [x, s.count, s.sites]
 
 
 def _component_order(c: Union[ComponentDetails, ComponentGroup]):
@@ -366,5 +364,4 @@ def _component_order(c: Union[ComponentDetails, ComponentGroup]):
     if isinstance(c, ComponentDetails):
         ori = c.orientation if c.orientation else (0, 0, 0)
         return [mn, c.dimensionality, c.formula, ori, c.count]
-    else:
-        return [mn, c.dimensionality, c.formula, c.count]
+    return [mn, c.dimensionality, c.formula, c.count]
