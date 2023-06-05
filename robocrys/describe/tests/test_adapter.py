@@ -1,3 +1,5 @@
+from pytest import approx
+
 from robocrys.describe.adapter import DescriptionAdapter
 from robocrys.tests import RobocrysTest
 
@@ -63,28 +65,28 @@ class TestDescriptionAdapter(RobocrysTest):
         # test get distance using int works
         distances = self.tin_dioxide_da.get_distance_details(0, 2)
         assert len(distances), 3
-        self.assertAlmostEqual(distances[0], 2.0922101061490546)
+        assert distances[0] == approx(2.0922101061490546)
 
         # test get distance using list works
         distances = self.tin_dioxide_da.get_distance_details(0, [2])
         assert len(distances), 3
-        self.assertAlmostEqual(distances[0], 2.0922101061490546)
+        assert distances[0] == approx(2.0922101061490546)
 
         # test getting multiple distances
         distances = self.mapi_da.get_distance_details(44, [0, 8])
         assert len(distances), 4
-        self.assertAlmostEqual(distances[0], 1.0386222568611572)
+        assert distances[0] == approx(1.0386222568611572)
 
     def test_get_angle_details(self):
         # test get angles using int works
         distances = self.tin_dioxide_da.get_angle_details(0, 0, "corner")
         assert len(distances), 8
-        self.assertAlmostEqual(distances[0], 129.18849530149342)
+        assert distances[0] == approx(129.18849530149342)
 
         # test get angles using list works
         distances = self.tin_dioxide_da.get_angle_details(0, [0], "corner")
         assert len(distances), 8
-        self.assertAlmostEqual(distances[0], 129.18849530149342)
+        assert distances[0] == approx(129.18849530149342)
 
     def test_get_component_details(self):
         """Check getting component details."""

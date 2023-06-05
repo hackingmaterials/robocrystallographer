@@ -164,7 +164,7 @@ def _get_parser():
         "--format",
         dest="fmt",
         default="unicode",
-        help="how to format the description (unicode [default]," " html, latex, raw)",
+        help="how to format the description (unicode [default], html, latex, raw)",
     )
     parser.add_argument(
         "--api-key",

@@ -4,6 +4,7 @@ from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pytest import approx
 
 from robocrys.condense.component import (
     components_are_isomorphic,
@@ -228,18 +229,12 @@ class TestComponent(RobocrysTest):
             inc_intercalants=True,
         )
         assert len(data["ordered_components"]) == 4
-        self.assertAlmostEqual(
-            data["ordered_components"][0]["structure_graph"].structure.frac_coords[0][
-                0
-            ],
-            0.33330876,
-        )
-        self.assertAlmostEqual(
-            data["ordered_components"][3]["structure_graph"].structure.frac_coords[0][
-                0
-            ],
-            0.6666924,
-        )
+        assert data["ordered_components"][0]["structure_graph"].structure.frac_coords[
+            0
+        ][0] == approx(0.33330876)
+        assert data["ordered_components"][3]["structure_graph"].structure.frac_coords[
+            0
+        ][0] == approx(0.6666924)
         assert data["repeating_unit"] == ["MoS2", "WS2"]
         assert data["num_repetitions"] == 2
         assert data["intercalants"] == []

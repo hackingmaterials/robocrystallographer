@@ -198,7 +198,7 @@ class StructureDescriber:
             if self._da.dimensionality == 3:
                 desc = "The structure consists of "
             else:
-                desc = "The structure is {}-dimensional and consists of " "".format(
+                desc = "The structure is {}-dimensional and consists of ".format(
                     en.number_to_words(self._da.dimensionality)
                 )
 
@@ -637,7 +637,7 @@ class StructureDescriber:
             s_length = en.plural("length", s_big_count)
 
             return (
-                "There {} {} shorter ({}) and {} " "longer ({}) {}-{} bond {}."
+                "There {} {} shorter ({}) and {} longer ({}) {}-{} bond {}."
             ).format(
                 en.plural_verb("is", s_small_count),
                 s_small_count,
@@ -650,9 +650,7 @@ class StructureDescriber:
             )
 
         # otherwise just detail the spread of bond lengths
-        return (
-            "There are a spread of {}-{} bond distances ranging from " "{}."
-        ).format(
+        return ("There are a spread of {}-{} bond distances ranging from {}.").format(
             from_element,
             to_element,
             self._distance_range_to_string(
