@@ -1,9 +1,7 @@
-"""
-This module contains a class to obtain robocrystallographer ML features.
-"""
+"""This module contains a class to obtain robocrystallographer ML features."""
 
 from itertools import product
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from matminer.featurizers.base import BaseFeaturizer
 from numpy import mean
@@ -51,7 +49,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         self._sc = StructureCondenser(**condenser_kwargs)
         self._distorted_tol = distorted_tol
 
-    def featurize(self, s: Structure) -> List[Union[float, bool, str]]:
+    def featurize(self, s: Structure) -> list[Union[float, bool, str]]:
         """Featurizes a structure using robocrystallographer.
 
         Args:

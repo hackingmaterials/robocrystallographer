@@ -30,7 +30,7 @@ class TestFingerprint(RobocrysTest):
         fingerprint = get_structure_fingerprint(self.fe, stats=("mean",))
         self.assertAlmostEqual(fingerprint[31], 2.51322893e-01)
 
-        # test preset options – reenable once fixed
+        # test preset options - reenable once fixed
         # fingerprint = get_structure_fingerprint(
         #     self.fe, preset='CrystalNNFingerprint_cn')
         # self.assertAlmostEqual(fingerprint[2], 1.98432036e-03)

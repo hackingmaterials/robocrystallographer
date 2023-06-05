@@ -1,6 +1,4 @@
-"""
-This module contains a script for using robocrys from the command line.
-"""
+"""This module contains a script for using robocrys from the command line."""
 
 import argparse
 import sys
@@ -41,7 +39,7 @@ def robocrystallographer(
     sc = StructureCondenser(**condenser_kwargs)
     describer = StructureDescriber(**describer_kwargs)
 
-    if not any([hasattr(s, "oxi_state") for s in structure.composition.elements]):
+    if not any(hasattr(s, "oxi_state") for s in structure.composition.elements):
         try:
             structure.add_oxidation_state_by_guess(max_sites=-80)
         except ValueError:

@@ -1,11 +1,10 @@
-"""
-This module implements a class to match molecule graphs to molecule names.
+"""This module implements a class to match molecule graphs to molecule names.
 
 Some functionality relies on having a working internet connection.
 """
 
 import warnings
-from typing import Optional, Tuple
+from typing import Optional
 
 from monty.serialization import loadfn
 from pkg_resources import resource_filename
@@ -20,7 +19,7 @@ class MoleculeNamer:
     def __init__(
         self,
         use_online_pubchem: bool = True,
-        name_preference: Tuple[str] = name_sources,
+        name_preference: tuple[str] = name_sources,
     ):
         """Class to match molecule graphs to known molecule names.
 
@@ -35,7 +34,6 @@ class MoleculeNamer:
                 used. Should be provided as a tuple of options, from 1st choice
                 to last.
         """
-
         db_file = resource_filename("robocrys.condense", "molecule_db.json.gz")
         self.molecule_db = loadfn(db_file)
         self.matched_molecules = {}

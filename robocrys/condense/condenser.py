@@ -1,8 +1,6 @@
-"""
-This module defines a class for condensing structures into dict representations.
-"""
+"""This module defines a class for condensing structures into dict representations."""
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN, NearNeighbors
@@ -85,7 +83,7 @@ class StructureCondenser:
         self.use_common_formulas = use_common_formulas
         self.use_iupac_formula = use_iupac_formula
 
-    def condense_structure(self, structure: Structure) -> Dict[str, Any]:
+    def condense_structure(self, structure: Structure) -> dict[str, Any]:
         """Condenses the structure into an intermediate dict representation.
 
         Args:
@@ -161,8 +159,8 @@ class StructureCondenser:
         return structure_data
 
     def _condense_mineral(
-        self, structure: Structure, components: List[Component]
-    ) -> Dict[str, Any]:
+        self, structure: Structure, components: list[Component]
+    ) -> dict[str, Any]:
         """Condenses the mineral data.
 
         Initially the original structure will be matched against a library
@@ -196,7 +194,6 @@ class StructureCondenser:
             will be ``None``. If an exact mineral match is found the distance
             will be set to ``-1``.
         """
-
         if not self.mineral_matcher:
             return {
                 "type": None,
@@ -219,7 +216,7 @@ class StructureCondenser:
         return mineral
 
     def _condense_formula(
-        self, structure: Structure, components: List[Component]
+        self, structure: Structure, components: list[Component]
     ) -> str:
         """Condenses the structure formula.
 
@@ -248,10 +245,10 @@ class StructureCondenser:
 
     def _condense_components(
         self,
-        components: List[Component],
+        components: list[Component],
         spacegroup_analyzer: SpacegroupAnalyzer,
         site_analyzer: SiteAnalyzer,
-    ) -> Tuple[Dict[int, Any], List[int]]:
+    ) -> tuple[dict[int, Any], list[int]]:
         """Condenses the component data.
 
         Args:

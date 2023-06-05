@@ -1,5 +1,4 @@
-"""
-This script processes the Pubchem entries stored in a mongodb database for use
+"""This script processes the Pubchem entries stored in a mongodb database for use
 in robocrystallographer.
 
 Please contact Shyam D for access to the mp_pubchem database. Alternatively, you
@@ -88,7 +87,7 @@ for processed_batch in results:
         else:
             smiles_to_names.update(mol)
 
-print("total skipped: {}".format(n_skipped))
-print("total saved: {}".format(len(smiles_to_names.keys())))
+print(f"total skipped: {n_skipped}")
+print(f"total saved: {len(smiles_to_names.keys())}")
 
 dumpfn(smiles_to_names, "smiles_to_names.json")

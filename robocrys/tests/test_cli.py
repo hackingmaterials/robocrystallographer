@@ -1,5 +1,4 @@
-"""
-Nominal tests for command line functions. Note this script does not actually
+"""Nominal tests for command line functions. Note this script does not actually
 test the main method with argparsing, just the robocrystallographer function.
 """
 
@@ -16,16 +15,16 @@ class TestCommandLineInterface(RobocrysTest):
     def test_robocrystallographer(self):
         # check not passing any arguments
         description = robocrystallographer(self.tin_dioxide)
-        self.assertTrue("Rutile" in description)
-        self.assertTrue("SnO2" in description)
-        self.assertTrue("tetragonal" in description)
-        self.assertTrue("P4_2/mnm" in description)
-        self.assertTrue("Sn(1)4+" in description)
-        self.assertTrue("equivalent" in description)
-        self.assertTrue("corner" in description)
-        self.assertTrue("edge" in description)
-        self.assertTrue("Sn(1)–O(1)" in description)
-        self.assertTrue("2.09" in description)
+        assert "Rutile" in description
+        assert "SnO2" in description
+        assert "tetragonal" in description
+        assert "P4_2/mnm" in description
+        assert "Sn(1)4+" in description
+        assert "equivalent" in description
+        assert "corner" in description
+        assert "edge" in description
+        assert "Sn(1)-O(1)" in description
+        assert "2.09" in description
 
         # check passing condense and describe kwargs
         description = robocrystallographer(
@@ -36,6 +35,6 @@ class TestCommandLineInterface(RobocrysTest):
                 "bond_length_decimal_places": 4,
             },
         )
-        self.assertTrue("Sn4+" in description)
-        self.assertTrue("Sn–O" in description)
-        self.assertTrue("2.0922" in description)
+        assert "Sn4+" in description
+        assert "Sn-O" in description
+        assert "2.0922" in description

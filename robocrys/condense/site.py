@@ -1,12 +1,11 @@
-"""
-This module provides a class to extract geometry and neighbor information.
+"""This module provides a class to extract geometry and neighbor information.
 
-TODO:
+Todo:
     * distortion of geometry e.g. elongated along an axis
 """
 
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import numpy as np
 from pymatgen.analysis.graphs import StructureGraph
@@ -78,7 +77,7 @@ class SiteAnalyzer:
 
         self.symmetry_labels = self._calculate_symmetry_labels(equivalent_sites)
 
-    def get_site_geometry(self, site_index: int) -> Dict[str, Union[str, float]]:
+    def get_site_geometry(self, site_index: int) -> dict[str, Union[str, float]]:
         """Gets the bonding geometry of a site.
 
         For example, "octahedral" or "square-planar".
@@ -100,7 +99,7 @@ class SiteAnalyzer:
             coordination number.
         """
         # get fingerprint as a list of tuples, e.g. [("op name", val), ...]
-        site_fingerprint: List[Tuple[str, int]] = list(
+        site_fingerprint: list[tuple[str, int]] = list(
             self.site_fingerprints[site_index].items()
         )
 
@@ -130,11 +129,10 @@ class SiteAnalyzer:
 
     def get_nearest_neighbors(
         self, site_index: int, inc_inequivalent_site_index: bool = True
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Gets information about the bonded nearest neighbors.
 
         Args:
-
             site_index: The site index (zero based).
             inc_inequivalent_site_index: Whether to include the inequivalent
                 site indices in the nearest neighbor information.
@@ -151,7 +149,6 @@ class SiteAnalyzer:
             equivalent (depending on the value of ``self.use_symmetry_equivalent_sites`` then
             they will have the same ``inequiv_index``.
         """
-
         nn_sites = self.bonded_structure.get_connected_sites(site_index)
 
         if inc_inequivalent_site_index:
@@ -171,7 +168,7 @@ class SiteAnalyzer:
 
     def get_next_nearest_neighbors(
         self, site_index: int, inc_inequivalent_site_index: bool = True
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Gets information about the bonded next nearest neighbors.
 
         Args:
@@ -283,7 +280,7 @@ class SiteAnalyzer:
 
         return next_nn_summary
 
-    def get_site_summary(self, site_index: int) -> Dict[str, Any]:
+    def get_site_summary(self, site_index: int) -> dict[str, Any]:
         """Gets a summary of the site information.
 
         Args:
@@ -357,7 +354,7 @@ class SiteAnalyzer:
             "sym_labels": sym_labels,
         }
 
-    def get_bond_distance_summary(self, site_index: int) -> Dict[int, List[float]]:
+    def get_bond_distance_summary(self, site_index: int) -> dict[int, list[float]]:
         """Gets the bond distance summary for a site.
 
         Args:
@@ -380,7 +377,7 @@ class SiteAnalyzer:
 
     def get_connectivity_angle_summary(
         self, site_index: int
-    ) -> Dict[int, Dict[str, List[float]]]:
+    ) -> dict[int, dict[str, list[float]]]:
         """Gets the connectivity angle summary for a site.
 
         The connectivity angles are the angles between a site and its
@@ -418,7 +415,7 @@ class SiteAnalyzer:
 
     def get_nnn_distance_summary(
         self, site_index: int
-    ) -> Dict[int, Dict[str, List[float]]]:
+    ) -> dict[int, dict[str, list[float]]]:
         """Gets the next nearest neighbor distance summary for a site.
 
         Args:
@@ -468,7 +465,7 @@ class SiteAnalyzer:
             site: self.get_site_summary(site) for site in set(self.equivalent_sites)
         }
 
-    def get_all_bond_distance_summaries(self) -> Dict[int, Dict[int, List[float]]]:
+    def get_all_bond_distance_summaries(self) -> dict[int, dict[int, list[float]]]:
         """Gets the bond distance summaries for all sites.
 
         Returns:
@@ -490,7 +487,7 @@ class SiteAnalyzer:
 
     def get_all_connectivity_angle_summaries(
         self,
-    ) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
+    ) -> dict[int, dict[int, dict[str, list[float]]]]:
         """Gets the connectivity angle summaries for all sites.
 
         The connectivity angles are the angles between a site and its
@@ -519,7 +516,7 @@ class SiteAnalyzer:
 
     def get_all_nnn_distance_summaries(
         self,
-    ) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
+    ) -> dict[int, dict[int, dict[str, list[float]]]]:
         """Gets the next nearest neighbor distance summaries for all sites.
 
         Returns:
@@ -544,7 +541,7 @@ class SiteAnalyzer:
             for from_site in set(self.equivalent_sites)
         }
 
-    def get_inequivalent_site_indices(self, site_indices: List[int]) -> List[int]:
+    def get_inequivalent_site_indices(self, site_indices: list[int]) -> list[int]:
         """Gets the inequivalent site indices from a list of site indices.
 
         Args:
@@ -558,14 +555,14 @@ class SiteAnalyzer:
                 [0, 0, 2, 3]
 
         """
-        return list(self.equivalent_sites[i] for i in site_indices)
+        return [self.equivalent_sites[i] for i in site_indices]
 
     def _calculate_equivalent_sites(
         self,
         likeness_tol: float = 0.001,
         bond_dist_tol: float = 0.01,
         bond_angle_tol: float = 0.1,
-    ) -> List[int]:
+    ) -> list[int]:
         """Determines the indices of the structurally inequivalent sites.
 
         Args:
@@ -633,7 +630,7 @@ class SiteAnalyzer:
 
         return equivalent_sites
 
-    def _calculate_symmetry_labels(self, sym_equivalent_atoms: List[int]) -> List[int]:
+    def _calculate_symmetry_labels(self, sym_equivalent_atoms: list[int]) -> list[int]:
         """Calculates the symmetry labels for all sites in the structure.
 
         The symmetry labels number the sites in the structure. If two sites
@@ -673,9 +670,9 @@ class SiteAnalyzer:
 
     def _get_poly_formula(
         self,
-        geometry: Dict[str, Any],
-        nn_sites: List[Dict[str, Any]],
-        nnn_sites: List[Dict[str, Any]],
+        geometry: dict[str, Any],
+        nn_sites: list[dict[str, Any]],
+        nnn_sites: list[dict[str, Any]],
     ) -> Optional[str]:
         """Gets the polyhedra formula of the nearest neighbor atoms.
 
@@ -724,7 +721,7 @@ class SiteAnalyzer:
 
 
 def geometries_match(
-    geometry_a: Dict[str, Any], geometry_b: Dict[str, Any], likeness_tol: float = 0.001
+    geometry_a: dict[str, Any], geometry_b: dict[str, Any], likeness_tol: float = 0.001
 ) -> bool:
     """Determine whether two site geometries match.
 
@@ -747,8 +744,8 @@ def geometries_match(
 
 
 def nn_summaries_match(
-    nn_sites_a: List[Dict[str, Union[int, str]]],
-    nn_sites_b: List[Dict[str, Union[int, str]]],
+    nn_sites_a: list[dict[str, Union[int, str]]],
+    nn_sites_b: list[dict[str, Union[int, str]]],
     bond_dist_tol: float = 0.01,
     match_bond_dists: bool = True,
 ) -> bool:
@@ -792,8 +789,8 @@ def nn_summaries_match(
 
 
 def nnn_summaries_match(
-    nnn_sites_a: List[Dict[str, Any]],
-    nnn_sites_b: List[Dict[str, Any]],
+    nnn_sites_a: list[dict[str, Any]],
+    nnn_sites_b: list[dict[str, Any]],
     likeness_tol: float = 0.001,
     bond_angle_tol: float = 0.1,
     match_bond_angles: bool = True,
@@ -846,10 +843,8 @@ def nnn_summaries_match(
     ]
     angles_match = [
         all(
-            [
-                abs(a_a - a_b) < bond_angle_tol
+            abs(a_a - a_b) < bond_angle_tol
                 for a_a, a_b in zip(sorted(site_a["angles"]), sorted(site_b["angles"]))
-            ]
         )
         if match_bond_angles
         else True

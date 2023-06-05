@@ -1,13 +1,12 @@
-"""
-This module provides a class for generating descriptions of condensed structure
+"""This module provides a class for generating descriptions of condensed structure
 data.
 
-TODO:
+Todo:
     * Indicate when molecules have been simplified in the mineral description.
     * Handle distortion in connected polyhedra description.
 """
 
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Union
 
 import inflect
 from pymatgen.util.string import htmlify, latexify, latexify_spacegroup, unicodeify
@@ -102,8 +101,8 @@ class StructureDescriber:
         self._seen_bonds: set = None
 
     def describe(
-        self, condensed_structure: Dict[str, Any]
-    ) -> Union[str, Dict[str, str]]:
+        self, condensed_structure: dict[str, Any]
+    ) -> Union[str, dict[str, str]]:
         """Convert a condensed structure into a text description.
 
         Args:
@@ -222,10 +221,7 @@ class StructureDescriber:
                 dimensionality = component_group.dimensionality
 
                 if component_group.molecule_name:
-                    if component_group.nsites == 1:
-                        shape = "atom"
-                    else:
-                        shape = "molecule"
+                    shape = "atom" if component_group.nsites == 1 else "molecule"
                     shape = en.plural(shape, s_count)
                     formula = component_group.molecule_name
                 else:
@@ -344,10 +340,7 @@ class StructureDescriber:
                     fmt=self.fmt,
                 )
 
-                if first_group and not single_component:
-                    s_there = "there"
-                else:
-                    s_there = "There"
+                s_there = "there" if first_group and not single_component else "There"
 
                 s_count = en.number_to_words(len(site_group.sites))
 
@@ -591,7 +584,7 @@ class StructureDescriber:
         # filter empty bond length description strings
         return " ".join(filter(lambda x: x, bond_descriptions))
 
-    def get_bond_length_description(self, from_site: int, to_sites: List[int]) -> str:
+    def get_bond_length_description(self, from_site: int, to_sites: list[int]) -> str:
         """Gets a description of the bond lengths between two sets of sites.
 
         Args:
@@ -627,7 +620,7 @@ class StructureDescriber:
 
         # if only one bond length
         if len(dists) == 1:
-            return "The {}–{} bond length is {}.".format(
+            return "The {}-{} bond length is {}.".format(
                 from_element, to_element, self._distance_to_string(dists[0])
             )
 
@@ -636,7 +629,7 @@ class StructureDescriber:
         # if multiple bond lengths but they are all the same
         if len(set(discrete_bond_lengths)) == 1:
             s_intro = "Both" if len(discrete_bond_lengths) == 2 else "All"
-            return "{} {}–{} bond lengths are {}.".format(
+            return "{} {}-{} bond lengths are {}.".format(
                 s_intro, from_element, to_element, self._distance_to_string(dists[0])
             )
 
@@ -650,7 +643,7 @@ class StructureDescriber:
             s_length = en.plural("length", s_big_count)
 
             return (
-                "There {} {} shorter ({}) and {} " "longer ({}) {}–{} bond {}."
+                "There {} {} shorter ({}) and {} " "longer ({}) {}-{} bond {}."
             ).format(
                 en.plural_verb("is", s_small_count),
                 s_small_count,
@@ -664,7 +657,7 @@ class StructureDescriber:
 
         # otherwise just detail the spread of bond lengths
         return (
-            "There are a spread of {}–{} bond distances ranging from " "{}."
+            "There are a spread of {}-{} bond distances ranging from " "{}."
         ).format(
             from_element,
             to_element,
@@ -720,7 +713,7 @@ class StructureDescriber:
             self._angle_range_to_string(min(tilts), max(tilts))
         )
 
-    def _filter_seen_bonds(self, from_site: int, to_sites: List[int]) -> List[int]:
+    def _filter_seen_bonds(self, from_site: int, to_sites: list[int]) -> list[int]:
         """Filter the list of to_sites to only include unseen bonds.
 
         Args:
@@ -745,7 +738,7 @@ class StructureDescriber:
 
         return not_seen_to_sites
 
-    def _rounded_bond_lengths(self, data: List[float]) -> Tuple[float]:
+    def _rounded_bond_lengths(self, data: list[float]) -> tuple[float]:
         """Function to round bond lengths to a number of decimal places."""
         return tuple(
             float("{:.{}f}".format(x, self.bond_length_decimal_places)) for x in data
@@ -759,7 +752,7 @@ class StructureDescriber:
 
     def _distance_range_to_string(self, dist_a: float, dist_b: float) -> str:
         """Utility function to format a range of distances."""
-        return "{:.{}f}–{:.{}f} {}".format(
+        return "{:.{}f}-{:.{}f} {}".format(
             dist_a,
             self.bond_length_decimal_places,
             dist_b,
@@ -767,7 +760,7 @@ class StructureDescriber:
             self.angstrom,
         )
 
-    def _rounded_angles(self, data: List[float]) -> Tuple[float]:
+    def _rounded_angles(self, data: list[float]) -> tuple[float]:
         """Function to round angles to a number of decimal places."""
         return tuple(
             float("{:.{}f}".format(x, self.angle_decimal_places)) for x in data
@@ -779,7 +772,7 @@ class StructureDescriber:
 
     def _angle_range_to_string(self, angle_a: float, angle_b: float) -> str:
         """Utility function to format a range of distances."""
-        return "{:.{}f}–{:.{}f}{}".format(
+        return "{:.{}f}-{:.{}f}{}".format(
             angle_a,
             self.angle_decimal_places,
             angle_b,
@@ -788,7 +781,7 @@ class StructureDescriber:
         )
 
 
-def get_mineral_name(mineral_dict: Dict[str, Any]) -> Union[str, None]:
+def get_mineral_name(mineral_dict: dict[str, Any]) -> Union[str, None]:
     """Get the mineral name from a mineral dictionary.
 
     Args:

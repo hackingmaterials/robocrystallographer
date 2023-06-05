@@ -1,4 +1,5 @@
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from collections.abc import Iterable
+from typing import Optional, Union
 
 import numpy as np
 from matminer.featurizers.site import CrystalNNFingerprint
@@ -10,7 +11,7 @@ def get_site_fingerprints(
     structure: IStructure,
     as_dict: bool = True,
     preset: str = "CrystalNNFingerprint_ops",
-) -> Union[List[Dict[str, int]], np.ndarray]:
+) -> Union[list[dict[str, int]], np.ndarray]:
     """Gets the fingerprint for all sites in a structure.
 
     Args:
@@ -48,7 +49,7 @@ def get_site_fingerprints(
 def get_structure_fingerprint(
     structure: IStructure,
     preset: str = "CrystalNNFingerprint_ops",
-    stats: Optional[Tuple[str]] = ("mean", "std_dev"),
+    stats: Optional[tuple[str]] = ("mean", "std_dev"),
     prototype_match: bool = False,
 ) -> np.ndarray:
     """Gets the fingerprint for a structure.

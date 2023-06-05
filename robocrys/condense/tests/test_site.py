@@ -18,49 +18,49 @@ class TestSiteAnalyzer(RobocrysTest):
         self.ba_n = cnn.get_bonded_structure(self.get_structure("BaN2"))
 
     def test_init(self):
-        """Test to check SiteDescriber can be initialised"""
+        """Test to check SiteDescriber can be initialised."""
         sa = SiteAnalyzer(self.tin_dioxide)
-        self.assertNotEqual(sa, None, msg="tin dioxide site analyzer could not be init")
+        assert sa is not None, "tin dioxide site analyzer could not be init"
 
         # check different structure
         sa = SiteAnalyzer(self.ba_n)
-        self.assertNotEqual(sa, None, msg="BaN2 site analyzer could not be initialized")
+        assert sa is not None, "BaN2 site analyzer could not be initialized"
 
     def test_equivalent_sites(self):
         """Check equivalent sites instance variable set correctly."""
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
-        self.assertEqual(sa.equivalent_sites, [0, 0, 0, 0, 4, 4])
+        assert sa.equivalent_sites == [0, 0, 0, 0, 4, 4]
 
         # test using symmetry to determine equivalent sites
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
-        self.assertIsInstance(sa.equivalent_sites, list)
-        self.assertEqual(sa.equivalent_sites, [0, 0, 0, 0, 4, 4])
+        assert isinstance(sa.equivalent_sites, list)
+        assert sa.equivalent_sites == [0, 0, 0, 0, 4, 4]
 
         # test symprec option works
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True, symprec=0.0001)
-        self.assertEqual(sa.equivalent_sites, [0, 1, 1, 0, 4, 4])
+        assert sa.equivalent_sites == [0, 1, 1, 0, 4, 4]
 
     def test_symmetry_labels(self):
         """Check equivalent sites instance variable set correctly."""
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
-        self.assertEqual(sa.symmetry_labels, [1, 1, 1, 1, 1, 1])
+        assert sa.symmetry_labels == [1, 1, 1, 1, 1, 1]
 
     def test_get_site_geometry(self):
         """Test site geometry description."""
         sa = SiteAnalyzer(self.tin_dioxide)
         geom_data = sa.get_site_geometry(0)
-        self.assertEqual(geom_data["type"], "octahedral")
+        assert geom_data["type"] == "octahedral"
         self.assertAlmostEqual(geom_data["likeness"], 0.9349776258427136)
 
         geom_data = sa.get_site_geometry(4)
-        self.assertEqual(geom_data["type"], "trigonal planar")
+        assert geom_data["type"] == "trigonal planar"
         self.assertAlmostEqual(geom_data["likeness"], 0.6050243049545359)
 
         # check different structure
 
         sa = SiteAnalyzer(self.ba_n)
         geom_data = sa.get_site_geometry(0)
-        self.assertEqual(geom_data["type"], "6-coordinate")
+        assert geom_data["type"] == "6-coordinate"
         self.assertAlmostEqual(geom_data["likeness"], 1)
 
     def test_get_nearest_neighbors(self):
@@ -68,20 +68,20 @@ class TestSiteAnalyzer(RobocrysTest):
         sa = SiteAnalyzer(self.tin_dioxide)
         info = sa.get_nearest_neighbors(4)
 
-        self.assertEqual(len(info), 3)
-        self.assertEqual(info[0]["element"], "Sn4+")
-        self.assertEqual(info[0]["inequiv_index"], 0)
+        assert len(info) == 3
+        assert info[0]["element"] == "Sn4+"
+        assert info[0]["inequiv_index"] == 0
         self.assertAlmostEqual(info[0]["dist"], 2.0922101061490546)
 
         info = sa.get_nearest_neighbors(0, inc_inequivalent_site_index=False)
-        self.assertTrue("inequiv_index" not in info[0])
+        assert "inequiv_index" not in info[0]
 
         # check different structure without oxi state
         sa = SiteAnalyzer(self.ba_n)
         info = sa.get_nearest_neighbors(0)
-        self.assertEqual(len(info), 6)
-        self.assertEqual(info[0]["element"], "N")
-        self.assertEqual(info[0]["inequiv_index"], 0)
+        assert len(info) == 6
+        assert info[0]["element"] == "N"
+        assert info[0]["inequiv_index"] == 0
         self.assertAlmostEqual(info[0]["dist"], 1.2619877178483)
 
     def test_get_next_nearest_neighbors(self):
@@ -89,125 +89,125 @@ class TestSiteAnalyzer(RobocrysTest):
         sa = SiteAnalyzer(self.tin_dioxide)
         info = sa.get_next_nearest_neighbors(5)
 
-        self.assertEqual(len(info), 14)
+        assert len(info) == 14
         idx = [i for i, s in enumerate(info) if s["connectivity"] == "edge"][0]
-        self.assertEqual(info[idx]["element"], "O2-")
-        self.assertEqual(info[idx]["connectivity"], "edge")
-        self.assertEqual(info[idx]["geometry"]["type"], "trigonal planar")
-        self.assertEqual(info[idx]["inequiv_index"], 2)
+        assert info[idx]["element"] == "O2-"
+        assert info[idx]["connectivity"] == "edge"
+        assert info[idx]["geometry"]["type"] == "trigonal planar"
+        assert info[idx]["inequiv_index"] == 2
 
         info = sa.get_next_nearest_neighbors(0, inc_inequivalent_site_index=False)
-        self.assertTrue("inequiv_index" not in info[0])
+        assert "inequiv_index" not in info[0]
 
         info = sa.get_next_nearest_neighbors(0)
-        self.assertEqual(info[0]["element"], "Sn4+")
-        self.assertEqual(info[0]["connectivity"], "edge")
-        self.assertEqual(info[0]["geometry"]["type"], "octahedral")
-        self.assertEqual(len(info[0]["angles"]), 2)
+        assert info[0]["element"] == "Sn4+"
+        assert info[0]["connectivity"] == "edge"
+        assert info[0]["geometry"]["type"] == "octahedral"
+        assert len(info[0]["angles"]) == 2
         self.assertAlmostEqual(info[0]["angles"][0], 101.62287790513848)
         self.assertAlmostEqual(info[0]["distance"], 3.24322132)
 
         # check different structure without oxi state
         sa = SiteAnalyzer(self.ba_n)
         info = sa.get_next_nearest_neighbors(0)
-        self.assertEqual(len(info), 36)
-        self.assertEqual(info[5]["element"], "N")
-        self.assertEqual(info[5]["connectivity"], "edge")
-        self.assertEqual(info[5]["geometry"]["type"], "6-coordinate")
-        self.assertEqual(len(info[5]["angles"]), 2)
+        assert len(info) == 36
+        assert info[5]["element"] == "N"
+        assert info[5]["connectivity"] == "edge"
+        assert info[5]["geometry"]["type"] == "6-coordinate"
+        assert len(info[5]["angles"]) == 2
         self.assertAlmostEqual(info[5]["angles"][0], 83.91397867959587)
         self.assertAlmostEqual(info[5]["distance"], 3.549136232944574)
 
     def test_get_site_summary(self):
-        """Test getting the site summary"""
+        """Test getting the site summary."""
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_site_summary(0)
-        self.assertEqual(data["element"], "Sn4+")
-        self.assertEqual(data["geometry"]["type"], "octahedral")
+        assert data["element"] == "Sn4+"
+        assert data["geometry"]["type"] == "octahedral"
         self.assertAlmostEqual(data["geometry"]["likeness"], 0.9349776258427136)
-        self.assertEqual(len(data["nn"]), 6)
-        self.assertEqual(len(data["nnn"]["corner"]), 8)
-        self.assertEqual(len(data["nnn"]["edge"]), 2)
-        self.assertEqual(data["poly_formula"], "O6")
-        self.assertEqual(data["sym_labels"], (1,))
+        assert len(data["nn"]) == 6
+        assert len(data["nnn"]["corner"]) == 8
+        assert len(data["nnn"]["edge"]) == 2
+        assert data["poly_formula"] == "O6"
+        assert data["sym_labels"] == (1,)
 
     def test_get_bond_distance_summary(self):
-        """Test getting the bond distance summary"""
+        """Test getting the bond distance summary."""
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_bond_distance_summary(0)
 
-        self.assertEqual(len(data[2]), 6)
+        assert len(data[2]) == 6
         self.assertAlmostEqual(data[2][0], 2.0922101061490546)
 
     def test_connectivity_angle_summary(self):
-        """Test getting the connectivity angle summary"""
+        """Test getting the connectivity angle summary."""
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_connectivity_angle_summary(0)
 
-        self.assertEqual(len(data[0]["corner"]), 8)
-        self.assertEqual(len(data[0]["edge"]), 4)
+        assert len(data[0]["corner"]) == 8
+        assert len(data[0]["edge"]) == 4
         self.assertAlmostEqual(data[0]["edge"][0], 101.62287790513848)
 
     def test_nnn_distance_summary(self):
-        """Test getting the nnn distance summary"""
+        """Test getting the nnn distance summary."""
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_nnn_distance_summary(0)
 
-        self.assertEqual(len(data[0]["corner"]), 8)
-        self.assertEqual(len(data[0]["edge"]), 2)
+        assert len(data[0]["corner"]) == 8
+        assert len(data[0]["edge"]) == 2
         self.assertAlmostEqual(data[0]["edge"][0], 3.24322132)
 
     def test_get_all_site_summaries(self):
         """Test getting all the site summaries."""
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_all_site_summaries()
-        self.assertEqual(len(data.keys()), 2)
-        self.assertEqual(data[0]["element"], "Sn4+")
-        self.assertEqual(data[0]["geometry"]["type"], "octahedral")
+        assert len(data.keys()) == 2
+        assert data[0]["element"] == "Sn4+"
+        assert data[0]["geometry"]["type"] == "octahedral"
         self.assertAlmostEqual(data[0]["geometry"]["likeness"], 0.9349776258427136)
-        self.assertEqual(len(data[0]["nn"]), 6)
-        self.assertEqual(len(data[0]["nnn"]["corner"]), 8)
-        self.assertEqual(len(data[0]["nnn"]["edge"]), 2)
-        self.assertEqual(data[0]["poly_formula"], "O6")
-        self.assertEqual(data[0]["sym_labels"], (1,))
+        assert len(data[0]["nn"]) == 6
+        assert len(data[0]["nnn"]["corner"]) == 8
+        assert len(data[0]["nnn"]["edge"]) == 2
+        assert data[0]["poly_formula"] == "O6"
+        assert data[0]["sym_labels"] == (1,)
 
     def test_get_all_bond_distance_summaries(self):
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_all_bond_distance_summaries()
-        self.assertEqual(len(data[0][2]), 6)
-        self.assertEqual(len(data[2][0]), 3)
+        assert len(data[0][2]) == 6
+        assert len(data[2][0]) == 3
         self.assertAlmostEqual(data[0][2][0], 2.0922101061490546)
 
     def test_get_all_connectivity_angle_summaries(self):
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_all_connectivity_angle_summaries()
-        self.assertEqual(len(data[0][0]["corner"]), 8)
-        self.assertEqual(len(data[0][0]["edge"]), 4)
+        assert len(data[0][0]["corner"]) == 8
+        assert len(data[0][0]["edge"]) == 4
         self.assertAlmostEqual(data[0][0]["edge"][0], 101.62287790513848)
 
     def test_get_all_nnn_distance_summaries(self):
         sa = SiteAnalyzer(self.tin_dioxide)
         data = sa.get_all_nnn_distance_summaries()
-        self.assertEqual(len(data[0][0]["corner"]), 8)
-        self.assertEqual(len(data[0][0]["edge"]), 2)
+        assert len(data[0][0]["corner"]) == 8
+        assert len(data[0][0]["edge"]) == 2
         self.assertAlmostEqual(data[0][0]["edge"][0], 3.24322132)
 
     def test_get_inequivalent_site_indices(self):
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=False)
         inequiv_indices = sa.get_inequivalent_site_indices(list(range(6)))
-        self.assertEqual(inequiv_indices, [0, 0, 0, 0, 4, 4])
+        assert inequiv_indices == [0, 0, 0, 0, 4, 4]
 
         # test using symmetry to determine inequivalent sites.
         sa = SiteAnalyzer(self.ba_n, use_symmetry_equivalent_sites=True)
         inequiv_indices = sa.get_inequivalent_site_indices(list(range(6)))
-        self.assertEqual(inequiv_indices, [0, 0, 0, 0, 4, 4])
+        assert inequiv_indices == [0, 0, 0, 0, 4, 4]
 
         # test symprec option
         sa = SiteAnalyzer(
             self.ba_n, use_symmetry_equivalent_sites=True, symprec=0.000001
         )
         inequiv_indices = sa.get_inequivalent_site_indices(list(range(6)))
-        self.assertEqual(inequiv_indices, [0, 1, 1, 0, 4, 4])
+        assert inequiv_indices == [0, 1, 1, 0, 4, 4]
 
     def test_geometries_match(self):
         """Test geometry matching function."""
@@ -216,8 +216,8 @@ class TestSiteAnalyzer(RobocrysTest):
         geom_b = sa.get_site_geometry(1)
         geom_c = sa.get_site_geometry(4)
 
-        self.assertTrue(geometries_match(geom_a, geom_b))
-        self.assertFalse(geometries_match(geom_a, geom_c))
+        assert geometries_match(geom_a, geom_b)
+        assert not geometries_match(geom_a, geom_c)
 
     def test_nn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
@@ -226,16 +226,14 @@ class TestSiteAnalyzer(RobocrysTest):
         nn_b = sa.get_nearest_neighbors(1)
         nn_c = sa.get_nearest_neighbors(4)
 
-        self.assertTrue(nn_summaries_match(nn_a, nn_b))
-        self.assertFalse(nn_summaries_match(nn_a, nn_c))
+        assert nn_summaries_match(nn_a, nn_b)
+        assert not nn_summaries_match(nn_a, nn_c)
 
         # test bond dist tol works
-        self.assertFalse(nn_summaries_match(nn_a, nn_b, bond_dist_tol=1e-10))
+        assert not nn_summaries_match(nn_a, nn_b, bond_dist_tol=1e-10)
 
         # test not matching bond dists
-        self.assertTrue(
-            nn_summaries_match(nn_a, nn_b, bond_dist_tol=1e-10, match_bond_dists=False)
-        )
+        assert nn_summaries_match(nn_a, nn_b, bond_dist_tol=1e-10, match_bond_dists=False)
 
     def test_nnn_summaries_match(self):
         """Test nearest neighbour summary matching function."""
@@ -244,12 +242,8 @@ class TestSiteAnalyzer(RobocrysTest):
         nnn_b = sa.get_next_nearest_neighbors(3)
         nnn_c = sa.get_next_nearest_neighbors(4)
 
-        self.assertTrue(nnn_summaries_match(nnn_a, nnn_b))
-        self.assertFalse(nnn_summaries_match(nnn_a, nnn_c))
+        assert nnn_summaries_match(nnn_a, nnn_b)
+        assert not nnn_summaries_match(nnn_a, nnn_c)
 
         # test not matching bond angles
-        self.assertTrue(
-            nnn_summaries_match(
-                nnn_a, nnn_b, bond_angle_tol=1e-10, match_bond_angles=False
-            )
-        )
+        assert nnn_summaries_match(nnn_a, nnn_b, bond_angle_tol=1e-10, match_bond_angles=False)

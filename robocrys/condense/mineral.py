@@ -1,9 +1,7 @@
-"""
-This module provides tools for matching structures to known mineral class.
-"""
+"""This module provides tools for matching structures to known mineral class."""
 
 from itertools import islice
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 from matminer.utils.io import load_dataframe_from_json
@@ -61,7 +59,7 @@ class MineralMatcher:
         self._structure = None
         self._mineral_db = None
 
-    def get_best_mineral_name(self, structure: IStructure) -> Dict[str, Any]:
+    def get_best_mineral_name(self, structure: IStructure) -> dict[str, Any]:
         """Gets the "best" mineral name for a structure.
 
         Uses a combination of AFLOW prototype matching and fingerprinting to
@@ -128,7 +126,7 @@ class MineralMatcher:
     def get_aflow_matches(
         self,
         structure: IStructure,
-    ) -> Optional[List[Dict[str, Any]]]:
+    ) -> Optional[list[dict[str, Any]]]:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
         Overrides
@@ -183,7 +181,7 @@ class MineralMatcher:
         max_n_matches: Optional[int] = None,
         match_n_sp: bool = True,
         mineral_name_constraint: Optional[str] = None,
-    ) -> Optional[List[Dict[str, Any]]]:
+    ) -> Optional[list[dict[str, Any]]]:
         """Gets minerals for a structure by matching to AFLOW fingerprints.
 
         Only AFLOW prototypes with mineral names are considered. The AFLOW
@@ -259,7 +257,7 @@ class MineralMatcher:
         self._structure = structure
 
 
-def _get_row_data(row: Dict) -> Dict[str, Any]:
+def _get_row_data(row: dict) -> dict[str, Any]:
     """Utility function to extract mineral data from pandas `DataFrame` row."""
     return {
         "type": row["mineral"],

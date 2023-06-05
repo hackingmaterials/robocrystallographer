@@ -1,8 +1,6 @@
-"""
-This module implements functions for handling structure components.
-"""
+"""This module implements functions for handling structure components."""
 from copy import deepcopy
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import networkx as nx
 import numpy as np
@@ -17,14 +15,14 @@ from pymatgen.util.string import formula_double_format
 from robocrys import common_formulas
 from robocrys.condense.fingerprint import get_structure_fingerprint
 
-Component = Dict[str, Any]
+Component = dict[str, Any]
 
 
 def get_structure_inequiv_components(
-    components: List[Component],
+    components: list[Component],
     use_structure_graph: bool = False,
     fingerprint_tol: int = 0.01,
-) -> List[Component]:
+) -> list[Component]:
     """Gets and counts the structurally inequivalent components.
 
     Supports matching through StructureMatcher or by a combined structure graph/
@@ -157,8 +155,8 @@ def components_are_isomorphic(
 
 
 def get_sym_inequiv_components(
-    components: List[Component], spg_analyzer: SpacegroupAnalyzer
-) -> List[Component]:
+    components: list[Component], spg_analyzer: SpacegroupAnalyzer
+) -> list[Component]:
     """Gets and counts the symmetrically inequivalent components.
 
     Component data has to have been generated with ``inc_site_ids=True``.
@@ -201,10 +199,10 @@ def get_sym_inequiv_components(
 
 
 def get_formula_inequiv_components(
-    components: List[Component],
+    components: list[Component],
     use_iupac_formula: bool = True,
     use_common_formulas: bool = True,
-) -> List[Component]:
+) -> list[Component]:
     """Gets and counts the inequivalent components based on their formuula.
 
     Note that the counting of compounds is different to in
@@ -264,8 +262,8 @@ def get_formula_inequiv_components(
 
 
 def filter_molecular_components(
-    components: List[Component],
-) -> Tuple[List[Component], List[Component]]:
+    components: list[Component],
+) -> tuple[list[Component], list[Component]]:
     """Separate list of components into molecular and non-molecular components.
 
     Args:
@@ -283,7 +281,7 @@ def filter_molecular_components(
 
 
 def get_reconstructed_structure(
-    components: List[Component], simplify_molecules: bool = True
+    components: list[Component], simplify_molecules: bool = True
 ) -> Structure:
     """Reconstructs a structure from a list of components.
 
@@ -332,7 +330,7 @@ def get_component_formula_and_factor(
     component: Component,
     use_iupac_formula: bool = True,
     use_common_formulas: bool = True,
-) -> Tuple[str, int]:
+) -> tuple[str, int]:
     """Gets the reduced formula and factor of a single component.
 
     Args:
@@ -396,7 +394,7 @@ def get_component_formula(
 
 
 def get_formula_from_components(
-    components: List[Component],
+    components: list[Component],
     molecules_first: bool = False,
     use_iupac_formula: bool = True,
     use_common_formulas: bool = True,
@@ -474,7 +472,7 @@ def get_formula_from_components(
     return reduced_form
 
 
-def components_are_vdw_heterostructure(components: List[Component]) -> bool:
+def components_are_vdw_heterostructure(components: list[Component]) -> bool:
     """Whether a list of components form a van der Waals heterostructure.
 
     A heterostructure is defined here as a structure with more than one
@@ -489,19 +487,16 @@ def components_are_vdw_heterostructure(components: List[Component]) -> bool:
     """
     components = get_formula_inequiv_components(components)
 
-    if len([c for c in components if c["dimensionality"] == 2]):
-        return True
-    else:
-        return False
+    return bool(len([c for c in components if c["dimensionality"] == 2]))
 
 
 def get_vdw_heterostructure_information(
-    components: List[Component],
+    components: list[Component],
     use_iupac_formula: bool = True,
     use_common_formulas: bool = True,
     inc_ordered_components: bool = False,
     inc_intercalants: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Gets information about ordering of components in a vdw heterostructure.
 
     Args:
@@ -600,10 +595,8 @@ def get_vdw_heterostructure_information(
     for n in range(max_repetitions, 0, -1):
         if (
             all(
-                [
-                    len(set(ordered_layers_formula[i::num_layer_formulas])) == 1
+                len(set(ordered_layers_formula[i::num_layer_formulas])) == 1
                     for i in range(n)
-                ]
             )
             and len(ordered_layers) % n == 0
         ):

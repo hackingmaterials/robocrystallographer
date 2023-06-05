@@ -1,5 +1,4 @@
-"""
-This module implements a script for extracting molecule names, SMILES and xyz
+"""This module implements a script for extracting molecule names, SMILES and xyz
 files from the Pubchem database.
 
 It uses multiprocessing to process many files simultaneously.
@@ -56,7 +55,7 @@ def process_sdf_file(filename):
 
     skipped = 0
     pubchem_molecules = []
-    for i, mol in enumerate(pybel.readfile("sdf", filename)):
+    for _i, mol in enumerate(pybel.readfile("sdf", filename)):
         try:
             pubchem_id = int(mol.data["PUBCHEM_COMPOUND_CID"])
             xyz = mol.write(format="xyz")
@@ -84,7 +83,7 @@ def task_done(future):
         total_skipped.append(result[1])
 
     except (ProcessExpired, TimeoutError) as e:
-        print("File {} timed-out".format(e.args[0]))
+        print(f"File {e.args[0]} timed-out")
     except Exception as e:
         raise e
 
@@ -97,7 +96,7 @@ def download_done(future):
 
 
 def download_file(remote_file):
-    """First downloads the file to filename.tmp then moves to filename after"""
+    """First downloads the file to filename.tmp then moves to filename after."""
     ftp = ftplib.FTP(
         "ftp.ncbi.nlm.nih.gov",
     )
@@ -157,5 +156,5 @@ pbar.close()
 total_skipped = sum(total_skipped)
 total_completed = sum(total_completed)
 
-print("total skipped: {}".format(total_skipped))
-print("total saved: {}".format(total_completed))
+print(f"total skipped: {total_skipped}")
+print(f"total saved: {total_completed}")

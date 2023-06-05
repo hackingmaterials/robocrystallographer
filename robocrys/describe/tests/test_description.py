@@ -20,16 +20,16 @@ class TestDescriptionMethods(RobocrysTest):
             fmt="raw",
         )
         description = d.describe(self.tin_dioxide)
-        self.assertTrue("Rutile" in description)
-        self.assertTrue("SnO2" in description)
-        self.assertTrue("tetragonal" in description)
-        self.assertTrue("P4_2/mnm" in description)
-        self.assertTrue("Sn(1)4+" in description)
-        self.assertTrue("equivalent" in description)
-        self.assertTrue("corner" in description)
-        self.assertTrue("edge" in description)
-        self.assertTrue("Sn(1)–O(1)" in description)
-        self.assertTrue("2.09" in description)
+        assert "Rutile" in description
+        assert "SnO2" in description
+        assert "tetragonal" in description
+        assert "P4_2/mnm" in description
+        assert "Sn(1)4+" in description
+        assert "equivalent" in description
+        assert "corner" in description
+        assert "edge" in description
+        assert "Sn(1)-O(1)" in description
+        assert "2.09" in description
 
         # test different settings
         d = StructureDescriber(
@@ -40,9 +40,9 @@ class TestDescriptionMethods(RobocrysTest):
             fmt="raw",
         )
         description = d.describe(self.tin_dioxide)
-        self.assertTrue("Sn(1)" in description)
-        self.assertTrue("Sn(1)–O(1)" in description)
-        self.assertTrue("2.0922" in description)
+        assert "Sn(1)" in description
+        assert "Sn(1)-O(1)" in description
+        assert "2.0922" in description
 
         # test different settings
         d = StructureDescriber(
@@ -53,8 +53,8 @@ class TestDescriptionMethods(RobocrysTest):
             fmt="latex",
         )
         description = d.describe(self.tin_dioxide)
-        self.assertTrue(r"Sn^{4+}" in description)
-        self.assertTrue("Sn–O" in description)
+        assert "Sn^{4+}" in description
+        assert "Sn-O" in description
 
         # test return parts
         d = StructureDescriber(
@@ -65,28 +65,28 @@ class TestDescriptionMethods(RobocrysTest):
             fmt="raw",
         )
         description = d.describe(self.tin_dioxide)
-        self.assertTrue("Rutile" in description["mineral"])
-        self.assertTrue("SnO2" in description["mineral"])
-        self.assertTrue("tetragonal" in description["mineral"])
-        self.assertTrue("P4_2/mnm" in description["mineral"])
+        assert "Rutile" in description["mineral"]
+        assert "SnO2" in description["mineral"]
+        assert "tetragonal" in description["mineral"]
+        assert "P4_2/mnm" in description["mineral"]
 
-        self.assertTrue("" == description["component_makeup"])
-        self.assertTrue("Sn(1)4+" in description["components"])
-        self.assertTrue("equivalent" in description["components"])
-        self.assertTrue("corner" in description["components"])
-        self.assertTrue("edge" in description["components"])
-        self.assertTrue("Sn(1)–O(1)" in description["components"])
-        self.assertTrue("2.09" in description["components"])
+        assert description["component_makeup"] == ""
+        assert "Sn(1)4+" in description["components"]
+        assert "equivalent" in description["components"]
+        assert "corner" in description["components"]
+        assert "edge" in description["components"]
+        assert "Sn(1)-O(1)" in description["components"]
+        assert "2.09" in description["components"]
 
     def test_grammar_and_punctuation(self):
-        """Check common grammatical errors are not present"""
+        """Check common grammatical errors are not present."""
         d = StructureDescriber()
         description = d.describe(self.tin_dioxide)
-        self.assertTrue(".." not in description)
-        self.assertTrue("  " not in description)
-        self.assertTrue(". ." not in description)
+        assert ".." not in description
+        assert "  " not in description
+        assert ". ." not in description
 
         description = d.describe(self.mapi)
-        self.assertTrue(".." not in description)
-        self.assertTrue("  " not in description)
-        self.assertTrue(". ." not in description)
+        assert ".." not in description
+        assert "  " not in description
+        assert ". ." not in description

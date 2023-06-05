@@ -24,29 +24,29 @@ class TestMoleculeMatcher(RobocrysTest):
     def test_init(self):
         """Test initialising MoleculeNamer."""
         mn = MoleculeNamer()
-        self.assertTrue(mn)
+        assert mn
 
         mn = MoleculeNamer(use_online_pubchem=False)
-        self.assertTrue(mn)
+        assert mn
 
     def test_molecule_graph_to_smiles(self):
         """Test converting a molecule graph to SMILES string."""
         smiles = MoleculeNamer.molecule_graph_to_smiles(self.methylammonium)
-        self.assertEqual(smiles, "C[NH3]")
+        assert smiles == "C[NH3]"
 
     def test_get_name_from_pubchem(self):
         """Test downloading the molecule name from Pubchem."""
         mn = MoleculeNamer()
         name = mn.get_name_from_pubchem("C[NH3]")
-        self.assertEqual(name, "methylammonium")
+        assert name == "methylammonium"
 
     def test_get_name_from_molecule_graph(self):
         """Test getting a molecule name from the molecule graph."""
         mn = MoleculeNamer()
         name = mn.get_name_from_molecule_graph(self.methylammonium)
-        self.assertEqual(name, "methylammonium")
+        assert name == "methylammonium"
 
         # test iupac naming source
         mn = MoleculeNamer(name_preference=("iupac",))
         name = mn.get_name_from_molecule_graph(self.methylammonium)
-        self.assertEqual(name, "methylazanium")
+        assert name == "methylazanium"

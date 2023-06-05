@@ -1,5 +1,4 @@
-"""
-This script converts the most frequent formula mapping JSON file to a more
+"""This script converts the most frequent formula mapping JSON file to a more
 usable format for robocrystallographer.
 
 The file maps from Composition.reduced_formula to a string. E.g.::
@@ -54,5 +53,5 @@ for formula, mappings in formulas.items():
 
 dumpfn(new_formula_mapping, "formula_db.json.gz")
 
-print("total formulas processed: {}".format(len(new_formula_mapping.keys())))
-print("total formulas skipped: {}".format(skipped))
+print(f"total formulas processed: {len(new_formula_mapping.keys())}")
+print(f"total formulas skipped: {skipped}")

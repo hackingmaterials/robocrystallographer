@@ -1,10 +1,9 @@
-"""
-This module implements a class to resolve the symbolic references in condensed
+"""This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
 import collections
 from statistics import mean
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Optional, Union
 
 from robocrys.adapter import BaseAdapter
 
@@ -17,7 +16,7 @@ class FeaturizerAdapter(BaseAdapter):
             by :meth:`robocrys.condense.StructureCondenser.condense_structure`.
     """
 
-    def __init__(self, condensed_structure: Dict[str, Any], distorted_tol: float = 0.6):
+    def __init__(self, condensed_structure: dict[str, Any], distorted_tol: float = 0.6):
         super().__init__(condensed_structure)
         self._all_sites = [
             site
@@ -27,7 +26,7 @@ class FeaturizerAdapter(BaseAdapter):
         self._distorted_tol = distorted_tol
 
     @property
-    def component_dimensionalities(self) -> List[int]:
+    def component_dimensionalities(self) -> list[int]:
         """The dimensionalities of all components."""
         return sorted(c["dimensionality"] for c in self.components.values())
 
@@ -56,8 +55,7 @@ class FeaturizerAdapter(BaseAdapter):
         """Whether the structure contains corner-sharing polyhedra."""
         # criteria: original site poly, nnn site poly and sites corner-sharing
         return any(
-            [
-                site
+            site
                 for site in self.sites.values()
                 if site["poly_formula"]
                 and "corner" in site["nnn"]
@@ -65,7 +63,6 @@ class FeaturizerAdapter(BaseAdapter):
                     self.sites[nnn_site]["poly_formula"]
                     for nnn_site in site["nnn"]["corner"]
                 )
-            ]
         )
 
     @property
@@ -73,8 +70,7 @@ class FeaturizerAdapter(BaseAdapter):
         """Whether the structure contains edge-sharing polyhedra."""
         # criteria: original site poly, nnn site poly and sites edge-sharing
         return any(
-            [
-                site
+            site
                 for site in self.sites.values()
                 if site["poly_formula"]
                 and "edge" in site["nnn"]
@@ -82,7 +78,6 @@ class FeaturizerAdapter(BaseAdapter):
                     self.sites[nnn_site]["poly_formula"]
                     for nnn_site in site["nnn"]["edge"]
                 )
-            ]
         )
 
     @property
@@ -90,8 +85,7 @@ class FeaturizerAdapter(BaseAdapter):
         """Whether the structure contains face-sharing polyhedra."""
         # criteria: original site poly, nnn site poly and sites face-sharing
         return any(
-            [
-                site
+            site
                 for site in self.sites.values()
                 if site["poly_formula"]
                 and "face" in site["nnn"]
@@ -99,7 +93,6 @@ class FeaturizerAdapter(BaseAdapter):
                     self.sites[nnn_site]["poly_formula"]
                     for nnn_site in site["nnn"]["face"]
                 )
-            ]
         )
 
     @property
@@ -187,7 +180,7 @@ class FeaturizerAdapter(BaseAdapter):
         )
 
     def is_dimensionality(
-        self, dimensionalities: Union[int, List[int], Set[int]]
+        self, dimensionalities: Union[int, list[int], set[int]]
     ) -> bool:
         """Whether the structure only contains the specified dimensionalities.
 
@@ -202,7 +195,7 @@ class FeaturizerAdapter(BaseAdapter):
             iterable = collections.Iterable
         except:
             iterable = collections.abc.Iterable
-            
+
         if isinstance(dimensionalities, set):
             set_dimensionalities = dimensionalities
         elif isinstance(dimensionalities, iterable):
@@ -251,8 +244,7 @@ class FeaturizerAdapter(BaseAdapter):
             Whether the structure contains the specified connected geometry.
         """
         return any(
-            [
-                site
+            site
                 for site in self.sites.values()
                 if site["poly_formula"]
                 and site["geometry"]["type"] == geometry
@@ -262,7 +254,6 @@ class FeaturizerAdapter(BaseAdapter):
                     for nnn_site in site["nnn"][connectivity]
                     if self.sites[nnn_site]["geometry"]["type"] == geometry
                 )
-            ]
         )
 
     def frac_site_geometry(self, geometry: str) -> float:

@@ -1,10 +1,9 @@
-"""
-This module implements a class to resolve the symbolic references in condensed
+"""This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
 
 from collections import defaultdict, namedtuple
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 import numpy as np
 from pymatgen.core.periodic_table import get_el_sp
@@ -68,19 +67,19 @@ class DescriptionAdapter(BaseAdapter):
     """
 
     def __init__(
-        self, condensed_structure: Dict[str, Any], use_iupac_ordering: bool = True
+        self, condensed_structure: dict[str, Any], use_iupac_ordering: bool = True
     ):
         super().__init__(condensed_structure)
 
         self.use_iupac_ordering = use_iupac_ordering
         self.sym_labels = {
             site_index: self.get_sym_label(site_index)
-            for site_index in self.sites.keys()
+            for site_index in self.sites
         }
 
     def get_nearest_neighbor_details(
         self, site_index: int, group: bool = False
-    ) -> List[NeighborSiteDetails]:
+    ) -> list[NeighborSiteDetails]:
         """Gets a summary of all the nearest neighbors to a site.
 
         Args:
@@ -127,7 +126,7 @@ class DescriptionAdapter(BaseAdapter):
 
     def get_next_nearest_neighbor_details(
         self, site_index: int, group: bool = False
-    ) -> List[NextNeighborSiteDetails]:
+    ) -> list[NextNeighborSiteDetails]:
         """Gets a summary of all the next nearest neighbors to a site.
 
         We only get the summaries for next nearest neighbor sites that have a
@@ -208,7 +207,7 @@ class DescriptionAdapter(BaseAdapter):
 
         return sorted(nnn_details, key=self._site_order)
 
-    def get_component_details(self) -> List[ComponentDetails]:
+    def get_component_details(self) -> list[ComponentDetails]:
         """Gets a summary of all components.
 
         Returns:
@@ -241,7 +240,7 @@ class DescriptionAdapter(BaseAdapter):
 
         return sorted(component_details, key=_component_order)
 
-    def get_component_groups(self) -> List[ComponentGroup]:
+    def get_component_groups(self) -> list[ComponentGroup]:
         """Gets a summary of all components groups.
 
         Returns:
@@ -284,7 +283,7 @@ class DescriptionAdapter(BaseAdapter):
 
         return sorted(component_group_details, key=_component_order)
 
-    def get_component_site_groups(self, component_index: int) -> List[SiteGroup]:
+    def get_component_site_groups(self, component_index: int) -> list[SiteGroup]:
         """Gets a summary of the sites in a component.
 
         Returns:
@@ -313,7 +312,7 @@ class DescriptionAdapter(BaseAdapter):
 
         return sorted(site_groups, key=self._site_order)
 
-    def get_sym_label(self, site_indices: Union[int, List[int]]) -> str:
+    def get_sym_label(self, site_indices: Union[int, list[int]]) -> str:
         """Convert site indices into a formatted symmetry label.
 
         Args:
@@ -324,7 +323,7 @@ class DescriptionAdapter(BaseAdapter):
             for the sites looks like ``(1, 2)``, the symmetry label will be
             ``(1,2)``.
         """
-        if isinstance(site_indices, int) or isinstance(site_indices, np.int32):
+        if isinstance(site_indices, (int, np.int32)):
             # If only one to_site is provided turn it into a list
             site_indices = [site_indices]
 

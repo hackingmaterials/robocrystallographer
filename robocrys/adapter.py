@@ -1,9 +1,8 @@
-"""
-This module implements a class to resolve the symbolic references in condensed
+"""This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
 
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 
 class BaseAdapter:
@@ -17,7 +16,7 @@ class BaseAdapter:
             by :meth:`robocrys.condense.StructureCondenser.condense_structure`.
     """
 
-    def __init__(self, condensed_structure: Dict[str, Any]):
+    def __init__(self, condensed_structure: dict[str, Any]):
         self._condensed_structure = condensed_structure
         self.elements = {
             site_index: site_data["element"]
@@ -25,8 +24,8 @@ class BaseAdapter:
         }
 
     def get_distance_details(
-        self, from_site: int, to_sites: Union[int, List[int]]
-    ) -> List[float]:
+        self, from_site: int, to_sites: Union[int, list[int]]
+    ) -> list[float]:
         """Gets the bond lengths between two sets of sites.
 
         Args:
@@ -47,8 +46,8 @@ class BaseAdapter:
         ]
 
     def get_angle_details(
-        self, from_site: int, to_sites: Union[int, List[int]], connectivity: str
-    ) -> List[float]:
+        self, from_site: int, to_sites: Union[int, list[int]], connectivity: str
+    ) -> list[float]:
         """Gets the connectivity angles between two sets of sites.
 
         Args:
@@ -71,7 +70,7 @@ class BaseAdapter:
         ]
 
     @property
-    def mineral(self) -> Dict[str, Union[str, int, bool]]:
+    def mineral(self) -> dict[str, Union[str, int, bool]]:
         """The mineral data.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
@@ -116,7 +115,7 @@ class BaseAdapter:
         return self._condensed_structure["dimensionality"]
 
     @property
-    def sites(self) -> Dict[int, Dict[str, Any]]:
+    def sites(self) -> dict[int, dict[str, Any]]:
         """The site data.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
@@ -125,7 +124,7 @@ class BaseAdapter:
         return self._condensed_structure["sites"]
 
     @property
-    def distances(self) -> Dict[int, Dict[int, List[float]]]:
+    def distances(self) -> dict[int, dict[int, list[float]]]:
         """The distance data.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
@@ -134,7 +133,7 @@ class BaseAdapter:
         return self._condensed_structure["distances"]
 
     @property
-    def angles(self) -> Dict[int, Dict[int, Dict[str, List[float]]]]:
+    def angles(self) -> dict[int, dict[int, dict[str, list[float]]]]:
         """The angle data.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
@@ -143,7 +142,7 @@ class BaseAdapter:
         return self._condensed_structure["angles"]
 
     @property
-    def components(self) -> Dict[int, Dict[str, Any]]:
+    def components(self) -> dict[int, dict[str, Any]]:
         """The component data.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for
@@ -152,7 +151,7 @@ class BaseAdapter:
         return self._condensed_structure["components"]
 
     @property
-    def component_makeup(self) -> List[int]:
+    def component_makeup(self) -> list[int]:
         """The component makeup of the structure.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for

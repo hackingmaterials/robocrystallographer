@@ -6,7 +6,7 @@ from os.path import join as path_join
 
 from setuptools import find_packages, setup
 
-with open("README.md", "r") as file:
+with open("README.md") as file:
     long_description = file.read()
 
 version = open("robocrys/_version.py").readlines()[-1].split()[-1].strip("\"'")

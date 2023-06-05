@@ -1,5 +1,4 @@
-"""
-Miscellaneous utility functions and common data.
+"""Miscellaneous utility functions and common data.
 
 Attributes:
     common_formulas: A set of common formulas. The keys to the data are strings
@@ -14,7 +13,7 @@ Attributes:
 """
 import re
 from collections import defaultdict
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 from monty.json import MontyDecoder
 from monty.serialization import loadfn
@@ -22,11 +21,11 @@ from pkg_resources import resource_filename
 from pymatgen.core.periodic_table import Element, Species, get_el_sp
 from pymatgen.util.string import latexify_spacegroup
 
-common_formulas: Dict[str, str] = loadfn(
+common_formulas: dict[str, str] = loadfn(
     resource_filename("robocrys.condense", "formula_db.json.gz")
 )
 
-connected_geometries: List[str] = [
+connected_geometries: list[str] = [
     "tetrahedral",
     "octahedral",
     "trigonal pyramidal",
@@ -39,7 +38,7 @@ connected_geometries: List[str] = [
     "cuboctahedral",
 ]
 
-geometry_to_polyhedra: Dict[str, str] = {
+geometry_to_polyhedra: dict[str, str] = {
     "octahedral": "octahedra",
     "tetrahedral": "tetrahedra",
     "trigonal pyramidal": "trigonal pyramid",
@@ -52,7 +51,7 @@ geometry_to_polyhedra: Dict[str, str] = {
     "cuboctahedral": "cuboctahedra",
 }
 
-polyhedra_plurals: Dict[str, str] = {
+polyhedra_plurals: dict[str, str] = {
     "octahedra": "octahedra",
     "tetrahedra": "tetrahedra",
     "trigonal pyramid": "trigonal pyramids",
@@ -65,7 +64,7 @@ polyhedra_plurals: Dict[str, str] = {
     "cuboctahedra": "cuboctahedra",
 }
 
-dimensionality_to_shape: Dict[int, str] = {
+dimensionality_to_shape: dict[int, str] = {
     3: "framework",
     2: "sheet",
     1: "ribbon",
@@ -178,7 +177,6 @@ def superscript_number(string):
     Returns:
         The superscript string.
     """
-
     if "." in string:
         # no unicode period exists
         return string
@@ -260,7 +258,7 @@ def htmlify_spacegroup(spacegroup_symbol: str) -> str:
     return symbol
 
 
-def defaultdict_to_dict(dictionary: defaultdict) -> Dict:
+def defaultdict_to_dict(dictionary: defaultdict) -> dict:
     """Recursively convert nested :obj:`defaultdict` to :obj:`dict`.
 
     Args:
@@ -274,7 +272,7 @@ def defaultdict_to_dict(dictionary: defaultdict) -> Dict:
     return dictionary
 
 
-def load_condensed_structure_json(filename: str) -> Dict[str, Any]:
+def load_condensed_structure_json(filename: str) -> dict[str, Any]:
     """Load condensed structure data from a file.
 
     Args:
@@ -289,5 +287,6 @@ def load_condensed_structure_json(filename: str) -> Dict[str, Any]:
     def json_keys_to_int(x):
         if isinstance(x, dict):
             return {int(k) if k.isdigit() else k: v for k, v in x.items()}
+        return None
 
     return loadfn(filename, cls=MontyDecoder, object_hook=json_keys_to_int)
