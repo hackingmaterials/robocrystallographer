@@ -5,8 +5,9 @@ Todo:
     * Indicate when molecules have been simplified in the mineral description.
     * Handle distortion in connected polyhedra description.
 """
+from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
 import inflect
 from pymatgen.util.string import htmlify, latexify, latexify_spacegroup, unicodeify
@@ -102,7 +103,7 @@ class StructureDescriber:
 
     def describe(
         self, condensed_structure: dict[str, Any]
-    ) -> Union[str, dict[str, str]]:
+    ) -> str | dict[str, str]:
         """Convert a condensed structure into a text description.
 
         Args:
@@ -772,7 +773,7 @@ class StructureDescriber:
         )
 
 
-def get_mineral_name(mineral_dict: dict[str, Any]) -> Union[str, None]:
+def get_mineral_name(mineral_dict: dict[str, Any]) -> str | None:
     """Get the mineral name from a mineral dictionary.
 
     Args:

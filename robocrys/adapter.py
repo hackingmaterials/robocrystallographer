@@ -1,8 +1,9 @@
 """This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
+from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any
 
 
 class BaseAdapter:
@@ -24,7 +25,7 @@ class BaseAdapter:
         }
 
     def get_distance_details(
-        self, from_site: int, to_sites: Union[int, list[int]]
+        self, from_site: int, to_sites: int | list[int]
     ) -> list[float]:
         """Gets the bond lengths between two sets of sites.
 
@@ -46,7 +47,7 @@ class BaseAdapter:
         ]
 
     def get_angle_details(
-        self, from_site: int, to_sites: Union[int, list[int]], connectivity: str
+        self, from_site: int, to_sites: int | list[int], connectivity: str
     ) -> list[float]:
         """Gets the connectivity angles between two sets of sites.
 
@@ -70,7 +71,7 @@ class BaseAdapter:
         ]
 
     @property
-    def mineral(self) -> dict[str, Union[str, int, bool]]:
+    def mineral(self) -> dict[str, str | int | bool]:
         """The mineral data.
 
         See :meth:`robocrys.condense.StructureCondenser.condense_structure` for

@@ -1,9 +1,9 @@
 """This module contains a script for using robocrys from the command line."""
+from __future__ import annotations
 
 import argparse
 import sys
 import warnings
-from typing import Optional
 
 from pymatgen.core.structure import Structure
 from pymatgen.ext.matproj import MPRestError
@@ -18,8 +18,8 @@ __date__ = "December 17, 2018"
 
 def robocrystallographer(
     structure: Structure,
-    condenser_kwargs: Optional[dict] = None,
-    describer_kwargs: Optional[dict] = None,
+    condenser_kwargs: dict | None = None,
+    describer_kwargs: dict | None = None,
 ) -> str:
     """Gets the robocrystallographer description of a structure.
 

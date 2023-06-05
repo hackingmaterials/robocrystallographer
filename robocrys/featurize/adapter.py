@@ -1,9 +1,11 @@
 """This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
+from __future__ import annotations
+
 import collections
 from statistics import mean
-from typing import Any, Optional, Union
+from typing import Any
 
 from robocrys.adapter import BaseAdapter
 
@@ -175,7 +177,7 @@ class FeaturizerAdapter(BaseAdapter):
         )
 
     def is_dimensionality(
-        self, dimensionalities: Union[int, list[int], set[int]]
+        self, dimensionalities: int | list[int] | set[int]
     ) -> bool:
         """Whether the structure only contains the specified dimensionalities.
 
@@ -200,7 +202,7 @@ class FeaturizerAdapter(BaseAdapter):
         return set(self.component_dimensionalities) == set_dimensionalities
 
     def contains_geometry_type(
-        self, geometry: str, distorted: Optional[bool] = None
+        self, geometry: str, distorted: bool | None = None
     ) -> bool:
         """Whether the structure contains a specific site geometry.
 

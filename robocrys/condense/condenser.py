@@ -1,6 +1,7 @@
 """This module defines a class for condensing structures into dict representations."""
+from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN, NearNeighbors
@@ -60,8 +61,8 @@ class StructureCondenser:
     def __init__(
         self,
         use_conventional_cell: bool = True,
-        near_neighbors: Optional[NearNeighbors] = None,
-        mineral_matcher: Optional[MineralMatcher] = None,
+        near_neighbors: NearNeighbors | None = None,
+        mineral_matcher: MineralMatcher | None = None,
         use_symmetry_equivalent_sites: bool = False,
         symprec: float = 0.01,
         simplify_molecules: bool = True,

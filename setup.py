@@ -1,6 +1,7 @@
 """"
 robocrystallographer: Automatic generation of crystal structure descriptions.
 """
+from __future__ import annotations
 
 from os.path import join as path_join
 

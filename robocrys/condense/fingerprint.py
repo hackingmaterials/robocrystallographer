@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from collections.abc import Iterable
-from typing import Optional, Union
 
 import numpy as np
 from matminer.featurizers.site import CrystalNNFingerprint
@@ -11,7 +12,7 @@ def get_site_fingerprints(
     structure: IStructure,
     as_dict: bool = True,
     preset: str = "CrystalNNFingerprint_ops",
-) -> Union[list[dict[str, int]], np.ndarray]:
+) -> list[dict[str, int]] | np.ndarray:
     """Gets the fingerprint for all sites in a structure.
 
     Args:
@@ -49,7 +50,7 @@ def get_site_fingerprints(
 def get_structure_fingerprint(
     structure: IStructure,
     preset: str = "CrystalNNFingerprint_ops",
-    stats: Optional[tuple[str]] = ("mean", "std_dev"),
+    stats: tuple[str] | None = ("mean", "std_dev"),
     prototype_match: bool = False,
 ) -> np.ndarray:
     """Gets the fingerprint for a structure.
@@ -86,7 +87,7 @@ def get_structure_fingerprint(
 
 
 def get_fingerprint_distance(
-    structure_a: Union[IStructure, Iterable], structure_b: Union[IStructure, Iterable]
+    structure_a: IStructure | Iterable, structure_b: IStructure | Iterable
 ) -> float:
     """Gets the euclidean distance between the fingerprints of two structures.
 

@@ -10,6 +10,8 @@ here.
 
 See https://github.com/materialsintelligence/matscholar for more details.
 """
+from __future__ import annotations
+
 import os
 
 from monty.serialization import dumpfn, loadfn

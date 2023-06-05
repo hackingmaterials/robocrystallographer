@@ -2,6 +2,8 @@
 
 isort:skip_file
 """
+from __future__ import annotations
+
 from robocrys._version import __version__
 from robocrys.condense.condenser import StructureCondenser
 from robocrys.describe.describer import StructureDescriber

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from robocrys import StructureDescriber
 from robocrys.tests import RobocrysTest
 

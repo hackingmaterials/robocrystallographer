@@ -2,9 +2,9 @@
 
 Some functionality relies on having a working internet connection.
 """
+from __future__ import annotations
 
 import warnings
-from typing import Optional
 
 from monty.serialization import loadfn
 from pkg_resources import resource_filename
@@ -46,7 +46,7 @@ class MoleculeNamer:
     def get_name_from_molecule_graph(
         self,
         molecule_graph: MoleculeGraph,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Gets the name of a molecule from a molecule graph object.
 
         Args:
@@ -79,7 +79,7 @@ class MoleculeNamer:
 
         return self._process_match(smiles, match)
 
-    def get_name_from_pubchem(self, smiles: str) -> Optional[str]:
+    def get_name_from_pubchem(self, smiles: str) -> str | None:
         """Tries to get the name of a molecule from the Pubchem website.
 
         Args:
@@ -109,7 +109,7 @@ class MoleculeNamer:
         return self._process_match(smiles, match)
 
     @staticmethod
-    def molecule_graph_to_smiles(molecule_graph: MoleculeGraph) -> Optional[str]:
+    def molecule_graph_to_smiles(molecule_graph: MoleculeGraph) -> str | None:
         """Converts a molecule graph to SMILES string.
 
         Args:
@@ -130,7 +130,7 @@ class MoleculeNamer:
             )
             return None
 
-    def _process_match(self, smiles: str, match: Optional[str]) -> Optional[str]:
+    def _process_match(self, smiles: str, match: str | None) -> str | None:
         """Utility function to store and process match."""
         if isinstance(match, str):
             match = match.lower()

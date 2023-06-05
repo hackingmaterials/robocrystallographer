@@ -17,6 +17,7 @@ robocrystallographer. When using robocrystallographer to describe structures
 containing molecules with > 12 atoms, an internet connection is required to
 search Pubchem using the pubchempy python package.
 """
+from __future__ import annotations
 
 import bson
 import pebble

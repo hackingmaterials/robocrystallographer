@@ -1,9 +1,10 @@
 """This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
+from __future__ import annotations
 
 from collections import defaultdict, namedtuple
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
 from pymatgen.core.periodic_table import get_el_sp
@@ -311,7 +312,7 @@ class DescriptionAdapter(BaseAdapter):
 
         return sorted(site_groups, key=self._site_order)
 
-    def get_sym_label(self, site_indices: Union[int, list[int]]) -> str:
+    def get_sym_label(self, site_indices: int | list[int]) -> str:
         """Convert site indices into a formatted symmetry label.
 
         Args:
@@ -336,7 +337,7 @@ class DescriptionAdapter(BaseAdapter):
         return "({})".format(",".join(map(str, sorted(all_labels))))
 
     def _site_order(
-        self, s: Union[SiteGroup, NeighborSiteDetails, NextNeighborSiteDetails]
+        self, s: SiteGroup | NeighborSiteDetails | NextNeighborSiteDetails
     ):
         """Utility function to help sort NeighborSiteDetails and SiteGroups."""
         specie = get_el_sp(s.element)
@@ -357,7 +358,7 @@ class DescriptionAdapter(BaseAdapter):
         return [x, s.count, s.sites]
 
 
-def _component_order(c: Union[ComponentDetails, ComponentGroup]):
+def _component_order(c: ComponentDetails | ComponentGroup):
     """Utility function to help sort ComponentDetails and ComponentGroups."""
     mn = c.molecule_name if c.molecule_name else "z"
 

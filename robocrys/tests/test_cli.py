@@ -1,6 +1,7 @@
 """Nominal tests for command line functions. Note this script does not actually
 test the main method with argparsing, just the robocrystallographer function.
 """
+from __future__ import annotations
 
 from robocrys.cli import robocrystallographer
 from robocrys.tests import RobocrysTest

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from pymatgen.analysis.dimensionality import get_structure_components

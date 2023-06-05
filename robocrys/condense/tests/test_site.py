@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pymatgen.analysis.local_env import CrystalNN
 from pytest import approx
 

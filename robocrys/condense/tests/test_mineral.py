@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pytest import approx
 
 from robocrys.condense.mineral import MineralMatcher

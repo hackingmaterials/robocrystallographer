@@ -11,9 +11,11 @@ Attributes:
     dimensionality_to_shape: A mapping from dimensionality to the component
         shape.
 """
+from __future__ import annotations
+
 import re
 from collections import defaultdict
-from typing import Any, Union
+from typing import Any
 
 from monty.json import MontyDecoder
 from monty.serialization import loadfn
@@ -72,7 +74,7 @@ dimensionality_to_shape: dict[int, str] = {
 }
 
 
-def get_el(obj: Union[Element, Species, str, int]) -> str:
+def get_el(obj: Element | Species | str | int) -> str:
     """Utility method to get an element str from a symbol, Element, or Specie.
 
     Args:

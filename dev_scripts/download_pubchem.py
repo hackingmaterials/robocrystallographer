@@ -11,6 +11,7 @@ Shyam D for access to this collection. Alternatively, the script can easily be
 reconfigured using alternative maggma stores. E.g. to write to a local MongoDB
 database.
 """
+from __future__ import annotations
 
 import ftplib
 import glob

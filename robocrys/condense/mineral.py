@@ -1,7 +1,8 @@
 """This module provides tools for matching structures to known mineral class."""
+from __future__ import annotations
 
 from itertools import islice
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 from matminer.utils.io import load_dataframe_from_json
@@ -126,7 +127,7 @@ class MineralMatcher:
     def get_aflow_matches(
         self,
         structure: IStructure,
-    ) -> Optional[list[dict[str, Any]]]:
+    ) -> list[dict[str, Any]] | None:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
         Overrides
@@ -178,10 +179,10 @@ class MineralMatcher:
     def get_fingerprint_matches(
         self,
         structure: IStructure,
-        max_n_matches: Optional[int] = None,
+        max_n_matches: int | None = None,
         match_n_sp: bool = True,
-        mineral_name_constraint: Optional[str] = None,
-    ) -> Optional[list[dict[str, Any]]]:
+        mineral_name_constraint: str | None = None,
+    ) -> list[dict[str, Any]] | None:
         """Gets minerals for a structure by matching to AFLOW fingerprints.
 
         Only AFLOW prototypes with mineral names are considered. The AFLOW

@@ -3,9 +3,10 @@
 Todo:
     * distortion of geometry e.g. elongated along an axis
 """
+from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, Optional, Union
+from typing import Any
 
 import numpy as np
 from pymatgen.analysis.graphs import StructureGraph
@@ -77,7 +78,7 @@ class SiteAnalyzer:
 
         self.symmetry_labels = self._calculate_symmetry_labels(equivalent_sites)
 
-    def get_site_geometry(self, site_index: int) -> dict[str, Union[str, float]]:
+    def get_site_geometry(self, site_index: int) -> dict[str, str | float]:
         """Gets the bonding geometry of a site.
 
         For example, "octahedral" or "square-planar".
@@ -671,7 +672,7 @@ class SiteAnalyzer:
         geometry: dict[str, Any],
         nn_sites: list[dict[str, Any]],
         nnn_sites: list[dict[str, Any]],
-    ) -> Optional[str]:
+    ) -> str | None:
         """Gets the polyhedra formula of the nearest neighbor atoms.
 
         The polyhedral formula is effectively the sorted nearest neighbor
@@ -741,8 +742,8 @@ def geometries_match(
 
 
 def nn_summaries_match(
-    nn_sites_a: list[dict[str, Union[int, str]]],
-    nn_sites_b: list[dict[str, Union[int, str]]],
+    nn_sites_a: list[dict[str, int | str]],
+    nn_sites_b: list[dict[str, int | str]],
     bond_dist_tol: float = 0.01,
     match_bond_dists: bool = True,
 ) -> bool:
