@@ -3,7 +3,7 @@ structure data.
 """
 from __future__ import annotations
 
-import collections
+from collections.abc import Iterable
 from statistics import mean
 from typing import Any
 
@@ -176,9 +176,7 @@ class FeaturizerAdapter(BaseAdapter):
             c["molecule_name"] == molecule_name for c in self.components.values()
         )
 
-    def is_dimensionality(
-        self, dimensionalities: int | list[int] | set[int]
-    ) -> bool:
+    def is_dimensionality(self, dimensionalities: int | list[int] | set[int]) -> bool:
         """Whether the structure only contains the specified dimensionalities.
 
         Args:
@@ -188,14 +186,9 @@ class FeaturizerAdapter(BaseAdapter):
             Whether the structure only contains the specified dimensionalities.
 
         """
-        try:
-            iterable = collections.Iterable
-        except:
-            iterable = collections.abc.Iterable
-
         if isinstance(dimensionalities, set):
             set_dimensionalities = dimensionalities
-        elif isinstance(dimensionalities, iterable):
+        elif isinstance(dimensionalities, Iterable):
             set_dimensionalities = set(dimensionalities)
         else:
             set_dimensionalities = {dimensionalities}

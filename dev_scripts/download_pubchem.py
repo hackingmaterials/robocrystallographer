@@ -105,7 +105,9 @@ def download_file(remote_file):
 
     ftp.cwd("pubchem/Compound/CURRENT-Full/SDF")
     file_location = os.path.join(tmp_dir, remote_file)
-    ftp.retrbinary("RETR " + remote_file, open(file_location + ".tmp", "wb").write)
+    ftp.retrbinary(
+        "RETR " + remote_file, open(file_location + ".tmp", "wb").write  # noqa: SIM115
+    )
 
     os.rename(file_location + ".tmp", file_location)
     return True

@@ -10,7 +10,8 @@ from setuptools import find_packages, setup
 with open("README.md") as file:
     long_description = file.read()
 
-version = open("robocrys/_version.py").readlines()[-1].split()[-1].strip("\"'")
+with open("robocrys/_version.py") as file:
+    version = file.readlines()[-1].split()[-1].strip("\"'")
 
 setup(
     name="robocrys",
