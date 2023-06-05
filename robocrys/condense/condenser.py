@@ -8,7 +8,6 @@ from pymatgen.analysis.local_env import CrystalNN, NearNeighbors
 from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-from robocrys import common_formulas
 from robocrys.condense.component import (
     Component,
     components_are_vdw_heterostructure,
@@ -22,6 +21,7 @@ from robocrys.condense.component import (
 from robocrys.condense.mineral import MineralMatcher
 from robocrys.condense.molecule import MoleculeNamer
 from robocrys.condense.site import SiteAnalyzer
+from robocrys.util import common_formulas
 
 
 class StructureCondenser:

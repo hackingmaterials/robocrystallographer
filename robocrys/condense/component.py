@@ -14,8 +14,8 @@ from pymatgen.core.structure import PeriodicSite, Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.util.string import formula_double_format
 
-from robocrys import common_formulas
 from robocrys.condense.fingerprint import get_structure_fingerprint
+from robocrys.util import common_formulas
 
 Component = dict[str, Any]
 
@@ -23,7 +23,7 @@ Component = dict[str, Any]
 def get_structure_inequiv_components(
     components: list[Component],
     use_structure_graph: bool = False,
-    fingerprint_tol: int = 0.01,
+    fingerprint_tol: float = 0.01,
 ) -> list[Component]:
     """Gets and counts the structurally inequivalent components.
 
