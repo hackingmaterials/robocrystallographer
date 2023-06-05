@@ -4,45 +4,40 @@ on: [push]
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Setup conda
-      uses: s-weigand/setup-conda@v1
-      with:
-        update-conda: true
-        python-version: 3.8
-        conda-channels: anaconda, conda-forge
+      - name: Setup conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.8
 
-    - name: Install dependencies
-      run: |
-        conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
-        pip install numpy
-        pip install -r requirements.txt
-        pip install -e .[tests]
+      - name: Install dependencies
+        run: |
+          conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
+          pip install -r requirements.txt
+          pip install -e .[tests]
 
-    - name: Test
-      run: pytest --cov=robocrys --cov-report=xml --cov-config=.coveragerc
+      - name: Test
+        run: pytest --cov=robocrys --cov-report=xml --cov-config=.coveragerc
 
   docs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
 
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install numpy
-        pip install -r requirements.txt
-        pip install -e .[docs]
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .[docs]
 
-    - name: Build
-      run: sphinx-build docs/src docs_build
+      - name: Build
+        run: sphinx-build docs/src docs_build

@@ -31,7 +31,7 @@ class BaseAdapter:
 
         Args:
             from_site: An inequivalent site index.
-            to_sites: One ore more inequivalent site indices.
+            to_sites: One or more inequivalent site indices.
 
         Returns:
             The distances between the sites.
@@ -53,7 +53,7 @@ class BaseAdapter:
 
         Args:
             from_site: An inequivalent site index.
-            to_sites: One ore more inequivalent site indices.
+            to_sites: One or more inequivalent site indices.
             connectivity: The site connectivity type. I.e. "corner", "edge", or
                 "face".
 

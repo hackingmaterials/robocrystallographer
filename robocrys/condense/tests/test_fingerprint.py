@@ -34,7 +34,7 @@ class TestFingerprint(RobocrysTest):
         fingerprint = get_structure_fingerprint(self.fe, stats=("mean",))
         assert fingerprint[31] == approx(2.51322893e-01)
 
-        # test preset options - reenable once fixed
+        # test preset options - re-enable once fixed
         # fingerprint = get_structure_fingerprint(
         #     self.fe, preset="CrystalNNFingerprint_cn"
         # )
