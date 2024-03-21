@@ -6,7 +6,7 @@ import sys
 import warnings
 
 from pymatgen.core.structure import Structure
-from pymatgen.ext.matproj import MPRestError
+from mp_api.client import MPRestError
 
 from robocrys import StructureCondenser, StructureDescriber, __version__
 
@@ -210,14 +210,14 @@ def main():
 
     except FileNotFoundError:
         if args.filename[:3] in ["mp-", "mvc"]:
-            from pymatgen.ext.matproj import MPRester
+            from mp_api.client import MPRester
 
             mpr = MPRester(args.api_key)
 
             try:
-                structure = mpr.get_entry_by_material_id(
-                    args.filename, inc_structure="final"
-                ).structure
+                structure = mpr.materials.summary.search(
+                    material_ids=[args.filename], fields=["structure"]
+                )[0].structure
             except IndexError:
                 print("filename or mp-id not found.")
                 sys.exit()
