@@ -215,9 +215,7 @@ def main():
             mpr = MPRester(args.api_key)
 
             try:
-                structure = mpr.materials.summary.search(
-                    material_ids=[args.filename], fields=["structure"]
-                )[0].structure
+                structure = mpr.get_structure_by_material_id(args.filename)
             except IndexError:
                 print("filename or mp-id not found.")
                 sys.exit()

@@ -55,8 +55,8 @@ structure = Structure.from_file("my_structure.cif") # other file formats also su
 
 # alternatively, uncomment the lines below to use the MPRester object
 # to fetch structures from the Materials Project database
-# from pymatgen import MPRester
-# structure = MPRester(API_KEY=None).get_structure_by_material_id("mp-856")
+# from mp_api.client import MPRester
+# structure = MPRester(api_key=None).get_structure_by_material_id("mp-856")
 
 condenser = StructureCondenser()
 describer = StructureDescriber()
