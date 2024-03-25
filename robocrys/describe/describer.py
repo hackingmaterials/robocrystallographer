@@ -240,7 +240,7 @@ class StructureDescriber:
 
                 if component_group.dimensionality in [1, 2]:
                     orientations = list(
-                        {c.orientation for c in component_group.components}
+                        {str(c.orientation) for c in component_group.components}
                     )
                     s_direction = en.plural("direction", len(orientations))
                     comp_desc += " oriented in the {} {}".format(
