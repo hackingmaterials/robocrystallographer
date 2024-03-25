@@ -3,9 +3,14 @@ test the main method with argparsing, just the robocrystallographer function.
 """
 from __future__ import annotations
 
-from robocrys.cli import robocrystallographer
+from robocrys.cli import robocrystallographer, main
 from robocrys.tests import RobocrysTest
+import pytest
 
+from mp_api.client.mprester import DEFAULT_API_KEY
+from pymatgen.core import SETTINGS as PMG_SETTINGS
+
+_mp_api_key = DEFAULT_API_KEY or PMG_SETTINGS.get("PMG_MAPI_KEY")
 
 class TestCommandLineInterface(RobocrysTest):
     """Class to test CLI functionality."""
@@ -16,16 +21,11 @@ class TestCommandLineInterface(RobocrysTest):
     def test_robocrystallographer(self):
         # check not passing any arguments
         description = robocrystallographer(self.tin_dioxide)
-        assert "Rutile" in description
-        assert "SnO2" in description
-        assert "tetragonal" in description
-        assert "P4_2/mnm" in description
-        assert "Sn(1)4+" in description
-        assert "equivalent" in description
-        assert "corner" in description
-        assert "edge" in description
-        assert "Sn(1)-O(1)" in description
-        assert "2.09" in description
+        assert all(
+            attr in description for attr in [
+                "Rutile","SnO2","tetragonal","P4_2/mnm","Sn(1)4+","equivalent","corner","edge","Sn(1)-O(1)","2.09"
+            ]
+        )
 
         # check passing condense and describe kwargs
         description = robocrystallographer(
@@ -36,6 +36,26 @@ class TestCommandLineInterface(RobocrysTest):
                 "bond_length_decimal_places": 4,
             },
         )
-        assert "Sn4+" in description
-        assert "Sn-O" in description
-        assert "2.0922" in description
+        assert all(
+            attr in description for attr in ["Sn4+", "Sn-O", "2.0922"]
+        )
+
+    @pytest.fixture(autouse=True)
+    def capsys(self, capsys):
+        self.capsys = capsys
+        
+    @pytest.mark.skipif(not _mp_api_key, reason="No MP API key set.")
+    def test_robocrystallographer_mp_api(self):
+        
+        import sys
+
+        with pytest.MonkeyPatch.context() as monke:
+            monke.setattr(sys,"argv",[sys.argv[0], "mp-856"])
+            main()
+    
+        stdout, _ = self.capsys.readouterr()
+        assert all(
+            attr in stdout for attr in [
+                "Rutile","SnO","tetragonal","P4","/mnm","Sn(1)","equivalent","corner","edge","Sn(1)-O(1)","2.06"
+            ]
+        )
