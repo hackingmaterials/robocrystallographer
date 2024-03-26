@@ -1,12 +1,12 @@
 spglib==2.0.2
 numpy==1.24.3
 scipy==1.9.3
-pymatgen==2023.9.2
+pymatgen<=2023.12.18
 inflect==6.0.4
 networkx==3.0
-matminer==0.8.0
-monty==2023.11.3
+matminer==0.9.1
+monty==2024.2.26
 pubchempy==1.0.4
 pybtex==0.24.0
-mp_api==0.34.0
+mp_api==0.41.2
 boto3
