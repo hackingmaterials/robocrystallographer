@@ -7,7 +7,7 @@ from __future__ import annotations
 import warnings
 
 from monty.serialization import loadfn
-from pkg_resources import resource_filename
+from importlib.resources import files as import_resource_file
 from pubchempy import BadRequestError, get_compounds
 from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.io.babel import BabelMolAdaptor
@@ -34,7 +34,7 @@ class MoleculeNamer:
                 used. Should be provided as a tuple of options, from 1st choice
                 to last.
         """
-        db_file = resource_filename("robocrys.condense", "molecule_db.json.gz")
+        db_file = import_resource_file("robocrys.condense") / "molecule_db.json.gz"
         self.molecule_db = loadfn(db_file)
         self.matched_molecules = {}
         self.use_online_pubchem = use_online_pubchem

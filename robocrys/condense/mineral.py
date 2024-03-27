@@ -6,7 +6,7 @@ from typing import Any
 
 import numpy as np
 from matminer.utils.io import load_dataframe_from_json
-from pkg_resources import resource_filename
+from importlib.resources import files as import_resource_file
 from pymatgen.analysis.prototypes import AflowPrototypeMatcher
 from pymatgen.core.structure import IStructure
 
@@ -50,7 +50,7 @@ class MineralMatcher:
         use_fingerprint_matching: bool = True,
         fingerprint_distance_cutoff: float = 0.4,
     ):
-        db_file = resource_filename("robocrys.condense", "mineral_db.json.gz")
+        db_file = import_resource_file("robocrys.condense") / "mineral_db.json.gz"
         self.mineral_db = load_dataframe_from_json(db_file)
         self.initial_ltol = initial_ltol
         self.initial_stol = initial_stol

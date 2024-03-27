@@ -46,14 +46,15 @@ setup(
         "spglib",
         "numpy",
         "scipy",
-        "pymatgen>=2020.10.20",
+        "pymatgen<=2023.12.18",
         "inflect",
         "networkx",
-        "matminer",
-        "monty",
+        "matminer==0.9.1",
+        "monty==2024.2.26",
         "pubchempy",
         "pybtex",
         "ruamel.yaml",
+        "mp_api==0.41.2"
     ],
     extras_require={
         "docs": [
