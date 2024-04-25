@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import os
 
+import pytest
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 
 from robocrys.condense.component import filter_molecular_components
 from robocrys.condense.molecule import MoleculeNamer
 from robocrys.tests import RobocrysTest
+
+try:
+    from openbabel import openbabel, pybel
+except Exception:
+    openbabel = None
 
 test_dir = os.path.join(os.path.dirname(__file__))
 
@@ -31,17 +37,20 @@ class TestMoleculeMatcher(RobocrysTest):
         mn = MoleculeNamer(use_online_pubchem=False)
         assert mn
 
+    @pytest.mark.skipif(not openbabel, reason="Openbabel not installed.")
     def test_molecule_graph_to_smiles(self):
         """Test converting a molecule graph to SMILES string."""
         smiles = MoleculeNamer.molecule_graph_to_smiles(self.methylammonium)
         assert smiles == "C[NH3]"
 
+    @pytest.mark.skipif(not openbabel, reason="Openbabel not installed.")
     def test_get_name_from_pubchem(self):
         """Test downloading the molecule name from Pubchem."""
         mn = MoleculeNamer()
         name = mn.get_name_from_pubchem("C[NH3]")
         assert name == "methylammonium"
 
+    @pytest.mark.skipif(not openbabel, reason="Openbabel not installed.")
     def test_get_name_from_molecule_graph(self):
         """Test getting a molecule name from the molecule graph."""
         mn = MoleculeNamer()
