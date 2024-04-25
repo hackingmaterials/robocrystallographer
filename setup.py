@@ -1,5 +1,6 @@
 """"
 robocrystallographer: Automatic generation of crystal structure descriptions.
+
 """
 from __future__ import annotations
 
@@ -46,15 +47,15 @@ setup(
         "spglib",
         "numpy",
         "scipy",
-        "pymatgen<=2023.12.18",
+        "pymatgen",
         "inflect",
         "networkx",
-        "matminer==0.9.1",
-        "monty==2024.2.26",
+        "matminer>=0.9.2",
+        "monty",
         "pubchempy",
         "pybtex",
         "ruamel.yaml",
-        "mp_api==0.41.2"
+        "mp-api"
     ],
     extras_require={
         "docs": [
