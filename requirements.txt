@@ -9,4 +9,5 @@ monty==2024.4.17
 pubchempy==1.0.4
 pybtex==0.24.0
 mp-api==0.41.2
+openbabel==3.1.1.1
 boto3

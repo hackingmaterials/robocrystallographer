@@ -55,6 +55,7 @@ setup(
         "pubchempy",
         "pybtex",
         "ruamel.yaml",
+        "openbabel",
         "mp-api"
     ],
     extras_require={
