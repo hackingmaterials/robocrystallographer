@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.8 documentation</title>
+  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/describe/describer.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.8
+                0.2.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -332,7 +332,7 @@
 
                 <span class="k">if</span> <span class="n">component_group</span><span class="o">.</span><span class="n">dimensionality</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
                     <span class="n">orientations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                        <span class="p">{</span><span class="n">c</span><span class="o">.</span><span class="n">orientation</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">component_group</span><span class="o">.</span><span class="n">components</span><span class="p">}</span>
+                        <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">orientation</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">component_group</span><span class="o">.</span><span class="n">components</span><span class="p">}</span>
                     <span class="p">)</span>
                     <span class="n">s_direction</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="s2">&quot;direction&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">orientations</span><span class="p">))</span>
                     <span class="n">comp_desc</span> <span class="o">+=</span> <span class="s2">&quot; oriented in the </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>

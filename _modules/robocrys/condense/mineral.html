@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.condense.mineral &mdash; Robocrystallographer 0.2.8 documentation</title>
+  <title>robocrys.condense.mineral &mdash; Robocrystallographer 0.2.9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/mineral.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.8
+                0.2.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -98,7 +98,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matminer.utils.io</span> <span class="kn">import</span> <span class="n">load_dataframe_from_json</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+<span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">files</span> <span class="k">as</span> <span class="n">import_resource_file</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.prototypes</span> <span class="kn">import</span> <span class="n">AflowPrototypeMatcher</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
 
@@ -142,7 +142,7 @@
         <span class="n">use_fingerprint_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">fingerprint_distance_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">db_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;robocrys.condense&quot;</span><span class="p">,</span> <span class="s2">&quot;mineral_db.json.gz&quot;</span><span class="p">)</span>
+        <span class="n">db_file</span> <span class="o">=</span> <span class="n">import_resource_file</span><span class="p">(</span><span class="s2">&quot;robocrys.condense&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;mineral_db.json.gz&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span> <span class="o">=</span> <span class="n">load_dataframe_from_json</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_ltol</span> <span class="o">=</span> <span class="n">initial_ltol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_stol</span> <span class="o">=</span> <span class="n">initial_stol</span>
