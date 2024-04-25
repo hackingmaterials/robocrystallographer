@@ -4,6 +4,11 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.9
+------
+
+- Update project dependencies.
+
 v0.2.7
 ------
 
