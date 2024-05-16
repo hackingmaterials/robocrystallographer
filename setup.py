@@ -75,7 +75,7 @@ setup(
             "pydocstyle==6.1.1",
             "flake8==6.0.0",
             "pylint==2.17.3",
-            "black==23.3.0",
+            "black==24.4.2",
         ],
     },
     package_data={
