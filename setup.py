@@ -70,7 +70,7 @@ setup(
         "lint": [
             "coverage==7.2.5",
             "codacy-coverage==1.3.11",
-            "pycodestyle==2.9.1",
+            "pycodestyle==2.11.1",
             "mypy==1.2.0",
             "pydocstyle==6.1.1",
             "flake8==6.0.0",
