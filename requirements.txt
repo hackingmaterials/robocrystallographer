@@ -5,7 +5,7 @@ pymatgen==2024.4.13
 inflect==7.2.1
 networkx==3.3
 matminer==0.9.2
-monty==2024.4.17
+monty==2024.7.12
 pubchempy==1.0.4
 pybtex==0.24.0
 mp-api==0.41.2
