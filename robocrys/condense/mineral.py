@@ -224,8 +224,7 @@ class MineralMatcher:
             ]
 
         if match_n_sp:
-            ntypesp = structure.ntypesp
-            mineral_db = mineral_db[mineral_db["ntypesp"] == ntypesp]
+            mineral_db = mineral_db[mineral_db["ntypesp"] == getattr(structure,"n_elems",structure.ntypesp)]
 
         num_rows = mineral_db.shape[0]
         max_n_matches = max_n_matches if max_n_matches else num_rows

@@ -183,7 +183,10 @@ def get_sym_inequiv_components(
     components = deepcopy(components)
 
     sym_inequiv_components = {}
-    equivalent_atoms = spg_analyzer.get_symmetry_dataset()["equivalent_atoms"]
+    if hasattr(symm_dset := spg_analyzer.get_symmetry_dataset(),"equivalent_atoms"):
+        equivalent_atoms = symm_dset.equivalent_atoms
+    else:
+        equivalent_atoms = symm_dset["equivalent_atoms"]
 
     for component in components:
         sym_indices = frozenset(equivalent_atoms[x] for x in component["site_ids"])
