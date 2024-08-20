@@ -58,10 +58,9 @@ class MineralMatcher:
         fingerprint_distance_cutoff: float = 0.4,
         mineral_db : str | Path | DataFrame | None = None
     ):
-        mineral_db = mineral_db or _mineral_db_file
-        if isinstance(mineral_db,(str,Path)):
-            mineral_db = load_dataframe_from_json(mineral_db)
-        self.mineral_db = mineral_db
+        self.mineral_db = mineral_db if mineral_db is not None else _mineral_db_file
+        if isinstance(self.mineral_db,(str,Path)):
+            self.mineral_db = load_dataframe_from_json(self.mineral_db)
 
         self.initial_ltol = initial_ltol
         self.initial_stol = initial_stol
