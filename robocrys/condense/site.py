@@ -70,11 +70,7 @@ class SiteAnalyzer:
         self.site_fingerprints = get_site_fingerprints(bonded_structure.structure)
 
         sga = SpacegroupAnalyzer(bonded_structure.structure, symprec=symprec)
-
-        if hasattr(symm_dset := sga.get_symmetry_dataset(),"equivalent_atoms"):
-            equivalent_sites = symm_dset.equivalent_atoms
-        else:
-            equivalent_sites = symm_dset["equivalent_atoms"]
+        equivalent_sites = sga.get_symmetry_dataset().equivalent_atoms
 
         if use_symmetry_equivalent_sites:
             self.equivalent_sites = list(equivalent_sites)

@@ -44,10 +44,10 @@ setup(
     test_suite="nose.collector",
     packages=find_packages(),
     install_requires=[
-        "spglib",
+        "spglib>=2.5.0",
         "numpy",
         "scipy",
-        "pymatgen",
+        "pymatgen>=2024.1.26",
         "inflect",
         "networkx",
         "matminer>=0.9.2",

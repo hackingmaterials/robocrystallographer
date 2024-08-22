@@ -224,10 +224,7 @@ class MineralMatcher:
             ]
 
         if match_n_sp:
-            if (n_elems := getattr(structure,"n_elems",None)) is None:
-                # backup legacy attr access
-                n_elems = getattr(structure,"ntypesp",None)
-            mineral_db = mineral_db[mineral_db["ntypesp"] == n_elems]
+            mineral_db = mineral_db[mineral_db["n_elems"] == structure.n_elems]
 
         num_rows = mineral_db.shape[0]
         max_n_matches = max_n_matches or num_rows
