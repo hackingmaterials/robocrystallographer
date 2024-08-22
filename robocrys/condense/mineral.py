@@ -214,12 +214,12 @@ class MineralMatcher:
             ]
 
         if match_n_sp:
-            ntypesp = structure.ntypesp
-            mineral_db = mineral_db[mineral_db["ntypesp"] == ntypesp]
+            n_elems = structure.n_elems
+            mineral_db = mineral_db[mineral_db["n_elems"] == n_elems]
 
         num_rows = mineral_db.shape[0]
-        max_n_matches = max_n_matches if max_n_matches else num_rows
-        max_n_matches = num_rows if max_n_matches > num_rows else max_n_matches
+        max_n_matches = max_n_matches or num_rows
+        max_n_matches = min(max_n_matches, num_rows)
 
         minerals = [
             _get_row_data(row)
