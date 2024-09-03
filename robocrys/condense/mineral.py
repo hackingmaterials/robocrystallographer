@@ -1,25 +1,27 @@
 """This module provides tools for matching structures to known mineral class."""
+
 from __future__ import annotations
 
+from importlib.resources import files as import_resource_file
 from itertools import islice
-from typing import Any, TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from matminer.utils.io import load_dataframe_from_json
-from importlib.resources import files as import_resource_file
-from pathlib import Path
 from pymatgen.analysis.prototypes import AflowPrototypeMatcher
 from pymatgen.core.structure import IStructure
-
 from robocrys.condense.fingerprint import (
     get_fingerprint_distance,
     get_structure_fingerprint,
 )
 
+
 if TYPE_CHECKING:
-    from pandas import DataFrame
+    import pandas as pd
 
 _mineral_db_file = import_resource_file("robocrys.condense") / "mineral_db.json.gz"
+
 
 class MineralMatcher:
     """Class to match a structure to a mineral name.
@@ -56,10 +58,10 @@ class MineralMatcher:
         initial_angle_tol: float = 5.0,
         use_fingerprint_matching: bool = True,
         fingerprint_distance_cutoff: float = 0.4,
-        mineral_db : str | Path | DataFrame | None = None
+        mineral_db: str | Path | pd.DataFrame | None = None,
     ):
         self.mineral_db = mineral_db if mineral_db is not None else _mineral_db_file
-        if isinstance(self.mineral_db,(str,Path)):
+        if isinstance(self.mineral_db, (str, Path)):
             self.mineral_db = load_dataframe_from_json(self.mineral_db)
 
         self.initial_ltol = initial_ltol
