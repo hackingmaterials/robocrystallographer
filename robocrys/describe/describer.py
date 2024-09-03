@@ -232,7 +232,6 @@ class StructureDescriber:
                     formula = latexify(formula)
                 elif self.fmt == "unicode":
                     formula = unicodeify(formula)
-                    print(formula)
                 elif self.fmt == "html":
                     formula = htmlify(formula)
 
