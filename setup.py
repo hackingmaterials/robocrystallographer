@@ -74,7 +74,7 @@ setup(
             "mypy==1.11.1",
             "pydocstyle==6.1.1",
             "flake8==7.0.0",
-            "pylint==3.2.6",
+            "pylint==3.2.7",
             "black==24.4.2",
         ],
     },
