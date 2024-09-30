@@ -1,4 +1,4 @@
-spglib==2.4.0
+spglib==2.5.0
 numpy==1.26.4
 scipy==1.14.0
 pymatgen==2024.4.13
