@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.condense.mineral &mdash; Robocrystallographer 0.2.9 documentation</title>
+  <title>robocrys.condense.mineral &mdash; Robocrystallographer 0.2.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/mineral.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.9
+                0.2.10
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -91,21 +91,28 @@
              
   <h1>Source code for robocrys.condense.mineral</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module provides tools for matching structures to known mineral class.&quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">files</span> <span class="k">as</span> <span class="n">import_resource_file</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matminer.utils.io</span> <span class="kn">import</span> <span class="n">load_dataframe_from_json</span>
-<span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">files</span> <span class="k">as</span> <span class="n">import_resource_file</span>
 <span class="kn">from</span> <span class="nn">pymatgen.analysis.prototypes</span> <span class="kn">import</span> <span class="n">AflowPrototypeMatcher</span>
 <span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">IStructure</span>
-
 <span class="kn">from</span> <span class="nn">robocrys.condense.fingerprint</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_fingerprint_distance</span><span class="p">,</span>
     <span class="n">get_structure_fingerprint</span><span class="p">,</span>
 <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">_mineral_db_file</span> <span class="o">=</span> <span class="n">import_resource_file</span><span class="p">(</span><span class="s2">&quot;robocrys.condense&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;mineral_db.json.gz&quot;</span>
 
 
 <div class="viewcode-block" id="MineralMatcher"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.mineral.MineralMatcher">[docs]</a><span class="k">class</span> <span class="nc">MineralMatcher</span><span class="p">:</span>
@@ -132,6 +139,8 @@
 <span class="sd">        fingerprint_distance_cutoff: Cutoff to determine how similar a match</span>
 <span class="sd">            must be to be returned. The distance is measured between the</span>
 <span class="sd">            structural fingerprints in euclidean space.</span>
+<span class="sd">        mineral_db : Optional path or pandas .DataFrame object containing the</span>
+<span class="sd">            mineral fingerprint database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -141,9 +150,12 @@
         <span class="n">initial_angle_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
         <span class="n">use_fingerprint_matching</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">fingerprint_distance_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+        <span class="n">mineral_db</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">db_file</span> <span class="o">=</span> <span class="n">import_resource_file</span><span class="p">(</span><span class="s2">&quot;robocrys.condense&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;mineral_db.json.gz&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span> <span class="o">=</span> <span class="n">load_dataframe_from_json</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span> <span class="o">=</span> <span class="n">mineral_db</span> <span class="k">if</span> <span class="n">mineral_db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">_mineral_db_file</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span> <span class="o">=</span> <span class="n">load_dataframe_from_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mineral_db</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_ltol</span> <span class="o">=</span> <span class="n">initial_ltol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_stol</span> <span class="o">=</span> <span class="n">initial_stol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_angle_tol</span> <span class="o">=</span> <span class="n">initial_angle_tol</span>
@@ -306,12 +318,11 @@
             <span class="p">]</span>
 
         <span class="k">if</span> <span class="n">match_n_sp</span><span class="p">:</span>
-            <span class="n">ntypesp</span> <span class="o">=</span> <span class="n">structure</span><span class="o">.</span><span class="n">ntypesp</span>
-            <span class="n">mineral_db</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="p">[</span><span class="n">mineral_db</span><span class="p">[</span><span class="s2">&quot;ntypesp&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ntypesp</span><span class="p">]</span>
+            <span class="n">mineral_db</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="p">[</span><span class="n">mineral_db</span><span class="p">[</span><span class="s2">&quot;n_elems&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">structure</span><span class="o">.</span><span class="n">n_elems</span><span class="p">]</span>
 
         <span class="n">num_rows</span> <span class="o">=</span> <span class="n">mineral_db</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">max_n_matches</span> <span class="o">=</span> <span class="n">max_n_matches</span> <span class="k">if</span> <span class="n">max_n_matches</span> <span class="k">else</span> <span class="n">num_rows</span>
-        <span class="n">max_n_matches</span> <span class="o">=</span> <span class="n">num_rows</span> <span class="k">if</span> <span class="n">max_n_matches</span> <span class="o">&gt;</span> <span class="n">num_rows</span> <span class="k">else</span> <span class="n">max_n_matches</span>
+        <span class="n">max_n_matches</span> <span class="o">=</span> <span class="n">max_n_matches</span> <span class="ow">or</span> <span class="n">num_rows</span>
+        <span class="n">max_n_matches</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_n_matches</span><span class="p">,</span> <span class="n">num_rows</span><span class="p">)</span>
 
         <span class="n">minerals</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">_get_row_data</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>

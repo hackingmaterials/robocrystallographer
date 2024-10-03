@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.condense.site &mdash; Robocrystallographer 0.2.9 documentation</title>
+  <title>robocrys.condense.site &mdash; Robocrystallographer 0.2.10 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/site.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.9
+                0.2.10
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -162,7 +162,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">site_fingerprints</span> <span class="o">=</span> <span class="n">get_site_fingerprints</span><span class="p">(</span><span class="n">bonded_structure</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
 
         <span class="n">sga</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">bonded_structure</span><span class="o">.</span><span class="n">structure</span><span class="p">,</span> <span class="n">symprec</span><span class="o">=</span><span class="n">symprec</span><span class="p">)</span>
-        <span class="n">equivalent_sites</span> <span class="o">=</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_symmetry_dataset</span><span class="p">()[</span><span class="s2">&quot;equivalent_atoms&quot;</span><span class="p">]</span>
+        <span class="n">equivalent_sites</span> <span class="o">=</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_symmetry_dataset</span><span class="p">()</span><span class="o">.</span><span class="n">equivalent_atoms</span>
+
         <span class="k">if</span> <span class="n">use_symmetry_equivalent_sites</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">equivalent_sites</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">equivalent_sites</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
