@@ -4,6 +4,11 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.10
+------
+
+- Update project dependencies and address spglib deprecations by Aaron Kaplan in https://github.com/hackingmaterials/robocrystallographer/pull/487
+
 v0.2.9
 ------
 
