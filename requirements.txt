@@ -3,7 +3,7 @@ numpy==1.26.4
 scipy==1.14.1
 pymatgen==2024.4.13
 inflect==7.4.0
-networkx==3.3
+networkx==3.4.1
 matminer==0.9.2
 monty==2024.7.30
 pubchempy==1.0.4
