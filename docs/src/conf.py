@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 import sys
 
-from robocrys import __version__
+from robocrys.core import __version__
 
 sys.path.insert(0, os.path.abspath("../../"))
 
