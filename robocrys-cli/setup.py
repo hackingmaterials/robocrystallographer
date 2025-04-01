@@ -1,0 +1,75 @@
+""""
+robocrystallographer: Automatic generation of crystal structure descriptions.
+
+"""
+from __future__ import annotations
+
+import os
+
+from setuptools import find_namespace_packages, setup
+
+readme_path = os.path.join(os.path.dirname(__file__), "..", "README.md")
+with open(readme_path) as file:
+    long_description = file.read()
+
+with open("robocrys/cli/_version.py") as file:
+    version = file.readlines()[-1].split()[-1].strip("\"'")
+
+setup(
+    name="robocrys",
+    version=version,
+    description="Command line interface for automatic generation of crystal structure descriptions",
+    url="https://github.com/hackingmaterials/robocrystallographer",
+    author="Alex Ganose",
+    author_email="aganose@lbl.gov",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    license="modified BSD",
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Information Technology",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Topic :: Scientific/Engineering :: Chemistry",
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Other/Nonlisted Topic",
+        "Operating System :: OS Independent",
+    ],
+    keywords="crystal-structure crystallography materials-science",
+    test_suite="nose.collector",
+    packages=find_namespace_packages(include=["robocrys.*"]),
+    install_requires=[
+        "robocrys-core",
+        "mp-api"
+    ],
+    extras_require={
+        "docs": [
+            "sphinx==5.3.0",
+            "sphinx-argparse==0.4.0",
+            "sphinx_rtd_theme==1.2.0",
+            "sphinx-autodoc-typehints==1.23.0",
+            "m2r2==0.3.2",
+        ],
+        "dev": ["tqdm", "pybel", "pebble", "maggma"],
+        "tests": ["pytest==8.3.3", "pytest-cov==5.0.0"],
+        "lint": [
+            "coverage==7.6.1",
+            "codacy-coverage==1.3.11",
+            "pycodestyle==2.11.1",
+            "mypy==1.11.2",
+            "pydocstyle==6.1.1",
+            "flake8==7.1.1",
+            "pylint==3.3.1",
+            "black==24.8.0",
+        ],
+    },
+    python_requires=">=3.8",
+    data_files=["LICENSE", "CONTRIBUTING.rst"],
+    entry_points={"console_scripts": ["robocrys = robocrys.cli.cli:main"]},
+)

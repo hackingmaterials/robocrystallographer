@@ -1,0 +1,2 @@
+robocrys-core
+mp-api==0.42.2
