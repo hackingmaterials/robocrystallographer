@@ -4,4 +4,4 @@ isort:skip_file
 """
 from __future__ import annotations
 
-from robocrys.core import *
+from robocrys.cli.cli import *

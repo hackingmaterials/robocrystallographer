@@ -13,8 +13,8 @@ class RobocrysTest(unittest.TestCase):
     """Base test class providing access to common test data."""
 
     _module_dir = os.path.dirname(os.path.abspath(__file__))
-    _structures_dir = os.path.join(_module_dir, "structures")
-    _condensed_structures_dir = os.path.join(_module_dir, "condensed_structures")
+    _structures_dir = os.path.join(_module_dir, "..", "..", "tests", "structures")
+    _condensed_structures_dir = os.path.join(_module_dir, "..", "..", "tests", "condensed_structures")
 
     _test_structures = {}
     for _fn in os.listdir(_structures_dir):

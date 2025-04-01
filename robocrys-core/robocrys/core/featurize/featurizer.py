@@ -8,7 +8,7 @@ from numpy import mean
 from pymatgen.analysis.local_env import cn_opt_params
 from pymatgen.core.structure import Structure
 
-from robocrys.core.import StructureCondenser
+from robocrys.core import StructureCondenser
 from robocrys.core.featurize.adapter import FeaturizerAdapter
 from robocrys.core.util import connected_geometries
 

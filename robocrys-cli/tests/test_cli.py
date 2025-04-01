@@ -3,14 +3,14 @@ test the main method with argparsing, just the robocrystallographer function.
 """
 from __future__ import annotations
 
-from robocrys.core.cli import robocrystallographer, main
+from robocrys.cli import robocrystallographer, main
 from robocrys.core.tests import RobocrysTest
 import pytest
 
-from mp_api.client.mprester import DEFAULT_API_KEY
+import os
 from pymatgen.core import SETTINGS as PMG_SETTINGS
 
-_mp_api_key = DEFAULT_API_KEY or PMG_SETTINGS.get("PMG_MAPI_KEY")
+_mp_api_key = os.environ.get("MP_API_KEY") or PMG_SETTINGS.get("PMG_MAPI_KEY")
 
 class TestCommandLineInterface(RobocrysTest):
     """Class to test CLI functionality."""
