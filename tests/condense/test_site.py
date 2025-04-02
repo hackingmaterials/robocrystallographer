@@ -9,7 +9,7 @@ from robocrys.condense.site import (
     nn_summaries_match,
     nnn_summaries_match,
 )
-from robocrys.tests import RobocrysTest
+from robocrys.util.tests import RobocrysTest
 
 
 class TestSiteAnalyzer(RobocrysTest):

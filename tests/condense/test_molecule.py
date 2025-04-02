@@ -8,15 +8,12 @@ from pymatgen.analysis.local_env import CrystalNN
 
 from robocrys.condense.component import filter_molecular_components
 from robocrys.condense.molecule import MoleculeNamer
-from robocrys.tests import RobocrysTest
+from robocrys.util.tests import RobocrysTest
 
 try:
     from openbabel import openbabel, pybel
 except Exception:
     openbabel = None
-
-test_dir = os.path.join(os.path.dirname(__file__))
-
 
 class TestMoleculeMatcher(RobocrysTest):
     """Class to test component related functions."""

@@ -55,7 +55,6 @@ setup(
         "pubchempy",
         "pybtex",
         "ruamel.yaml",
-        "mp-api"
     ],
     extras_require={
         "docs": [
@@ -67,6 +66,7 @@ setup(
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
         "tests": ["pytest==8.3.3", "pytest-cov==5.0.0"],
+        "cli" : ["mp-api"],
         "lint": [
             "coverage==7.6.1",
             "codacy-coverage==1.3.11",

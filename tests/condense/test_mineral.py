@@ -3,7 +3,7 @@ from __future__ import annotations
 from pytest import approx
 
 from robocrys.condense.mineral import MineralMatcher
-from robocrys.tests import RobocrysTest
+from robocrys.util.tests import RobocrysTest
 
 
 class TestMineralMatcher(RobocrysTest):
