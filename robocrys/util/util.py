@@ -11,6 +11,7 @@ Attributes:
     dimensionality_to_shape: A mapping from dimensionality to the component
         shape.
 """
+
 from __future__ import annotations
 
 import re
@@ -26,16 +27,15 @@ from pymatgen.util.string import latexify_spacegroup
 if TYPE_CHECKING:
     from pathlib import Path
 
-def _get_common_formulas() -> dict[str,str]:
+
+def _get_common_formulas() -> dict[str, str]:
     """Retrieve common formula information from stored data."""
     all_formulas = loadfn(
-        import_resource_file("robocrys.condense") / "formula_db.json.gz",
-        cls = None
+        import_resource_file("robocrys.condense") / "formula_db.json.gz", cls=None
     )
-    all_formulas["alias"].update(
-        {k : k for k in all_formulas["no_alias"]}
-    )
+    all_formulas["alias"].update({k: k for k in all_formulas["no_alias"]})
     return all_formulas["alias"]
+
 
 common_formulas: dict[str, str] = _get_common_formulas()
 
@@ -297,10 +297,13 @@ def load_condensed_structure_json(filename: str | Path) -> dict[str, Any]:
 
     # JSON does not support using integers a dictionary keys, therefore
     # manually convert dictionary keys from str to int if possible.
-    def json_keys_to_int(x : Any) -> Any:
-        if isinstance(x,dict):
-            return {int(k) if k.isdigit() else k: json_keys_to_int(v) for k, v in x.items()}
+    def json_keys_to_int(x: Any) -> Any:
+        if isinstance(x, dict):
+            return {
+                int(k) if k.isdigit() else k: json_keys_to_int(v) for k, v in x.items()
+            }
         return x
+
     # For some reason, specifying `object_hook = json_keys_to_int` in `loadfn`
     # doesn't seem to work. This does reliably:
     return json_keys_to_int(loadfn(filename, cls=MontyDecoder))

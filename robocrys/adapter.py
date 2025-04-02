@@ -1,6 +1,7 @@
 """This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
+
 from __future__ import annotations
 
 from typing import Any

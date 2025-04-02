@@ -3,6 +3,7 @@
 Todo:
     * distortion of geometry e.g. elongated along an axis
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -774,9 +775,11 @@ def nn_summaries_match(
     nn_sites_b = sorted(nn_sites_b, key=nn_sites_order)
 
     dists_match = [
-        abs(site_a["dist"] - site_b["dist"]) < bond_dist_tol
-        if match_bond_dists
-        else True
+        (
+            abs(site_a["dist"] - site_b["dist"]) < bond_dist_tol
+            if match_bond_dists
+            else True
+        )
         for site_a, site_b in zip(nn_sites_a, nn_sites_b)
     ]
     elements_match = [
@@ -841,12 +844,14 @@ def nnn_summaries_match(
         for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)
     ]
     angles_match = [
-        all(
-            abs(a_a - a_b) < bond_angle_tol
-            for a_a, a_b in zip(sorted(site_a["angles"]), sorted(site_b["angles"]))
+        (
+            all(
+                abs(a_a - a_b) < bond_angle_tol
+                for a_a, a_b in zip(sorted(site_a["angles"]), sorted(site_b["angles"]))
+            )
+            if match_bond_angles
+            else True
         )
-        if match_bond_angles
-        else True
         for site_a, site_b in zip(nnn_sites_a, nnn_sites_b)
     ]
 

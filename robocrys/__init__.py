@@ -2,6 +2,7 @@
 
 isort:skip_file
 """
+
 from __future__ import annotations
 
 from robocrys._version import __version__

@@ -1,4 +1,5 @@
 """This module contains a class to obtain robocrystallographer ML features."""
+
 from __future__ import annotations
 
 from itertools import product

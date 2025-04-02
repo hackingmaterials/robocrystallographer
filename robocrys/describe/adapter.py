@@ -1,6 +1,7 @@
 """This module implements a class to resolve the symbolic references in condensed
 structure data.
 """
+
 from __future__ import annotations
 
 from collections import defaultdict, namedtuple
@@ -336,9 +337,7 @@ class DescriptionAdapter(BaseAdapter):
         )
         return "({})".format(",".join(map(str, sorted(all_labels))))
 
-    def _site_order(
-        self, s: SiteGroup | NeighborSiteDetails | NextNeighborSiteDetails
-    ):
+    def _site_order(self, s: SiteGroup | NeighborSiteDetails | NextNeighborSiteDetails):
         """Utility function to help sort NeighborSiteDetails and SiteGroups."""
         specie = get_el_sp(s.element)
         x = specie.iupac_ordering if self.use_iupac_ordering else specie.X

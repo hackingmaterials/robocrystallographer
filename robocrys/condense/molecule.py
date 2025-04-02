@@ -2,6 +2,7 @@
 
 Some functionality relies on having a working internet connection.
 """
+
 from __future__ import annotations
 
 import warnings
