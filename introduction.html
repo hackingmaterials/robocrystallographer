@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introduction &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>Introduction &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/introduction.html"/>
@@ -38,7 +38,7 @@
               <img src="_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -140,8 +140,8 @@ representation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">StructureDescriber</span></code>: to turn the condensed structure into a text description.</p></li>
 </ul>
 <p>A minimal working example for generating text descriptions is simply:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pymatgen</span> <span class="kn">import</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span>
 
 <span class="n">structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;my_structure.cif&quot;</span><span class="p">)</span> <span class="c1"># other file formats also supported</span>
 

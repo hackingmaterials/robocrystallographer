@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.featurize.featurizer &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>robocrys.featurize.featurizer &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/featurize/featurizer.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -91,18 +91,23 @@
              
   <h1>Source code for robocrys.featurize.featurizer</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module contains a class to obtain robocrystallographer ML features.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">matminer.featurizers.base</span> <span class="kn">import</span> <span class="n">BaseFeaturizer</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">mean</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.local_env</span> <span class="kn">import</span> <span class="n">cn_opt_params</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">StructureCondenser</span>
-<span class="kn">from</span> <span class="nn">robocrys.featurize.adapter</span> <span class="kn">import</span> <span class="n">FeaturizerAdapter</span>
-<span class="kn">from</span> <span class="nn">robocrys.util</span> <span class="kn">import</span> <span class="n">connected_geometries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matminer.featurizers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFeaturizer</span>  <span class="c1"># type: ignore[import-untyped]</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.local_env</span><span class="w"> </span><span class="kn">import</span> <span class="n">cn_opt_params</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructureCondenser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys.featurize.adapter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FeaturizerAdapter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">connected_geometries</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="n">_geometries</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometry</span> <span class="k">for</span> <span class="n">cn</span> <span class="ow">in</span> <span class="n">cn_opt_params</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">geometry</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">]</span>
 <span class="n">_dimensionalities</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -124,7 +129,7 @@
 <span class="n">_cns</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="RobocrysFeaturizer"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer">[docs]</a><span class="k">class</span> <span class="nc">RobocrysFeaturizer</span><span class="p">(</span><span class="n">BaseFeaturizer</span><span class="p">):</span>
+<div class="viewcode-block" id="RobocrysFeaturizer"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">RobocrysFeaturizer</span><span class="p">(</span><span class="n">BaseFeaturizer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to generate structure features from robocrystallographer output.</span>
 
 <span class="sd">    Args:</span>
@@ -134,14 +139,14 @@
 <span class="sd">            classified as distorted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">condenser_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">distorted_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span>
     <span class="p">):</span>
         <span class="n">condenser_kwargs</span> <span class="o">=</span> <span class="n">condenser_kwargs</span> <span class="k">if</span> <span class="n">condenser_kwargs</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span> <span class="o">=</span> <span class="n">StructureCondenser</span><span class="p">(</span><span class="o">**</span><span class="n">condenser_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distorted_tol</span> <span class="o">=</span> <span class="n">distorted_tol</span>
 
-<div class="viewcode-block" id="RobocrysFeaturizer.featurize"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.featurize">[docs]</a>    <span class="k">def</span> <span class="nf">featurize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="RobocrysFeaturizer.featurize"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.featurize">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">featurize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">Structure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Featurizes a structure using robocrystallographer.</span>
 
 <span class="sd">        Args:</span>
@@ -209,7 +214,7 @@
 
         <span class="k">return</span> <span class="n">features</span></div>
 
-<div class="viewcode-block" id="RobocrysFeaturizer.feature_labels"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.feature_labels">[docs]</a>    <span class="k">def</span> <span class="nf">feature_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RobocrysFeaturizer.feature_labels"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.feature_labels">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">feature_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># general features</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;mineral_prototype&quot;</span><span class="p">,</span>
@@ -263,10 +268,10 @@
 
         <span class="k">return</span> <span class="n">labels</span></div>
 
-<div class="viewcode-block" id="RobocrysFeaturizer.citations"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.citations">[docs]</a>    <span class="k">def</span> <span class="nf">citations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RobocrysFeaturizer.citations"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.citations">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">citations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;in prep.&quot;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="RobocrysFeaturizer.implementors"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.implementors">[docs]</a>    <span class="k">def</span> <span class="nf">implementors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RobocrysFeaturizer.implementors"><a class="viewcode-back" href="../../../robocrys.featurize.html#robocrys.featurize.featurizer.RobocrysFeaturizer.implementors">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">implementors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;Alex Ganose&quot;</span><span class="p">]</span></div></div>
 </pre></div>
 

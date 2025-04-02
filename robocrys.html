@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys package &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>robocrys package &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/robocrys.html"/>
@@ -38,7 +38,7 @@
               <img src="_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -83,10 +83,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-robocrys.util">robocrys.util module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#robocrys.util.common_formulas"><code class="docutils literal notranslate"><span class="pre">common_formulas</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#robocrys.util.connected_geometries"><code class="docutils literal notranslate"><span class="pre">connected_geometries</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#robocrys.util.geometry_to_polyhedra"><code class="docutils literal notranslate"><span class="pre">geometry_to_polyhedra</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#robocrys.util.dimensionality_to_shape"><code class="docutils literal notranslate"><span class="pre">dimensionality_to_shape</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#robocrys.util.defaultdict_to_dict"><code class="docutils literal notranslate"><span class="pre">defaultdict_to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#robocrys.util.get_el"><code class="docutils literal notranslate"><span class="pre">get_el()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#robocrys.util.get_formatted_el"><code class="docutils literal notranslate"><span class="pre">get_formatted_el()</span></code></a></li>
@@ -524,39 +520,10 @@ more details.</p>
 </section>
 <section id="module-robocrys.util">
 <span id="robocrys-util-module"></span><h2>robocrys.util module<a class="headerlink" href="#module-robocrys.util" title="Permalink to this heading"></a></h2>
-<p>Miscellaneous utility functions and common data.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="robocrys.util.common_formulas">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">common_formulas</span></span><a class="headerlink" href="#robocrys.util.common_formulas" title="Permalink to this definition"></a></dt>
-<dd><p>A set of common formulas. The keys to the data are strings
-from <a class="reference external" href="https://pymatgen.org/pymatgen.core.html#pymatgen.core.composition.Composition.reduced_formula" title="(in pymatgen v2023.7.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pymatgen.core.composition.Composition.reduced_formula</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="robocrys.util.connected_geometries">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">connected_geometries</span></span><a class="headerlink" href="#robocrys.util.connected_geometries" title="Permalink to this definition"></a></dt>
-<dd><p>A list of geometries that are considered
-“connectable” polyhedra. E.g. Their face-sharing, edge-sharing, etc
-properties are of interest.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="robocrys.util.geometry_to_polyhedra">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">geometry_to_polyhedra</span></span><a class="headerlink" href="#robocrys.util.geometry_to_polyhedra" title="Permalink to this definition"></a></dt>
-<dd><p>A mapping from geometry type (e.g. octahedral) to the
-plural polyhedra name (e.g. octahedra).</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="robocrys.util.dimensionality_to_shape">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">dimensionality_to_shape</span></span><a class="headerlink" href="#robocrys.util.dimensionality_to_shape" title="Permalink to this definition"></a></dt>
-<dd><p>A mapping from dimensionality to the component
-shape.</p>
-</dd></dl>
-
+<p>Define utility functions used in robocrys.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.defaultdict_to_dict">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">defaultdict_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#defaultdict_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.defaultdict_to_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">defaultdict_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#defaultdict_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.defaultdict_to_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Recursively convert nested <code class="xref py py-obj docutils literal notranslate"><span class="pre">defaultdict</span></code> to <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -573,7 +540,7 @@ shape.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.get_el">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">get_el</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#get_el"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.get_el" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">get_el</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#get_el"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.get_el" title="Permalink to this definition"></a></dt>
 <dd><p>Utility method to get an element str from a symbol, Element, or Specie.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -592,7 +559,7 @@ symbols or species strings).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.get_formatted_el">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">get_formatted_el</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_oxi_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_sym_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#get_formatted_el"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.get_formatted_el" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">get_formatted_el</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_oxi_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_sym_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#get_formatted_el"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.get_formatted_el" title="Permalink to this definition"></a></dt>
 <dd><p>Formats an element string.</p>
 <p>Performs a variety of functions, including:</p>
 <ul class="simple">
@@ -634,7 +601,7 @@ E.g. “Sn” or “Sn2+”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.htmlify_spacegroup">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">htmlify_spacegroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacegroup_symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#htmlify_spacegroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.htmlify_spacegroup" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">htmlify_spacegroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacegroup_symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#htmlify_spacegroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.htmlify_spacegroup" title="Permalink to this definition"></a></dt>
 <dd><p>Formats a spacegroup using unicode symbols.</p>
 <p>E.g. P-42_1m -&gt; P̅42&lt;sub&gt;1&lt;/sub&gt;m</p>
 <dl class="field-list simple">
@@ -652,11 +619,11 @@ E.g. “Sn” or “Sn2+”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.load_condensed_structure_json">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">load_condensed_structure_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#load_condensed_structure_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.load_condensed_structure_json" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">load_condensed_structure_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#load_condensed_structure_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.load_condensed_structure_json" title="Permalink to this definition"></a></dt>
 <dd><p>Load condensed structure data from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The filename.</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3.6/library/pathlib.html#pathlib.Path" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>) – The filename.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</p>
@@ -669,7 +636,7 @@ E.g. “Sn” or “Sn2+”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.superscript_number">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">superscript_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#superscript_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.superscript_number" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">superscript_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#superscript_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.superscript_number" title="Permalink to this definition"></a></dt>
 <dd><p>Converts a string containing numbers to superscript.</p>
 <p>Will only convert the numbers 0-9, and the + and - characters.</p>
 <dl class="field-list simple">
@@ -684,7 +651,7 @@ E.g. “Sn” or “Sn2+”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="robocrys.util.unicodeify_spacegroup">
-<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">unicodeify_spacegroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacegroup_symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util.html#unicodeify_spacegroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.unicodeify_spacegroup" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">robocrys.util.</span></span><span class="sig-name descname"><span class="pre">unicodeify_spacegroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacegroup_symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/robocrys/util/util.html#unicodeify_spacegroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#robocrys.util.unicodeify_spacegroup" title="Permalink to this definition"></a></dt>
 <dd><p>Formats a spacegroup using unicode symbols.</p>
 <p>E.g. Fd-3m -&gt; Fd̅3m</p>
 <dl class="field-list simple">

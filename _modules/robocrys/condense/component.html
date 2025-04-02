@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.condense.component &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>robocrys.condense.component &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/condense/component.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -91,29 +91,30 @@
              
   <h1>Source code for robocrys.condense.component</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module implements functions for handling structure components.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">monty.fractions</span> <span class="kn">import</span> <span class="n">gcd</span>
-<span class="kn">from</span> <span class="nn">pymatgen.analysis.structure_matcher</span> <span class="kn">import</span> <span class="n">StructureMatcher</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.composition</span> <span class="kn">import</span> <span class="n">Composition</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">get_el_sp</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">PeriodicSite</span><span class="p">,</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
-<span class="kn">from</span> <span class="nn">pymatgen.util.string</span> <span class="kn">import</span> <span class="n">formula_double_format</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">robocrys.condense.fingerprint</span> <span class="kn">import</span> <span class="n">get_structure_fingerprint</span>
-<span class="kn">from</span> <span class="nn">robocrys.util</span> <span class="kn">import</span> <span class="n">common_formulas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">monty.fractions</span><span class="w"> </span><span class="kn">import</span> <span class="n">gcd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.analysis.structure_matcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructureMatcher</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.composition</span><span class="w"> </span><span class="kn">import</span> <span class="n">Composition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.periodic_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_el_sp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">PeriodicSite</span><span class="p">,</span> <span class="n">Structure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.symmetry.analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.util.string</span><span class="w"> </span><span class="kn">import</span> <span class="n">formula_double_format</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys.condense.fingerprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_structure_fingerprint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_formulas</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="n">Component</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="get_structure_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_structure_inequiv_components">[docs]</a><span class="k">def</span> <span class="nf">get_structure_inequiv_components</span><span class="p">(</span>
+<div class="viewcode-block" id="get_structure_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_structure_inequiv_components">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_structure_inequiv_components</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
     <span class="n">use_structure_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">fingerprint_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
@@ -203,7 +204,7 @@
     <span class="k">return</span> <span class="n">seen_components</span></div>
 
 
-<div class="viewcode-block" id="components_are_isomorphic"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.components_are_isomorphic">[docs]</a><span class="k">def</span> <span class="nf">components_are_isomorphic</span><span class="p">(</span>
+<div class="viewcode-block" id="components_are_isomorphic"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.components_are_isomorphic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">components_are_isomorphic</span><span class="p">(</span>
     <span class="n">component_a</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span> <span class="n">component_b</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span> <span class="n">use_weights</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines whether the graphs of two components are isomorphic.</span>
@@ -220,10 +221,10 @@
 <span class="sd">        Whether the components are isomorphic.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">node_match</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_match</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">n1</span><span class="p">[</span><span class="s2">&quot;specie&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">n2</span><span class="p">[</span><span class="s2">&quot;specie&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">edge_match</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">edge_match</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">use_weights</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">e1</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">e2</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -248,7 +249,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_sym_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_sym_inequiv_components">[docs]</a><span class="k">def</span> <span class="nf">get_sym_inequiv_components</span><span class="p">(</span>
+<div class="viewcode-block" id="get_sym_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_sym_inequiv_components">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_sym_inequiv_components</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span> <span class="n">spg_analyzer</span><span class="p">:</span> <span class="n">SpacegroupAnalyzer</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets and counts the symmetrically inequivalent components.</span>
@@ -292,7 +293,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">sym_inequiv_components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="get_formula_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_formula_inequiv_components">[docs]</a><span class="k">def</span> <span class="nf">get_formula_inequiv_components</span><span class="p">(</span>
+<div class="viewcode-block" id="get_formula_inequiv_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_formula_inequiv_components">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_formula_inequiv_components</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
     <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -355,7 +356,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">inequiv_components</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="filter_molecular_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.filter_molecular_components">[docs]</a><span class="k">def</span> <span class="nf">filter_molecular_components</span><span class="p">(</span>
+<div class="viewcode-block" id="filter_molecular_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.filter_molecular_components">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">filter_molecular_components</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Separate list of components into molecular and non-molecular components.</span>
@@ -374,7 +375,7 @@
     <span class="k">return</span> <span class="n">molecular_components</span><span class="p">,</span> <span class="n">other_components</span></div>
 
 
-<div class="viewcode-block" id="get_reconstructed_structure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_reconstructed_structure">[docs]</a><span class="k">def</span> <span class="nf">get_reconstructed_structure</span><span class="p">(</span>
+<div class="viewcode-block" id="get_reconstructed_structure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_reconstructed_structure">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_reconstructed_structure</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span> <span class="n">simplify_molecules</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Structure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reconstructs a structure from a list of components.</span>
@@ -420,7 +421,7 @@
     <span class="k">return</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_sites</span><span class="p">(</span><span class="n">other_sites</span> <span class="o">+</span> <span class="n">mol_sites</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_component_formula_and_factor"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_component_formula_and_factor">[docs]</a><span class="k">def</span> <span class="nf">get_component_formula_and_factor</span><span class="p">(</span>
+<div class="viewcode-block" id="get_component_formula_and_factor"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_component_formula_and_factor">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_component_formula_and_factor</span><span class="p">(</span>
     <span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
     <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -456,7 +457,7 @@
     <span class="k">return</span> <span class="n">formula</span><span class="p">,</span> <span class="n">factor</span></div>
 
 
-<div class="viewcode-block" id="get_component_formula"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_component_formula">[docs]</a><span class="k">def</span> <span class="nf">get_component_formula</span><span class="p">(</span>
+<div class="viewcode-block" id="get_component_formula"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_component_formula">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_component_formula</span><span class="p">(</span>
     <span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
     <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -487,7 +488,7 @@
     <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="get_formula_from_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_formula_from_components">[docs]</a><span class="k">def</span> <span class="nf">get_formula_from_components</span><span class="p">(</span>
+<div class="viewcode-block" id="get_formula_from_components"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_formula_from_components">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_formula_from_components</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
     <span class="n">molecules_first</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -519,7 +520,7 @@
 <span class="sd">        The chemical formula.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="n">comp_formula</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="n">comp_formula</span><span class="p">):</span>
         <span class="n">composition</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="n">comp_formula</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">use_iupac_formula</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
@@ -565,7 +566,7 @@
     <span class="k">return</span> <span class="n">reduced_form</span></div>
 
 
-<div class="viewcode-block" id="components_are_vdw_heterostructure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.components_are_vdw_heterostructure">[docs]</a><span class="k">def</span> <span class="nf">components_are_vdw_heterostructure</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="components_are_vdw_heterostructure"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.components_are_vdw_heterostructure">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">components_are_vdw_heterostructure</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether a list of components form a van der Waals heterostructure.</span>
 
 <span class="sd">    A heterostructure is defined here as a structure with more than one</span>
@@ -583,7 +584,7 @@
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">len</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">components</span> <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]))</span></div>
 
 
-<div class="viewcode-block" id="get_vdw_heterostructure_information"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_vdw_heterostructure_information">[docs]</a><span class="k">def</span> <span class="nf">get_vdw_heterostructure_information</span><span class="p">(</span>
+<div class="viewcode-block" id="get_vdw_heterostructure_information"><a class="viewcode-back" href="../../../robocrys.condense.html#robocrys.condense.component.get_vdw_heterostructure_information">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_vdw_heterostructure_information</span><span class="p">(</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Component</span><span class="p">],</span>
     <span class="n">use_iupac_formula</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">use_common_formulas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -639,7 +640,7 @@
         <span class="k">if</span> <span class="s2">&quot;orientation&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;Components not generated with inc_orientation=True&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="k">raise</span> <span class="n">exc</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">millers</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -654,7 +655,7 @@
     <span class="c1"># plane is used to find the distances of all components along a certain axis</span>
     <span class="c1"># should use normal vector of plane to get exact distances but we just care</span>
     <span class="c1"># about relative distances.</span>
-    <span class="k">def</span> <span class="nf">distances_to_plane</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">distances_to_plane</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cart_miller</span><span class="p">,</span> <span class="n">pp</span><span class="p">)</span> <span class="k">for</span> <span class="n">pp</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
 
     <span class="n">min_distances</span> <span class="o">=</span> <span class="p">[</span>

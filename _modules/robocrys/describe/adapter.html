@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.describe.adapter &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>robocrys.describe.adapter &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/describe/adapter.html"/>
@@ -35,7 +35,7 @@
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -93,15 +93,19 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module implements a class to resolve the symbolic references in condensed</span>
 <span class="sd">structure data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pymatgen.core.periodic_table</span> <span class="kn">import</span> <span class="n">get_el_sp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">namedtuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">robocrys.adapter</span> <span class="kn">import</span> <span class="n">BaseAdapter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.periodic_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_el_sp</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys.adapter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseAdapter</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="n">ComponentDetails</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s2">&quot;ComponentDetails&quot;</span><span class="p">,</span>
@@ -141,7 +145,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="DescriptionAdapter"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter">[docs]</a><span class="k">class</span> <span class="nc">DescriptionAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptionAdapter"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">DescriptionAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to facilitate pulling data from the condensed structure dictionary.</span>
 
 <span class="sd">    Attributes:</span>
@@ -159,7 +163,7 @@
 <span class="sd">            by :meth:`robocrys.condense.StructureCondenser.condense_structure`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">use_iupac_ordering</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">condensed_structure</span><span class="p">)</span>
@@ -169,7 +173,7 @@
             <span class="n">site_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sym_label</span><span class="p">(</span><span class="n">site_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">site_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="DescriptionAdapter.get_nearest_neighbor_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_nearest_neighbor_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_nearest_neighbor_details</span><span class="p">(</span>
+<div class="viewcode-block" id="DescriptionAdapter.get_nearest_neighbor_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_nearest_neighbor_details">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_nearest_neighbor_details</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NeighborSiteDetails</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of all the nearest neighbors to a site.</span>
@@ -216,7 +220,7 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nn_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_site_order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DescriptionAdapter.get_next_nearest_neighbor_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_next_nearest_neighbor_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_next_nearest_neighbor_details</span><span class="p">(</span>
+<div class="viewcode-block" id="DescriptionAdapter.get_next_nearest_neighbor_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_next_nearest_neighbor_details">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_next_nearest_neighbor_details</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NextNeighborSiteDetails</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of all the next nearest neighbors to a site.</span>
@@ -269,7 +273,7 @@
             <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="p">[</span><span class="n">nnn_site</span><span class="p">][</span><span class="s2">&quot;geometry&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
-                <span class="n">identity</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
+                <span class="n">identity</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">identity</span> <span class="o">=</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">connectivity</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
@@ -299,7 +303,7 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nnn_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_site_order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DescriptionAdapter.get_component_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ComponentDetails</span><span class="p">]:</span>
+<div class="viewcode-block" id="DescriptionAdapter.get_component_details"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_details">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ComponentDetails</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of all components.</span>
 
 <span class="sd">        Returns:</span>
@@ -332,7 +336,7 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">component_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_component_order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DescriptionAdapter.get_component_groups"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ComponentGroup</span><span class="p">]:</span>
+<div class="viewcode-block" id="DescriptionAdapter.get_component_groups"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_groups">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ComponentGroup</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of all components groups.</span>
 
 <span class="sd">        Returns:</span>
@@ -375,7 +379,7 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">component_group_details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">_component_order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DescriptionAdapter.get_component_site_groups"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_site_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_component_site_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SiteGroup</span><span class="p">]:</span>
+<div class="viewcode-block" id="DescriptionAdapter.get_component_site_groups"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_component_site_groups">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_site_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SiteGroup</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of the sites in a component.</span>
 
 <span class="sd">        Returns:</span>
@@ -404,7 +408,7 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">site_groups</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_site_order</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DescriptionAdapter.get_sym_label"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_sym_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_sym_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_indices</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="DescriptionAdapter.get_sym_label"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.describe.adapter.DescriptionAdapter.get_sym_label">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_sym_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_indices</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert site indices into a formatted symmetry label.</span>
 
 <span class="sd">        Args:</span>
@@ -428,9 +432,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">all_labels</span><span class="p">))))</span></div>
 
-    <span class="k">def</span> <span class="nf">_site_order</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SiteGroup</span> <span class="o">|</span> <span class="n">NeighborSiteDetails</span> <span class="o">|</span> <span class="n">NextNeighborSiteDetails</span>
-    <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_site_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SiteGroup</span> <span class="o">|</span> <span class="n">NeighborSiteDetails</span> <span class="o">|</span> <span class="n">NextNeighborSiteDetails</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility function to help sort NeighborSiteDetails and SiteGroups.&quot;&quot;&quot;</span>
         <span class="n">specie</span> <span class="o">=</span> <span class="n">get_el_sp</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">specie</span><span class="o">.</span><span class="n">iupac_ordering</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_iupac_ordering</span> <span class="k">else</span> <span class="n">specie</span><span class="o">.</span><span class="n">X</span>
@@ -450,7 +452,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">sites</span><span class="p">]</span></div>
 
 
-<span class="k">def</span> <span class="nf">_component_order</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">ComponentDetails</span> <span class="o">|</span> <span class="n">ComponentGroup</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_component_order</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="n">ComponentDetails</span> <span class="o">|</span> <span class="n">ComponentGroup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility function to help sort ComponentDetails and ComponentGroups.&quot;&quot;&quot;</span>
     <span class="n">mn</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">molecule_name</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">molecule_name</span> <span class="k">else</span> <span class="s2">&quot;z&quot;</span>
 

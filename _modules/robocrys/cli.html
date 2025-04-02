@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.cli &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>robocrys.cli &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/cli.html"/>
@@ -35,7 +35,7 @@
               <img src="../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -91,16 +91,21 @@
              
   <h1>Source code for robocrys.cli</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module contains a script for using robocrys from the command line.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
-<span class="kn">from</span> <span class="nn">mp_api.client</span> <span class="kn">import</span> <span class="n">MPRestError</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">robocrys</span> <span class="kn">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span><span class="p">,</span> <span class="n">__version__</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.core.structure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Structure</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mp_api.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRestError</span>  <span class="c1"># type:ignore[import-untyped]</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">MPRestError</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">robocrys</span><span class="w"> </span><span class="kn">import</span> <span class="n">StructureCondenser</span><span class="p">,</span> <span class="n">StructureDescriber</span><span class="p">,</span> <span class="n">__version__</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Alex Ganose&quot;</span>
 <span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;Alex Ganose&quot;</span>
@@ -108,7 +113,7 @@
 <span class="n">__date__</span> <span class="o">=</span> <span class="s2">&quot;December 17, 2018&quot;</span>
 
 
-<div class="viewcode-block" id="robocrystallographer"><a class="viewcode-back" href="../../robocrys.html#robocrys.cli.robocrystallographer">[docs]</a><span class="k">def</span> <span class="nf">robocrystallographer</span><span class="p">(</span>
+<div class="viewcode-block" id="robocrystallographer"><a class="viewcode-back" href="../../robocrys.html#robocrys.cli.robocrystallographer">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">robocrystallographer</span><span class="p">(</span>
     <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
     <span class="n">condenser_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">describer_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -143,7 +148,7 @@
     <span class="k">return</span> <span class="n">description</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_parser</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_parser</span><span class="p">():</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;robocrystallographer is a tool to generate crystal &quot;</span>
         <span class="s2">&quot;structure descriptions&quot;</span><span class="p">,</span>
@@ -266,7 +271,7 @@
     <span class="k">return</span> <span class="n">parser</span>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../robocrys.html#robocrys.cli.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../robocrys.html#robocrys.cli.main">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">_get_parser</span><span class="p">()</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
     <span class="n">args_dict</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
@@ -302,7 +307,14 @@
 
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mp-&quot;</span><span class="p">,</span> <span class="s2">&quot;mvc&quot;</span><span class="p">]:</span>
-            <span class="kn">from</span> <span class="nn">mp_api.client</span> <span class="kn">import</span> <span class="n">MPRester</span>
+
+            <span class="k">if</span> <span class="n">MPRestError</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                    <span class="s2">&quot;Please install the Materials Project API using&quot;</span>
+                    <span class="s2">&quot;`pip install mp_api`&quot;</span>
+                <span class="p">)</span>
+
+            <span class="kn">from</span><span class="w"> </span><span class="nn">mp_api.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPRester</span>
 
             <span class="n">mpr</span> <span class="o">=</span> <span class="n">MPRester</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
 

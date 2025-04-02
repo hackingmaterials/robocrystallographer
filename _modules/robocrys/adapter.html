@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.adapter &mdash; Robocrystallographer 0.2.10 documentation</title>
+  <title>robocrys.adapter &mdash; Robocrystallographer 0.2.11 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/adapter.html"/>
@@ -35,7 +35,7 @@
               <img src="../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                0.2.10
+                0.2.11
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -93,12 +93,13 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module implements a class to resolve the symbolic references in condensed</span>
 <span class="sd">structure data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 
-<div class="viewcode-block" id="BaseAdapter"><a class="viewcode-back" href="../../robocrys.html#robocrys.adapter.BaseAdapter">[docs]</a><span class="k">class</span> <span class="nc">BaseAdapter</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseAdapter"><a class="viewcode-back" href="../../robocrys.html#robocrys.adapter.BaseAdapter">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">BaseAdapter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base adapter class for facilitating access to condensed structure data.</span>
 
 <span class="sd">    Attributes:</span>
@@ -109,14 +110,14 @@
 <span class="sd">            by :meth:`robocrys.condense.StructureCondenser.condense_structure`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span> <span class="o">=</span> <span class="n">condensed_structure</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">site_index</span><span class="p">:</span> <span class="n">site_data</span><span class="p">[</span><span class="s2">&quot;element&quot;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">site_index</span><span class="p">,</span> <span class="n">site_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="BaseAdapter.get_distance_details"><a class="viewcode-back" href="../../robocrys.html#robocrys.adapter.BaseAdapter.get_distance_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance_details</span><span class="p">(</span>
+<div class="viewcode-block" id="BaseAdapter.get_distance_details"><a class="viewcode-back" href="../../robocrys.html#robocrys.adapter.BaseAdapter.get_distance_details">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_distance_details</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the bond lengths between two sets of sites.</span>
@@ -138,7 +139,7 @@
             <span class="k">for</span> <span class="n">distance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="n">from_site</span><span class="p">][</span><span class="n">to_site</span><span class="p">]</span>
         <span class="p">]</span></div>
 
-<div class="viewcode-block" id="BaseAdapter.get_angle_details"><a class="viewcode-back" href="../../robocrys.html#robocrys.adapter.BaseAdapter.get_angle_details">[docs]</a>    <span class="k">def</span> <span class="nf">get_angle_details</span><span class="p">(</span>
+<div class="viewcode-block" id="BaseAdapter.get_angle_details"><a class="viewcode-back" href="../../robocrys.html#robocrys.adapter.BaseAdapter.get_angle_details">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_angle_details</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">connectivity</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the connectivity angles between two sets of sites.</span>
@@ -163,7 +164,7 @@
         <span class="p">]</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mineral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mineral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The mineral data.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -172,7 +173,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;mineral&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The structure formula.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -181,7 +182,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;formula&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spg_symbol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spg_symbol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The space group symbol.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -190,7 +191,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;spg_symbol&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">crystal_system</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">crystal_system</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The crystal system.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -199,7 +200,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;crystal_system&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dimensionality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dimensionality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The overall dimensionality.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -208,7 +209,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;dimensionality&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sites</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sites</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The site data.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -217,7 +218,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">distances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The distance data.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -226,7 +227,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;distances&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The angle data.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -235,7 +236,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;angles&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The component data.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -244,7 +245,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">component_makeup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">component_makeup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The component makeup of the structure.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
@@ -253,7 +254,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condensed_structure</span><span class="p">[</span><span class="s2">&quot;component_makeup&quot;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_vdw_heterostructure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_vdw_heterostructure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the structure is a vdw heterostructure.</span>
 
 <span class="sd">        See :meth:`robocrys.condense.StructureCondenser.condense_structure` for</span>
