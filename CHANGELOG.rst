@@ -4,6 +4,12 @@ Change Log
 [Unreleased]
 ------------
 
+v0.2.11
+------
+
+- Remove circular software dependecies in MP software stack by Aaron Kaplan in https://github.com/hackingmaterials/robocrystallographer/pull/532
+- Housekeeping / update project dependecies
+
 v0.2.10
 ------
 
