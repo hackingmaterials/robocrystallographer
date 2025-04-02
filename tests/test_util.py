@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import unittest
 
 from pymatgen.core.periodic_table import get_el_sp
@@ -13,9 +12,7 @@ from robocrys.util import (
     superscript_number,
     unicodeify_spacegroup,
 )
-
-test_dir = os.path.dirname(os.path.abspath(__file__))
-
+from robocrys.util.tests import TEST_FILES_DIR
 
 class TestDescriptionMethods(unittest.TestCase):
     """Class to test utility functions."""
@@ -115,8 +112,9 @@ class TestDescriptionMethods(unittest.TestCase):
         assert spg_symbol == "P̅42<sub>1</sub>m"
 
     def test_load_condense_structure_json(self):
+
         condensed_structure = load_condensed_structure_json(
-            os.path.join(test_dir, "condensed_structures", "SnO2.json.gz")
+            TEST_FILES_DIR / "condensed_structures" / "SnO2.json.gz"
         )
 
         # check that the site keys are correctly converted from str to int

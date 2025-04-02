@@ -1,4 +1,5 @@
 """This module implements functions for handling structure components."""
+
 from __future__ import annotations
 
 from copy import deepcopy

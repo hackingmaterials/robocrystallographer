@@ -1,4 +1,5 @@
 """This module defines a class for condensing structures into dict representations."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any

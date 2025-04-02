@@ -11,11 +11,12 @@ Attributes:
     dimensionality_to_shape: A mapping from dimensionality to the component
         shape.
 """
+
 from __future__ import annotations
 
 import re
 from collections import defaultdict
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from monty.json import MontyDecoder
 from monty.serialization import loadfn
@@ -23,9 +24,20 @@ from importlib.resources import files as import_resource_file
 from pymatgen.core.periodic_table import Element, Species, get_el_sp
 from pymatgen.util.string import latexify_spacegroup
 
-common_formulas: dict[str, str] = loadfn(
-    import_resource_file("robocrys.condense") / "formula_db.json.gz"
-)
+if TYPE_CHECKING:
+    from pathlib import Path
+
+
+def _get_common_formulas() -> dict[str, str]:
+    """Retrieve common formula information from stored data."""
+    all_formulas = loadfn(
+        import_resource_file("robocrys.condense") / "formula_db.json.gz", cls=None
+    )
+    all_formulas["alias"].update({k: k for k in all_formulas["no_alias"]})
+    return all_formulas["alias"]
+
+
+common_formulas: dict[str, str] = _get_common_formulas()
 
 connected_geometries: list[str] = [
     "tetrahedral",
@@ -273,7 +285,7 @@ def defaultdict_to_dict(dictionary: defaultdict) -> dict:
     return dictionary
 
 
-def load_condensed_structure_json(filename: str) -> dict[str, Any]:
+def load_condensed_structure_json(filename: str | Path) -> dict[str, Any]:
     """Load condensed structure data from a file.
 
     Args:
@@ -285,10 +297,13 @@ def load_condensed_structure_json(filename: str) -> dict[str, Any]:
 
     # JSON does not support using integers a dictionary keys, therefore
     # manually convert dictionary keys from str to int if possible.
-    def json_keys_to_int(x : Any) -> Any:
-        if isinstance(x,dict):
-            return {int(k) if k.isdigit() else k: json_keys_to_int(v) for k, v in x.items()}
+    def json_keys_to_int(x: Any) -> Any:
+        if isinstance(x, dict):
+            return {
+                int(k) if k.isdigit() else k: json_keys_to_int(v) for k, v in x.items()
+            }
         return x
+
     # For some reason, specifying `object_hook = json_keys_to_int` in `loadfn`
     # doesn't seem to work. This does reliably:
     return json_keys_to_int(loadfn(filename, cls=MontyDecoder))

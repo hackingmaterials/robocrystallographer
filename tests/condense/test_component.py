@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import os
-
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
 from pymatgen.analysis.structure_matcher import StructureMatcher
@@ -21,10 +19,7 @@ from robocrys.condense.component import (
     get_sym_inequiv_components,
     get_vdw_heterostructure_information,
 )
-from robocrys.tests import RobocrysTest
-
-test_dir = os.path.join(os.path.dirname(__file__))
-
+from robocrys.util.tests import RobocrysTest
 
 class TestComponent(RobocrysTest):
     """Class to test component related functions."""

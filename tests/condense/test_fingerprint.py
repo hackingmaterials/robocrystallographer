@@ -7,7 +7,7 @@ from robocrys.condense.fingerprint import (
     get_site_fingerprints,
     get_structure_fingerprint,
 )
-from robocrys.tests import RobocrysTest
+from robocrys.util.tests import RobocrysTest
 
 
 class TestFingerprint(RobocrysTest):

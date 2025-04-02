@@ -4,13 +4,14 @@ test the main method with argparsing, just the robocrystallographer function.
 from __future__ import annotations
 
 from robocrys.cli import robocrystallographer, main
-from robocrys.tests import RobocrysTest
+from robocrys.util.tests import RobocrysTest
+import os
 import pytest
 
-from mp_api.client.mprester import DEFAULT_API_KEY
 from pymatgen.core import SETTINGS as PMG_SETTINGS
+from robocrys.cli import MPRestError
 
-_mp_api_key = DEFAULT_API_KEY or PMG_SETTINGS.get("PMG_MAPI_KEY")
+_mp_api_key = os.environ.get("MP_API_KEY") or PMG_SETTINGS.get("PMG_MAPI_KEY")
 
 class TestCommandLineInterface(RobocrysTest):
     """Class to test CLI functionality."""
@@ -44,7 +45,7 @@ class TestCommandLineInterface(RobocrysTest):
     def capsys(self, capsys):
         self.capsys = capsys
         
-    @pytest.mark.skipif(not _mp_api_key, reason="No MP API key set.")
+    @pytest.mark.skipif((not _mp_api_key) or (MPRestError is None), reason="No MP API key set, or `mp_api` is not installed.")
     def test_robocrystallographer_mp_api(self):
         
         import sys

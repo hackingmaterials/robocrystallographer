@@ -5,6 +5,7 @@ Todo:
     * Indicate when molecules have been simplified in the mineral description.
     * Handle distortion in connected polyhedra description.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -101,9 +102,7 @@ class StructureDescriber:
         self._da: DescriptionAdapter = None
         self._seen_bonds: set = None
 
-    def describe(
-        self, condensed_structure: dict[str, Any]
-    ) -> str | dict[str, str]:
+    def describe(self, condensed_structure: dict[str, Any]) -> str | dict[str, str]:
         """Convert a condensed structure into a text description.
 
         Args:

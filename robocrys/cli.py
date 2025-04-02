@@ -1,4 +1,5 @@
 """This module contains a script for using robocrys from the command line."""
+
 from __future__ import annotations
 
 import argparse
@@ -6,7 +7,11 @@ import sys
 import warnings
 
 from pymatgen.core.structure import Structure
-from mp_api.client import MPRestError
+
+try:
+    from mp_api.client import MPRestError
+except ImportError:
+    MPRestError = None
 
 from robocrys import StructureCondenser, StructureDescriber, __version__
 
@@ -210,6 +215,13 @@ def main():
 
     except FileNotFoundError:
         if args.filename[:3] in ["mp-", "mvc"]:
+
+            if MPRestError is None:
+                raise ImportError(
+                    "Please install the Materials Project API using"
+                    "`pip install mp_api`"
+                )
+
             from mp_api.client import MPRester
 
             mpr = MPRester(args.api_key)
