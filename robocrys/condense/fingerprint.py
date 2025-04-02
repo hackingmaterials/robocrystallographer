@@ -3,8 +3,12 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 import numpy as np
-from matminer.featurizers.site import CrystalNNFingerprint
-from matminer.featurizers.structure import SiteStatsFingerprint
+from matminer.featurizers.site import (
+    CrystalNNFingerprint,
+)  # type:ignore[import-untyped]
+from matminer.featurizers.structure import (
+    SiteStatsFingerprint,
+)  # type:ignore[import-untyped]
 from pymatgen.core.structure import IStructure
 
 
@@ -42,7 +46,7 @@ def get_site_fingerprints(
 
     if as_dict:
         labels = ssf.feature_labels()
-        site_fingerprints = [dict(zip(labels, x)) for x in site_fingerprints]
+        return [dict(zip(labels, x)) for x in site_fingerprints]
 
     return site_fingerprints
 
@@ -107,13 +111,13 @@ def get_fingerprint_distance(
         The euclidean distance between fingerprints as a :class:`numpy.ndarray`.
     """
     if issubclass(type(structure_a), IStructure):
-        fingerprint_a = get_structure_fingerprint(structure_a)
+        fingerprint_a = get_structure_fingerprint(structure_a)  # type: ignore[arg-type]
     else:
         fingerprint_a = np.array(structure_a)
 
     if issubclass(type(structure_b), IStructure):
-        fingerprint_b = get_structure_fingerprint(structure_b)
+        fingerprint_b = get_structure_fingerprint(structure_b)  # type: ignore[arg-type]
     else:
         fingerprint_b = np.array(structure_b)
 
-    return np.linalg.norm(fingerprint_a - fingerprint_b)
+    return np.linalg.norm(fingerprint_a - fingerprint_b)  # type: ignore[return-value]

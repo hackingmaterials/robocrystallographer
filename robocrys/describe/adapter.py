@@ -5,12 +5,15 @@ structure data.
 from __future__ import annotations
 
 from collections import defaultdict, namedtuple
-from typing import Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 from pymatgen.core.periodic_table import get_el_sp
 
 from robocrys.adapter import BaseAdapter
+
+if TYPE_CHECKING:
+    from typing import Any
 
 ComponentDetails = namedtuple(
     "ComponentDetails",
@@ -178,7 +181,7 @@ class DescriptionAdapter(BaseAdapter):
             geometry = self.sites[nnn_site]["geometry"]["type"]
 
             if group:
-                identity = (element, connectivity, geometry)
+                identity: tuple[Any, ...] = (element, connectivity, geometry)
             else:
                 identity = (element, connectivity, geometry, labels)
 
