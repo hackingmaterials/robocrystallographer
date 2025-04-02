@@ -5,12 +5,11 @@ from __future__ import annotations
 from importlib.resources import files as import_resource_file
 from itertools import islice
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
-from matminer.utils.io import load_dataframe_from_json
+from matminer.utils.io import load_dataframe_from_json  # type:ignore[import-untyped]
 from pymatgen.analysis.prototypes import AflowPrototypeMatcher
-from pymatgen.core.structure import IStructure
 from robocrys.condense.fingerprint import (
     get_fingerprint_distance,
     get_structure_fingerprint,
@@ -18,9 +17,13 @@ from robocrys.condense.fingerprint import (
 
 
 if TYPE_CHECKING:
+    from typing import Any
     import pandas as pd
 
-_mineral_db_file = import_resource_file("robocrys.condense") / "mineral_db.json.gz"
+    from pymatgen.core.structure import Structure
+
+
+_mineral_db_file = str(import_resource_file("robocrys.condense") / "mineral_db.json.gz")
 
 
 class MineralMatcher:
@@ -60,9 +63,11 @@ class MineralMatcher:
         fingerprint_distance_cutoff: float = 0.4,
         mineral_db: str | Path | pd.DataFrame | None = None,
     ):
-        self.mineral_db = mineral_db if mineral_db is not None else _mineral_db_file
-        if isinstance(self.mineral_db, (str, Path)):
-            self.mineral_db = load_dataframe_from_json(self.mineral_db, pbar=False)
+        mineral_db = mineral_db or _mineral_db_file
+        if isinstance(mineral_db, (str, Path)):
+            self.mineral_db = load_dataframe_from_json(mineral_db, pbar=False)
+        else:
+            self.mineral_db = mineral_db
 
         self.initial_ltol = initial_ltol
         self.initial_stol = initial_stol
@@ -72,7 +77,7 @@ class MineralMatcher:
         self._structure = None
         self._mineral_db = None
 
-    def get_best_mineral_name(self, structure: IStructure) -> dict[str, Any]:
+    def get_best_mineral_name(self, structure: Structure) -> dict[str, Any]:
         """Gets the "best" mineral name for a structure.
 
         Uses a combination of AFLOW prototype matching and fingerprinting to
@@ -138,7 +143,7 @@ class MineralMatcher:
 
     def get_aflow_matches(
         self,
-        structure: IStructure,
+        structure: Structure,
     ) -> list[dict[str, Any]] | None:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
@@ -190,7 +195,7 @@ class MineralMatcher:
 
     def get_fingerprint_matches(
         self,
-        structure: IStructure,
+        structure: Structure,
         max_n_matches: int | None = None,
         match_n_sp: bool = True,
         mineral_name_constraint: str | None = None,
@@ -240,7 +245,7 @@ class MineralMatcher:
 
         return minerals if minerals else None
 
-    def _set_distance_matrix(self, structure: IStructure):
+    def _set_distance_matrix(self, structure: Structure):
         """Utility func to calculate distance between structure and minerals.
 
         First checks to see if the distances have already been calculated for

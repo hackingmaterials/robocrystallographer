@@ -9,7 +9,7 @@ import warnings
 from pymatgen.core.structure import Structure
 
 try:
-    from mp_api.client import MPRestError
+    from mp_api.client import MPRestError  # type:ignore[import-untyped]
 except ImportError:
     MPRestError = None
 

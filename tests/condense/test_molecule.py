@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import os
-
 import pytest
 from pymatgen.analysis.dimensionality import get_structure_components
 from pymatgen.analysis.local_env import CrystalNN
@@ -11,7 +9,7 @@ from robocrys.condense.molecule import MoleculeNamer
 from robocrys.util.tests import RobocrysTest
 
 try:
-    from openbabel import openbabel, pybel
+    from openbabel import openbabel
 except Exception:
     openbabel = None
 

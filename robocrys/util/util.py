@@ -31,7 +31,7 @@ if TYPE_CHECKING:
 def _get_common_formulas() -> dict[str, str]:
     """Retrieve common formula information from stored data."""
     all_formulas = loadfn(
-        import_resource_file("robocrys.condense") / "formula_db.json.gz", cls=None
+        str(import_resource_file("robocrys.condense") / "formula_db.json.gz"), cls=None
     )
     all_formulas["alias"].update({k: k for k in all_formulas["no_alias"]})
     return all_formulas["alias"]
@@ -147,24 +147,25 @@ def get_formatted_el(
     """
     specie = get_el_sp(element)
 
-    if isinstance(specie, Species):
-        oxi_state = specie.oxi_state
-        sign = "+" if oxi_state > 0 else "-"
-        if oxi_state == 0:
-            oxi_state = None
-        elif oxi_state % 1 == 0:
-            oxi_state = f"{int(abs(oxi_state)):d}{sign}"
-        else:
-            oxi_state = f"{abs(oxi_state):+.2f}{sign}"
-    else:
-        oxi_state = None
-
-    formatted_element = specie.name
+    # NB: the `str(specie)` is only to make mypy happy:
+    # `get_el_sp` can return a `DummySpecies` which has
+    # no `name` but has `__str__`
+    formatted_element = specie.name or str(specie)
 
     if use_sym_label:
         formatted_element += sym_label
 
-    if use_oxi_state and oxi_state:
+    if (
+        use_oxi_state
+        and isinstance(specie, Species)
+        and (_oxi_state := specie.oxi_state)
+        and _oxi_state != 0
+    ):
+        sign = "+" if _oxi_state > 0 else "-"
+        if _oxi_state % 1 == 0:
+            oxi_state = f"{int(abs(_oxi_state)):d}{sign}"
+        else:
+            oxi_state = f"{abs(_oxi_state):+.2f}{sign}"
         if fmt == "latex":
             oxi_state = f"^{{{oxi_state}}}"
 

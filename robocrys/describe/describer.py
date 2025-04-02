@@ -198,9 +198,7 @@ class StructureDescriber:
             if self._da.dimensionality == 3:
                 desc = "The structure consists of "
             else:
-                desc = "The structure is {}-dimensional and consists of ".format(
-                    en.number_to_words(self._da.dimensionality)
-                )
+                desc = f"The structure is {en.number_to_words(self._da.dimensionality)}-dimensional and consists of "
 
             component_makeup_summaries = []
             nframeworks = len(

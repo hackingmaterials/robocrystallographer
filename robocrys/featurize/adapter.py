@@ -104,7 +104,7 @@ class FeaturizerAdapter(BaseAdapter):
         ) / len(self._all_sites)
 
     @property
-    def average_corner_sharing_octahedral_tilt_angle(self) -> float:
+    def average_corner_sharing_octahedral_tilt_angle(self) -> float | None:
         """The average corner-sharing octahedral tilt angle."""
         oct_sites = [
             site

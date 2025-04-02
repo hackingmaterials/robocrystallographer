@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from itertools import product
+from typing import TYPE_CHECKING
 
-from matminer.featurizers.base import BaseFeaturizer
+from matminer.featurizers.base import BaseFeaturizer  # type: ignore[import-untyped]
 from numpy import mean
 from pymatgen.analysis.local_env import cn_opt_params
 from pymatgen.core.structure import Structure
@@ -12,6 +13,9 @@ from pymatgen.core.structure import Structure
 from robocrys import StructureCondenser
 from robocrys.featurize.adapter import FeaturizerAdapter
 from robocrys.util import connected_geometries
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 _geometries = [geometry for cn in cn_opt_params.values() for geometry in cn]
 _dimensionalities = (3, 2, 1, 0)
@@ -50,7 +54,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         self._sc = StructureCondenser(**condenser_kwargs)
         self._distorted_tol = distorted_tol
 
-    def featurize(self, s: Structure) -> list[float | bool | str]:
+    def featurize(self, s: Structure) -> Sequence[float | bool | str]:
         """Featurizes a structure using robocrystallographer.
 
         Args:

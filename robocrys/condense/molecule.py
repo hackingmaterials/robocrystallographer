@@ -9,7 +9,7 @@ import warnings
 
 from monty.serialization import loadfn
 from importlib.resources import files as import_resource_file
-from pubchempy import BadRequestError, get_compounds
+from pubchempy import BadRequestError, get_compounds  # type:ignore[import-untyped]
 from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.io.babel import BabelMolAdaptor
 
@@ -20,7 +20,7 @@ class MoleculeNamer:
     def __init__(
         self,
         use_online_pubchem: bool = True,
-        name_preference: tuple[str] = name_sources,
+        name_preference: tuple[str, ...] = name_sources,
     ):
         """Class to match molecule graphs to known molecule names.
 
@@ -36,8 +36,8 @@ class MoleculeNamer:
                 to last.
         """
         db_file = import_resource_file("robocrys.condense") / "molecule_db.json.gz"
-        self.molecule_db = loadfn(db_file)
-        self.matched_molecules = {}
+        self.molecule_db: dict[str, dict[str, str]] = loadfn(str(db_file))
+        self.matched_molecules: dict[str, str] = {}
         self.use_online_pubchem = use_online_pubchem
 
         # append the sources list to the end in case the user only supplies
@@ -122,7 +122,7 @@ class MoleculeNamer:
         try:
             bma = BabelMolAdaptor.from_molecule_graph(molecule_graph)
             pbmol = bma.pybel_mol
-            return pbmol.write("smi").split()[0]
+            return pbmol.write("smi").split()[0]  # type: ignore[attr-defined]
         except RuntimeError:
             warnings.warn(
                 "Molecule naming requires openbabel to be installed "
