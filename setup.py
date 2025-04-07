@@ -66,7 +66,7 @@ setup(
             "m2r2==0.3.2",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
-        "tests": ["pytest==8.3.3", "pytest-cov==5.0.0"],
+        "tests": ["pytest==8.3.3", "pytest-cov==6.1.1"],
         "cli": ["mp-api"],
         "lint": [
             "coverage==7.6.1",
