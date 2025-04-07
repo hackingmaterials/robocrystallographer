@@ -69,7 +69,7 @@ setup(
         "tests": ["pytest==8.3.3", "pytest-cov==5.0.0"],
         "cli": ["mp-api"],
         "lint": [
-            "coverage==7.6.1",
+            "coverage==7.8.0",
             "codacy-coverage==1.3.11",
             "pycodestyle==2.11.1",
             "mypy==1.11.2",
