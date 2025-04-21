@@ -165,7 +165,7 @@ def get_formatted_el(
         if _oxi_state % 1 == 0:
             oxi_state = f"{int(abs(_oxi_state)):d}{sign}"
         else:
-            oxi_state = f"{abs(_oxi_state):+.2f}{sign}"
+            oxi_state = f"{abs(_oxi_state):.2f}{sign}"
         if fmt == "latex":
             oxi_state = f"^{{{oxi_state}}}"
 
@@ -191,10 +191,6 @@ def superscript_number(string):
     Returns:
         The superscript string.
     """
-    if "." in string:
-        # no unicode period exists
-        return string
-
     subscript_unicode_map = {
         0: "⁰",
         1: "¹",
@@ -208,6 +204,7 @@ def superscript_number(string):
         9: "⁹",
         "-": "⁻",
         "+": "⁺",
+        ".": "\u1427",
     }
 
     for original_subscript, subscript_unicode in subscript_unicode_map.items():
