@@ -68,40 +68,22 @@ class TestDescriptionMethods(unittest.TestCase):
         form_el = get_formatted_el(get_el(50), "")
         assert form_el == "Sn"
 
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=True, use_sym_label=True, fmt="raw"
-        )
-        assert form_el == "Sn(1,2)2+"
+        for (species, symm, use_oxi, use_sym, fmt, expected_label) in [
+            ("Sn2+", "(1,2)", True, True, "raw", "Sn(1,2)2+"),
+            ("Sn2+", "(1,2)", False, True, "raw", "Sn(1,2)"),
+            ("Sn2+", "(1,2)", True, False, "raw", "Sn2+"),
+            ("Sn2+", "(1,2)", False, False, "raw", "Sn"),
+            ("Sn2+", "(1,2)", True, True, "latex", "Sn(1,2)^{2+}"),
+            ("Sn2+", "(1,2)", True, True, "html", "Sn(1,2)<sup>2+</sup>"),
+            ("Sn2+", "(1,2)", True, True, "unicode", "Sn(1,2)²⁺"),
+            ("Sn1.33-","(3)",True, True, "unicode","Sn(3)¹\u1427³³⁻")
+        ]:
 
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=False, use_sym_label=True, fmt="raw"
-        )
-        assert form_el == "Sn(1,2)"
+            assert get_formatted_el(
+                species, symm, use_oxi_state=use_oxi, use_sym_label=use_sym, fmt=fmt
+            ) == expected_label
 
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=True, use_sym_label=False, fmt="raw"
-        )
-        assert form_el == "Sn2+"
 
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=False, use_sym_label=False, fmt="raw"
-        )
-        assert form_el == "Sn"
-
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=True, use_sym_label=True, fmt="latex"
-        )
-        assert form_el == "Sn(1,2)^{2+}"
-
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=True, use_sym_label=True, fmt="html"
-        )
-        assert form_el == "Sn(1,2)<sup>2+</sup>"
-
-        form_el = get_formatted_el(
-            "Sn2+", "(1,2)", use_oxi_state=True, use_sym_label=True, fmt="unicode"
-        )
-        assert form_el == "Sn(1,2)²⁺"
 
     def test_unicodeify_spacegroup(self):
         spg_symbol = unicodeify_spacegroup("P-42_1m")
