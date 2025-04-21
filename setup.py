@@ -55,7 +55,6 @@ setup(
         "monty",
         "pubchempy",
         "pybtex",
-        "ruamel.yaml",
     ],
     extras_require={
         "docs": [

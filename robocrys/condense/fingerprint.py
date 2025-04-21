@@ -3,12 +3,12 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 import numpy as np
-from matminer.featurizers.site import (
+from matminer.featurizers.site import (  # type:ignore[import-untyped]
     CrystalNNFingerprint,
-)  # type:ignore[import-untyped]
-from matminer.featurizers.structure import (
+)
+from matminer.featurizers.structure import (  # type:ignore[import-untyped]
     SiteStatsFingerprint,
-)  # type:ignore[import-untyped]
+)
 from pymatgen.core.structure import IStructure
 
 
@@ -54,7 +54,7 @@ def get_site_fingerprints(
 def get_structure_fingerprint(
     structure: IStructure,
     preset: str = "CrystalNNFingerprint_ops",
-    stats: tuple[str] | None = ("mean", "std_dev"),
+    stats: tuple[str, ...] | None = ("mean", "std_dev"),
     prototype_match: bool = False,
 ) -> np.ndarray:
     """Gets the fingerprint for a structure.
