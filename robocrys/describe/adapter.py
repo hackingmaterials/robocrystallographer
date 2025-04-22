@@ -320,7 +320,7 @@ class DescriptionAdapter(BaseAdapter):
         """Convert site indices into a formatted symmetry label.
 
         Args:
-            site_indices:  THe site indices.
+            site_indices:  The site indices.
 
         Returns:
             The formatted symmetry label. E.g., if the set of symmetry labels

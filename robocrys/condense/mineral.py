@@ -8,8 +8,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
-from matminer.utils.io import load_dataframe_from_json  # type:ignore[import-untyped]
+import pandas as pd
 from pymatgen.analysis.prototypes import AflowPrototypeMatcher
+from pymatgen.core import Structure
 from robocrys.condense.fingerprint import (
     get_fingerprint_distance,
     get_structure_fingerprint,
@@ -65,7 +66,14 @@ class MineralMatcher:
     ):
         mineral_db = mineral_db or _mineral_db_file
         if isinstance(mineral_db, (str, Path)):
-            self.mineral_db = load_dataframe_from_json(mineral_db, pbar=False)
+            self.mineral_db = pd.read_json(
+                mineral_db,
+                compression="gzip",
+                orient="split",
+            )
+            self.mineral_db.structure = self.mineral_db.structure.apply(
+                Structure.from_dict
+            )
         else:
             self.mineral_db = mineral_db
 
@@ -74,8 +82,8 @@ class MineralMatcher:
         self.initial_angle_tol = initial_angle_tol
         self.fingerprint_distance_cutoff = fingerprint_distance_cutoff
         self.use_fingerprint_matching = use_fingerprint_matching
-        self._structure = None
-        self._mineral_db = None
+        self._structure: Structure | None = None
+        self._mineral_db: pd.DataFrame | None = None
 
     def get_best_mineral_name(self, structure: Structure) -> dict[str, Any]:
         """Gets the "best" mineral name for a structure.
