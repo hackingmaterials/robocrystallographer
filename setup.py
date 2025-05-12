@@ -32,9 +32,9 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Scientific/Engineering :: Chemistry",
         "Topic :: Scientific/Engineering :: Physics",
         "Topic :: Scientific/Engineering",
@@ -58,10 +58,10 @@ setup(
     ],
     extras_require={
         "docs": [
-            "sphinx==5.3.0",
+            "sphinx>=5.3.0",
             "sphinx-argparse==0.4.0",
             "sphinx_rtd_theme==1.2.0",
-            "sphinx-autodoc-typehints==1.23.0",
+            "sphinx-autodoc-typehints==2.3.0",
             "m2r2==0.3.2",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
@@ -85,7 +85,7 @@ setup(
             path_join("condense", "formula_db.json.gz"),
         ]
     },
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     data_files=["LICENSE", "CONTRIBUTING.rst"],
     entry_points={"console_scripts": ["robocrys = robocrys.cli:main"]},
 )

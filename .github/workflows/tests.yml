@@ -4,15 +4,19 @@ on: [push]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10","3.11","3.12"]
+    name: test robocrys (${{ matrix.os }}/py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: "3.10"
+          python-version: ${{ matrix.python-version }}
           auto-update-conda: true
           channels: anaconda, conda-forge
 
@@ -20,12 +24,12 @@ jobs:
         shell: bash -l {0}
         run: |
           conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
-          pip install -r requirements.txt
-          pip install -e .[tests,cli]
+          python${{ matrix.python-version }} -m pip install -r requirements.txt
+          python${{ matrix.python-version }} -m pip install -e .[tests,cli]
 
       - name: Test
         shell: bash -l {0}
-        run: pytest --cov=robocrys --cov-report=xml --cov-config=.coveragerc tests/
+        run: python${{ matrix.python-version }} -m pytest --cov=robocrys --cov-report=xml --cov-config=.coveragerc tests/
 
   docs:
     runs-on: ubuntu-latest
@@ -35,7 +39,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
