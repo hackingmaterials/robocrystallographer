@@ -60,7 +60,7 @@ setup(
         "docs": [
             "sphinx>=5.3.0",
             "sphinx-argparse==0.4.0",
-            "sphinx_rtd_theme==1.2.0",
+            "sphinx_rtd_theme==3.0.2",
             "sphinx-autodoc-typehints==2.3.0",
             "m2r2==0.3.2",
         ],
