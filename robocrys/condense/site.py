@@ -7,7 +7,7 @@ Todo:
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 from pymatgen.analysis.graphs import StructureGraph
@@ -19,6 +19,10 @@ from pymatgen.util.string import formula_double_format
 
 from robocrys.condense.fingerprint import get_site_fingerprints
 from robocrys.util import connected_geometries, defaultdict_to_dict, get_el
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from typing import Any
 
 
 class SiteAnalyzer:
@@ -78,7 +82,9 @@ class SiteAnalyzer:
         else:
             self.equivalent_sites = self._calculate_equivalent_sites()
 
-        self.symmetry_labels = self._calculate_symmetry_labels(equivalent_sites)
+        self.symmetry_labels = self._calculate_symmetry_labels(
+            equivalent_sites.tolist()
+        )
 
     def get_site_geometry(self, site_index: int) -> dict[str, str | float]:
         """Gets the bonding geometry of a site.
@@ -335,7 +341,6 @@ class SiteAnalyzer:
         nnn = defaultdict(list)
         for nnn_site in nnn_sites:
             nnn[nnn_site["connectivity"]].append(nnn_site["inequiv_index"])
-        nnn = dict(nnn)
 
         equiv_sites = [
             i
@@ -350,7 +355,7 @@ class SiteAnalyzer:
             "element": element,
             "geometry": geometry,
             "nn": nn_indices,
-            "nnn": nnn,
+            "nnn": dict(nnn),
             "poly_formula": poly_formula,
             "sym_labels": sym_labels,
         }
@@ -403,7 +408,9 @@ class SiteAnalyzer:
             connectivity), and ``angle_1`` etc are the bond angles as
             :obj:`float`.
         """
-        connectivities = defaultdict(lambda: defaultdict(list))
+        connectivities: defaultdict[int, defaultdict[str, list[float]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
 
         for nnn_site in self.get_next_nearest_neighbors(
             site_index, inc_inequivalent_site_index=True
@@ -438,7 +445,9 @@ class SiteAnalyzer:
             connectivity), and ``distance_1`` etc are the bond angles as
             :obj:`float`.
         """
-        connectivities = defaultdict(lambda: defaultdict(list))
+        connectivities: defaultdict[int, defaultdict[str, list[float]]] = defaultdict(
+            lambda: defaultdict(list)
+        )
 
         for nnn_site in self.get_next_nearest_neighbors(
             site_index, inc_inequivalent_site_index=True
@@ -587,8 +596,8 @@ class SiteAnalyzer:
 
         """
         # TODO: Use site fingerprint rather than geometry type.
-        inequiv_sites = {}
-        equivalent_sites = []
+        inequiv_sites: dict[int, dict[str, Any]] = {}
+        equivalent_sites: list[int] = []
 
         for site_index, site in enumerate(self.bonded_structure.structure):
             element = get_el_sp(site.specie)
@@ -631,7 +640,9 @@ class SiteAnalyzer:
 
         return equivalent_sites
 
-    def _calculate_symmetry_labels(self, sym_equivalent_atoms: list[int]) -> list[int]:
+    def _calculate_symmetry_labels(
+        self, sym_equivalent_atoms: Sequence[int]
+    ) -> list[int]:
         """Calculates the symmetry labels for all sites in the structure.
 
         The symmetry labels number the sites in the structure. If two sites
@@ -658,7 +669,7 @@ class SiteAnalyzer:
             equiv_indices = [sym_equivalent_atoms[x] for x in el_indices]
 
             count = 1
-            equiv_index_to_sym_label = {}
+            equiv_index_to_sym_label: dict[int, int] = {}
             for el_index, equiv_index in zip(el_indices, equiv_indices):
                 if equiv_index in equiv_index_to_sym_label:
                     symmetry_labels[el_index] = equiv_index_to_sym_label[equiv_index]
@@ -703,7 +714,7 @@ class SiteAnalyzer:
 
         nnn_geometries = [nnn_site["geometry"] for nnn_site in nnn_sites]
 
-        poly_formula = None
+        poly_formula = ""
         if geometry["type"] in connected_geometries and any(
             nnn_geometry["type"] in connected_geometries
             for nnn_geometry in nnn_geometries
@@ -712,12 +723,11 @@ class SiteAnalyzer:
             comp = Composition("".join(nn_els))
             el_amt_dict = comp.get_el_amt_dict()
 
-            poly_formula = ""
             for e in sorted(el_amt_dict.keys(), key=order_elements):
                 poly_formula += e
                 poly_formula += str(formula_double_format(el_amt_dict[e]))
 
-        return poly_formula
+        return poly_formula or None
 
 
 def geometries_match(
@@ -776,7 +786,7 @@ def nn_summaries_match(
 
     dists_match = [
         (
-            abs(site_a["dist"] - site_b["dist"]) < bond_dist_tol
+            abs(site_a["dist"] - site_b["dist"]) < bond_dist_tol  # type: ignore[operator]
             if match_bond_dists
             else True
         )

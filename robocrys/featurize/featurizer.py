@@ -15,7 +15,7 @@ from robocrys.featurize.adapter import FeaturizerAdapter
 from robocrys.util import connected_geometries
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    pass
 
 _geometries = [geometry for cn in cn_opt_params.values() for geometry in cn]
 _dimensionalities = (3, 2, 1, 0)
@@ -54,7 +54,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         self._sc = StructureCondenser(**condenser_kwargs)
         self._distorted_tol = distorted_tol
 
-    def featurize(self, s: Structure) -> Sequence[float | bool | str]:
+    def featurize(self, s: Structure) -> list[float | bool | str | None]:
         """Featurizes a structure using robocrystallographer.
 
         Args:
@@ -68,7 +68,7 @@ class RobocrysFeaturizer(BaseFeaturizer):
         )
 
         # add general structure features
-        features = [
+        features: list[float | bool | str | None] = [
             fa.mineral["type"],
             fa.spg_symbol,
             fa.crystal_system,

@@ -50,7 +50,6 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinxarg.ext",
     "sphinx.ext.todo",
-    "m2r2",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
