@@ -177,7 +177,9 @@ class FeaturizerAdapter(BaseAdapter):
             c["molecule_name"] == molecule_name for c in self.components.values()
         )
 
-    def is_dimensionality(self, dimensionalities: int | list[int] | set[int]) -> bool:
+    def is_dimensionality(
+        self, dimensionalities: int | list[int] | set[int] | tuple[int, ...]
+    ) -> bool:
         """Whether the structure only contains the specified dimensionalities.
 
         Args:
@@ -259,7 +261,7 @@ class FeaturizerAdapter(BaseAdapter):
             self.sites[site]["geometry"]["type"] == geometry for site in self._all_sites
         ) / len(self._all_sites)
 
-    def frac_sites_n_coordinate(self, num_neighbors: str) -> float:
+    def frac_sites_n_coordinate(self, num_neighbors: int) -> float:
         """The fraction of sites with a specific coordination number.
 
         Args:

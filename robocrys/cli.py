@@ -53,7 +53,7 @@ def robocrystallographer(
     condensed_structure = sc.condense_structure(structure)
     description = describer.describe(condensed_structure)
     print(description)
-    return description
+    return description  # type: ignore[return-value]
 
 
 def _get_parser():

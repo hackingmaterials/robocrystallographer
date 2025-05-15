@@ -8,7 +8,7 @@ Todo:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 import inflect
 from pymatgen.util.string import htmlify, latexify, latexify_spacegroup, unicodeify
@@ -24,10 +24,15 @@ from robocrys.util import (
     unicodeify_spacegroup,
 )
 
+if TYPE_CHECKING:
+    from typing import Any
+
+
 en = inflect.engine()
 
 
 class StructureDescriber:
+
     def __init__(
         self,
         describe_mineral: bool = True,
@@ -99,8 +104,8 @@ class StructureDescriber:
             self.angstrom = "Å"
             self.degree = "°"
 
-        self._da: DescriptionAdapter = None
-        self._seen_bonds: set = None
+        self._da: DescriptionAdapter
+        self._seen_bonds: set = set()
 
     def describe(self, condensed_structure: dict[str, Any]) -> str | dict[str, str]:
         """Convert a condensed structure into a text description.
@@ -198,7 +203,10 @@ class StructureDescriber:
             if self._da.dimensionality == 3:
                 desc = "The structure consists of "
             else:
-                desc = f"The structure is {en.number_to_words(self._da.dimensionality)}-dimensional and consists of "
+                desc = (
+                    f"The structure is {en.number_to_words(self._da.dimensionality)}"  # type: ignore[arg-type]
+                    "-dimensional and consists of "
+                )
 
             component_makeup_summaries = []
             nframeworks = len(
@@ -211,9 +219,9 @@ class StructureDescriber:
             )
             for component_group in component_groups:
                 if nframeworks == 1 and component_group.dimensionality == 3:
-                    s_count = "a"
+                    s_count: str = "a"
                 else:
-                    s_count = en.number_to_words(component_group.count)
+                    s_count = en.number_to_words(component_group.count)  # type: ignore[assignment]
 
                 dimensionality = component_group.dimensionality
 
@@ -333,12 +341,12 @@ class StructureDescriber:
 
                 s_there = "there" if first_group and not single_component else "There"
 
-                s_count = en.number_to_words(len(site_group.sites))
+                s_count = en.number_to_words(len(site_group.sites))  # type: ignore[arg-type]
 
                 desc.append(f"{s_there} are {s_count} inequivalent {element} sites.")
 
                 for i, site in enumerate(site_group.sites):
-                    s_ordinal = en.number_to_words(en.ordinal(i + 1))
+                    s_ordinal = en.number_to_words(en.ordinal(i + 1))  # type: ignore[arg-type]
                     desc.append(f"In the {s_ordinal} {element} site,")
                     desc.append(self.get_site_description(site))
 
@@ -627,9 +635,9 @@ class StructureDescriber:
         # if two sets of bond lengths
         if len(set(discrete_bond_lengths)) == 2:
             small = min(discrete_bond_lengths)
-            s_small_count = en.number_to_words(discrete_bond_lengths.count(small))
+            s_small_count = en.number_to_words(discrete_bond_lengths.count(small))  # type: ignore[arg-type]
             big = max(discrete_bond_lengths)
-            s_big_count = en.number_to_words(discrete_bond_lengths.count(big))
+            s_big_count = en.number_to_words(discrete_bond_lengths.count(big))  # type: ignore[arg-type]
 
             s_length = en.plural("length", s_big_count)
 
@@ -726,7 +734,7 @@ class StructureDescriber:
 
         return not_seen_to_sites
 
-    def _rounded_bond_lengths(self, data: list[float]) -> tuple[float]:
+    def _rounded_bond_lengths(self, data: list[float]) -> tuple[float, ...]:
         """Function to round bond lengths to a number of decimal places."""
         return tuple(
             float("{:.{}f}".format(x, self.bond_length_decimal_places)) for x in data
@@ -748,7 +756,7 @@ class StructureDescriber:
             self.angstrom,
         )
 
-    def _rounded_angles(self, data: list[float]) -> tuple[float]:
+    def _rounded_angles(self, data: list[float]) -> tuple[float, ...]:
         """Function to round angles to a number of decimal places."""
         return tuple(
             float("{:.{}f}".format(x, self.angle_decimal_places)) for x in data

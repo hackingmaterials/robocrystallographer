@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 import pandas as pd
 from pymatgen.analysis.prototypes import AflowPrototypeMatcher
+from pymatgen.analysis.structure_matcher import StructureMatcher
 from pymatgen.core import Structure
 from robocrys.condense.fingerprint import (
     get_fingerprint_distance,
@@ -25,6 +26,18 @@ if TYPE_CHECKING:
 
 
 _mineral_db_file = str(import_resource_file("robocrys.condense") / "mineral_db.json.gz")
+
+
+def load_mineral_db_file(min_db_path: str | Path = _mineral_db_file) -> pd.DataFrame:
+    """Define protocol to load mineral database.
+
+    Args:
+        min_db_path : str or Path
+            Path to the Mineral DB
+    """
+    mineral_db = pd.read_json(min_db_path, compression="gzip", orient="split")
+    mineral_db.structure = mineral_db.structure.apply(Structure.from_dict)
+    return mineral_db
 
 
 class MineralMatcher:
@@ -66,14 +79,7 @@ class MineralMatcher:
     ):
         mineral_db = mineral_db or _mineral_db_file
         if isinstance(mineral_db, (str, Path)):
-            self.mineral_db = pd.read_json(
-                mineral_db,
-                compression="gzip",
-                orient="split",
-            )
-            self.mineral_db.structure = self.mineral_db.structure.apply(
-                Structure.from_dict
-            )
+            self.mineral_db = load_mineral_db_file(mineral_db)
         else:
             self.mineral_db = mineral_db
 
@@ -156,7 +162,7 @@ class MineralMatcher:
         """Gets minerals for a structure by matching to AFLOW prototypes.
 
         Overrides
-        :class:`pymatgen.analysis.aflow_prototypes.AflowPrototypeMatcher` to
+        :class:`pymatgen.analysis.prototypes.AflowPrototypeMatcher` to
         only return matches to prototypes with known mineral names.
 
         The AFLOW tolerance parameters (defined in the init method) are passed
@@ -178,26 +184,12 @@ class MineralMatcher:
         """
         self._set_distance_matrix(structure)
 
-        # redefine AflowPrototypeMatcher._match_prototype function to run over
-        # our custom pandas DataFrame of AFLOW prototypes. This DataFrame only
-        # contains entries from the AFLOW database with mineral names. We
-        # have also pre-calculated the fingerprints and distances to make this
-        # quicker.
-        def _match_prototype(structure_matcher, s):
-            tags = []
-            for _, row in self._mineral_db.iterrows():
-                p = row["structure"]
-                m = structure_matcher.fit_anonymous(p, s)
-                if m:
-                    tags.append(_get_row_data(row))
-            return tags
-
-        matcher = AflowPrototypeMatcher(
+        matcher = ReducedAflowPrototypeMatcher(
             initial_ltol=self.initial_ltol,
             initial_stol=self.initial_stol,
             initial_angle_tol=self.initial_angle_tol,
+            mineral_db=self._mineral_db,
         )
-        matcher._match_prototype = _match_prototype
 
         return matcher.get_prototypes(structure)
 
@@ -231,7 +223,7 @@ class MineralMatcher:
         """
         self._set_distance_matrix(structure)
 
-        mineral_db = self._mineral_db
+        mineral_db: pd.DataFrame = self._mineral_db  # type: ignore[assignment]
 
         if mineral_name_constraint:
             mineral_db = mineral_db[
@@ -253,7 +245,7 @@ class MineralMatcher:
 
         return minerals if minerals else None
 
-    def _set_distance_matrix(self, structure: Structure):
+    def _set_distance_matrix(self, structure: Structure) -> None:
         """Utility func to calculate distance between structure and minerals.
 
         First checks to see if the distances have already been calculated for
@@ -282,10 +274,66 @@ class MineralMatcher:
         self._structure = structure
 
 
-def _get_row_data(row: dict) -> dict[str, Any]:
+def _get_row_data(row: pd.Series) -> dict[str, Any]:
     """Utility function to extract mineral data from pandas `DataFrame` row."""
     return {
         "type": row["mineral"],
         "distance": row["distance"],
         "structure": row["structure"],
     }
+
+
+class ReducedAflowPrototypeMatcher(AflowPrototypeMatcher):
+    """Match structures to predefined library of reduced, named AFLOW prototypes.
+
+    Based on `pymatgen.analysis.prototypes.AflowPrototypeMatcher`,
+    which uses the methods of:
+        Mehl, M. J., Hicks, D., Toher, C., Levy, O., Hanson, R. M.,
+            Hart, G., & Curtarolo, S. (2017).
+        The AFLOW library of crystallographic prototypes: part 1.
+        Computational Materials Science, 136, S1-S828.
+        https://doi.org/10.1016/j.commatsci.2017.01.017
+    """
+
+    def __init__(
+        self,
+        initial_ltol: float = 0.2,
+        initial_stol: float = 0.3,
+        initial_angle_tol: float = 5,
+        mineral_db: pd.DataFrame | None = None,
+    ) -> None:
+        """
+        Tolerances as defined in StructureMatcher. Tolerances will be
+        gradually decreased until only a single match is found (if possible).
+
+        Args:
+            initial_ltol (float): fractional length tolerance.
+            initial_stol (float): site tolerance.
+            initial_angle_tol (float): angle tolerance.
+            mineral_db (pd.DataFrame or None) : precomputed database of prototypes
+                and their fingerprints.
+        """
+        self.initial_ltol = initial_ltol
+        self.initial_stol = initial_stol
+        self.initial_angle_tol = initial_angle_tol
+        if mineral_db is None:
+            self._mineral_db = load_mineral_db_file()
+        else:
+            self._mineral_db = mineral_db
+
+    def _match_prototype(
+        self, structure_matcher: StructureMatcher, s: Structure
+    ) -> list[dict[str, Any]]:
+        """Match a structure to the predefined table of reduced structures.
+
+        Args:
+            structure_matcher (StructureMatcher)
+            s (Structure)
+        """
+        tags = []
+        for _, row in self._mineral_db.iterrows():
+            p = row["structure"]
+            m = structure_matcher.fit_anonymous(p, s)
+            if m:
+                tags.append(_get_row_data(row))
+        return tags

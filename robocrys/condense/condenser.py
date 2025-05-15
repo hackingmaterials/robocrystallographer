@@ -134,7 +134,7 @@ class StructureCondenser:
         }
 
         site_analyzer = SiteAnalyzer(
-            bonded_structure,
+            bonded_structure,  # type: ignore[arg-type]
             symprec=self.symprec,
             use_symmetry_equivalent_sites=self.use_symmetry_equivalent_sites,
         )
@@ -252,7 +252,7 @@ class StructureCondenser:
         components: list[Component],
         spacegroup_analyzer: SpacegroupAnalyzer,
         site_analyzer: SiteAnalyzer,
-    ) -> tuple[dict[int, Any], list[int]]:
+    ) -> tuple[dict[int, dict[str, Any]], list[int]]:
         """Condenses the component data.
 
         Args:
@@ -294,7 +294,7 @@ class StructureCondenser:
 
         molecule_namer = MoleculeNamer()
 
-        components = {}
+        new_components: dict[int, dict[str, Any]] = {}
         component_makeup = []
         for i, component in enumerate(inequiv_components):
             formula = get_component_formula(
@@ -312,7 +312,7 @@ class StructureCondenser:
             else:
                 molecule_name = None
 
-            components[i] = {
+            new_components[i] = {
                 "formula": formula,
                 "dimensionality": component["dimensionality"],
                 "orientation": component["orientation"],
@@ -321,4 +321,4 @@ class StructureCondenser:
             }
             component_makeup.extend([i] * component["count"])
 
-        return components, component_makeup
+        return new_components, component_makeup

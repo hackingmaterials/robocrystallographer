@@ -183,7 +183,7 @@ def get_sym_inequiv_components(
     """
     components = deepcopy(components)
 
-    sym_inequiv_components = {}
+    sym_inequiv_components: dict[frozenset, Component] = {}
     equivalent_atoms = spg_analyzer.get_symmetry_dataset().equivalent_atoms
 
     for component in components:
@@ -242,7 +242,7 @@ def get_formula_inequiv_components(
         - ``"formula"`` (``list[int]``): The reduced formula of the component.
     """
     components = deepcopy(components)
-    inequiv_components = {}
+    inequiv_components: dict[str, Component] = {}
 
     for component in components:
         formula, factor = get_component_formula_and_factor(
@@ -470,8 +470,7 @@ def get_formula_from_components(
         reduced_form.append(formatted_formula)
         reduced_form.append(str(formula_double_format(norm_amt)))
 
-    reduced_form = "".join(reduced_form)
-    return reduced_form
+    return "".join(reduced_form)
 
 
 def components_are_vdw_heterostructure(components: list[Component]) -> bool:
