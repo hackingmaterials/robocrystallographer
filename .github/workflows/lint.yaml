@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pre-commit
+          pip install pre-commit mypy
 
       - name: Run pre-commit
         run: |
