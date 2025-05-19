@@ -1,7 +1,7 @@
 spglib==2.6.0
 numpy==2.2.5
 scipy==1.15.2
-pymatgen==2025.4.24
+pymatgen==2025.5.2
 inflect==7.5.0
 networkx==3.4.2
 matminer==0.9.3
