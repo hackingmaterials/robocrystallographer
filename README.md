@@ -48,7 +48,7 @@ The two core classes in robocrystallographer are:
 A minimal working example for generating text descriptions is simply:
 
 ```python
-from pymatgen import Structure
+from pymatgen.core import Structure
 from robocrys import StructureCondenser, StructureDescriber
 
 structure = Structure.from_file("my_structure.cif") # other file formats also supported
