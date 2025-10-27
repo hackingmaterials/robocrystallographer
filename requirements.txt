@@ -7,4 +7,4 @@ networkx==3.4.2
 matminer==0.9.3
 monty==2025.3.3
 pubchempy==1.0.4
-pybtex==0.24.0
+pybtex==0.25.1
