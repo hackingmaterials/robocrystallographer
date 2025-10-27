@@ -6,5 +6,5 @@ inflect==7.5.0
 networkx==3.4.2
 matminer==0.9.3
 monty==2025.3.3
-pubchempy==1.0.4
+pubchempy==1.0.5
 pybtex==0.24.0
