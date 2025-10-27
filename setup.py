@@ -64,7 +64,7 @@ setup(
             "sphinx-autodoc-typehints==3.0.1",
         ],
         "dev": ["tqdm", "pybel", "pebble", "maggma"],
-        "tests": ["pytest==8.3.3", "pytest-cov==7.0.0"],
+        "tests": ["pytest==8.4.2", "pytest-cov==7.0.0"],
         "cli": ["mp-api"],
         "lint": [
             "coverage==7.11.0",
