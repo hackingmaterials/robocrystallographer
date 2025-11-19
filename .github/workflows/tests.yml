@@ -24,12 +24,11 @@ jobs:
         shell: bash -l {0}
         run: |
           conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
-          python${{ matrix.python-version }} -m pip install -r requirements.txt
-          python${{ matrix.python-version }} -m pip install -e .[tests,cli]
+          python${{ matrix.python-version }} -m pip install -e .[strict,tests,cli]
 
       - name: Test
         shell: bash -l {0}
-        run: python${{ matrix.python-version }} -m pytest --cov=robocrys --cov-report=xml --cov-config=.coveragerc tests/
+        run: python${{ matrix.python-version }} -m pytest -n auto --cov=robocrys --cov-report=xml --cov-config=.coveragerc tests/
 
   docs:
     runs-on: ubuntu-latest
@@ -44,8 +43,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -e .[docs,cli]
+          pip install -e .[strict,docs,cli]
 
       - name: Build
         run: sphinx-build docs/src docs_build

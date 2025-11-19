@@ -171,9 +171,18 @@ class StructureDescriber:
             spg_symbol = htmlify_spacegroup(self._da.spg_symbol)
             formula = htmlify(formula)
 
-        mineral_name = get_mineral_name(self._da.mineral)
+        if mineral_name := get_mineral_name(self._da.mineral):
+            # replace latex-like characters with unicode
+            latex_reps = {
+                "$\\mu$": "\u03BC",
+                "\\'{c}": "\u0107",
+            }
+            if self.fmt in {"html", "unicode"} and any(
+                k in mineral_name for k in latex_reps
+            ):
+                for k, v in latex_reps.items():
+                    mineral_name = mineral_name.replace(k, v)
 
-        if mineral_name:
             desc = f"{formula} is {mineral_name} structured and"
         else:
             desc = f"{formula}"

@@ -20,15 +20,15 @@ jobs:
       - name: Install dependencies
         run: |
           conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
-          pip install -r requirements.txt
-          pip install -e .[tests]
+          pip install -e .[strict,tests]
 
       - name: Test
-        run: pytest
+        run: pytest -n auto tests
 
       - name: Build packages
         run: |
-          python setup.py sdist bdist_wheel
+          pip install --upgrade build
+          python -m build
 
       - name: Publish
         uses: pypa/gh-action-pypi-publish@master
