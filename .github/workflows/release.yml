@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - name: Setup conda
-        uses: conda-incubator/setup-miniconda@v3
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Install dependencies
         run: |
-          conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
+          python -m pip install --upgrade pip build
+          pip install --upgrade setuptools setuptools_scm wheel
           pip install -e .[strict,tests]
 
       - name: Test
@@ -27,7 +27,6 @@ jobs:
 
       - name: Build packages
         run: |
-          pip install --upgrade build
           python -m build
 
       - name: Publish
