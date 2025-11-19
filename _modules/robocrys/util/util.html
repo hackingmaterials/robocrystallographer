@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.util.util &mdash; Robocrystallographer 0.2.11 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/util/util.html"/>
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>robocrys.util.util &mdash; Robocrystallographer 0.2.12 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/util/util.html"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=1e30946d"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -34,9 +33,6 @@
             Robocrystallographer
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                0.2.11
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -178,7 +174,9 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="get_el"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.get_el">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_el</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="n">Species</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="get_el">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.get_el">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_el</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Element</span> <span class="o">|</span> <span class="n">Species</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility method to get an element str from a symbol, Element, or Specie.</span>
 
 <span class="sd">    Args:</span>
@@ -201,7 +199,10 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported element type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_formatted_el"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.get_formatted_el">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_formatted_el</span><span class="p">(</span>
+
+<div class="viewcode-block" id="get_formatted_el">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.get_formatted_el">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_formatted_el</span><span class="p">(</span>
     <span class="n">element</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">sym_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">use_oxi_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -257,7 +258,7 @@
         <span class="k">if</span> <span class="n">_oxi_state</span> <span class="o">%</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">_oxi_state</span><span class="p">))</span><span class="si">:</span><span class="s2">d</span><span class="si">}{</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">_oxi_state</span><span class="p">)</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}{</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">_oxi_state</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}{</span><span class="n">sign</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;latex&quot;</span><span class="p">:</span>
             <span class="n">oxi_state</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;^</span><span class="se">{{</span><span class="si">{</span><span class="n">oxi_state</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
@@ -272,7 +273,10 @@
     <span class="k">return</span> <span class="n">formatted_element</span></div>
 
 
-<div class="viewcode-block" id="superscript_number"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.superscript_number">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">superscript_number</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+
+<div class="viewcode-block" id="superscript_number">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.superscript_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">superscript_number</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a string containing numbers to superscript.</span>
 
 <span class="sd">    Will only convert the numbers 0-9, and the + and - characters.</span>
@@ -283,10 +287,6 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        The superscript string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
-        <span class="c1"># no unicode period exists</span>
-        <span class="k">return</span> <span class="n">string</span>
-
     <span class="n">subscript_unicode_map</span> <span class="o">=</span> <span class="p">{</span>
         <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;⁰&quot;</span><span class="p">,</span>
         <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;¹&quot;</span><span class="p">,</span>
@@ -300,6 +300,7 @@
         <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;⁹&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-&quot;</span><span class="p">:</span> <span class="s2">&quot;⁻&quot;</span><span class="p">,</span>
         <span class="s2">&quot;+&quot;</span><span class="p">:</span> <span class="s2">&quot;⁺&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;.&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\u1427</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">for</span> <span class="n">original_subscript</span><span class="p">,</span> <span class="n">subscript_unicode</span> <span class="ow">in</span> <span class="n">subscript_unicode_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -308,7 +309,10 @@
     <span class="k">return</span> <span class="n">string</span></div>
 
 
-<div class="viewcode-block" id="unicodeify_spacegroup"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.unicodeify_spacegroup">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">unicodeify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="unicodeify_spacegroup">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.unicodeify_spacegroup">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unicodeify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
 
 <span class="sd">    E.g. Fd-3m -&gt; Fd̅3m</span>
@@ -347,7 +351,10 @@
     <span class="k">return</span> <span class="n">symbol</span></div>
 
 
-<div class="viewcode-block" id="htmlify_spacegroup"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.htmlify_spacegroup">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">htmlify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="htmlify_spacegroup">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.htmlify_spacegroup">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">htmlify_spacegroup</span><span class="p">(</span><span class="n">spacegroup_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Formats a spacegroup using unicode symbols.</span>
 
 <span class="sd">    E.g. P-42_1m -&gt; P̅42&lt;sub&gt;1&lt;/sub&gt;m</span>
@@ -364,7 +371,10 @@
     <span class="k">return</span> <span class="n">symbol</span></div>
 
 
-<div class="viewcode-block" id="defaultdict_to_dict"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.defaultdict_to_dict">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">defaultdict_to_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+
+<div class="viewcode-block" id="defaultdict_to_dict">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.defaultdict_to_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">defaultdict_to_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively convert nested :obj:`defaultdict` to :obj:`dict`.</span>
 
 <span class="sd">    Args:</span>
@@ -378,7 +388,10 @@
     <span class="k">return</span> <span class="n">dictionary</span></div>
 
 
-<div class="viewcode-block" id="load_condensed_structure_json"><a class="viewcode-back" href="../../../robocrys.html#robocrys.util.load_condensed_structure_json">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">load_condensed_structure_json</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="load_condensed_structure_json">
+<a class="viewcode-back" href="../../../robocrys.html#robocrys.util.load_condensed_structure_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_condensed_structure_json</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load condensed structure data from a file.</span>
 
 <span class="sd">    Args:</span>
@@ -400,6 +413,7 @@
     <span class="c1"># For some reason, specifying `object_hook = json_keys_to_int` in `loadfn`</span>
     <span class="c1"># doesn&#39;t seem to work. This does reliably:</span>
     <span class="k">return</span> <span class="n">json_keys_to_int</span><span class="p">(</span><span class="n">loadfn</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MontyDecoder</span><span class="p">))</span></div>
+
 </pre></div>
 
            </div>

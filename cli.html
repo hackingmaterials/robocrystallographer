@@ -1,23 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys program &mdash; Robocrystallographer 0.2.11 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/cli.html"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>robocrys program &mdash; Robocrystallographer 0.2.12 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/cli.html"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=1e30946d"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -37,9 +36,6 @@
             Robocrystallographer
               <img src="_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                0.2.11
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -59,8 +55,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command-line interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robocrys.cli-_get_parser-positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#robocrys.cli-_get_parser-named-arguments">Named Arguments</a></li>
 </ul>
 </li>
 </ul>
@@ -106,7 +102,7 @@
            <div itemprop="articleBody">
              
   <section id="robocrys-program">
-<h1><code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program<a class="headerlink" href="#robocrys-program" title="Permalink to this heading"></a></h1>
+<h1><code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program<a class="headerlink" href="#robocrys-program" title="Link to this heading"></a></h1>
 <p>Robocrystallographer can be used on the command-line through the <code class="docutils literal notranslate"><span class="pre">robocrys</span></code>
 command. Most of the options provided in the Python API are also accessible
 on the command-line. This page details the basic usage of the program.</p>
@@ -122,14 +118,14 @@ on the command-line. This page details the basic usage of the program.</p>
 </li>
 <li><p><a class="reference internal" href="#command-line-interface" id="id5">Command-line interface</a></p>
 <ul>
-<li><p><a class="reference internal" href="#positional-arguments" id="id6">Positional Arguments</a></p></li>
-<li><p><a class="reference internal" href="#named-arguments" id="id7">Named Arguments</a></p></li>
+<li><p><a class="reference internal" href="#robocrys.cli-_get_parser-positional-arguments" id="id6">Positional Arguments</a></p></li>
+<li><p><a class="reference internal" href="#robocrys.cli-_get_parser-named-arguments" id="id7">Named Arguments</a></p></li>
 </ul>
 </li>
 </ul>
 </nav>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <p>The full range of options supported by <code class="docutils literal notranslate"><span class="pre">robocrys</span></code> are detailed in the
 <a class="reference internal" href="#command-line-interface">Command-line interface</a> section, and be can be listed using:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">robocrys</span> <span class="o">-</span><span class="n">h</span>
@@ -151,14 +147,14 @@ also supported. For example, to generate the description of a CIF file:</p>
 </pre></div>
 </div>
 <section id="basic-options">
-<h3>Basic options<a class="headerlink" href="#basic-options" title="Permalink to this heading"></a></h3>
+<h3>Basic options<a class="headerlink" href="#basic-options" title="Link to this heading"></a></h3>
 <p>Generating a structure description is split into two steps, the first is to
 condense the structure into an intermediate JSON representation, the second is
 to generate a description from the intermediate representation. The <code class="docutils literal notranslate"><span class="pre">robocrys</span></code>
 program contains options for controlling both steps of this process.</p>
 </section>
 <section id="condenser-options">
-<h3>Condenser options<a class="headerlink" href="#condenser-options" title="Permalink to this heading"></a></h3>
+<h3>Condenser options<a class="headerlink" href="#condenser-options" title="Link to this heading"></a></h3>
 <p>By default, robocrystallographer determines whether sites are equivalent using
 the site information (element, geometry, order parameter), nearest neighbor
 information (number and types of neighbors, bond lengths), and next nearest
@@ -180,7 +176,7 @@ symmetry used to determine site inequivalence, and a symmetry tolerance of
 </div>
 </section>
 <section id="describer-options">
-<h3>Describer options<a class="headerlink" href="#describer-options" title="Permalink to this heading"></a></h3>
+<h3>Describer options<a class="headerlink" href="#describer-options" title="Link to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">robocrys</span></code> program has many options to control the verbosity of the
 description. By default, oxidation states and symmetry labels
 are included in the description. These can be disabled using the <code class="docutils literal notranslate"><span class="pre">--no-oxi</span></code>
@@ -193,7 +189,7 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
 </section>
 </section>
 <section id="command-line-interface">
-<h2>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this heading"></a></h2>
+<h2>Command-line interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h2>
 <p><p>robocrystallographer is a tool to generate crystal structure descriptions</p>
 </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">robocrys</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">symprec</span> <span class="n">SYMPREC</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">simplify</span><span class="p">]</span>
@@ -205,91 +201,91 @@ the <code class="docutils literal notranslate"><span class="pre">--latexify</spa
                 <span class="n">filename</span>
 </pre></div>
 </div>
-<section id="positional-arguments">
-<h3>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h3>
+<section id="robocrys.cli-_get_parser-positional-arguments">
+<h3>Positional Arguments<a class="headerlink" href="#robocrys.cli-_get_parser-positional-arguments" title="Link to this heading"></a></h3>
 <dl class="option-list">
 <dt><kbd>filename</kbd></dt>
 <dd><p>structure file or mpid</p>
 </dd>
 </dl>
 </section>
-<section id="named-arguments">
-<h3>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading"></a></h3>
+<section id="robocrys.cli-_get_parser-named-arguments">
+<h3>Named Arguments<a class="headerlink" href="#robocrys.cli-_get_parser-named-arguments" title="Link to this heading"></a></h3>
 <dl class="option-list">
 <dt><kbd>-c, --conventional</kbd></dt>
 <dd><p>use the convention cell</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>-s, --symmetry</kbd></dt>
 <dd><p>use symmetry to determine inequivalent sites</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>--symprec</kbd></dt>
 <dd><p>symmetry tolerance</p>
-<p>Default: 0.01</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0.01</span></code></p>
 </dd>
 <dt><kbd>--no-simplify</kbd></dt>
 <dd><p>don’t simplify molecules when mineral matching</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-iupac</kbd></dt>
 <dd><p>don’t use IUPAC formula ordering</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-common-formulas</kbd></dt>
 <dd><p>don’t use common formulas</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-mineral</kbd></dt>
 <dd><p>don’t describe the mineral information</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-makeup</kbd></dt>
 <dd><p>don’t describe the component makeup</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-components</kbd></dt>
 <dd><p>don’t describe the components</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-symmetry-labels</kbd></dt>
 <dd><p>don’t describe symmetry labels</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-oxi</kbd></dt>
 <dd><p>don’t describe oxidation states</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--no-bond</kbd></dt>
 <dd><p>don’t describe bond lengths</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--precision</kbd></dt>
 <dd><p>decimal places for bond lengths</p>
-<p>Default: 2</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">2</span></code></p>
 </dd>
 <dt><kbd>--distorted-tol</kbd></dt>
 <dd><p>order parameter below which sites are distorted</p>
-<p>Default: 0.6</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0.6</span></code></p>
 </dd>
 <dt><kbd>--anion-polyhedra</kbd></dt>
 <dd><p>describe anion polyhedra connectivity</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>--verbose-bonds</kbd></dt>
 <dd><p>describe bond lengths for each site</p>
-<p>Default: True</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
 </dd>
 <dt><kbd>--format</kbd></dt>
 <dd><p>how to format the description (unicode [default], html, latex, raw)</p>
-<p>Default: “unicode”</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'unicode'</span></code></p>
 </dd>
 <dt><kbd>--api-key</kbd></dt>
 <dd><p>set the materials project API key. See: <a class="reference external" href="https://materialsproject.org/docs/api">https://materialsproject.org/docs/api</a></p>
 </dd>
 </dl>
 </section>
-<p><p>Author: Alex Ganose, Version: 0.2.11, Last updated: December 17, 2018</p>
+<p><p>Author: Alex Ganose, Version: 0.2.12, Last updated: December 17, 2018</p>
 </p>
 </section>
 </section>

@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.11 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/describe/describer.html"/>
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>robocrys.describe.describer &mdash; Robocrystallographer 0.2.12 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/describe/describer.html"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=1e30946d"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -34,9 +33,6 @@
             Robocrystallographer
               <img src="../../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                0.2.11
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -100,7 +96,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inflect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.util.string</span><span class="w"> </span><span class="kn">import</span> <span class="n">htmlify</span><span class="p">,</span> <span class="n">latexify</span><span class="p">,</span> <span class="n">latexify_spacegroup</span><span class="p">,</span> <span class="n">unicodeify</span>
@@ -116,10 +112,17 @@
     <span class="n">unicodeify_spacegroup</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+
 <span class="n">en</span> <span class="o">=</span> <span class="n">inflect</span><span class="o">.</span><span class="n">engine</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="StructureDescriber"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StructureDescriber</span><span class="p">:</span>
+<div class="viewcode-block" id="StructureDescriber">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StructureDescriber</span><span class="p">:</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">describe_mineral</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -191,10 +194,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">angstrom</span> <span class="o">=</span> <span class="s2">&quot;Å&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="s2">&quot;°&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="p">:</span> <span class="n">DescriptionAdapter</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_seen_bonds</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="p">:</span> <span class="n">DescriptionAdapter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seen_bonds</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-<div class="viewcode-block" id="StructureDescriber.describe"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.describe">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="StructureDescriber.describe">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.describe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condensed_structure</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a condensed structure into a text description.</span>
 
 <span class="sd">        Args:</span>
@@ -231,7 +236,10 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">description</span></div>
 
-<div class="viewcode-block" id="StructureDescriber.get_mineral_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_mineral_description">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_mineral_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="StructureDescriber.get_mineral_description">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_mineral_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_mineral_description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the mineral name and space group description.</span>
 
 <span class="sd">        If the structure is a perfect match for a known prototype (e.g.</span>
@@ -258,9 +266,18 @@
             <span class="n">spg_symbol</span> <span class="o">=</span> <span class="n">htmlify_spacegroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">spg_symbol</span><span class="p">)</span>
             <span class="n">formula</span> <span class="o">=</span> <span class="n">htmlify</span><span class="p">(</span><span class="n">formula</span><span class="p">)</span>
 
-        <span class="n">mineral_name</span> <span class="o">=</span> <span class="n">get_mineral_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">mineral</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mineral_name</span> <span class="o">:=</span> <span class="n">get_mineral_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">mineral</span><span class="p">):</span>
+            <span class="c1"># replace latex-like characters with unicode</span>
+            <span class="n">latex_reps</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">mu$&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\u03BC</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&#39;</span><span class="si">{c}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\u0107</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;unicode&quot;</span><span class="p">}</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="n">k</span> <span class="ow">in</span> <span class="n">mineral_name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">latex_reps</span>
+            <span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">latex_reps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">mineral_name</span> <span class="o">=</span> <span class="n">mineral_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mineral_name</span><span class="p">:</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">mineral_name</span><span class="si">}</span><span class="s2"> structured and&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formula</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -270,7 +287,10 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">desc</span></div>
 
-<div class="viewcode-block" id="StructureDescriber.get_component_makeup_summary"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_makeup_summary">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_makeup_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="StructureDescriber.get_component_makeup_summary">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_makeup_summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_makeup_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a summary of the makeup of components in a structure.</span>
 
 <span class="sd">        Returns:</span>
@@ -290,7 +310,10 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">dimensionality</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;The structure consists of &quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The structure is </span><span class="si">{</span><span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">)</span><span class="si">}</span><span class="s2">-dimensional and consists of &quot;</span>
+                <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The structure is </span><span class="si">{</span><span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da</span><span class="o">.</span><span class="n">dimensionality</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># type: ignore[arg-type]</span>
+                    <span class="s2">&quot;-dimensional and consists of &quot;</span>
+                <span class="p">)</span>
 
             <span class="n">component_makeup_summaries</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">nframeworks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
@@ -303,9 +326,9 @@
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">component_group</span> <span class="ow">in</span> <span class="n">component_groups</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">nframeworks</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">component_group</span><span class="o">.</span><span class="n">dimensionality</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="n">s_count</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
+                    <span class="n">s_count</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">s_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">component_group</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+                    <span class="n">s_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">component_group</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
 
                 <span class="n">dimensionality</span> <span class="o">=</span> <span class="n">component_group</span><span class="o">.</span><span class="n">dimensionality</span>
 
@@ -349,7 +372,10 @@
                 <span class="n">desc</span> <span class="o">+=</span> <span class="n">en</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">component_makeup_summaries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
         <span class="k">return</span> <span class="n">desc</span></div>
 
-<div class="viewcode-block" id="StructureDescriber.get_all_component_descriptions"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_all_component_descriptions">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_component_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="StructureDescriber.get_all_component_descriptions">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_all_component_descriptions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_component_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the descriptions of all components in the structure.</span>
 
 <span class="sd">        Returns:</span>
@@ -395,7 +421,10 @@
 
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">component_descriptions</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StructureDescriber.get_component_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_description">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_description</span><span class="p">(</span>
+
+<div class="viewcode-block" id="StructureDescriber.get_component_description">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_component_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_component_description</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">component_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">single_component</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the descriptions of all sites in a component.</span>
@@ -425,19 +454,22 @@
 
                 <span class="n">s_there</span> <span class="o">=</span> <span class="s2">&quot;there&quot;</span> <span class="k">if</span> <span class="n">first_group</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">single_component</span> <span class="k">else</span> <span class="s2">&quot;There&quot;</span>
 
-                <span class="n">s_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">))</span>
+                <span class="n">s_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span>
 
                 <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s_there</span><span class="si">}</span><span class="s2"> are </span><span class="si">{</span><span class="n">s_count</span><span class="si">}</span><span class="s2"> inequivalent </span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s2"> sites.&quot;</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">site_group</span><span class="o">.</span><span class="n">sites</span><span class="p">):</span>
-                    <span class="n">s_ordinal</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">en</span><span class="o">.</span><span class="n">ordinal</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">s_ordinal</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">en</span><span class="o">.</span><span class="n">ordinal</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span>
                     <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In the </span><span class="si">{</span><span class="n">s_ordinal</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">element</span><span class="si">}</span><span class="s2"> site,&quot;</span><span class="p">)</span>
                     <span class="n">desc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_site_description</span><span class="p">(</span><span class="n">site</span><span class="p">))</span>
 
             <span class="n">first_group</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StructureDescriber.get_site_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_site_description">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="StructureDescriber.get_site_description">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_site_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of the geometry and bonding of a site.</span>
 
 <span class="sd">        If the site likeness (order parameter) is less than ``distorted_tol``,</span>
@@ -485,6 +517,7 @@
             <span class="n">desc</span> <span class="o">+=</span> <span class="s2">&quot;.&quot;</span>
 
         <span class="k">return</span> <span class="n">desc</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_poly_site_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of a connected polyhedral site.</span>
@@ -667,7 +700,9 @@
         <span class="c1"># filter empty bond length description strings</span>
         <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">bond_descriptions</span><span class="p">))</span>
 
-<div class="viewcode-block" id="StructureDescriber.get_bond_length_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_bond_length_description">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="StructureDescriber.get_bond_length_description">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_bond_length_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bond_length_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a description of the bond lengths between two sets of sites.</span>
 
 <span class="sd">        Args:</span>
@@ -719,9 +754,9 @@
         <span class="c1"># if two sets of bond lengths</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">small</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">)</span>
-            <span class="n">s_small_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">small</span><span class="p">))</span>
+            <span class="n">s_small_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">small</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span>
             <span class="n">big</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="p">)</span>
-            <span class="n">s_big_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">big</span><span class="p">))</span>
+            <span class="n">s_big_count</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">number_to_words</span><span class="p">(</span><span class="n">discrete_bond_lengths</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">big</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span>
 
             <span class="n">s_length</span> <span class="o">=</span> <span class="n">en</span><span class="o">.</span><span class="n">plural</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">s_big_count</span><span class="p">)</span>
 
@@ -747,7 +782,10 @@
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="StructureDescriber.get_octahedral_tilt_description"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_octahedral_tilt_description">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_octahedral_tilt_description</span><span class="p">(</span>
+
+<div class="viewcode-block" id="StructureDescriber.get_octahedral_tilt_description">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.StructureDescriber.get_octahedral_tilt_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_octahedral_tilt_description</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">site_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -793,6 +831,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_angle_range_to_string</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">tilts</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">tilts</span><span class="p">))</span>
         <span class="p">)</span></div>
 
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_filter_seen_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_site</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">to_sites</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter the list of to_sites to only include unseen bonds.</span>
 
@@ -818,7 +857,7 @@
 
         <span class="k">return</span> <span class="n">not_seen_to_sites</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_rounded_bond_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rounded_bond_lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to round bond lengths to a number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_length_decimal_places</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span>
@@ -840,7 +879,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_rounded_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rounded_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function to round angles to a number of decimal places.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;{:.</span><span class="si">{}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_decimal_places</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span>
@@ -861,7 +900,10 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_mineral_name"><a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.get_mineral_name">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_mineral_name</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="get_mineral_name">
+<a class="viewcode-back" href="../../../robocrys.describe.html#robocrys.get_mineral_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mineral_name</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the mineral name from a mineral dictionary.</span>
 
 <span class="sd">    Args:</span>
@@ -882,6 +924,7 @@
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mineral_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">suffix</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="kc">None</span></div>
+
 </pre></div>
 
            </div>

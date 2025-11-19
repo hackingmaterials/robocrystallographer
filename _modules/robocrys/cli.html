@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>robocrys.cli &mdash; Robocrystallographer 0.2.11 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/cli.html"/>
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>robocrys.cli &mdash; Robocrystallographer 0.2.12 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://hackingmaterials.lbl.gov/robocrystallographer/_modules/robocrys/cli.html"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=1e30946d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -34,9 +33,6 @@
             Robocrystallographer
               <img src="../../_static/logo_icon-01.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                0.2.11
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -113,7 +109,9 @@
 <span class="n">__date__</span> <span class="o">=</span> <span class="s2">&quot;December 17, 2018&quot;</span>
 
 
-<div class="viewcode-block" id="robocrystallographer"><a class="viewcode-back" href="../../robocrys.html#robocrys.cli.robocrystallographer">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">robocrystallographer</span><span class="p">(</span>
+<div class="viewcode-block" id="robocrystallographer">
+<a class="viewcode-back" href="../../robocrys.html#robocrys.cli.robocrystallographer">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">robocrystallographer</span><span class="p">(</span>
     <span class="n">structure</span><span class="p">:</span> <span class="n">Structure</span><span class="p">,</span>
     <span class="n">condenser_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">describer_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -145,7 +143,8 @@
     <span class="n">condensed_structure</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">condense_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
     <span class="n">description</span> <span class="o">=</span> <span class="n">describer</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">condensed_structure</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">description</span></div>
+    <span class="k">return</span> <span class="n">description</span>  <span class="c1"># type: ignore[return-value]</span></div>
+
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_parser</span><span class="p">():</span>
@@ -271,7 +270,9 @@
     <span class="k">return</span> <span class="n">parser</span>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../robocrys.html#robocrys.cli.main">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../robocrys.html#robocrys.cli.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">_get_parser</span><span class="p">()</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
     <span class="n">args_dict</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
@@ -346,6 +347,7 @@
     <span class="n">robocrystallographer</span><span class="p">(</span>
         <span class="n">structure</span><span class="p">,</span> <span class="n">condenser_kwargs</span><span class="o">=</span><span class="n">condenser_kwargs</span><span class="p">,</span> <span class="n">describer_kwargs</span><span class="o">=</span><span class="n">describer_kwargs</span>
     <span class="p">)</span></div>
+
 </pre></div>
 
            </div>
