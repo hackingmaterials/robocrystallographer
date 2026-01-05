@@ -87,7 +87,7 @@ strict = [
     "scipy==1.15.3",
     "pymatgen==2025.10.7",
     "inflect==7.5.0",
-    "networkx==3.4.2",
+    "networkx==3.6.1",
     "matminer==0.9.3",
     "monty==2025.3.3",
     "pubchempy==1.0.5",
