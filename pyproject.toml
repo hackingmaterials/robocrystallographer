@@ -88,7 +88,7 @@ strict = [
     "inflect==7.5.0",
     "networkx==3.6.1",
     "matminer==0.10.0",
-    "monty==2025.3.3",
+    "monty==2026.2.18",
     "pubchempy==1.0.5",
     "pybtex==0.25.1",
 ]
