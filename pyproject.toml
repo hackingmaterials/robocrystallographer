@@ -84,7 +84,7 @@ strict = [
     "spglib==2.7.0",
     "numpy==2.4.1,",
     "scipy==1.17.0",
-    "pymatgen==2025.10.7",
+    "pymatgen==2026.3.23",
     "inflect==7.5.0",
     "networkx==3.6.1",
     "matminer==0.10.0",
