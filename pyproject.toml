@@ -90,7 +90,7 @@ strict = [
     "matminer==0.10.0",
     "monty==2025.3.3",
     "pubchempy==1.0.5",
-    "pybtex==0.25.1",
+    "pybtex==0.26.1",
 ]
 
 [project.scripts]
