@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.11","3.12"]
+        python-version: ["3.12","3.13","3.14"]
     name: test robocrys (${{ matrix.os }}/py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     steps:
@@ -23,8 +23,14 @@ jobs:
       - name: Install dependencies
         shell: bash -l {0}
         run: |
-          conda install --quiet --yes -c conda-forge openbabel pip ruamel.yaml
+          conda install --quiet --yes -c conda-forge pip ruamel.yaml
           python${{ matrix.python-version }} -m pip install -e .[strict,tests,cli]
+
+      - name: Install openbabel (py<3.13)
+        if: ${{ matrix.python-version < '3.13' }}
+        shell: bash -l {0}
+        run: |
+          conda install --quiet --yes -c conda-forge openbabel
 
       - name: Test
         shell: bash -l {0}

@@ -3,10 +3,10 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 import numpy as np
-from matminer.featurizers.site import (  # type:ignore[import-untyped]
+from matminer.featurizers.site import (  # type: ignore[import-untyped]
     CrystalNNFingerprint,
 )
-from matminer.featurizers.structure import (  # type:ignore[import-untyped]
+from matminer.featurizers.structure import (  # type: ignore[import-untyped]
     SiteStatsFingerprint,
 )
 from pymatgen.core.structure import IStructure

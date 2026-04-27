@@ -17,7 +17,6 @@ from robocrys.condense.fingerprint import (
     get_structure_fingerprint,
 )
 
-
 if TYPE_CHECKING:
     from typing import Any
     import pandas as pd

@@ -71,26 +71,26 @@ dev = ["tqdm", "pybel", "pebble", "maggma"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 cli = ["mp_api"]
 lint = [
-    "coverage==7.13.1",
+    "coverage==7.13.5",
     "codacy-coverage==1.3.11",
     "pycodestyle==2.14.0",
     "mypy==1.19.1",
     "pydocstyle==6.1.1",
     "flake8==7.3.0",
-    "pylint==4.0.4",
-    "black==26.1.0",
+    "pylint==4.0.5",
+    "black==26.3.1",
 ]
 strict = [
     "spglib==2.7.0",
-    "numpy==2.4.1,",
-    "scipy==1.17.0",
-    "pymatgen==2025.10.7",
+    "numpy==2.4.4,",
+    "scipy==1.17.1",
+    "pymatgen==2026.3.23",
     "inflect==7.5.0",
     "networkx==3.6.1",
-    "matminer==0.10.0",
-    "monty==2025.3.3",
+    "matminer==0.10.1",
+    "monty==2026.2.18",
     "pubchempy==1.0.5",
-    "pybtex==0.25.1",
+    "pybtex==0.26.1",
 ]
 
 [project.scripts]
