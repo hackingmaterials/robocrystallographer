@@ -174,7 +174,7 @@ class StructureDescriber:
         if mineral_name := get_mineral_name(self._da.mineral):
             # replace latex-like characters with unicode
             latex_reps = {
-                "$\\mu$": "\u03BC",
+                "$\\mu$": "\u03bc",
                 "\\'{c}": "\u0107",
             }
             if self.fmt in {"html", "unicode"} and any(

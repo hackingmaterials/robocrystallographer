@@ -9,7 +9,7 @@ import warnings
 
 from monty.serialization import loadfn
 from importlib.resources import files as import_resource_file
-from pubchempy import BadRequestError, get_compounds  # type:ignore[import-untyped]
+from pubchempy import BadRequestError, get_compounds  # type: ignore[import-untyped]
 from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.io.babel import BabelMolAdaptor
 
