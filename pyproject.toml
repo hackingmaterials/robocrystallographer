@@ -82,7 +82,7 @@ lint = [
 ]
 strict = [
     "spglib==2.7.0",
-    "numpy==2.4.4,",
+    "numpy==2.4.6,",
     "scipy==1.17.1",
     "pymatgen==2026.3.23",
     "inflect==7.5.0",
