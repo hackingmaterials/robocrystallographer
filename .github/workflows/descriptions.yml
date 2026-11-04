@@ -1,0 +1,63 @@
+name: Compare descriptions
+
+# Describes the structures in tests/test_files/check_structures.json.gz with
+# main and with the PR merged into main, and shows the sentences that change.
+# It only reports, so it never fails on a change. It runs on pull_request, so
+# PRs from forks get the report too.
+
+on: [pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  describe:
+    strategy:
+      matrix:
+        version: [old, new]
+    name: describe (${{ matrix.version }})
+    runs-on: ubuntu-latest
+    env:
+      PYTHONHASHSEED: 0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install the code to describe with
+        run: |
+          if [ "${{ matrix.version }}" = old ]; then
+            git worktree add ../code "$(git merge-base origin/main HEAD)"
+          else
+            git worktree add ../code HEAD
+          fi
+          pip install -e "../code[strict]"
+
+      - name: Describe the structures
+        run: python dev_scripts/describe_structures.py tests/test_files/check_structures.json.gz ${{ matrix.version }}.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.version }}
+          path: ${{ matrix.version }}.json
+
+  compare:
+    needs: describe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: Show the changed descriptions
+        run: python dev_scripts/describe_structures.py --compare old.json new.json | tee -a "$GITHUB_STEP_SUMMARY"

@@ -32,7 +32,13 @@ The rest of that file refines the mode, e.g. which kinds of PR may merge.
 - Repository: hackingmaterials/robocrystallographer: Automatic generation of crystal structure descriptions.
 - Activity: not assessed yet. Escalations may wait a while, so make
   summaries self-contained.
-- Related repositories: none listed yet.
+- Related repositories: [emmet](https://github.com/materialsproject/emmet)
+  builds the Materials Project robocrys documents with this code,
+  [matminer](https://github.com/hackingmaterials/matminer) provides the site
+  fingerprints used in `robocrys/condense/`, and
+  [pymatgen](https://github.com/materialsproject/pymatgen) provides the
+  structures, bonding, and symmetry analysis. A change in their APIs or results
+  can change what robocrys writes.
 - AI policy: none listed yet.
 
 ## Maintainers
@@ -67,7 +73,10 @@ Any change to these is escalated (rule 1) in every mode, however small.
 
 Besides tests for every behavior change, contributions to this repo must:
 
-- Nothing else listed yet.
+- For a change to `robocrys/describe/` or `robocrys/condense/` that changes
+  the output, show the descriptions before and after the change for the
+  structures in `tests/test_files/structures`, and say how many of them
+  change. If this is missing, escalate and ask for it.
 
 ## When a maintainer tags you
 
