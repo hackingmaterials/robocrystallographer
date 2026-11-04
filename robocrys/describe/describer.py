@@ -463,7 +463,9 @@ class StructureDescriber:
                 {(nnn_site.element, nnn_site.poly_formula) for nnn_site in nnn_details}
             )
         ) == 1:
-            connectivities = list({nnn_site.connectivity for nnn_site in nnn_details})
+            # sort so the order does not depend on set iteration order
+            # (i.e., PYTHONHASHSEED); gives "corner", "edge", "face"
+            connectivities = sorted({nnn_site.connectivity for nnn_site in nnn_details})
             s_mixture = "a mixture of " if len(connectivities) != 1 else ""
             s_connectivities = en.join(connectivities)
 

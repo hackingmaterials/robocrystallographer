@@ -80,6 +80,13 @@ class TestDescriptionMethods(RobocrysTest):
         assert "Sn(1)-O(1)" in description["components"]
         assert "2.09" in description["components"]
 
+    def test_connectivity_order_is_deterministic(self):
+        """Connectivities must not depend on set order (PYTHONHASHSEED)."""
+        d = StructureDescriber()
+        description = d.describe(self.tin_dioxide)
+        assert "a mixture of corner and edge-sharing" in description
+        assert "edge and corner" not in description
+
     def test_grammar_and_punctuation(self):
         """Check common grammatical errors are not present."""
         d = StructureDescriber()
