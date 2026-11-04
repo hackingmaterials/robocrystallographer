@@ -1,10 +1,11 @@
 name: Compare descriptions
 
 # Describes the structures in tests/test_files/check_structures.json.gz with
-# this commit and with the commit it starts from on main, and shows the
-# sentences that change. It only reports, so it never fails on a change.
+# main and with the PR merged into main, and shows the sentences that change.
+# It only reports, so it never fails on a change. It runs on pull_request, so
+# PRs from forks get the report too.
 
-on: [push]
+on: [pull_request]
 
 permissions:
   contents: read
