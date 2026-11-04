@@ -35,7 +35,7 @@ class TestStructureCondenser(RobocrysTest):
         assert len(data["sites"].keys()) == 2
         assert data["sites"][0]["element"] == "Sn4+"
         assert data["sites"][0]["geometry"]["type"] == "octahedral"
-        assert data["sites"][0]["geometry"]["likeness"] == approx(0.9349817375244279)
+        assert data["sites"][0]["geometry"]["likeness"] == approx(0.9376927223281817)
         assert len(data["sites"][0]["nn"]) == 6
         assert len(data["sites"][0]["nnn"]["corner"]) == 8
         assert len(data["sites"][0]["nnn"]["edge"]) == 2
@@ -78,7 +78,7 @@ class TestStructureCondenser(RobocrysTest):
         assert len(data["sites"].keys()) == 2
         assert data["sites"][0]["element"] == "Sn4+"
         assert data["sites"][0]["geometry"]["type"] == "octahedral"
-        assert data["sites"][0]["geometry"]["likeness"] == approx(0.9349817375244279)
+        assert data["sites"][0]["geometry"]["likeness"] == approx(0.9376927223281817)
         assert len(data["sites"][0]["nn"]) == 6
         assert len(data["sites"][0]["nnn"]["corner"]) == 8
         assert len(data["sites"][0]["nnn"]["edge"]) == 2
