@@ -26,11 +26,11 @@ class TestDescriptionMethods(RobocrysTest):
         assert "SnO2" in description
         assert "tetragonal" in description
         assert "P4_2/mnm" in description
-        assert "Sn(1)4+" in description
+        assert "Sn4+" in description
         assert "equivalent" in description
         assert "corner" in description
         assert "edge" in description
-        assert "Sn(1)-O(1)" in description
+        assert "Sn-O" in description
         assert "2.09" in description
 
         # test different settings
@@ -42,8 +42,8 @@ class TestDescriptionMethods(RobocrysTest):
             fmt="raw",
         )
         description = d.describe(self.tin_dioxide)
-        assert "Sn(1)" in description
-        assert "Sn(1)-O(1)" in description
+        assert "Sn(1)" not in description
+        assert "Sn-O" in description
         assert "2.0922" in description
 
         # test different settings
@@ -73,12 +73,27 @@ class TestDescriptionMethods(RobocrysTest):
         assert "P4_2/mnm" in description["mineral"]
 
         assert description["component_makeup"] == ""
-        assert "Sn(1)4+" in description["components"]
+        assert "Sn4+" in description["components"]
         assert "equivalent" in description["components"]
         assert "corner" in description["components"]
         assert "edge" in description["components"]
-        assert "Sn(1)-O(1)" in description["components"]
+        assert "Sn-O" in description["components"]
         assert "2.09" in description["components"]
+
+    def test_symmetry_labels_dropped_for_simple_structures(self):
+        """Symmetry labels are left out if every element has one site (#7)."""
+        d = StructureDescriber(describe_symmetry_labels=True)
+
+        # SnO2 has one inequivalent Sn site and one O site
+        description = d.describe(self.tin_dioxide)
+        assert "(1)" not in description
+        assert "Sn4+" in description
+        assert "Sn-O" in description
+
+        # MAPI has two inequivalent I sites, so labels are kept
+        description = d.describe(self.mapi)
+        assert "I(1)" in description
+        assert "I(2)" in description
 
     def test_grammar_and_punctuation(self):
         """Check common grammatical errors are not present."""
