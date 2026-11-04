@@ -132,7 +132,13 @@ class SiteAnalyzer:
             # "square co-planar CN_4" -> "square co-planar"
             geometry = " ".join(parameter[0].split()[:-1])
             geometry = "single-bond" if geometry == "sgl_bd" else geometry
-            likeness = parameter[1]
+
+            # the CrystalNN fingerprint values are the order parameter multiplied
+            # by the coordination number weight; divide out the weight so the
+            # likeness only measures how close the geometry is to the ideal one
+            cn_label = parameter[0].split()[-1]
+            cn_weight = self.site_fingerprints[site_index].get(f"wt {cn_label}", 0)
+            likeness = parameter[1] / cn_weight if cn_weight > 0 else parameter[1]
 
         return {"type": geometry, "likeness": likeness}
 
