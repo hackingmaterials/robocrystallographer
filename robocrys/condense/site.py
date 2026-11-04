@@ -132,7 +132,10 @@ class SiteAnalyzer:
             # "square co-planar CN_4" -> "square co-planar"
             geometry = " ".join(parameter[0].split()[:-1])
             geometry = "single-bond" if geometry == "sgl_bd" else geometry
-            likeness = parameter[1]
+            # the order parameter is weighted by the probability of its
+            # coordination number, so divide the weight out
+            cn = parameter[0].split()[-1]
+            likeness = parameter[1] / self.site_fingerprints[site_index][f"wt {cn}"]
 
         return {"type": geometry, "likeness": likeness}
 
