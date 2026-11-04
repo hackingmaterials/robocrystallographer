@@ -60,3 +60,4 @@ class TestCommandLineInterface(RobocrysTest):
                 "Rutile","SnO","tetragonal","P4","/mnm","Sn","equivalent","corner","edge","Sn-O","2.06"
             ]
         )
+        assert "Sn(1)" not in stdout
