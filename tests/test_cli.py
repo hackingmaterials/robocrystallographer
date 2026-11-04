@@ -24,7 +24,7 @@ class TestCommandLineInterface(RobocrysTest):
         description = robocrystallographer(self.tin_dioxide)
         assert all(
             attr in description for attr in [
-                "Rutile","SnO2","tetragonal","P4_2/mnm","Sn(1)4+","equivalent","corner","edge","Sn(1)-O(1)","2.09"
+                "Rutile","SnO2","tetragonal","P4_2/mnm","Sn4+","equivalent","corner","edge","Sn-O","2.09"
             ]
         )
 
@@ -57,6 +57,7 @@ class TestCommandLineInterface(RobocrysTest):
         stdout, _ = self.capsys.readouterr()
         assert all(
             attr in stdout for attr in [
-                "Rutile","SnO","tetragonal","P4","/mnm","Sn(1)","equivalent","corner","edge","Sn(1)-O(1)","2.06"
+                "Rutile","SnO","tetragonal","P4","/mnm","Sn","equivalent","corner","edge","Sn-O","2.06"
             ]
         )
+        assert "Sn(1)" not in stdout

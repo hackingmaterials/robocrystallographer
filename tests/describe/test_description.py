@@ -26,12 +26,18 @@ class TestDescriptionMethods(RobocrysTest):
         assert "SnO2" in description
         assert "tetragonal" in description
         assert "P4_2/mnm" in description
-        assert "Sn(1)4+" in description
+        assert "Sn4+" in description
         assert "equivalent" in description
         assert "corner" in description
         assert "edge" in description
-        assert "Sn(1)-O(1)" in description
+        assert "Sn-O" in description
         assert "2.09" in description
+
+        # the labels are only used if an element has several inequivalent sites
+        assert "(1)" not in description
+        description = d.describe(self.mapi)
+        assert "I(1)1-" in description
+        assert "Pb(1)-I(2)" in description
 
         # test different settings
         d = StructureDescriber(
@@ -42,8 +48,7 @@ class TestDescriptionMethods(RobocrysTest):
             fmt="raw",
         )
         description = d.describe(self.tin_dioxide)
-        assert "Sn(1)" in description
-        assert "Sn(1)-O(1)" in description
+        assert "Sn-O" in description
         assert "2.0922" in description
 
         # test different settings
@@ -73,11 +78,11 @@ class TestDescriptionMethods(RobocrysTest):
         assert "P4_2/mnm" in description["mineral"]
 
         assert description["component_makeup"] == ""
-        assert "Sn(1)4+" in description["components"]
+        assert "Sn4+" in description["components"]
         assert "equivalent" in description["components"]
         assert "corner" in description["components"]
         assert "edge" in description["components"]
-        assert "Sn(1)-O(1)" in description["components"]
+        assert "Sn-O" in description["components"]
         assert "2.09" in description["components"]
 
     def test_grammar_and_punctuation(self):

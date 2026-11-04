@@ -56,7 +56,8 @@ class StructureDescriber:
                 of the structure.
             describe_components: Whether to describe the component's sites.
             describe_symmetry_labels: Whether to include the symmetry labels
-                when describing atomic sites.
+                when describing atomic sites. The labels are left out if each
+                element has only one inequivalent site.
             describe_oxidation_states: Whether to include oxidation states
                 in the description.
             describe_bond_lengths: Whether to describe bond lengths.
@@ -124,6 +125,13 @@ class StructureDescriber:
         """
         self._da = DescriptionAdapter(condensed_structure)
         self._seen_bonds = set()
+
+        # the labels only tell sites apart if an element has several of them
+        elements = [get_el(site["element"]) for site in self._da.sites.values()]
+        self._use_sym_labels = self.describe_symmetry_labels and (
+            len(set(elements)) < len(elements)
+            or any(label != "(1)" for label in self._da.sym_labels.values())
+        )
 
         description = {}
 
@@ -388,7 +396,7 @@ class StructureDescriber:
                 site["element"],
                 self._da.sym_labels[site_index],
                 use_oxi_state=self.describe_oxidation_state,
-                use_sym_label=self.describe_symmetry_labels,
+                use_sym_label=self._use_sym_labels,
                 fmt=self.fmt,
             )
 
@@ -425,14 +433,14 @@ class StructureDescriber:
         """
         site = self._da.sites[site_index]
         nnn_details = self._da.get_next_nearest_neighbor_details(
-            site_index, group=not self.describe_symmetry_labels
+            site_index, group=not self._use_sym_labels
         )
 
         from_element = get_formatted_el(
             site["element"],
             self._da.sym_labels[site_index],
             use_oxi_state=self.describe_oxidation_state,
-            use_sym_label=self.describe_symmetry_labels,
+            use_sym_label=self._use_sym_labels,
             fmt=self.fmt,
         )
 
@@ -486,7 +494,7 @@ class StructureDescriber:
                 nnn_site.element,
                 nnn_site.sym_label,
                 use_oxi_state=False,
-                use_sym_label=self.describe_symmetry_labels,
+                use_sym_label=self._use_sym_labels,
             )
 
             to_poly_formula = nnn_site.poly_formula
@@ -538,7 +546,7 @@ class StructureDescriber:
             A description of the nearest neighbors.
         """
         nn_details = self._da.get_nearest_neighbor_details(
-            site_index, group=not self.describe_symmetry_labels
+            site_index, group=not self._use_sym_labels
         )
 
         last_count = 0
@@ -548,7 +556,7 @@ class StructureDescriber:
                 nn_site.element,
                 nn_site.sym_label,
                 use_oxi_state=self.describe_oxidation_state,
-                use_sym_label=self.describe_symmetry_labels,
+                use_sym_label=self._use_sym_labels,
                 fmt=self.fmt,
             )
 
@@ -580,7 +588,7 @@ class StructureDescriber:
             return ""
 
         nn_details = self._da.get_nearest_neighbor_details(
-            site_index, group=not self.describe_symmetry_labels
+            site_index, group=not self._use_sym_labels
         )
 
         bond_descriptions = []
@@ -615,13 +623,13 @@ class StructureDescriber:
             self._da.elements[from_site],
             self._da.sym_labels[from_site],
             use_oxi_state=False,
-            use_sym_label=self.describe_symmetry_labels,
+            use_sym_label=self._use_sym_labels,
         )
         to_element = get_formatted_el(
             self._da.elements[to_sites[0]],
             self._da.get_sym_label(to_sites),
             use_oxi_state=False,
-            use_sym_label=self.describe_symmetry_labels,
+            use_sym_label=self._use_sym_labels,
         )
 
         dists = self._da.get_distance_details(from_site, to_sites)
@@ -688,7 +696,7 @@ class StructureDescriber:
             A description of the octahedral tilting angles.
         """
         nnn_details = self._da.get_next_nearest_neighbor_details(
-            site_index, group=not self.describe_symmetry_labels
+            site_index, group=not self._use_sym_labels
         )
         to_sites = [
             site
