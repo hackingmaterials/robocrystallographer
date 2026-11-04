@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pymatgen.analysis.local_env import CrystalNN
+from pymatgen.core import Lattice, Structure
 from pytest import approx
 
 from robocrys.condense.site import (
@@ -53,11 +54,11 @@ class TestSiteAnalyzer(RobocrysTest):
         sa = SiteAnalyzer(self.tin_dioxide)
         geom_data = sa.get_site_geometry(0)
         assert geom_data["type"] == "octahedral"
-        assert geom_data["likeness"] == approx(0.9349776258427136)
+        assert geom_data["likeness"] == approx(0.9376885987246226)
 
         geom_data = sa.get_site_geometry(4)
         assert geom_data["type"] == "trigonal planar"
-        assert geom_data["likeness"] == approx(0.6050243049545359)
+        assert geom_data["likeness"] == approx(0.670977716236421)
 
         # check different structure
 
@@ -65,6 +66,15 @@ class TestSiteAnalyzer(RobocrysTest):
         geom_data = sa.get_site_geometry(0)
         assert geom_data["type"] == "6-coordinate"
         assert geom_data["likeness"] == 1
+
+        # an ideal bcc site, where CrystalNN gives CN 8 a weight of only 0.58
+        bcc_fe = Structure.from_spacegroup(
+            "Im-3m", Lattice.cubic(2.87), ["Fe"], [[0, 0, 0]]
+        )
+        sa = SiteAnalyzer(CrystalNN().get_bonded_structure(bcc_fe))
+        geom_data = sa.get_site_geometry(0)
+        assert geom_data["type"] == "body-centered cubic"
+        assert geom_data["likeness"] == approx(1)
 
     def test_get_nearest_neighbors(self):
         """Check getting nearest neighbors."""
@@ -127,7 +137,7 @@ class TestSiteAnalyzer(RobocrysTest):
         data = sa.get_site_summary(0)
         assert data["element"] == "Sn4+"
         assert data["geometry"]["type"] == "octahedral"
-        assert data["geometry"]["likeness"] == approx(0.9349776258427136)
+        assert data["geometry"]["likeness"] == approx(0.9376885987246226)
         assert len(data["nn"]) == 6
         assert len(data["nnn"]["corner"]) == 8
         assert len(data["nnn"]["edge"]) == 2
@@ -167,7 +177,7 @@ class TestSiteAnalyzer(RobocrysTest):
         assert len(data.keys()) == 2
         assert data[0]["element"] == "Sn4+"
         assert data[0]["geometry"]["type"] == "octahedral"
-        assert data[0]["geometry"]["likeness"] == approx(0.9349776258427136)
+        assert data[0]["geometry"]["likeness"] == approx(0.9376885987246226)
         assert len(data[0]["nn"]) == 6
         assert len(data[0]["nnn"]["corner"]) == 8
         assert len(data[0]["nnn"]["edge"]) == 2
