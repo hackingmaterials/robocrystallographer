@@ -131,7 +131,7 @@ def main(out_path):
             zip(cand_ids, pool.map(dimensionality, [structures[i] for i in cand_ids]))
         )
 
-    # take every 0D, 1D, and 2D candidate first (they are rare), then fill up
+    # take up to 12 of the 0D, 1D, and 2D candidates first (they are rare), then fill up
     # round-robin over crystal systems, so each system gets a similar share
     key_of = {mp_id: key for key, mp_id in candidates.items()}
     picked = [i for i in cand_ids if dims[i] < 3][:12]

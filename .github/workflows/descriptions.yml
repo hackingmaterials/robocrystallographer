@@ -6,6 +6,9 @@ name: Compare descriptions
 
 on: [push]
 
+permissions:
+  contents: read
+
 jobs:
   describe:
     strategy:
